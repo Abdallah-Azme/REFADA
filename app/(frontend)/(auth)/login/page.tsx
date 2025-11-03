@@ -1,30 +1,216 @@
 "use client";
 
-import { useState } from "react";
-import LoginForm from "@/components/pages/login/login-form";
-import LoginImageSection from "@/components/pages/login/login-image-section";
+import * as React from "react";
+import Image from "next/image";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Mail, Lock } from "lucide-react";
+import ImageFallback from "@/components/shared/image-fallback";
+import Logo from "@/components/logo";
 
-export default function LoginPage() {
-  const [userType, setUserType] = useState<"contributor" | "blogger">(
-    "contributor"
-  );
+const formSchema = z.object({
+  email: z.string().email({ message: "يرجى إدخال بريد إلكتروني صالح" }),
+  password: z
+    .string()
+    .min(6, { message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل" }),
+});
+
+export default function RefadLogin() {
+  const [role, setRole] = React.useState("contributor"); // "contributor" or "delegate"
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log({ ...values, role });
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-lg overflow-hidden max-w-5xl w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-          {/* Left Side - Login Form */}
-          <LoginForm userType={userType} setUserType={setUserType} />
+    <section className="flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden my-10">
+      {/* Image Section */}
+      <div className="hidden lg:block flex-1 relative bg-gray-100 h-[700px]">
+        <ImageFallback
+          src="/pages/auth/auth-image.webp"
+          alt="أهل غزة"
+          fill
+          className="object-cover brightness-75"
+        />
+      </div>
+      {/* Form Section */}
+      <div className="flex-1 flex flex-col justify-center px-8 py-10">
+        {/* Header */}
+        <div className="flex flex-col items-center mb-6 text-center gap-5 w-full  ">
+          <Logo />
 
-          {/* Right Side - Image Section */}
-          <LoginImageSection />
+          {/* Tabs for Roles */}
+          <Tabs defaultValue="contributor" className=" w-full  ">
+            <TabsList className="bg-gray-100 rounded-full p-1 w-52">
+              <TabsTrigger
+                value="contributor"
+                className="data-[state=active]:bg-[#c8b78a] data-[state=active]:text-white rounded-full px-4 py-1 text-sm"
+              >
+                مساهم
+              </TabsTrigger>
+              <TabsTrigger
+                value="delegate"
+                className="data-[state=active]:bg-[#c8b78a] data-[state=active]:text-white rounded-full px-4 py-1 text-sm"
+              >
+                مندوب
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="contributor" className="w-full  ">
+              {/* Form */}
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+                            <Input
+                              placeholder="البريد الإلكتروني"
+                              className="pl-9 text-right"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-right" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+                            <Input
+                              type="password"
+                              placeholder="كلمة المرور"
+                              className="pl-9 text-right"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-right" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="text-right text-sm text-gray-600">
+                    <a href="#" className="hover:underline">
+                      نسيت كلمة المرور
+                    </a>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full bg-[#c8b78a] hover:bg-[#b5a678] text-gray-800 font-semibold"
+                  >
+                    دخول
+                  </Button>
+                </form>
+              </Form>{" "}
+            </TabsContent>
+            <TabsContent value="delegate" className="w-full  ">
+              {/* Form */}
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+                            <Input
+                              placeholder="البريد الإلكتروني"
+                              className="pl-9 text-right"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-right" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+                            <Input
+                              type="password"
+                              placeholder="كلمة المرور"
+                              className="pl-9 text-right"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-right" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="text-right text-sm text-gray-600">
+                    <a href="#" className="hover:underline">
+                      نسيت كلمة المرور
+                    </a>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full bg-[#c8b78a] hover:bg-[#b5a678] text-gray-800 font-semibold"
+                  >
+                    دخول
+                  </Button>
+                </form>
+              </Form>
+            </TabsContent>
+          </Tabs>
         </div>
-      </div>
 
-      {/* Footer */}
-      <div className="fixed bottom-0 left-0 right-0 bg-slate-900 text-white text-center py-4 text-sm">
-        جميع الحقوق محفوظة لمحفوظطة لهمنا غزة....2025
+        <p className="text-center text-sm mt-4 text-gray-600">
+          ليس لديك حساب؟{" "}
+          <a href="#" className="text-[#c8b78a] font-semibold hover:underline">
+            تسجيل حساب جديد
+          </a>
+        </p>
       </div>
-    </div>
+    </section>
   );
 }
