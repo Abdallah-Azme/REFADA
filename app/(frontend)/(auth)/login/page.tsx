@@ -38,9 +38,7 @@ export default function RefadLogin() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log({ ...values, role });
-  };
+  const onSubmit = (values: z.infer<typeof formSchema>) => {};
 
   return (
     <section className="flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden my-10">

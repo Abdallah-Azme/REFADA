@@ -53,9 +53,7 @@ export default function ContactSection() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  function onSubmit(values: z.infer<typeof formSchema>) {}
 
   return (
     <section className="bg-[#F4F4F4] overflow-hidden">

@@ -38,9 +38,7 @@ export default function ContactSection() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  function onSubmit(values: z.infer<typeof formSchema>) {}
 
   return (
     <section className="bg-[#1C3A34] text-white   min-h-[600px]">

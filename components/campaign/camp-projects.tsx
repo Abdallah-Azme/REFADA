@@ -26,9 +26,7 @@ export default function CampProjects() {
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-  };
+  const onSubmit = (data: any) => {};
 
   return (
     <section className="container mx-auto px-4 py-8">
