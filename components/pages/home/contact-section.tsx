@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Send } from "lucide-react";
+import ImageFallback from "@/components/shared/image-fallback";
 
 const formSchema = z.object({
   name: z.string().min(2, "الاسم مطلوب"),
@@ -42,29 +43,24 @@ export default function ContactSection() {
   }
 
   return (
-    <section className="bg-[#1C3A34] text-white py-16 px-6" dir="rtl">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <section className="bg-[#1C3A34] text-white   min-h-[600px]">
+      <div className=" pe-4  flex gap-8 h-full   ">
         {/* --- Right: Logo --- */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="flex flex-col items-center justify-center text-center space-y-4"
+          className="md:flex  relative h-full flex-1 min-h-[600px] hidden"
         >
-          <Image
-            src="/logo-placeholder.png"
-            alt="Refad Logo"
-            width={180}
-            height={180}
-            className="object-contain"
-          />
-          <h3 className="text-xl font-semibold text-[#DCCDA5]">R E F A D</h3>
-          <p className="text-sm text-gray-300">
-            المنظمة الإنسانية الرشيدة
-            <br />
-            قطاع غزة
-          </p>
+          <div className="  w-full  absolute inset-0">
+            <ImageFallback
+              src="/pages/home/refad-org.webp"
+              alt="Refad Logo"
+              fill
+              className="object-cover"
+            />
+          </div>
         </motion.div>
 
         {/* --- Left: Form --- */}
@@ -73,13 +69,14 @@ export default function ContactSection() {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
+          className="w-fit py-16 px-6 flex-1 h-auto my-auto  mx-auto"
         >
-          <h2 className="text-2xl font-bold mb-6">اتصل بنا</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-8  ">اتصل بنا</h2>
 
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4 text-[#1C3A34]"
+              className="space-y-4 text-primary w-full max-w-[600px]"
             >
               {/* Row 1 */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -91,7 +88,7 @@ export default function ContactSection() {
                       <FormControl>
                         <Input
                           placeholder="اسم المستخدم"
-                          className="bg-[#F5F3EB] border-none focus-visible:ring-0"
+                          className="bg-[#F5F3EB] border-none focus-visible:ring-0 h-12 rounded-md text-right"
                           {...field}
                         />
                       </FormControl>
@@ -107,7 +104,7 @@ export default function ContactSection() {
                       <FormControl>
                         <Input
                           placeholder="البريد الإلكتروني"
-                          className="bg-[#F5F3EB] border-none focus-visible:ring-0"
+                          className="bg-[#F5F3EB] border-none focus-visible:ring-0 h-12 rounded-md text-right"
                           {...field}
                         />
                       </FormControl>
@@ -127,7 +124,7 @@ export default function ContactSection() {
                       <FormControl>
                         <Input
                           placeholder="الموضوع"
-                          className="bg-[#F5F3EB] border-none focus-visible:ring-0"
+                          className="bg-[#F5F3EB] border-none focus-visible:ring-0 h-12 rounded-md text-right"
                           {...field}
                         />
                       </FormControl>
@@ -143,7 +140,7 @@ export default function ContactSection() {
                       <FormControl>
                         <Input
                           placeholder="رقم الجوال"
-                          className="bg-[#F5F3EB] border-none focus-visible:ring-0"
+                          className="bg-[#F5F3EB] border-none focus-visible:ring-0 h-12 rounded-md text-right"
                           {...field}
                         />
                       </FormControl>
@@ -162,7 +159,7 @@ export default function ContactSection() {
                     <FormControl>
                       <Textarea
                         placeholder="اكتب رسالتك إلينا..."
-                        className="bg-[#F5F3EB] border-none focus-visible:ring-0 min-h-[120px]"
+                        className="bg-[#F5F3EB] border-none focus-visible:ring-0 min-h-[120px] rounded-md text-right"
                         {...field}
                       />
                     </FormControl>
@@ -172,12 +169,12 @@ export default function ContactSection() {
               />
 
               {/* Submit Button */}
-              <div className="flex justify-start">
+              <div className="flex justify-center md:justify-start pt-2">
                 <Button
                   type="submit"
-                  className="rounded-full bg-[#C9B47A] text-[#1C3A34] hover:bg-[#b6a26e] flex items-center gap-2 px-6"
+                  className="rounded-full bg-[#C9B47A] text-[#1C3A34] hover:bg-[#b6a26e] flex items-center gap-2 px-8 h-12 font-semibold text-base"
                 >
-                  <Send size={16} /> إرسال
+                  <Send size={18} /> إرسال
                 </Button>
               </div>
             </form>

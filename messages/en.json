@@ -27,5 +27,14 @@
   "subjectRequired": "Subject is required",
   "messageRequired": "Message is required",
   "supportMessage": "The technical support and customer service department is dedicated to assisting you around the clock.",
-  "contactus": "Contact us"
+  "contactus": "Contact us",
+  "transparency": "Transparency",
+  "transparencyTitle": "Transparency",
+  "transparencyDescription": "We first and foremost respect your privacy...",
+  "transparencyParagraph": "We place great importance on your privacy and strive to protect all information you provide to us while using our website or services. The data you voluntarily provide, such as your name and contact information, is collected solely to improve service quality and communicate with you effectively. We are committed not to share or sell any of your personal data to third parties without your prior consent, except in cases required by law or necessary for humanitarian purposes. We also apply strict security measures to protect your data from unauthorized access or misuse. By using our website, you agree to this privacy policy. We reserve the right to update it from time to time in line with the development of our services. Any changes will be published on this page once approved, so we recommend visiting it periodically to stay informed of the latest updates. We place great importance on your privacy and strive to protect all information you provide to us while using our website or services. The data you voluntarily provide, such as your name and contact information, is collected solely to improve service quality and communicate with you effectively. We are committed not to share or sell any of your personal data to third parties without your prior consent, except in cases required by law or necessary for humanitarian purposes. We also apply strict security measures to protect your data from unauthorized access or misuse. By using our website, you agree to this privacy policy. We reserve the right to update it from time to time in line with the development of our services. Any changes will be published on this page once approved, so we recommend visiting it periodically to stay informed of the latest updates.",
+  "termsAndConditions": "Terms and conditions",
+  "privacy": "Privacy",
+  "aboutus": "About us",
+  "camps": "Camps",
+  "gablyaCamp": "Gablya Camp"
 }

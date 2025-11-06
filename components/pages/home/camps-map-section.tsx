@@ -3,15 +3,17 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { MapPin, Phone } from "lucide-react";
+import { MapPin, Phone, Tent } from "lucide-react";
 import L from "leaflet";
 import { useState } from "react";
 import "leaflet/dist/leaflet.css";
+import { cn } from "@/lib/utils";
+import ImageFallback from "@/components/shared/image-fallback";
 
 // Custom icon
 const campIcon = new L.Icon({
-  iconUrl: "/icons/marker.svg", // put your marker icon here
-  iconSize: [32, 40],
+  iconUrl: "/pages/pages/camping.webp", // put your marker icon here
+  iconSize: [24, 24],
   iconAnchor: [16, 40],
 });
 
@@ -30,7 +32,7 @@ const camps: Camp[] = [
     name: "مخيم جباليا",
     location: "المخيم الشمالي - غزة",
     phone: "+972 22 222 2222",
-    image: "/camps/jabalia.jpg",
+    image: "/pages/home/gaza-camp-1.webp",
     position: [31.535, 34.495],
   },
   {
@@ -38,7 +40,7 @@ const camps: Camp[] = [
     name: "مخيم الشاطئ",
     location: "غرب مدينة غزة",
     phone: "+972 22 333 3333",
-    image: "/camps/beach.jpg",
+    image: "/pages/home/gaza-camp-2.webp",
     position: [31.535, 34.47],
   },
   {
@@ -46,39 +48,55 @@ const camps: Camp[] = [
     name: "مخيم النصيرات",
     location: "وسط قطاع غزة",
     phone: "+972 22 444 4444",
-    image: "/camps/nuseirat.jpg",
+    image: "/pages/home/gaza-camp-3.webp",
     position: [31.45, 34.39],
   },
 ];
 
-export default function CampsMapSection() {
+export default function CampsMapSection({
+  secondary,
+}: {
+  secondary?: boolean;
+}) {
   const [selected, setSelected] = useState<Camp | null>(camps[0]);
 
   return (
-    <section className="bg-[#E6F0EC] py-16 px-6" dir="rtl">
+    <section
+      className={cn(
+        "bg-[#E6F0EC]  px-6",
+        secondary ? "py-4 rounded-2xl" : "py-16"
+      )}
+    >
       {/* Title */}
-      <motion.div
-        className="text-center mb-10"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        viewport={{ once: true }}
-      >
-        <h2 className="text-2xl font-bold text-[#1C3A34] mb-2">
-          مواقع المخيمات
-        </h2>
-        <p className="text-gray-600 text-sm">
-          من خلال الخريطة التفاعلية التالية يمكنك استعراض أماكن المخيمات
-          المنتشرة في مختلف المناطق بغزة
-        </p>
-      </motion.div>
+      {!secondary && (
+        <motion.div
+          className="text-center mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-2xl font-bold text-[#1C3A34] mb-2">
+            مواقع المخيمات
+          </h2>
+          <p className="text-gray-600 text-sm">
+            من خلال الخريطة التفاعلية التالية يمكنك استعراض أماكن المخيمات
+            المنتشرة في مختلف المناطق بغزة
+          </p>
+        </motion.div>
+      )}
 
       {/* Map Section */}
-      <div className="max-w-5xl mx-auto relative bg-white rounded-2xl shadow overflow-hidden">
+      <div
+        className={cn(
+          "max-w-5xl mx-auto relative  bg-white rounded-2xl overflow-hidden shadow",
+          secondary ? "h-80" : "h-[400px]"
+        )}
+      >
         <MapContainer
           center={[31.52, 34.47]}
           zoom={12}
-          style={{ height: "400px", width: "100%" }}
+          className="h-full w-full"
           scrollWheelZoom={false}
         >
           <TileLayer
@@ -95,7 +113,25 @@ export default function CampsMapSection() {
                 click: () => setSelected(camp),
               }}
             >
-              <Popup>{camp.name}</Popup>
+              <Popup>
+                <div className="text-center">
+                  <h3 className="font-semibold text-[#1C3A34] mb-2 text-sm">
+                    {camp.name}
+                  </h3>
+                  <div className="relative w-40 h-24 mx-auto rounded-lg overflow-hidden">
+                    <ImageFallback
+                      src={camp.image}
+                      alt={camp.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <p className="text-gray-500 text-xs mt-2 flex items-center justify-center gap-1">
+                    <MapPin size={12} />
+                    {camp.location}
+                  </p>
+                </div>
+              </Popup>
             </Marker>
           ))}
         </MapContainer>
@@ -105,7 +141,8 @@ export default function CampsMapSection() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="absolute bottom-4 right-4 bg-white rounded-xl shadow-md flex items-center gap-3 p-3 w-[90%] sm:w-[400px]"
+            className="absolute bottom-1 right-1 bg-white rounded-xl shadow-md flex items-center gap-3 p-3 w-[90%] sm:w-[400px] z-[1000] pointer-events-auto"
+            style={{ zIndex: 1000 }}
           >
             <div className="relative w-16 h-16 rounded-lg overflow-hidden">
               <Image
@@ -133,10 +170,12 @@ export default function CampsMapSection() {
       </div>
 
       {/* Footer Note */}
-      <p className="text-center text-gray-600 text-sm mt-8">
-        اضغط على أي موقع في الخريطة للاطلاع على تفاصيل المخيم وعدد الأسر
-        والخدمات المتوفرة
-      </p>
+      {!secondary && (
+        <p className="text-center text-gray-600 text-sm mt-8">
+          اضغط على أي موقع في الخريطة للاطلاع على تفاصيل المخيم وعدد الأسر
+          والخدمات المتوفرة
+        </p>
+      )}
     </section>
   );
 }

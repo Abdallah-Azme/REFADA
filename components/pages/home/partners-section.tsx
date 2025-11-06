@@ -1,9 +1,14 @@
 "use client";
 import ImageFallback from "@/components/shared/image-fallback";
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-export default function PartnersSection() {
+export default function PartnersSection({
+  secondary = false,
+}: {
+  secondary?: boolean;
+}) {
   const partners = [
     { src: "/pages/home/coursera.png", alt: "Coursera" },
     { src: "/pages/home/udemy.png", alt: "Udemy" },
@@ -12,12 +17,19 @@ export default function PartnersSection() {
   ];
 
   return (
-    <section className="bg-[#C2B693] text-center py-16 rounded-b-[100px]">
-      <h3 className="text-2xl md:text-3xl font-bold text-[#1F3A36] mb-10">
+    <section
+      className={cn(
+        "bg-secondary text-center py-16 ",
+        secondary
+          ? "rounded-t-[50px] sm:rounded-t-[100px]"
+          : "rounded-b-[50px] sm:rounded-b-[100px]"
+      )}
+    >
+      <h3 className="text-2xl md:text-3xl font-bold text-primary mb-10">
         شركاؤنا
       </h3>
 
-      <div className="flex flex-wrap items-center justify-between container mx-auto px-4 gap-10  ">
+      <div className="flex flex-wrap items-center justify-center sm:justify-between container mx-auto px-4 gap-15 sm:gap-10  ">
         {partners.map((p, i) => (
           <motion.div
             key={i}

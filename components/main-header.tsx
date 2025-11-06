@@ -24,16 +24,16 @@ export default function MainHeader() {
 
   const navItems = [
     { label: t("home"), href: "/" },
-    { label: t("about"), href: "/about" },
-    { label: t("reports"), href: "/reports" },
-    { label: t("feedback"), href: "/feedback" },
+    { label: t("about"), href: "/aboutus" },
+    { label: t("camps"), href: "/camps" },
+    { label: t("feedback"), href: "/suggestions" },
     { label: t("stats"), href: "/stats" },
-    { label: t("contact"), href: "/contact" },
+    { label: t("contact"), href: "/contactus" },
   ];
 
   return (
-    <div className="py-4 px-4 container mx-auto">
-      <div className="flex items-center justify-between">
+    <div className="py-4 bg-white">
+      <div className="flex items-center justify-between px-4 container mx-auto ">
         {/* --- Desktop Navigation --- */}
         <nav className="hidden lg:flex gap-10 font-medium text-sm">
           {navItems.map((item, i) => (

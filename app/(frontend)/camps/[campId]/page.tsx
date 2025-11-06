@@ -1,35 +1,32 @@
 "use client";
 
-import PartnersSection from "@/components/pages/home/partners-section";
-import PolicySection from "@/components/pages/home/policy-section";
+import CampProjects from "@/components/campaign/camp-projects";
+import CampsMapSection from "@/components/pages/home/camps-map-section";
 import { Breadcrumb } from "@/components/shared/breadcrumb";
 import ImageFallback from "@/components/shared/image-fallback";
-import MissionVisionGoals from "@/components/shared/mission-vision-goals";
 import { PageSection } from "@/components/shared/page-section";
 import { motion } from "framer-motion";
 import { Info } from "lucide-react";
 import { useTranslations } from "next-intl";
-
 export default function Page() {
   const t = useTranslations();
 
   return (
-    <section className="flex flex-col gap-8 sm:gap-12 container mx-auto px-4">
+    <section className="container mx-auto px-4">
       {/* Breadcrumb with animation */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.5 }}
-        className="mt-10"
+        className="my-10"
       >
         <Breadcrumb
           items={[
             { name: t("home"), href: "/" },
-            { name: t("aboutus"), href: "/aboutus" },
+            { name: t("gablyaCamp"), href: "#" },
           ]}
         />
       </motion.div>
-
       {/* intro section */}
       <motion.div
         className="  space-y-6 relative"
@@ -46,7 +43,7 @@ export default function Page() {
         >
           <Info />
           <h1 className="text-xl font-semibold text-[#1E1E1E]">
-            {t("aboutus")}
+            {t("gablyaCamp")}
           </h1>
         </motion.div>
 
@@ -82,8 +79,32 @@ export default function Page() {
                 <>
                   <p>{t("transparencyDescription")}</p>
                   <p className="leading-10 line-clamp-6">
-                    {t("transparencyParagraph")}
+                    يُعتبر مخيم جباليا أكبر مخيم للاجئين الفلسطينيين في فلسطين،
+                    حيث يعيش فيه 119,000 فلسطيني يتوزعون على مساحة لا تتجاوز 1.4
+                    كيلومتر مربع، مما يجعله واحدًا من أكثر الأماكن اكتظاظاً
+                    بالسكان في العالم. ينحدر لاجئو جباليا من أحفاد 38,000
+                    فلسطيني تم تطهيرهم عرقيًا من أسدود ويافا والرملة واللد وبئر
+                    السبع خلال نكبة عام 1948.يُعتبر مخيم جباليا أكبر مخيم
+                    للاجئين الفلسطينيين في فلسطين، حيث يعيش فيه 119,000
+                    فلسطيني يتوزعون على مساحة لا تتجاوز 1.4 كيلومتر مربع، مما
+                    يجعله واحدًا من أكثر الأماكن اكتظاظاً بالسكان في العالم.
+                    ينحدر لاجئو جباليا من أحفاد 38,000 فلسطيني تم تطهيرهم عرقيًا
+                    من أسدود ويافا والرملة واللد وبئر السبع خلال نكبة عام 1948.
                   </p>
+                  <div className="flex flex-col sm:flex-row items-center justify-between text-[#1E1E1E] px-4 py-2 rounded-md bg-[#FAF8F8]">
+                    <div className="flex items-center gap-2">
+                      <p className="font-bold ">عدد العائلات: </p>
+                      <p className=""> 500 عائلة </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <p className="font-bold ">عددالمواليد: </p>
+                      <p className="">5000 مولود</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <p className="font-bold ">عددالمشاريع: </p>
+                      <p className="">20 مشاريع</p>
+                    </div>
+                  </div>
                 </>
               }
             />
@@ -94,14 +115,12 @@ export default function Page() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="flex-1 relative hidden sm:block"
           >
-            <ImageFallback src="/pages/pages/shaking-hands.webp" fill />
+            <CampsMapSection secondary />
           </motion.div>
         </div>
       </motion.div>
 
-      <PolicySection secondary />
-      <MissionVisionGoals />
-      <PartnersSection secondary />
+      <CampProjects />
     </section>
   );
 }

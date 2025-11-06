@@ -1,134 +1,273 @@
 "use client";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { MapPin, Users } from "lucide-react";
-import Link from "next/link";
-import ImageFallback from "@/components/shared/image-fallback";
+
+import { ProjectCard } from "@/components/campaign/project-card";
+import { Button } from "@/components/ui/button";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselPrevious,
   CarouselNext,
+  CarouselPrevious,
 } from "@/components/ui/carousel";
+import { useDirection } from "@/hooks/use-direction";
+import { cn } from "@/lib/utils";
+import Autoplay from "embla-carousel-autoplay";
+import { motion } from "framer-motion";
+import { MoveLeft, MoveRight } from "lucide-react";
+import * as React from "react";
 
-const shelters = [
+export const projects = [
   {
-    title: "مخيم المغازي",
-    families: 2400,
-    location: "خان يونس",
-    image: "/images/shelter1.jpg",
+    id: 1,
+    title: "توزيع الطرود الغذائية",
+    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
+    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
+    goal: 3600,
+    current: 2500,
+    donors: 165,
+    image: "/pages/pages/project-1.webp",
+    tag: "مقدم للنشاطين",
   },
   {
-    title: "مخيم أصداء",
-    families: 2400,
-    location: "خان يونس",
-    image: "/images/shelter2.jpg",
+    id: 2,
+
+    title: "توزيع الطرود الغذائية",
+    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
+    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
+    goal: 3600,
+    current: 1900,
+    donors: 165,
+    image: "/pages/pages/project-2.webp",
+    tag: "مقدم للنشاطين",
   },
   {
-    title: "مخيم النصيرات",
-    families: 3000,
-    location: "خان يونس",
-    image: "/images/shelter3.jpg",
+    id: 3,
+
+    title: "توزيع الطرود الغذائية",
+    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
+    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
+    goal: 3600,
+    current: 1300,
+    donors: 165,
+    image: "/pages/pages/project-3.webp",
+    tag: "مقدم للنشاطين",
   },
   {
-    title: "مخيم جباليا",
-    families: 2400,
-    location: "خان يونس",
-    image: "/images/shelter4.jpg",
+    id: 4,
+
+    title: "توزيع الطرود الغذائية",
+    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
+    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
+    goal: 3600,
+    current: 1100,
+    donors: 745,
+    image: "/pages/pages/project-1.webp",
+    tag: "مقدم للنشاطين",
+  },
+  {
+    id: 5,
+
+    title: "توزيع الطرود الغذائية",
+    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
+    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
+    goal: 3600,
+    current: 2500,
+    donors: 165,
+    image: "/pages/pages/project-2.webp",
+    tag: "مقدم للنشاطين",
+  },
+  {
+    id: 6,
+
+    title: "توزيع الطرود الغذائية",
+    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
+    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
+    goal: 3600,
+    current: 1900,
+    donors: 165,
+    image: "/pages/pages/project-3.webp",
+    tag: "مقدم للنشاطين",
+  },
+  {
+    id: 7,
+
+    title: "توزيع الطرود الغذائية",
+    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
+    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
+    goal: 3600,
+    current: 1300,
+    donors: 165,
+    image: "/pages/pages/project-1.webp",
+    tag: "مقدم للنشاطين",
+  },
+  {
+    id: 8,
+
+    title: "توزيع الطرود الغذائية",
+    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
+    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
+    goal: 3600,
+    current: 1100,
+    donors: 745,
+    image: "/pages/pages/project-2.webp",
+    tag: "مقدم للنشاطين",
+  },
+  {
+    id: 9,
+
+    title: "توزيع الطرود الغذائية",
+    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
+    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
+    goal: 3600,
+    current: 1100,
+    donors: 745,
+    image: "/pages/pages/project-3.webp",
+    tag: "مقدم للنشاطين",
   },
 ];
 
-export default function ShelterProjectsSection() {
+export default function CurrentProjectsSection() {
+  const { isRTL } = useDirection();
+
+  const autoplay = React.useRef(
+    Autoplay({
+      delay: 3000,
+      stopOnInteraction: false,
+      stopOnMouseEnter: true,
+    })
+  );
+
+  const [api, setApi] = React.useState<any>();
+  const [current, setCurrent] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!api) return;
+
+    setCurrent(api.selectedScrollSnap());
+    api.on("select", () => setCurrent(api.selectedScrollSnap()));
+
+    // Start autoplay when ready
+    try {
+      autoplay.current.play?.();
+    } catch (err) {}
+
+    return () => {
+      try {
+        autoplay.current.stop?.();
+      } catch (err) {}
+    };
+  }, [api]);
+
   return (
-    <section className="relative py-20 bg-[#F7F7F5] text-right overflow-hidden">
-      <div className="container mx-auto px-6">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-10"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1F3A36] mb-3">
-            الإيواءات
-          </h2>
-          <p className="text-gray-600 text-sm md:text-base">
-            ساهم بتبرعك في تغيير حياة مئات العائلات بمخيمات الأمل ومستمر الأثر
-            🌿
-          </p>
-        </motion.div>
-
-        {/* Carousel */}
-        <Carousel opts={{ align: "start", loop: true }} className="w-full">
-          <CarouselContent className="flex gap-6 -ml-6">
-            {shelters.map((shelter, i) => (
-              <CarouselItem
-                key={i}
-                className="pl-6 flex-[0_0_85%] sm:flex-[0_0_45%] lg:flex-[0_0_30%]"
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer"
-                >
-                  <ImageFallback
-                    src={shelter.image}
-                    alt={shelter.title}
-                    width={400}
-                    height={300}
-                    className="object-cover w-full h-72 group-hover:scale-105 transition-transform duration-500"
-                  />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-
-                  <div className="absolute bottom-0 left-0 right-0 p-5 text-white z-10">
-                    <h3 className="text-lg font-semibold mb-1">
-                      {shelter.title}
-                    </h3>
-                    <div className="flex items-center justify-between text-sm opacity-90">
-                      <span className="flex items-center gap-1">
-                        <Users size={14} /> {shelter.families} عائلة
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin size={14} /> {shelter.location}
-                      </span>
-                    </div>
-
-                    {i === 3 && (
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        className="absolute top-4 left-4 bg-[#C2B693] text-black px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#b7a782] transition"
-                      >
-                        المزيد
-                      </motion.button>
-                    )}
-                  </div>
-                </motion.div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md" />
-          <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 shadow-md" />
-        </Carousel>
-
-        {/* Button */}
-        <div className="flex justify-center mt-10">
-          <Link
-            href="#"
-            className="border border-[#1F3A36] text-[#1F3A36] font-medium rounded-full px-8 py-3 hover:bg-[#1F3A36] hover:text-white transition"
-          >
-            ← المزيد من المشاريع
-          </Link>
-        </div>
+    <section className="relative container mx-auto px-4 py-16 overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute top-10 right-12 w-16 h-16 text-teal-100 opacity-60">
+        <svg viewBox="0 0 100 100" fill="currentColor">
+          <path d="M50,10 L60,40 L90,50 L60,60 L50,90 L40,60 L10,50 L40,40 Z" />
+        </svg>
+      </div>
+      <div className="absolute top-16 left-12 w-8 h-8 text-pink-200 opacity-70">
+        <svg viewBox="0 0 100 100" fill="currentColor">
+          <path d="M50,20 C50,20 20,35 20,55 C20,70 32,80 50,80 C68,80 80,70 80,55 C80,35 50,20 50,20 Z" />
+        </svg>
+      </div>
+      <div className="absolute bottom-24 right-24 w-12 h-12 text-amber-100 opacity-50">
+        <svg viewBox="0 0 100 100" fill="currentColor">
+          <circle cx="50" cy="50" r="40" />
+        </svg>
+      </div>
+      <div className="absolute bottom-32 left-32 w-10 h-10 text-teal-200 opacity-40">
+        <svg viewBox="0 0 100 100" fill="currentColor">
+          <circle cx="50" cy="50" r="35" />
+        </svg>
       </div>
 
-      {/* Decorative circles */}
-      <div className="absolute top-10 left-10 w-5 h-5 bg-[#C2B693] rounded-full opacity-70" />
-      <div className="absolute bottom-20 right-12 w-4 h-4 bg-[#1F3A36] rounded-full opacity-70" />
-      <div className="absolute top-24 right-24 w-3 h-3 bg-blue-300 rounded-full opacity-70" />
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="mb-10 text-center"
+      >
+        <h2 className="text-2xl md:text-3xl font-bold mb-2">
+          المشاريع الحالية
+        </h2>
+        <p className="text-gray-600">
+          ساهم بتبرعك في تغيير حياة محتاج، ضحصات الأبرع للأمل ومستمر الأثر 🌿
+        </p>
+      </motion.div>
+
+      {/* Carousel */}
+      <Carousel
+        setApi={setApi}
+        opts={{
+          align: "start",
+          loop: true,
+          direction: isRTL ? "rtl" : "ltr",
+        }}
+        plugins={[autoplay.current]}
+        className="relative"
+      >
+        <CarouselContent className="-ml-4">
+          {projects.map((project, index) => {
+            const percentage = Math.round(
+              (project.current / project.goal) * 100
+            );
+
+            return (
+              <CarouselItem
+                key={index}
+                className="pl-4 sm:basis-1/2 lg:basis-1/4"
+              >
+                <ProjectCard
+                  index={index}
+                  image={project.image}
+                  title={project.title}
+                  description={project.description}
+                  location={project.location}
+                  tag={project.tag}
+                  goal={project.goal}
+                  current={project.current}
+                  donors={project.donors}
+                  percentage={percentage}
+                />
+              </CarouselItem>
+            );
+          })}
+        </CarouselContent>
+
+        {/* Arrows */}
+        <CarouselPrevious className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2" />
+        <CarouselNext className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2" />
+      </Carousel>
+
+      {/* Dots */}
+      <div className="flex justify-center mt-6 gap-2">
+        {Array.from({ length: Math.ceil(projects.length / 4) }).map((_, i) => (
+          <button
+            key={i}
+            onClick={() => api?.scrollTo(i * 4)}
+            className={cn(
+              "h-2 rounded-full transition-all duration-300",
+              current >= i * 4 && current < (i + 1) * 4
+                ? "bg-teal-600 w-8"
+                : "bg-gray-300 w-2"
+            )}
+            aria-label={`انتقل إلى الشريحة ${i + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* More Projects Button */}
+      <Button
+        variant={"outline"}
+        className="mt-8 mx-auto flex items-center rounded-full px-12 py-6 border-teal-700 hover:bg-teal-700 text-teal-700 hover:text-white transition-all"
+      >
+        {!isRTL && <MoveRight />}
+        المزيد من المشاريع
+        {isRTL && <MoveLeft />}
+      </Button>
     </section>
   );
 }

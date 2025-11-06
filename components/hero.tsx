@@ -5,7 +5,6 @@ import ImageFallback from "./shared/image-fallback";
 import { useEffect, useState } from "react";
 
 export default function Hero() {
-  // Generate random dots once on mount
   const [dots, setDots] = useState<{ id: number; top: number; left: number }[]>(
     []
   );
@@ -92,13 +91,22 @@ export default function Hero() {
               scale: 1.05,
               transition: { duration: 0.6 },
             }}
-            style={{ transformStyle: "preserve-3d" }}
+            style={{
+              transformStyle: "preserve-3d",
+              perspective: "1000px",
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+            }}
           >
             <ImageFallback
               alt="Gaza boy with happy smile :)"
               src="/pages/home/gaza-boy.webp"
               fill
               className="object-cover object-center"
+              style={{
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+              }}
             />
           </motion.div>
         </div>

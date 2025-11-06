@@ -4,7 +4,7 @@ import CampsMapSection from "@/components/pages/home/camps-map-section";
 import ContactSection from "@/components/pages/home/contact-section";
 import PartnersSection from "@/components/pages/home/partners-section";
 import PolicySection from "@/components/pages/home/policy-section";
-import ProjectsSection from "@/components/pages/home/projects-section";
+import CampsSection from "@/components/pages/home/camps-section";
 import ShelterProjectsSection from "@/components/pages/home/shelter-projects-section";
 import TestimonialsSection from "@/components/pages/home/testimonials-section";
 import Stats from "@/components/stats";
@@ -19,7 +19,7 @@ export default async function Home() {
         <PolicySection />
         <PartnersSection />
       </div>
-      <ProjectsSection />
+      <CampsSection />
       <CampsMapSection />
       <ShelterProjectsSection />
       <TestimonialsSection />
