@@ -75,7 +75,7 @@ export default function MainHeader() {
               asChild
               className="bg-secondary text-primary hover:text-secondary hover:bg-primary px-5 py-3 font-semibold rounded-full gap-2 transition-all duration-300 shadow-sm hover:shadow-md"
             >
-              <Link href="/sign-in">
+              <Link href="/signin">
                 {t("sign_in")}
                 {isRTL ? <ArrowLeft size={18} /> : <ArrowRight size={18} />}
               </Link>

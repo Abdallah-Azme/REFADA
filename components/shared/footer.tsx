@@ -3,23 +3,22 @@
 import { motion } from "framer-motion";
 import {
   Facebook,
-  Twitter,
   Instagram,
-  Phone,
-  Mail,
-  MapPin,
   Linkedin,
+  Mail,
+  Phone,
+  Twitter,
 } from "lucide-react";
-import Image from "next/image";
+import Link from "next/link";
 import Logo from "../logo";
 
 export default function Footer() {
   return (
     <footer className="bg-[#10201C] text-white pt-10 pb-4 font-sans" dir="rtl">
-      <div className="container px-4 mx-auto  ">
+      <div className="container px-4 mx-auto">
         {/* Top Section */}
         <motion.div
-          className="grid  grid-cols-2 md:grid-cols-4 gap-8 mb-8"
+          className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -29,8 +28,22 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold mb-3 text-lg">الرئيسية</h3>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li className="hover:text-white transition">تسجيل الدخول</li>
-              <li className="hover:text-white transition">أهم أخبارنا</li>
+              <li>
+                <Link
+                  href="/signin"
+                  className="hover:text-white transition cursor-pointer"
+                >
+                  تسجيل الدخول
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/signup"
+                  className="hover:text-white transition cursor-pointer"
+                >
+                  إنشاء حساب{" "}
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -38,9 +51,23 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold mb-3 text-lg">من نحن</h3>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li className="hover:text-white transition">رؤيتنا</li>
-              <li className="hover:text-white transition">أهدافنا</li>
-              <li className="hover:text-white transition">سياسة الخصوصية</li>
+              <li>
+                <Link
+                  href="/aboutus"
+                  className="hover:text-white transition cursor-pointer"
+                >
+                  من نحن
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  href="/privacy"
+                  className="hover:text-white transition cursor-pointer"
+                >
+                  سياسة الخصوصية
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -48,11 +75,22 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold mb-3 text-lg">المشاريع</h3>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li className="hover:text-white transition">المخيمات</li>
-              <li className="hover:text-white transition">
-                المشاريع والمبادرات
+              <li>
+                <Link
+                  href="/camps"
+                  className="hover:text-white transition cursor-pointer"
+                >
+                  المخيمات
+                </Link>
               </li>
-              <li className="hover:text-white transition">المساعدات</li>
+              <li>
+                <Link
+                  href="/stats"
+                  className="hover:text-white transition cursor-pointer"
+                >
+                  الإحصائيات
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -60,8 +98,22 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold mb-3 text-lg">الشكاوى والمقترحات</h3>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li className="hover:text-white transition">الشكاوى</li>
-              <li className="hover:text-white transition">المقترحات</li>
+              <li>
+                <Link
+                  href="/suggestions"
+                  className="hover:text-white transition cursor-pointer"
+                >
+                  الشكاوى
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/transparency"
+                  className="hover:text-white transition cursor-pointer"
+                >
+                  الشفافية
+                </Link>
+              </li>
             </ul>
           </div>
         </motion.div>
@@ -89,17 +141,17 @@ export default function Footer() {
           {/* Social Icons */}
           <div className="flex items-center gap-4">
             {[
-              { Icon: Instagram, label: "Instagram" },
-              { Icon: Twitter, label: "Twitter" },
-              { Icon: Facebook, label: "Facebook" },
-              { Icon: Linkedin, label: "LinkedIn" },
-            ].map(({ Icon, label }) => (
+              { Icon: Instagram, label: "Instagram", href: "#" },
+              { Icon: Twitter, label: "Twitter", href: "#" },
+              { Icon: Facebook, label: "Facebook", href: "#" },
+              { Icon: Linkedin, label: "LinkedIn", href: "#" },
+            ].map(({ Icon, label, href }) => (
               <motion.a
                 key={label}
+                href={href}
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.95 }}
-                className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition"
-                href="#"
+                className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition cursor-pointer"
                 aria-label={label}
               >
                 <Icon size={18} />
