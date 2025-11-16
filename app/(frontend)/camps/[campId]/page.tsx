@@ -1,6 +1,6 @@
 "use client";
 
-import CampProjects from "@/components/campaign/camp-projects";
+import CampProjects from "@/features/campaign/components/camp-projects";
 import CampsMapSection from "@/components/pages/home/camps-map-section";
 import { Breadcrumb } from "@/components/shared/breadcrumb";
 import ImageFallback from "@/components/shared/image-fallback";

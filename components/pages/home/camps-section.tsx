@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useDirection } from "@/hooks/use-direction";
 import { MoveLeft, MoveRight } from "lucide-react";
-import { CampCard } from "@/components/campaign/camp-card";
+import { CampCard } from "@/features/campaign/components/camp-card";
 
 export const shelters = [
   {

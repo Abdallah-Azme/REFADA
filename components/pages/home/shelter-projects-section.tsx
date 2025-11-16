@@ -1,6 +1,6 @@
 "use client";
 
-import { ProjectCard } from "@/components/campaign/project-card";
+import { ProjectCard } from "@/features/campaign/components/project-card";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,

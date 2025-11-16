@@ -4,13 +4,16 @@ import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 
 import { cn } from "@/lib/utils";
+import { useDirection } from "@/hooks/use-direction";
 
 function Tabs({
   className,
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Root>) {
+  const { isRTL } = useDirection();
   return (
     <TabsPrimitive.Root
+      dir={isRTL ? "rtl" : "ltr"}
       data-slot="tabs"
       className={cn("flex flex-col gap-2", className)}
       {...props}

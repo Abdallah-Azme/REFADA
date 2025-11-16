@@ -1,5 +1,5 @@
 "use client";
-import CampaignCards from "@/components/campaign/campaign-cards";
+import CampaignCards from "@/features/campaign/components/campaign-cards";
 import { Breadcrumb } from "@/components/shared/breadcrumb";
 import ImageFallback from "@/components/shared/image-fallback";
 import { Button } from "@/components/ui/button";

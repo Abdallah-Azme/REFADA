@@ -3,8 +3,10 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import ImageFallback from "./shared/image-fallback";
+import { cn } from "@/lib/utils";
 
-export default function Logo() {
+export default function Logo({ className }: { className?: string }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: -20, scale: 0.9 }}
@@ -21,13 +23,12 @@ export default function Logo() {
       className="inline-block cursor-pointer"
     >
       <Link href={"/"}>
-        <Image
+        <ImageFallback
           src="/shared/refad-logo.svg"
           alt="REFAD Gaza"
           width={60}
           height={49}
-          className="w-[60px] h-[49px] select-none"
-          priority
+          className={cn("w-[60px] h-[49px] select-none", className)}
         />
       </Link>
     </motion.div>
