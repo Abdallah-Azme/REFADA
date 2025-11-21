@@ -112,9 +112,6 @@ export const dummyData: Family[] = [
 export const createFamilyColumns = (
   handlers: ActionHandlers
 ): ColumnDef<Family>[] => [
-  // ========================================
-  // SELECT COLUMN
-  // ========================================
   {
     id: "select",
     header: ({ table }) => (
@@ -356,7 +353,7 @@ export const createFamilyColumns = (
               </Button>
 
               <DialogClose asChild>
-                <Button className="px-6 bg-red-500 text-white hover:bg-red-600">
+                <Button variant="default" className="px-6 ">
                   إلغاء ✗
                 </Button>
               </DialogClose>

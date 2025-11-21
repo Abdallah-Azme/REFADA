@@ -109,7 +109,11 @@ export default function AddFamilyDialog() {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="اسم العائلة" {...field} />
+                        <Input
+                          className="bg-white"
+                          placeholder="اسم العائلة"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -123,7 +127,11 @@ export default function AddFamilyDialog() {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="اسم الأب" {...field} />
+                        <Input
+                          className="bg-white"
+                          placeholder="اسم الأب"
+                          {...field}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -136,7 +144,11 @@ export default function AddFamilyDialog() {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="رقم الهوية" {...field} />
+                        <Input
+                          className="bg-white"
+                          placeholder="رقم الهوية"
+                          {...field}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -149,7 +161,11 @@ export default function AddFamilyDialog() {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="تاريخ الميلاد" {...field} />
+                        <Input
+                          className="bg-white"
+                          placeholder="تاريخ الميلاد"
+                          {...field}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -162,7 +178,11 @@ export default function AddFamilyDialog() {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="رقم الهاتف" {...field} />
+                        <Input
+                          className="bg-white"
+                          placeholder="رقم الهاتف"
+                          {...field}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -175,7 +195,11 @@ export default function AddFamilyDialog() {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="البريد الإلكتروني" {...field} />
+                        <Input
+                          className="bg-white"
+                          placeholder="البريد الإلكتروني"
+                          {...field}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -192,7 +216,7 @@ export default function AddFamilyDialog() {
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
-                          <SelectTrigger className="w-full">
+                          <SelectTrigger className="w-full bg-white">
                             {field.value || "الحالات المرضية"}
                           </SelectTrigger>
                           <SelectContent>
@@ -218,7 +242,7 @@ export default function AddFamilyDialog() {
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
-                          <SelectTrigger className="w-full">
+                          <SelectTrigger className="w-full bg-white">
                             {field.value || "كبار السن"}
                           </SelectTrigger>
                           <SelectContent>
@@ -245,7 +269,7 @@ export default function AddFamilyDialog() {
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
-                          <SelectTrigger className="w-full">
+                          <SelectTrigger className="w-full bg-white">
                             {field.value || "أطفال رضع"}
                           </SelectTrigger>
                           <SelectContent>
@@ -292,7 +316,11 @@ export default function AddFamilyDialog() {
                     render={({ field }) => (
                       <FormItem className="flex-1 w-full">
                         <FormControl>
-                          <Input placeholder="الاسم" {...field} />
+                          <Input
+                            className="bg-white"
+                            placeholder="الاسم"
+                            {...field}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
@@ -305,7 +333,11 @@ export default function AddFamilyDialog() {
                     render={({ field }) => (
                       <FormItem className="flex-1 w-full">
                         <FormControl>
-                          <Input placeholder="رقم الهوية" {...field} />
+                          <Input
+                            className="bg-white"
+                            placeholder="رقم الهوية"
+                            {...field}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
@@ -322,7 +354,7 @@ export default function AddFamilyDialog() {
                             onValueChange={field.onChange}
                             defaultValue={field.value}
                           >
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full bg-white">
                               {field.value || "النوع"}
                             </SelectTrigger>
                             <SelectContent>
@@ -342,7 +374,11 @@ export default function AddFamilyDialog() {
                     render={({ field }) => (
                       <FormItem className="flex-1 w-full">
                         <FormControl>
-                          <Input placeholder="تاريخ الميلاد" {...field} />
+                          <Input
+                            className="bg-white"
+                            placeholder="تاريخ الميلاد"
+                            {...field}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
@@ -431,7 +467,11 @@ export default function AddFamilyDialog() {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="رقم الخيمة" {...field} />
+                        <Input
+                          className="bg-white"
+                          placeholder="رقم الخيمة"
+                          {...field}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -444,7 +484,11 @@ export default function AddFamilyDialog() {
                   render={({ field }) => (
                     <FormItem className="sm:col-span-2">
                       <FormControl>
-                        <Input placeholder="الموقع" {...field} />
+                        <Input
+                          className="bg-white"
+                          placeholder="الموقع"
+                          {...field}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -457,7 +501,11 @@ export default function AddFamilyDialog() {
                   render={({ field }) => (
                     <FormItem className="col-span-1 sm:col-span-2 lg:col-span-3">
                       <FormControl>
-                        <Textarea placeholder="اكتب هنا..." {...field} />
+                        <Textarea
+                          className="bg-white"
+                          placeholder="اكتب هنا..."
+                          {...field}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
