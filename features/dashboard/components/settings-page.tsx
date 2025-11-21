@@ -20,10 +20,10 @@ export default function SettingsPage() {
         className="flex flex-row gap-6 w-full items-start"
       >
         {/* SIDEBAR */}
-        <TabsList className="items-start flex-col justify-start gap-3  bg-white rounded-md p-3 h-auto md:h-60  md:w-56 shrink-0">
+        <TabsList className="items-start flex-col justify-start gap-3 rounded-xl border border-gray-200 shadow-sm bg-white rounded-md p-3 h-auto md:self-stretch md:w-56 shrink-0">
           <TabsTrigger
             value="profile"
-            className="flex-none flex items-center justify-between w-full rounded-lg py-2 px-3 h-auto data-[state=active]:text-[#4F4F4F] data-[state=active]:bg-[#F5F5F5]  "
+            className="flex-none gap-2 flex items-center justify-start w-full rounded-lg py-2 px-3 h-auto data-[state=active]:text-[#4F4F4F] data-[state=active]:bg-[#F5F5F5]  "
           >
             <User2 className="h-5 w-5" />
 
@@ -34,7 +34,7 @@ export default function SettingsPage() {
 
           <TabsTrigger
             value="password"
-            className="flex-none flex items-center justify-between w-full rounded-lg py-2 px-3 h-auto data-[state=active]:text-[#4F4F4F] data-[state=active]:bg-[#F5F5F5]  "
+            className="flex-none gap-2 flex items-center justify-start w-full rounded-lg py-2 px-3 h-auto data-[state=active]:text-[#4F4F4F] data-[state=active]:bg-[#F5F5F5]  "
           >
             <Lock className="h-5 w-5" />
 
