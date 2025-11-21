@@ -5,7 +5,7 @@ import { Sheet } from "lucide-react";
 export default function ExportingProjects({
   className,
 }: {
-  className: string;
+  className?: string;
 }) {
   return (
     <Button

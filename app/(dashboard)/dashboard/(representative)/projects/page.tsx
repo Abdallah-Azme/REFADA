@@ -3,8 +3,7 @@ import ExportingProjects from "@/features/dashboard/components/exporting-project
 import MainHeader from "@/features/dashboard/components/main-header";
 import PrintingProjects from "@/features/dashboard/components/printing-projects";
 import ProjectsTable from "@/features/dashboard/components/projects-table";
-import { Notebook, SquareDashedKanban, SquareKanban } from "lucide-react";
-import React from "react";
+import { SquareKanban } from "lucide-react";
 
 export default function Page() {
   return (

@@ -1,3 +1,4 @@
+"use client";
 import {
   Table,
   TableBody,
@@ -104,7 +105,7 @@ export default function FamilyTable() {
   });
 
   return (
-    <div className="w-full overflow-auto p-6 bg-gray-50">
+    <div className="w-full overflow-auto py-6 px-1  ">
       <div className="space-y-4">
         <div className="rounded-md border border-gray-200 bg-white">
           <Table className="">
