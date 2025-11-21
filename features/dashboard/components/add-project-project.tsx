@@ -29,12 +29,13 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 
-import { FileSpreadsheet, PlusCircle, X } from "lucide-react";
+import { FileSpreadsheet, PlusCircle, SquareKanban, X } from "lucide-react";
 
 import { projectSchema } from "../schemas/project-schema";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import ImageFallback from "@/components/shared/image-fallback";
 
 export default function AddProjectDialog() {
   const [file, setFile] = useState<File | null>(null);
@@ -64,23 +65,24 @@ export default function AddProjectDialog() {
 
       <DialogContent className="rounded-xl">
         <div className="flex justify-between items-center px-6 py-4 border-b">
-          <DialogTitle className="text-xl font-semibold">
+          <DialogTitle className="font-bold text-[#1E1E1E] text-lg">
+            <SquareKanban className="text-primary" />
             إضافة مشروع
           </DialogTitle>
         </div>
 
-        <div className="px-6 py-5 max-h-[75vh] overflow-y-auto bg-white">
+        <div className="px-6 py-5 max-h-[75vh] overflow-y-auto bg-[#f4f4f4] rounded-xl ">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* TOP GRID */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-[#F4F4F4] p-4 rounded-xl">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4   p-4 rounded-xl">
                 {/* اسم المشروع */}
                 <FormField
                   control={form.control}
                   name="projectName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormControl>
+                      <FormControl className="bg-white">
                         <Input placeholder="اسم المشروع" {...field} />
                       </FormControl>
                       <FormMessage />
@@ -99,7 +101,7 @@ export default function AddProjectDialog() {
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
-                          <SelectTrigger className="w-full">
+                          <SelectTrigger className="w-full bg-white">
                             {field.value || "النوع"}
                           </SelectTrigger>
                           <SelectContent>
@@ -124,7 +126,7 @@ export default function AddProjectDialog() {
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
-                          <SelectTrigger className="w-full">
+                          <SelectTrigger className="w-full bg-white">
                             {field.value || "الكمية"}
                           </SelectTrigger>
                           <SelectContent>
@@ -148,7 +150,7 @@ export default function AddProjectDialog() {
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
-                          <SelectTrigger className="w-full">
+                          <SelectTrigger className="w-full bg-white">
                             {field.value || "الحالة"}
                           </SelectTrigger>
                           <SelectContent>
@@ -168,7 +170,7 @@ export default function AddProjectDialog() {
                   name="number"
                   render={({ field }) => (
                     <FormItem>
-                      <FormControl>
+                      <FormControl className="bg-white">
                         <Input placeholder="الرقم" {...field} />
                       </FormControl>
                     </FormItem>
@@ -181,7 +183,7 @@ export default function AddProjectDialog() {
                   name="beneficiariesCount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormControl>
+                      <FormControl className="bg-white">
                         <Input
                           placeholder="عدد العائلات المستفيدة"
                           {...field}
@@ -194,9 +196,9 @@ export default function AddProjectDialog() {
 
               {/* FILE UPLOAD */}
               <div className="bg-[#F4F4F4] p-4 rounded-xl flex flex-col lg:flex-row items-start lg:items-center gap-3 lg:gap-6 justify-between">
-                <p className="text-sm font-medium whitespace-nowrap ml-4">
+                {/* <p className="text-sm font-medium whitespace-nowrap ml-4">
                   اضافة تقارير عن الحالات الحرجة
-                </p>
+                </p> */}
 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-1 w-full">
                   {/* Hidden input */}
@@ -212,10 +214,18 @@ export default function AddProjectDialog() {
                   />
 
                   {/* Upload Box */}
-                  <div className="flex items-center rounded-xl bg-white border overflow-hidden h-11 w-full sm:w-auto">
-                    <span className="text-xs text-gray-600 px-4 whitespace-nowrap">
-                      إضافة ملف، صورة، تقرير طبي
-                    </span>
+                  <div className="flex items-center rounded-xl ps-2 bg-white border overflow-hidden h-11 w-full sm:w-auto">
+                    <div className="flex items-center gap-1 ">
+                      <ImageFallback
+                        src="/excel-image.png"
+                        width={24}
+                        height={24}
+                        className="size-6"
+                      />
+                      <span className="text-xs text-gray-600 px-4 whitespace-nowrap">
+                        إضافة ملف إكسيل
+                      </span>
+                    </div>
 
                     <div className="w-px h-full bg-gray-200" />
 
@@ -225,7 +235,7 @@ export default function AddProjectDialog() {
                       onClick={() =>
                         document.getElementById("critical-upload")?.click()
                       }
-                      className="h-full px-6 rounded-none text-gray-700 bg-[#D9D9D9] font-medium"
+                      className="h-full px-6 rounded-none text-gray-700 bg-[#f7f7f7] font-medium"
                     >
                       تحميل
                     </Button>
@@ -258,7 +268,7 @@ export default function AddProjectDialog() {
                 name="note"
                 render={({ field }) => (
                   <FormItem>
-                    <FormControl>
+                    <FormControl className="bg-white">
                       <Textarea placeholder="اكتب هنا..." {...field} />
                     </FormControl>
                   </FormItem>

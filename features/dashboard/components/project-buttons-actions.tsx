@@ -6,6 +6,7 @@ import { UseFormReturn } from "react-hook-form";
 
 export default function ProjectButtonsActions({
   form,
+  showAddProject = true,
 }: {
   form: UseFormReturn<
     {
@@ -20,11 +21,12 @@ export default function ProjectButtonsActions({
       caseStatus: string;
     }
   >;
+  showAddProject: boolean;
 }) {
   return (
     <div className="flex justify-between items-start gap-2">
       <div className="flex flex-col gap-2">
-        <AddProjectDialog />
+        {showAddProject && <AddProjectDialog />}{" "}
         <div className="flex gap-1">
           <Button
             className="bg-primary w-1/2 text-white px-6 flex-1 py-2 rounded-xl flex items-center gap-2 text-sm font-medium"

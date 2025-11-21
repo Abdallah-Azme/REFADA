@@ -5,7 +5,7 @@ import React from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 flex bg-gray-50 overflow-hidden">
+    <div className="fixed inset-0 flex bg-[#ececec] overflow-hidden">
       <SidebarProvider className="flex w-full h-full overflow-hidden">
         <DashboardSidebar />
 
