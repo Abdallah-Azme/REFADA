@@ -4,7 +4,7 @@ import ContributorForm from "@/features/dashboard/components/contributor-form";
 import EditCampFormData from "@/features/dashboard/components/edit-camp-form-data";
 import LatestActivities from "@/features/dashboard/components/latest-activities";
 import StatsCards, { stats } from "@/features/dashboard/components/stats-cards";
-import { Tangent, Tent } from "lucide-react";
+import { Tangent, Tent, User } from "lucide-react";
 import MainHeader from "@/features/dashboard/components/main-header";
 
 export const campStats = [
@@ -17,8 +17,8 @@ export default function Page() {
   return (
     <main className="w-full flex flex-col  gap-6 p-8 bg-gray-50  ">
       <div className="flex items-center justify-between mb-5">
-        <MainHeader header="التقارير">
-          <Tent />
+        <MainHeader header="بيانات المساهم">
+          <User />
         </MainHeader>
       </div>
       <div className="flex flex-col lg:flex-row gap-5 items-start bg-white rounded-xl p-4">

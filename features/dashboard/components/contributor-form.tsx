@@ -54,9 +54,11 @@ export default function ContributorForm() {
     setIsEditing(false);
   };
   return (
-    <div className="lg:w-1/2 p-8  ">
+    <div className="lg:w-1/2 px-8  ">
       <div className="flex justify-between ">
-        <h3 className="text-lg font-semibold text-[#333333]  ">آخر الأنشطة</h3>
+        <h3 className="text-lg font-semibold text-[#333333]  ">
+          بيانات المساهم
+        </h3>
 
         <div className="flex items-center justify-end mb-2">
           {!isEditing && (
