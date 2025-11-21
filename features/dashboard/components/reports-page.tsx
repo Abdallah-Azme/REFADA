@@ -59,13 +59,7 @@ export default function ReportsPage() {
     console.log(values);
   }
   return (
-    <div className="w-full  gap-6 p-8 bg-gray-50  ">
-      <div className="flex items-center justify-between mb-5">
-        <h3 className="text-lg flex gap-1 font-semibold text-gray-900">
-          <Notebook />
-          التقارير
-        </h3>
-      </div>
+    <div className="w-full  gap-6 p-8 bg-white rounded-lg  ">
       <div className="p-6 border-b border-gray-100">
         {/* HEADER & BUTTONS */}
         <div className="flex items-center justify-between">
