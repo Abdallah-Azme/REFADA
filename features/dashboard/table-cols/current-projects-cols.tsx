@@ -122,16 +122,9 @@ type ActionHandlers = {
 export const createColumns = (
   handlers: ActionHandlers
 ): ColumnDef<Project>[] => [
-  // ========================================
-  // SELECT COLUMN (Checkbox for row selection)
-  // This implements the standard shadcn/ui selectable rows pattern
-  // Allows users to select individual rows or all rows at once
-  // ========================================
   {
     id: "select",
-    // Header checkbox - controls selection of all rows on current page
-    // Uses table.getIsAllPageRowsSelected() to check if all are selected
-    // Uses table.getIsSomePageRowsSelected() for indeterminate state
+
     header: ({ table }) => (
       <div className="  flex items-start mx-6">
         <Checkbox
@@ -144,8 +137,7 @@ export const createColumns = (
         />
       </div>
     ),
-    // Cell checkbox - controls selection of individual row
-    // Uses row.getIsSelected() to check current selection state
+
     cell: ({ row }) => (
       <Checkbox
         className=" mx-6"

@@ -23,21 +23,12 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 import Logo from "@/components/logo";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import ImageFallback from "@/components/shared/image-fallback";
 import { useDirection } from "@/hooks/use-direction";
-
-const menuItems = [
-  { label: "الرئيسية", icon: Home, href: "/dashboard" },
-  { label: "بيانات المخيم", icon: Tent, href: "/dashboard/camps" },
-  { label: "العائلات", icon: Users, href: "/dashboard/families" },
-  { label: "المشاريع", icon: FolderOpen, href: "/dashboard/projects" },
-  { label: "التقارير", icon: BarChart3, href: "/dashboard/reports" },
-  { label: "الإعدادات", icon: Settings, href: "/dashboard/settings" },
-];
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
@@ -45,6 +36,28 @@ export default function DashboardSidebar() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => setOpen(false), [pathname]);
+
+  // NORMAL DASHBOARD MENU
+  const defaultMenu = [
+    { label: "الرئيسية", icon: Home, href: "/dashboard" },
+    { label: "بيانات المخيم", icon: Tent, href: "/dashboard/camps" },
+    { label: "العائلات", icon: Users, href: "/dashboard/families" },
+    { label: "المشاريع", icon: FolderOpen, href: "/dashboard/projects" },
+    { label: "التقارير", icon: BarChart3, href: "/dashboard/reports" },
+    { label: "الإعدادات", icon: Settings, href: "/dashboard/settings" },
+  ];
+
+  // CONTRIBUTOR MENU
+  const contributorMenu = [
+    { label: "معلومات المساهم", icon: Users, href: "/dashboard/contributor" },
+    { label: "المخيمات", icon: Tent, href: "/dashboard/contributor/camps" },
+  ];
+
+  // DETECT IF USER IS INSIDE CONTRIBUTOR ROUTE
+  const isContributor = pathname.includes("contributor");
+
+  // USE THE CORRECT MENU
+  const menuItems = isContributor ? contributorMenu : defaultMenu;
 
   const side = isRTL ? "right" : "left";
 
@@ -109,11 +122,8 @@ export default function DashboardSidebar() {
               <SidebarGroupContent>
                 <SidebarMenu className="space-y-1">
                   {menuItems.map((item, i) => {
-                    // Extract segments
                     const current = pathname.split("/")[2] || "";
                     const itemSegment = item.href.split("/")[2] || "";
-
-                    // True active state
                     const isActive = current === itemSegment;
 
                     return (
@@ -122,13 +132,13 @@ export default function DashboardSidebar() {
                           <SidebarMenuButton
                             size="lg"
                             className={`
-                        w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
-                        ${
-                          isActive
-                            ? "bg-[#D9CBA8] text-black shadow-sm"
-                            : "text-white hover:bg-white/10"
-                        }
-                      `}
+                              w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
+                              ${
+                                isActive
+                                  ? "bg-[#D9CBA8] text-black shadow-sm"
+                                  : "text-white hover:bg-white/10"
+                              }
+                            `}
                           >
                             <item.icon
                               className={`w-4 h-4 ${

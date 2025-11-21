@@ -1,13 +1,20 @@
+import { cn } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
 import React from "react";
 
-export default function LatestActivities() {
+export default function LatestActivities({
+  className,
+}: {
+  className?: string;
+}) {
   return (
-    <div className="lg:col-span-1 bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">آخر الأنشطة</h3>
+    <div
+      className={cn("lg:col-span-1 bg-white rounded-lg px-4 py-8 ", className)}
+    >
+      <h3 className="text-lg font-semibold text-[#333333] mb-4">آخر الأنشطة</h3>
 
       <div className="space-y-3">
-        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg shadow-sm border border-gray-100">
           <div className="flex items-center gap-3 flex-1">
             <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
               <span className="text-green-600 text-sm">✓</span>
@@ -21,7 +28,7 @@ export default function LatestActivities() {
           <ChevronLeft className="w-4 h-4 text-gray-400" />
         </div>
 
-        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg shadow-sm border border-gray-100">
           <div className="flex items-center gap-3 flex-1">
             <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
               <span className="text-blue-600 text-sm">⊙</span>
@@ -35,7 +42,7 @@ export default function LatestActivities() {
           <ChevronLeft className="w-4 h-4 text-gray-400" />
         </div>
 
-        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg shadow-sm border border-gray-100">
           <div className="flex items-center gap-3 flex-1">
             <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
               <span className="text-yellow-600 text-sm">!</span>

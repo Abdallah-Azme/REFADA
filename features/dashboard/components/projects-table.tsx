@@ -1,37 +1,25 @@
 "use client";
 
-import {
-  Trash2,
-  Edit,
-  Search,
-  ChevronDown,
-  SearchCheck,
-  RotateCcw,
-} from "lucide-react";
+import { RotateCcw, SearchCheck } from "lucide-react";
 import AddProjectDialog from "./add-project-project";
 
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 
 import { Button } from "@/components/ui/button";
 import CurrentProjectsTable from "./current-projects-table";
+import ContributionTable from "./contribution-table";
 
 const formSchema = z.object({
   project: z.string().optional(),
@@ -171,7 +159,7 @@ export default function ProjectsTable() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table - no height constraints */}
       <CurrentProjectsTable />
     </div>
   );

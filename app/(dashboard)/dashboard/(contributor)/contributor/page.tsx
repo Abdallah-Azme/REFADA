@@ -1,0 +1,35 @@
+import CampsDetails from "@/features/dashboard/components/camps-details";
+import ContributionTable from "@/features/dashboard/components/contribution-table";
+import ContributorForm from "@/features/dashboard/components/contributor-form";
+import EditCampFormData from "@/features/dashboard/components/edit-camp-form-data";
+import LatestActivities from "@/features/dashboard/components/latest-activities";
+import StatsCards, { stats } from "@/features/dashboard/components/stats-cards";
+import { Tangent, Tent } from "lucide-react";
+
+export const campStats = [
+  { label: "اسم  المساهم", value: "أحمد عبدالله" },
+  { label: "رقم التواصل", value: "0097200022113344" },
+  { label: "رقم الهوية", value: "123456789001234" },
+];
+
+export default function Page() {
+  return (
+    <main className="w-full flex flex-col  gap-6 p-8 bg-gray-50  ">
+      <div className="flex items-center justify-between mb-5">
+        <h1 className="text-lg flex gap-1 font-semibold text-gray-900">
+          <Tent />
+          التقارير
+        </h1>
+      </div>
+      <div className="flex flex-col lg:flex-row gap-5 items-start bg-white rounded-xl p-4">
+        {/* Right Section - Camp Stats */}
+        <ContributorForm />
+
+        {/* Left Section - Representative Info */}
+        <LatestActivities className="w-full flex-1  " />
+      </div>
+      <StatsCards stats={stats} />
+      <ContributionTable />
+    </main>
+  );
+}

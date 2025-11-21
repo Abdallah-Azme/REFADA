@@ -22,6 +22,7 @@ import {
 import React from "react";
 import { createColumns, dummyData } from "../table-cols/current-projects-cols";
 import PaginationControls from "./pagination-controls";
+import ContributionTable from "./contribution-table";
 
 export type Project = {
   id: number;
@@ -36,19 +37,15 @@ export type Project = {
 
 export default function CurrentProjectsTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
-
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-
   const [pagination, setPagination] = React.useState<PaginationState>({
-    pageIndex: 0, // Current page (0-indexed)
-    pageSize: 10, // Rows per page
+    pageIndex: 0,
+    pageSize: 10,
   });
 
   const [data] = React.useState<Project[]>(dummyData);
@@ -72,24 +69,20 @@ export default function CurrentProjectsTable() {
 
   const table = useReactTable<Project>({
     data,
-
     columns: createColumns({
       onEdit: handleEdit,
       onDelete: handleDelete,
       onUpdate: handleUpdate,
     }),
-
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     onPaginationChange: setPagination,
-
     state: {
       sorting,
       columnFilters,
@@ -100,79 +93,68 @@ export default function CurrentProjectsTable() {
   });
 
   return (
-    <div className="w-full overflow-auto p-6 bg-gray-50">
-      <div className="space-y-4">
-        <div className="rounded-md border border-gray-200 bg-white">
-          <Table className="">
-            <TableHeader>
-              {/* getHeaderGroups() returns header row groups */}
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="mx-4">
-                  {/* Loop through each header cell */}
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead key={header.id}>
-                        {/* Don't render anything for placeholder headers */}
-                        {header.isPlaceholder
-                          ? null
-                          : /* flexRender renders the header from column def */
-                            flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
+    <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+      <div className="w-full overflow-x-auto">
+        <Table className="min-w-[960px]">
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
 
-            <TableBody className="">
-              {/* Check if we have rows to display */}
-              {table.getRowModel().rows?.length ? (
-                /* getRowModel().rows gives us the rows after pagination/filtering */
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    /* Add selected state for styling */
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {/* Loop through each cell in the row */}
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell className=" " key={cell.id}>
-                        {/* flexRender renders the cell from column def */}
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                /* Show "no results" message if no rows */
-                <TableRow>
-                  <TableCell
-                    colSpan={
-                      createColumns({
-                        onEdit: handleEdit,
-                        onDelete: handleDelete,
-                        onUpdate: handleUpdate,
-                      }).length
-                    }
-                    className="h-24 text-center"
-                  >
-                    لا توجد نتائج.
-                  </TableCell>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={
+                    createColumns({
+                      onEdit: handleEdit,
+                      onDelete: handleDelete,
+                      onUpdate: handleUpdate,
+                    }).length
+                  }
+                  className="h-24 text-center"
+                >
+                  لا توجد نتائج.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
-        <div className="flex items-center justify-center px-2">
-          <PaginationControls table={table} />
-        </div>
+      {/* Pagination - separate from table */}
+      <div className="flex items-center justify-center px-2 py-4">
+        <PaginationControls table={table} />
       </div>
     </div>
   );
