@@ -24,7 +24,6 @@ import {
 import React from "react";
 
 import { RotateCcw, SearchCheck } from "lucide-react";
-import AddProjectDialog from "./add-project-project";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -39,35 +38,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  createContributionColumns,
-  dummyData,
-} from "../table-cols/contribution-cols";
 import PaginationControls from "./pagination-controls";
+import {
+  createColumnsForContributor,
+  dummyData,
+  Project,
+} from "../table-cols/project-contribution-cols";
+import ProjectDetailsDialog from "./project-details-dialog";
+import ContributeDialog from "./contribute-dialog";
 
 const formSchema = z.object({
   project: z.string().optional(),
   camp: z.string().optional(),
   family: z.string().optional(),
 });
-
-// ========================================
-// TYPE DEFINITIONS
-// ========================================
-type Contribution = {
-  id: number;
-  contributorName: string;
-  category: string;
-  subcategory: string;
-  result: string;
-  date: string;
-  amount: number;
-};
-
-type ActionHandlers = {
-  onEdit: (contribution: Contribution) => void;
-  onDelete: (contribution: Contribution) => void;
-};
 
 // ========================================
 // MAIN TABLE COMPONENT
@@ -95,23 +79,33 @@ export default function ContributionTable() {
   });
   const [globalFilter, setGlobalFilter] = React.useState("");
 
-  const [data] = React.useState<Contribution[]>(dummyData);
+  const [data] = React.useState<Project[]>(dummyData);
+  const [selectedProject, setSelectedProject] = React.useState<Project | null>(
+    null
+  );
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [isContributeDialogOpen, setIsContributeDialogOpen] =
+    React.useState(false);
 
-  const handleEdit = (contribution: Contribution): void => {
-    console.log("Edit:", contribution);
-    alert(`تعديل: ${contribution.contributorName}`);
+  const handleView = (project: Project): void => {
+    console.log("View:", project);
+    setSelectedProject(project);
+    setIsDialogOpen(true);
   };
 
-  const handleDelete = (contribution: Contribution): void => {
-    console.log("Delete:", contribution);
-    alert("تم الحذف");
+  const handleContribute = (project: Project): void => {
+    console.log("Contribute:", project);
+    setSelectedProject(project);
+    setIsContributeDialogOpen(true);
+    // Close details dialog if open to prevent stacking
+    setIsDialogOpen(false);
   };
 
-  const table = useReactTable<Contribution>({
+  const table = useReactTable<Project>({
     data,
-    columns: createContributionColumns({
-      onEdit: handleEdit,
-      onDelete: handleDelete,
+    columns: createColumnsForContributor({
+      onView: handleView,
+      onContribute: handleContribute,
     }),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -294,9 +288,9 @@ export default function ContributionTable() {
                 <TableRow>
                   <TableCell
                     colSpan={
-                      createContributionColumns({
-                        onEdit: handleEdit,
-                        onDelete: handleDelete,
+                      createColumnsForContributor({
+                        onView: handleView,
+                        onContribute: handleContribute,
                       }).length
                     }
                     className="h-24 text-center"
@@ -313,6 +307,20 @@ export default function ContributionTable() {
         <div className="flex items-center justify-center">
           <PaginationControls table={table} />
         </div>
+
+        {/* Dialogs */}
+        <ProjectDetailsDialog
+          isOpen={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          project={selectedProject}
+          onContribute={handleContribute}
+        />
+
+        <ContributeDialog
+          isOpen={isContributeDialogOpen}
+          onClose={() => setIsContributeDialogOpen(false)}
+          project={selectedProject}
+        />
       </div>
     </div>
   );

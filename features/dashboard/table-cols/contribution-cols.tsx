@@ -144,7 +144,7 @@ export const dummyData: Contribution[] = [
 // ========================================
 // COLUMN DEFINITIONS
 // ========================================
-export const createContributionColumns = (
+export const createColumns = (
   handlers: ActionHandlers
 ): ColumnDef<Contribution>[] => [
   // SELECT COLUMN

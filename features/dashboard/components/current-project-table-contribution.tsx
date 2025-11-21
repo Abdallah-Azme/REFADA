@@ -21,7 +21,11 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import React from "react";
-import { createColumns, dummyData } from "../table-cols/current-projects-cols";
+import {
+  createColumnsForContributor,
+  dummyData,
+  Project,
+} from "../table-cols/project-contribution-cols";
 import PaginationControls from "./pagination-controls";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, SearchCheck } from "lucide-react";
@@ -40,18 +44,6 @@ import {
 import ProjectDetailsDialog from "./project-details-dialog";
 
 import ContributeDialog from "./contribute-dialog";
-
-export type Project = {
-  id: number;
-  projectName: string;
-  camp: string;
-  indicator: number;
-  total: number;
-  received: number;
-  remaining: number;
-  beneficiaryFamilies: number;
-  requests: string;
-};
 
 const formSchema = z.object({
   project: z.string().optional(),
@@ -108,7 +100,7 @@ export default function CurrentProjectsTableContribution() {
 
   const table = useReactTable<Project>({
     data,
-    columns: createColumns({
+    columns: createColumnsForContributor({
       onView: handleView,
       onContribute: handleContribute,
     }),
@@ -284,7 +276,7 @@ export default function CurrentProjectsTableContribution() {
               <TableRow>
                 <TableCell
                   colSpan={
-                    createColumns({
+                    createColumnsForContributor({
                       onView: handleView,
                       onContribute: handleContribute,
                     }).length

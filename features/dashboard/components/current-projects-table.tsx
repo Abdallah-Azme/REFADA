@@ -21,11 +21,12 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import React from "react";
-import { createColumns, dummyData } from "../table-cols/current-projects-cols";
+import {
+  createColumns,
+  dummyData,
+  Project,
+} from "../table-cols/current-projects-cols";
 import PaginationControls from "./pagination-controls";
-import ContributionTable from "./contribution-table";
-
-import { Project } from "./current-project-table-contribution";
 
 export default function CurrentProjectsTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -42,19 +43,24 @@ export default function CurrentProjectsTable() {
 
   const [data] = React.useState<Project[]>(dummyData);
 
-  const handleView = (project: Project): void => {
-    console.log("View:", project);
+  const handleEdit = (project: Project): void => {
+    console.log("Edit:", project);
   };
 
-  const handleContribute = (project: Project): void => {
-    console.log("Contribute:", project);
+  const handleDelete = (project: Project): void => {
+    console.log("Delete:", project);
+  };
+
+  const handleUpdate = (project: Project): void => {
+    console.log("Update:", project);
   };
 
   const table = useReactTable<Project>({
     data,
     columns: createColumns({
-      onView: handleView,
-      onContribute: handleContribute,
+      onEdit: handleEdit,
+      onDelete: handleDelete,
+      onUpdate: handleUpdate,
     }),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -119,8 +125,9 @@ export default function CurrentProjectsTable() {
                 <TableCell
                   colSpan={
                     createColumns({
-                      onView: handleView,
-                      onContribute: handleContribute,
+                      onEdit: handleEdit,
+                      onDelete: handleDelete,
+                      onUpdate: handleUpdate,
                     }).length
                   }
                   className="h-24 text-center"
