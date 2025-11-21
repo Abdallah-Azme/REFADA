@@ -47,8 +47,8 @@ import PaginationControls from "./pagination-controls";
 
 const formSchema = z.object({
   project: z.string().optional(),
-  status: z.string().optional(),
-  caseStatus: z.string().optional(),
+  camp: z.string().optional(),
+  family: z.string().optional(),
 });
 
 // ========================================
@@ -77,8 +77,8 @@ export default function ContributionTable() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       project: "",
-      status: "",
-      caseStatus: "",
+      camp: "",
+      family: "",
     },
   });
 
@@ -138,19 +138,13 @@ export default function ContributionTable() {
   }
 
   return (
-    <div className="w-full p-6 bg-gray-50 min-h-screen" dir="rtl">
+    <div className="w-full p-6 bg-white rounded-lg min-h-screen bg" dir="rtl">
       <div className="space-y-4">
         {/* Header with Title and Search */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">سجل المساهمات</h1>
+        <div className=" mb-2">
+          <h2 className="text-2xl font-bold text-gray-800">سجل المساهمات</h2>
 
-          <div className="p-6 border-b border-gray-100">
-            {/* HEADER & BUTTONS */}
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">
-                المشاريع الحالية
-              </h3>
-            </div>
+          <div className="p-6  ">
             <div className="flex justify-between items-center gap-2">
               {/* FORM */}
               <Form {...form}>
@@ -183,10 +177,10 @@ export default function ContributionTable() {
                     )}
                   />
 
-                  {/* حالة المشروع */}
+                  {/* المخيم */}
                   <FormField
                     control={form.control}
-                    name="status"
+                    name="camp"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
@@ -195,12 +189,11 @@ export default function ContributionTable() {
                             value={field.value}
                           >
                             <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                              <SelectValue placeholder="حالة المشروع" />
+                              <SelectValue placeholder="المخيم" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="active">نشط</SelectItem>
-                              <SelectItem value="paused">متوقف</SelectItem>
-                              <SelectItem value="ended">منتهي</SelectItem>
+                              <SelectItem value="camp1">مخيم 1</SelectItem>
+                              <SelectItem value="camp2">مخيم 2</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -208,10 +201,10 @@ export default function ContributionTable() {
                     )}
                   />
 
-                  {/* الحالة */}
+                  {/* العائلة */}
                   <FormField
                     control={form.control}
-                    name="caseStatus"
+                    name="family"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
@@ -219,12 +212,12 @@ export default function ContributionTable() {
                             onValueChange={field.onChange}
                             value={field.value}
                           >
-                            <SelectTrigger className="w-[140px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                              <SelectValue placeholder="الحالة" />
+                            <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
+                              <SelectValue placeholder="العائلة" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="active">نشط</SelectItem>
-                              <SelectItem value="inactive">غير نشط</SelectItem>
+                              <SelectItem value="family1">عائلة 1</SelectItem>
+                              <SelectItem value="family2">عائلة 2</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -235,7 +228,6 @@ export default function ContributionTable() {
               </Form>
 
               <div className="flex flex-col gap-2">
-                <AddProjectDialog />
                 <div className="flex gap-1">
                   <Button
                     className="bg-primary w-1/2 text-white px-6 flex-1 py-2 rounded-xl flex items-center gap-2 text-sm font-medium"
@@ -261,7 +253,7 @@ export default function ContributionTable() {
         </div>
 
         {/* Table */}
-        <div className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <div className=" bg-white ">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (

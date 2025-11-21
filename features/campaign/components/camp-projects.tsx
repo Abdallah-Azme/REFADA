@@ -16,7 +16,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 
-export default function CampProjects() {
+export default function CampProjects({
+  dashboard = false,
+}: {
+  dashboard?: boolean;
+}) {
   const form = useForm({
     defaultValues: {
       region: "",
@@ -160,7 +164,7 @@ export default function CampProjects() {
       {/* Camps Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-8">
         {shelters.map((shelter, index) => (
-          <CampCard key={index} {...shelter} index={index} />
+          <CampCard key={index} {...shelter} index={index} dashboard />
         ))}
       </div>
     </section>

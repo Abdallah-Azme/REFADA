@@ -1,3 +1,4 @@
+"use client";
 import {
   Table,
   TableBody,
@@ -24,16 +25,7 @@ import { createColumns, dummyData } from "../table-cols/current-projects-cols";
 import PaginationControls from "./pagination-controls";
 import ContributionTable from "./contribution-table";
 
-export type Project = {
-  id: number;
-  projectName: string;
-  status: string;
-  total: number;
-  received: number;
-  remaining: number;
-  contributions: number;
-  requests: string;
-};
+import { Project } from "./current-project-table-contribution";
 
 export default function CurrentProjectsTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -50,29 +42,19 @@ export default function CurrentProjectsTable() {
 
   const [data] = React.useState<Project[]>(dummyData);
 
-  const handleEdit = (project: Project): void => {
-    console.log("Edit:", project);
-    alert(`تعديل: ${project.projectName}`);
+  const handleView = (project: Project): void => {
+    console.log("View:", project);
   };
 
-  const handleDelete = (project: Project): void => {
-    console.log("Delete:", project);
-    if (confirm(`هل تريد حذف ${project.projectName}؟`)) {
-      alert("تم الحذف");
-    }
-  };
-
-  const handleUpdate = (project: Project): void => {
-    console.log("Approve:", project);
-    alert(`تمت الموافقة على: ${project.projectName}`);
+  const handleContribute = (project: Project): void => {
+    console.log("Contribute:", project);
   };
 
   const table = useReactTable<Project>({
     data,
     columns: createColumns({
-      onEdit: handleEdit,
-      onDelete: handleDelete,
-      onUpdate: handleUpdate,
+      onView: handleView,
+      onContribute: handleContribute,
     }),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -137,9 +119,8 @@ export default function CurrentProjectsTable() {
                 <TableCell
                   colSpan={
                     createColumns({
-                      onEdit: handleEdit,
-                      onDelete: handleDelete,
-                      onUpdate: handleUpdate,
+                      onView: handleView,
+                      onContribute: handleContribute,
                     }).length
                   }
                   className="h-24 text-center"

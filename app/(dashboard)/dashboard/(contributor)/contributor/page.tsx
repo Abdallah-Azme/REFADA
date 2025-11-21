@@ -5,6 +5,7 @@ import EditCampFormData from "@/features/dashboard/components/edit-camp-form-dat
 import LatestActivities from "@/features/dashboard/components/latest-activities";
 import StatsCards, { stats } from "@/features/dashboard/components/stats-cards";
 import { Tangent, Tent } from "lucide-react";
+import MainHeader from "@/features/dashboard/components/main-header";
 
 export const campStats = [
   { label: "اسم  المساهم", value: "أحمد عبدالله" },
@@ -16,10 +17,9 @@ export default function Page() {
   return (
     <main className="w-full flex flex-col  gap-6 p-8 bg-gray-50  ">
       <div className="flex items-center justify-between mb-5">
-        <h1 className="text-lg flex gap-1 font-semibold text-gray-900">
+        <MainHeader header="التقارير">
           <Tent />
-          التقارير
-        </h1>
+        </MainHeader>
       </div>
       <div className="flex flex-col lg:flex-row gap-5 items-start bg-white rounded-xl p-4">
         {/* Right Section - Camp Stats */}

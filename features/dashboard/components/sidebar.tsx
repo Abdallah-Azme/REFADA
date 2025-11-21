@@ -122,9 +122,11 @@ export default function DashboardSidebar() {
               <SidebarGroupContent>
                 <SidebarMenu className="space-y-1">
                   {menuItems.map((item, i) => {
-                    const current = pathname.split("/")[2] || "";
-                    const itemSegment = item.href.split("/")[2] || "";
-                    const isActive = current === itemSegment;
+                    const isActive =
+                      item.href === "/dashboard" ||
+                      item.href === "/dashboard/contributor"
+                        ? pathname === item.href
+                        : pathname.startsWith(item.href);
 
                     return (
                       <SidebarMenuItem key={i}>

@@ -12,6 +12,7 @@ interface CampCardProps {
   families: number;
   image: string;
   index: number;
+  dashboard?: boolean;
 }
 
 export function CampCard({
@@ -21,9 +22,15 @@ export function CampCard({
   families,
   image,
   index,
+  dashboard = false,
 }: CampCardProps) {
   return (
-    <Link href={`/camps/${title}`} key={id}>
+    <Link
+      href={
+        dashboard ? `/dashboard/contributor/camps/${id}` : `/camps/${title}`
+      }
+      key={id}
+    >
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
