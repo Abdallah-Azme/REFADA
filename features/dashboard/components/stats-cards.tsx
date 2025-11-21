@@ -104,7 +104,7 @@ export default function StatsCards({
   secondary = false,
 }: StatsCardsProps) {
   return (
-    <section className="flex flex-col gap-2">
+    <section className="flex flex-col gap-2 ">
       {showTitle && (
         <h2 className="text-[#333333] font-bold text-lg">احصائيات سريعة</h2>
       )}

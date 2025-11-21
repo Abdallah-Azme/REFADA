@@ -2,7 +2,7 @@ import CampaignCard from "@/features/campaign/components/campaign-card";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import CardTitle from "./card-title";
 
-export default function AnalyticsChart() {
+export default function AnalyticsChart({ title = "المشاريع الحالية" }: { title?: string }) {
   const campaign = {
     id: 1,
     manager: "مدير أعضاء",
@@ -16,11 +16,8 @@ export default function AnalyticsChart() {
   ];
   return (
     <div className="lg:col-span-1 h-full rounded-lg  ">
-      <CardTitle title="الإحصائيات" />
+      <CardTitle title={title} className="mb-2" />
       <div className="bg-white rounded-lg border border-gray-100 p-4 flex flex-col">
-        {/* <h3 className="text-center text-gray-600 text-sm mb-3">
-          {campaign.manager}
-        </h3> */}
 
         <div className="flex items-center justify-evenly gap-4">
           {/* Stats Section */}
