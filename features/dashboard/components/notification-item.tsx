@@ -38,7 +38,7 @@ export default function NotificationItem({
   };
 
   return (
-    <div className="p-4 rounded-xl border bg-white shadow-sm">
+    <div className="p-2 rounded-xl   bg-white ">
       <div className="flex items-start gap-3">
         {iconMap[type]}
         <div className="flex-1">

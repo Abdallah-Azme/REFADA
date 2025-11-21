@@ -5,7 +5,7 @@ import StatsCards, { stats } from "@/features/dashboard/components/stats-cards";
 export default function DashboardPage() {
   return (
     <div className="p-6 space-y-6">
-      <StatsCards stats={stats} />
+      <StatsCards stats={stats} showTitle={false} />
       <Analytics />
       <ProjectsTable />
     </div>

@@ -61,12 +61,10 @@ export default function Notification() {
         className="w-[380px]   p-0 rounded-xl"
       >
         {/* Header */}
-        <div className="border-b px-5 py-4 font-semibold text-lg">
-          الإشعارات
-        </div>
+        <div className="px-5 py-4 font-semibold text-lg">الإشعارات</div>
 
         {/* List */}
-        <div className="max-h-[450px] overflow-y-auto px-4 py-3 space-y-4">
+        <div className="max-h-[450px] overflow-y-auto px-4 py-3 space-y-2">
           {notifications.map((item, idx) => (
             <NotificationItem key={idx} {...item} />
           ))}

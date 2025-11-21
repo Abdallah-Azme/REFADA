@@ -1,5 +1,6 @@
 import CampaignCard from "@/features/campaign/components/campaign-card";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import CardTitle from "./card-title";
 
 export default function AnalyticsChart() {
   const campaign = {
@@ -14,28 +15,28 @@ export default function AnalyticsChart() {
     { name: "remaining", value: 100 - campaign.percentage },
   ];
   return (
-    <div className="lg:col-span-1 bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-      <h3 className="text-lg font-semibold text-gray-900 mb-6">الإحصائيات</h3>
-      <div className="bg-white rounded-lg shadow border border-gray-100 p-4 flex flex-col">
-        <h3 className="text-center text-gray-600 text-sm mb-3">
+    <div className="lg:col-span-1 h-full rounded-lg  ">
+      <CardTitle title="الإحصائيات" />
+      <div className="bg-white rounded-lg border border-gray-100 p-4 flex flex-col">
+        {/* <h3 className="text-center text-gray-600 text-sm mb-3">
           {campaign.manager}
-        </h3>
+        </h3> */}
 
         <div className="flex items-center justify-evenly gap-4">
           {/* Stats Section */}
           <div className="space-y-2 text-sm text-gray-700">
-            <ul className="list-disc pl-5 marker:text-[#0682E6] space-y-2">
-              <li className="list-item flex items-center justify-between">
+            <ul className="list-disc marker:text-[#0682E6] text-[#4F4F4F] font-semibold text-sm space-y-2 min-w-40">
+              <li className=" w-full flex items-center justify-between">
                 <span>عدد العائلات المسجلة</span>
                 <span className="font-semibold">{campaign.stats.cases}</span>
               </li>
 
-              <li className="list-item flex items-center justify-between">
+              <li className=" flex items-center justify-between">
                 <span>عدد المشاريع الحالية</span>
                 <span className="font-semibold">{campaign.stats.projects}</span>
               </li>
 
-              <li className="list-item flex items-center justify-between">
+              <li className=" flex items-center  justify-between">
                 <span>المساهمات</span>
                 <span className="font-semibold">
                   {campaign.stats.participation}%
@@ -44,15 +45,15 @@ export default function AnalyticsChart() {
             </ul>
           </div>
           {/* Circle Chart */}
-          <div className="relative w-24 h-24">
+          <div className="relative w-40 h-40">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={data}
                   cx="50%"
                   cy="50%"
-                  innerRadius={35}
-                  outerRadius={45}
+                  innerRadius={60}
+                  outerRadius={70}
                   startAngle={90}
                   endAngle={-270}
                   stroke="none"

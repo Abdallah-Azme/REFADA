@@ -93,10 +93,10 @@ export default function CurrentProjectsTable() {
   });
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+    <div className="rounded-lg   bg-white  ">
       <div className="w-full overflow-x-auto">
         <Table className="min-w-[960px]">
-          <TableHeader>
+          <TableHeader className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {

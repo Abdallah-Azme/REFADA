@@ -6,14 +6,6 @@ import { Heart, Zap, CheckCircle, Users, LucideIcon } from "lucide-react";
 export const stats = [
   {
     icon: Heart,
-    label: "حالات حرجة",
-    value: "10",
-    subtitle: "خلال الأسبوع",
-    color: "bg-red-50",
-    iconColor: "text-red-500",
-  },
-  {
-    icon: Heart,
     label: "المساهمات",
     value: "314",
     subtitle: "مجموع المساهمات المنتهية",
@@ -101,22 +93,26 @@ interface StatsCardsProps {
   className?: string;
   itemClassName?: string;
   secondary?: boolean;
+  showTitle?: boolean;
 }
 
 export default function StatsCards({
   stats,
   className,
   itemClassName,
+  showTitle = true,
   secondary = false,
 }: StatsCardsProps) {
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="text-[#333333] font-bold text-lg">احصائيات سريعة</h2>
+      {showTitle && (
+        <h2 className="text-[#333333] font-bold text-lg">احصائيات سريعة</h2>
+      )}
       <div
         className={cn(
           "grid gap-4",
           !secondary &&
-            "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5",
+            "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
           className
         )}
       >

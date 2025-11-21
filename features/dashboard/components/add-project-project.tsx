@@ -57,7 +57,7 @@ export default function AddProjectDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-[#1F423B] text-white px-6 py-2 rounded-xl flex items-center gap-2">
+        <Button className="bg-[#1F423B] text-white px-6 py-5! rounded-xl flex items-center gap-2">
           إضافة مشروع <PlusCircle className="w-4 h-4" />
         </Button>
       </DialogTrigger>
