@@ -55,8 +55,10 @@ const camps: Camp[] = [
 
 export default function CampsMapSection({
   secondary,
+  dashboard = false,
 }: {
   secondary?: boolean;
+  dashboard?: boolean;
 }) {
   const [selected, setSelected] = useState<Camp | null>(camps[0]);
 
@@ -141,7 +143,10 @@ export default function CampsMapSection({
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="absolute bottom-1 right-1 bg-white rounded-xl shadow-md flex items-center gap-3 p-3 w-[90%] sm:w-[400px] z-[1000] pointer-events-auto"
+            className={cn(
+              "absolute bottom-1 right-1 bg-white rounded-xl shadow-md flex items-center gap-3 p-3  z-[1000] pointer-events-auto",
+              dashboard ? "w-[99%]" : "w-[90%] sm:w-[400px]"
+            )}
             style={{ zIndex: 1000 }}
           >
             <div className="relative w-16 h-16 rounded-lg overflow-hidden">
@@ -152,17 +157,19 @@ export default function CampsMapSection({
                 className="object-cover"
               />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 flex flex-col gap-1">
               <h3 className="font-semibold text-[#1C3A34] text-sm mb-1">
                 {selected.name}
               </h3>
               <p className="text-gray-500 text-xs flex items-center gap-1">
-                <MapPin size={12} />
-                {selected.location}
+                شمال قطاع غزة - على بُعد نحو 4 كيلومترات
               </p>
               <p className="text-gray-500 text-xs flex items-center gap-1 mt-1">
-                <Phone size={12} />
+                تواصل معنا:
                 {selected.phone}
+              </p>
+              <p className="text-gray-500 text-xs flex items-center gap-1 mt-1">
+                الحساب البنكي: 10008890003444
               </p>
             </div>
           </motion.div>

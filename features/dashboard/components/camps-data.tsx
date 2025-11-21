@@ -18,7 +18,7 @@ export const campStats = [
 export default function CampsData() {
   return (
     <div className="w-full bg-[#F8F9FA] rounded-2xl">
-      <div className="flex flex-col lg:flex-row gap-5 bg-white rounded-xl p-5">
+      <div className="flex flex-col lg:flex-row gap-5 bg-white rounded-xl p-1">
         {/* Right Section - Camp Stats */}
         <CampsDetails campStats={campStats} />
 

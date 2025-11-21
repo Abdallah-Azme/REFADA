@@ -17,16 +17,16 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-// Zod Schema
 const campSchema = z.object({
-  campName: z.string().min(1, "اسم المخيم مطلوب"),
-  email: z.string().email("البريد الإلكتروني غير صحيح"),
-  phoneNumber: z.string().min(10, "رقم الهاتف غير صحيح"),
-  whatsappNumber: z.string().min(10, "رقم الواتساب غير صحيح"),
-  representativeName: z.string().min(1, "اسم المندوب مطلوب"),
+  campName: z.string().min(1),
+  email: z.string().email(),
+  phoneNumber: z.string().min(10),
+  whatsappNumber: z.string().min(10),
+  representativeName: z.string().min(1),
 });
 
 type CampFormValues = z.infer<typeof campSchema>;
+
 const initialData: CampFormValues = {
   campName: "أحمد محمد عبد الله",
   email: "ahmed123@gmail.com",
@@ -46,34 +46,60 @@ export default function EditCampFormData() {
   const onSubmit = (data: CampFormValues) => {
     console.log("Form submitted:", data);
     setIsEditing(false);
-    // Here you would typically make an API call to save the data
   };
 
   const handleCancel = () => {
     form.reset(initialData);
     setIsEditing(false);
   };
+
   return (
-    <div className="lg:w-1/2 p-8  ">
-      <div className="flex items-center justify-between mb-8">
+    <div className="lg:w-1/2 p-4">
+      {/* HEADER + FIXED BUTTON SLOT */}
+      <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-bold text-gray-900">المندوب</h3>
-        {!isEditing && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsEditing(true)}
-            className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-          >
-            <Pencil className="w-4 h-4 ml-2" />
-            تعديل
-          </Button>
-        )}
+
+        {/* 🔥 FIXED WIDTH to prevent shifting */}
+        <div className="flex items-center justify-end w-40">
+          {!isEditing ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsEditing(true)}
+              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+            >
+              <Pencil className="w-4 h-4 ml-2" />
+              تعديل
+            </Button>
+          ) : (
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCancel}
+                className="text-gray-600 hover:text-gray-900"
+              >
+                <X className="w-4 h-4 ml-2" />
+                إلغاء
+              </Button>
+
+              <Button
+                size="sm"
+                onClick={form.handleSubmit(onSubmit)}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Save className="w-4 h-4 ml-2" />
+                حفظ
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* ================= VIEW MODE ================= */}
       {!isEditing ? (
-        // View Mode
-        <div className="flex gap-8 items-center border border-gray-200 p-4  rounded-xl ">
-          <div className="">
+        <div className="flex gap-8 items-center border border-gray-200 p-4 rounded-xl">
+          <div>
             <Avatar className="w-24 h-24 mb-6 bg-[#C4A962]">
               <AvatarImage src="" alt="Camp Representative" />
               <AvatarFallback className="bg-[#C4A962] text-white">
@@ -85,31 +111,29 @@ export default function EditCampFormData() {
             </div>
           </div>
 
-          <div className="w-full space-y-3 mt-6">
-            <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
+          <div className="w-full space-y-1.5 mt-6">
+            <div className="grid grid-cols-2 items-center pb-3">
               <span className="text-sm text-gray-600">اسم المندوب:</span>
               <span className="text-base text-gray-900 font-medium">
                 {form.getValues("representativeName")}
               </span>
             </div>
 
-            <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
-              <span className="text-sm text-gray-600">البريد الالكتروني:</span>
-
+            <div className="grid grid-cols-2 items-center pb-3">
+              <span className="text-sm text-gray-600">البريد الإلكتروني:</span>
               <span className="text-base text-gray-900 font-medium">
                 {form.getValues("email")}
               </span>
             </div>
 
-            <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
+            <div className="grid grid-cols-2 items-center pb-3">
               <span className="text-sm text-gray-600">رقم الجوال:</span>
-
               <span className="text-base text-gray-900 font-medium">
                 {form.getValues("phoneNumber")}
               </span>
             </div>
 
-            <div className="grid grid-cols-2 items-center gri justify-between border-gray-200 pb-3">
+            <div className="grid grid-cols-2 items-center pb-3">
               <span className="text-sm text-gray-600">
                 رقم الجوال الاحتياطي:
               </span>
@@ -120,31 +144,10 @@ export default function EditCampFormData() {
           </div>
         </div>
       ) : (
-        // Edit Mode
-        <div className="w-full bg-gray-50 border border-gray-200 rounded-md p-6">
-          <div className="flex justify-end gap-2 mb-6">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleCancel}
-              className="text-gray-600 hover:text-gray-900"
-            >
-              <X className="w-4 h-4 ml-2" />
-              إلغاء
-            </Button>
-
-            <Button
-              size="sm"
-              onClick={form.handleSubmit(onSubmit)}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              <Save className="w-4 h-4 ml-2" />
-              حفظ
-            </Button>
-          </div>
-
-          <div className="flex gap-8 items-start">
-            {/* Avatar Section */}
+        // ================= EDIT MODE =================
+        <div className="w-full  border border-gray-200 rounded-md p-2">
+          <div className="flex gap-8 items-center">
+            {/* Avatar */}
             <div>
               <Avatar className="w-24 h-24 mb-4 bg-[#C4A962]">
                 <AvatarImage src="" alt="Camp Representative" />
@@ -157,22 +160,20 @@ export default function EditCampFormData() {
               </div>
             </div>
 
-            {/* Inputs side */}
+            {/* Inputs */}
             <Form {...form}>
-              <form className="w-full space-y-3">
-                {/* Name */}
-                <div className="grid grid-cols-2 items-center pb-3 border-b border-gray-200">
+              <form className="w-full space-y-1">
+                <div className="grid grid-cols-2 items-center pb-3 ">
                   <label className="text-sm text-gray-600">اسم المندوب:</label>
                   <FormField
                     control={form.control}
                     name="representativeName"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <FormControl>
+                        <FormControl className="bg-[#f9f9f9]">
                           <Input
                             {...field}
-                            className="text-right bg-white border-gray-300"
-                            placeholder="اسم المندوب"
+                            className="text-right   border-gray-300"
                           />
                         </FormControl>
                         <FormMessage />
@@ -181,8 +182,7 @@ export default function EditCampFormData() {
                   />
                 </div>
 
-                {/* Email */}
-                <div className="grid grid-cols-2 items-center pb-3 border-b border-gray-200">
+                <div className="grid grid-cols-2 items-center pb-3 ">
                   <label className="text-sm text-gray-600">
                     البريد الإلكتروني:
                   </label>
@@ -191,12 +191,10 @@ export default function EditCampFormData() {
                     name="email"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <FormControl>
+                        <FormControl className="bg-[#f9f9f9]">
                           <Input
                             {...field}
-                            type="email"
-                            className="text-right bg-white border-gray-300"
-                            placeholder="البريد الإلكتروني"
+                            className="text-right   border-gray-300"
                           />
                         </FormControl>
                         <FormMessage />
@@ -205,19 +203,17 @@ export default function EditCampFormData() {
                   />
                 </div>
 
-                {/* Phone */}
-                <div className="grid grid-cols-2 items-center pb-3 border-b border-gray-200">
+                <div className="grid grid-cols-2 items-center pb-3 ">
                   <label className="text-sm text-gray-600">رقم الجوال:</label>
                   <FormField
                     control={form.control}
                     name="phoneNumber"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <FormControl>
+                        <FormControl className="bg-[#f9f9f9]">
                           <Input
                             {...field}
-                            className="text-right bg-white border-gray-300"
-                            placeholder="رقم الجوال"
+                            className="text-right   border-gray-300"
                           />
                         </FormControl>
                         <FormMessage />
@@ -226,8 +222,7 @@ export default function EditCampFormData() {
                   />
                 </div>
 
-                {/* WhatsApp */}
-                <div className="grid grid-cols-2 items-center pb-3 border-b border-gray-200">
+                <div className="grid grid-cols-2 items-center pb-3 ">
                   <label className="text-sm text-gray-600">
                     رقم الجوال الاحتياطي:
                   </label>
@@ -236,11 +231,10 @@ export default function EditCampFormData() {
                     name="whatsappNumber"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <FormControl>
+                        <FormControl className="bg-[#f9f9f9]">
                           <Input
                             {...field}
-                            className="text-right bg-white border-gray-300"
-                            placeholder="رقم الجوال الاحتياطي"
+                            className="text-right   border-gray-300"
                           />
                         </FormControl>
                         <FormMessage />
