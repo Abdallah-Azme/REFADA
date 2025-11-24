@@ -90,8 +90,8 @@ export default function TestimonialsSection() {
   }, [api]);
 
   return (
-    <div className="bg-[#EDEBE2] ">
-      <section className="relative py-20 px-4 container mx-auto text-center font-sans overflow-hidden">
+    <div className="bg-[#EEEADD] -mb-6">
+      <section className="relative py-20 px-4 container mx-auto text-center  overflow-hidden">
         <motion.div
           className="absolute inset-0 pointer-events-none z-0"
           initial={{ opacity: 0 }}
@@ -140,44 +140,38 @@ export default function TestimonialsSection() {
           }}
           className="  mx-auto relative"
         >
-          <CarouselContent className="-ml-4">
+          <CarouselContent className="-ms-4">
             {testimonials.map((t, i) => (
-              <CarouselItem
-                key={i}
-                className="pl-4 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
-              >
+              <CarouselItem key={i} className="pl-4 basis-[300px] shrink-0 ">
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: (i % 3) * 0.1 }}
                   viewport={{ once: true }}
                   whileHover={{ y: -6 }}
-                  className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 text-right h-full flex flex-col justify-between"
+                  className="bg-white flex gap-2.5 rounded-2xl    transition-all duration-300 p-6   h-full justify-between"
                 >
-                  <div className="flex items-center gap-3 mb-4">
-                    <Avatar className="w-12 h-12 ring-2 ring-[#EDEBE2]">
-                      {t.image ? (
-                        <AvatarImage src={t.image} alt={t.name} />
-                      ) : (
-                        <AvatarFallback>{t.name[0]}</AvatarFallback>
-                      )}
-                    </Avatar>
-                    <div>
-                      <h4 className="font-semibold text-[#1C3A34]">{t.name}</h4>
-                      <span className="text-xs text-gray-500">{t.date}</span>
-                    </div>
+                  <div className="flex items-center gap-3 mb-4 self-start">
+                    <ImageFallback
+                      src={t.image}
+                      width={60}
+                      height={60}
+                      className="size-15 shrink-0  "
+                    />
                   </div>
-                  <p className="text-gray-700 text-sm leading-relaxed">
-                    {t.message}
-                  </p>
+                  <div className="flex flex-col gap-2 text-start">
+                    <h4 className="font-bold text-sm text-black">{t.name}</h4>
+                    <p className="text-[8px] font-semibold text-[#747474]">
+                      {t.date}
+                    </p>
+                    <p className="text-black text-sm leading-relaxed line-clamp-3">
+                      {t.message}
+                    </p>
+                  </div>
                 </motion.div>
               </CarouselItem>
             ))}
           </CarouselContent>
-
-          {/* Arrows */}
-          <CarouselPrevious className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 bg-[#1C3A34] text-white hover:bg-[#2e5a52]" />
-          <CarouselNext className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 bg-[#1C3A34] text-white hover:bg-[#2e5a52]" />
         </Carousel>
 
         {/* Dots */}
@@ -187,10 +181,10 @@ export default function TestimonialsSection() {
               key={i}
               onClick={() => api?.scrollTo(i)}
               className={cn(
-                "h-2 rounded-full transition-all duration-300",
+                "size-2.5 rounded-full transition-all  duration-300",
                 current === i
-                  ? "bg-[#1C3A34] w-8"
-                  : "bg-gray-400 w-2 hover:bg-gray-500"
+                  ? "bg-[#0682E6]  "
+                  : "bg-gray-400  hover:bg-gray-500"
               )}
               aria-label={`الشريحة ${i + 1}`}
             />

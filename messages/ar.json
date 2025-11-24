@@ -36,5 +36,18 @@
   "privacy": "سياسة الخصوصية",
   "aboutus": "من نحن",
   "camps": "المخيمات",
-  "gablyaCamp": "مخيم جباليا"
+  "gablyaCamp": "مخيم جباليا",
+  "contact_title": "اتصل بنا",
+  "name_placeholder": "اسم المستخدم",
+  "email_placeholder": "البريد الإلكتروني",
+  "phone_placeholder": "رقم الجوال",
+  "subject_placeholder": "الموضوع",
+  "message_placeholder": "اكتب رسالتك إلينا...",
+  "send_button": "إرسال",
+
+  "required_name": "الاسم مطلوب",
+  "invalid_email": "البريد الإلكتروني غير صالح",
+  "invalid_phone": "رقم الجوال غير صالح",
+  "required_subject": "الموضوع مطلوب",
+  "required_message": "الرسالة مطلوبة"
 }

@@ -11,7 +11,7 @@ import Stats from "@/components/stats";
 
 export default async function Home() {
   return (
-    <main className="flex flex-col gap-6 my-10">
+    <main className="flex flex-col gap-6 mt-10">
       <Hero />
       <Stats />
       <AboutSection />

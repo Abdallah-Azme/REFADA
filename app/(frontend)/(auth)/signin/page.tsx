@@ -40,9 +40,9 @@ export default function RefadLogin() {
   const onSubmit = (values: z.infer<typeof formSchema>) => {};
 
   return (
-    <div className="  ">
-      <Tabs defaultValue="contributor" className=" w-full  ">
-        <TabsList className="bg-gray-100 rounded-full p-1 w-52 mx-auto">
+    <div className=" flex flex-col gap-5 ">
+      <Tabs defaultValue="contributor" className=" w-full gap-10 ">
+        <TabsList className="bg-gray-100 rounded-full p-1 w-60 mx-auto">
           <TabsTrigger
             value="contributor"
             className="data-[state=active]:bg-[#c8b78a] data-[state=active]:text-white rounded-full px-4 py-1 text-sm"
@@ -102,9 +102,9 @@ export default function RefadLogin() {
               />
 
               <div className="text-right text-sm text-gray-600">
-                <a href="#" className="hover:underline">
+                {/* <Link href="#" className="hover:underline">
                   نسيت كلمة المرور
-                </a>
+                </Link> */}
               </div>
 
               <Button

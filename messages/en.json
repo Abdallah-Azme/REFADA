@@ -36,5 +36,18 @@
   "privacy": "Privacy",
   "aboutus": "About us",
   "camps": "Camps",
-  "gablyaCamp": "Gablya Camp"
+  "gablyaCamp": "Gablya Camp",
+  "contact_title": "Contact Us",
+  "name_placeholder": "Full Name",
+  "email_placeholder": "Email Address",
+  "phone_placeholder": "Phone Number",
+  "subject_placeholder": "Subject",
+  "message_placeholder": "Write your message...",
+  "send_button": "Send",
+
+  "required_name": "Name is required",
+  "invalid_email": "Invalid email address",
+  "invalid_phone": "Invalid phone number",
+  "required_subject": "Subject is required",
+  "required_message": "Message is required"
 }

@@ -54,7 +54,7 @@ export function CampCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
         {/* Content */}
-        <div className="absolute bottom-4 right-4 text-right text-white">
+        <div className="absolute top-4 start-4 text-right text-white">
           <h3 className="text-lg font-bold">{title}</h3>
           <p className="text-sm text-gray-200 flex items-center justify-end gap-1">
             <span>{families} عائلة</span>
@@ -78,7 +78,7 @@ export function CampCard({
           size="sm"
           className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 bg-secondary text-white hover:bg-secondary/90 px-10! py-8! opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"
         >
-          للتبرع ←
+          للتفاصيل ←
         </Button>
       </motion.div>
     </Link>

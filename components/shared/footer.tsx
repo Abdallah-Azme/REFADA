@@ -14,7 +14,7 @@ import Logo from "../logo";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#10201C] text-white pt-10 pb-4 font-sans" dir="rtl">
+    <footer className="bg-[#10201C] text-white pt-10 pb-4  ">
       <div className="container px-4 mx-auto">
         {/* Top Section */}
         <motion.div

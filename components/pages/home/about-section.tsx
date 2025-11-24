@@ -8,7 +8,7 @@ export default function AboutSection() {
   return (
     <section className="relative overflow-hidden">
       {/* Background image */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 h-[500px]!">
         <ImageFallback
           src="/pages/home/shake-hands.webp"
           alt="About background"
@@ -45,13 +45,13 @@ export default function AboutSection() {
         >
           <Link
             href="#"
-            className="bg-[#C2B693] text-black font-semibold px-8 py-3 rounded-full hover:bg-[#b7a782] transition-all duration-300"
+            className="bg-secondary text-white font-semibold px-8 py-3 rounded-full hover:bg-[#b7a782] transition-all duration-300"
           >
             المزيد
           </Link>
           <Link
             href="#"
-            className="border border-[#C2B693] text-white font-semibold px-8 py-3 rounded-full hover:bg-[#C2B693] hover:text-black transition-all duration-300"
+            className="border border-secbg-secondary text-white font-semibold px-8 py-3 rounded-full hover:bg-[#C2B693] hover:text-black transition-all duration-300"
           >
             اتصل بنا
           </Link>

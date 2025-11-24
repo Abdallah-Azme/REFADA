@@ -209,7 +209,7 @@ export default function CurrentProjectsSection() {
         plugins={[autoplay.current]}
         className="relative"
       >
-        <CarouselContent className="-ml-4">
+        <CarouselContent className="-ml-4 py-2">
           {projects.map((project, index) => {
             const percentage = Math.round(
               (project.current / project.goal) * 100
@@ -249,25 +249,15 @@ export default function CurrentProjectsSection() {
             key={i}
             onClick={() => api?.scrollTo(i * 4)}
             className={cn(
-              "h-2 rounded-full transition-all duration-300",
+              "size-2.5 rounded-full transition-all duration-300",
               current >= i * 4 && current < (i + 1) * 4
-                ? "bg-teal-600 w-8"
-                : "bg-gray-300 w-2"
+                ? "bg-primary"
+                : "bg-[#D2D2D2]"
             )}
             aria-label={`انتقل إلى الشريحة ${i + 1}`}
           />
         ))}
       </div>
-
-      {/* More Projects Button */}
-      <Button
-        variant={"outline"}
-        className="mt-8 mx-auto flex items-center rounded-full px-12 py-6 border-teal-700 hover:bg-teal-700 text-teal-700 hover:text-white transition-all"
-      >
-        {!isRTL && <MoveRight />}
-        المزيد من المشاريع
-        {isRTL && <MoveLeft />}
-      </Button>
     </section>
   );
 }

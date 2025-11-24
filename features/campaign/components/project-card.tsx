@@ -39,7 +39,7 @@ export function ProjectCard({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: (index % 4) * 0.1 }}
       viewport={{ once: true }}
-      className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group h-full"
+      className="bg-white rounded-2xl overflow-hidden transition-all duration-300 group h-full"
     >
       {/* Image */}
       <div className="relative h-48 overflow-hidden">

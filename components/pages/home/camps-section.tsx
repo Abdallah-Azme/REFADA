@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { useDirection } from "@/hooks/use-direction";
 import { MoveLeft, MoveRight } from "lucide-react";
 import { CampCard } from "@/features/campaign/components/camp-card";
+import Link from "next/link";
 
 export const shelters = [
   {
@@ -110,7 +111,7 @@ export default function CampsSection() {
   }, [api]);
 
   return (
-    <section id="camps" className="container mx-auto px-4 py-16 text-center">
+    <section id="camps" className="container mx-auto px-4 py-12 text-center">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -145,9 +146,6 @@ export default function CampsSection() {
             </CarouselItem>
           ))}
         </CarouselContent>
-
-        <CarouselPrevious className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2" />
-        <CarouselNext className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2" />
       </Carousel>
 
       {/* Dots */}
@@ -157,10 +155,10 @@ export default function CampsSection() {
             key={i}
             onClick={() => api?.scrollTo(i * 4)}
             className={cn(
-              "h-2 rounded-full transition-all duration-300",
+              "size-2.5 rounded-full transition-all duration-300",
               current >= i * 4 && current < (i + 1) * 4
-                ? "bg-primary w-8"
-                : "bg-gray-300 w-2"
+                ? "bg-primary "
+                : "bg-[#D2D2D2] "
             )}
             aria-label={`Go to slide ${i + 1}`}
           />
@@ -169,11 +167,14 @@ export default function CampsSection() {
 
       <Button
         variant={"outline"}
+        asChild
         className="mt-8 rounded-full px-12! py-8! border-primary hover:bg-primary text-black hover:text-white"
       >
-        {!isRTL && <MoveRight />}
-        المزيد من المشاريع
-        {isRTL && <MoveLeft />}
+        <Link href="/camps">
+          {!isRTL && <MoveRight />}
+          المزيد من المشاريع
+          {isRTL && <MoveLeft />}
+        </Link>
       </Button>
     </section>
   );
