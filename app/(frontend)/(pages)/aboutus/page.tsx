@@ -44,10 +44,8 @@ export default function Page() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <Info />
-          <h1 className="text-xl font-semibold text-[#1E1E1E]">
-            {t("aboutus")}
-          </h1>
+          <Info size={20} className="text-[#4a8279]" />
+          <h1 className="text-xl font-bold text-[#1E1E1E]">{t("aboutus")}</h1>
         </motion.div>
 
         {/* Decorative images (fade-in softly) */}

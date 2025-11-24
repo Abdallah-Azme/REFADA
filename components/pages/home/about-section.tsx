@@ -1,14 +1,15 @@
 "use client";
 import ImageFallback from "@/components/shared/image-fallback";
 import { motion } from "framer-motion";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function AboutSection() {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden min-h-[500px]">
       {/* Background image */}
-      <div className="absolute inset-0 z-0 h-[500px]!">
+      <div className="absolute inset-0 z-0 h-[500px]">
         <ImageFallback
           src="/pages/home/shake-hands.webp"
           alt="About background"
@@ -44,16 +45,18 @@ export default function AboutSection() {
           className="flex justify-center gap-4 flex-wrap"
         >
           <Link
-            href="#"
-            className="bg-secondary text-white font-semibold px-8 py-3 rounded-full hover:bg-[#b7a782] transition-all duration-300"
+            href="/aboutus"
+            className="bg-secondary flex gap-2 items-center text-primary font-semibold px-8 py-3 sm:px-16 sm:py-4 rounded-full hover:bg-[#b7a782] transition-all duration-300"
           >
             المزيد
+            <ArrowLeft />
           </Link>
           <Link
-            href="#"
-            className="border border-secbg-secondary text-white font-semibold px-8 py-3 rounded-full hover:bg-[#C2B693] hover:text-black transition-all duration-300"
+            href="/contactus"
+            className="border flex gap-2 border-secbg-secondary text-white font-semibold px-8 py-3 sm:px-16 sm:py-4 rounded-full hover:bg-[#C2B693] hover:text-black transition-all duration-300"
           >
             اتصل بنا
+            <ArrowLeft />
           </Link>
         </motion.div>
       </div>

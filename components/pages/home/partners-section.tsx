@@ -36,7 +36,7 @@ export default function PartnersSection({
   return (
     <section
       className={cn(
-        "bg-secondary text-center py-16 ",
+        "bg-secondary text-center py-8 sm:py-16 ",
         secondary
           ? "rounded-t-[50px] sm:rounded-t-[100px]"
           : "rounded-b-[50px] sm:rounded-b-[100px]"

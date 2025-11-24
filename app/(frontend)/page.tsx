@@ -13,9 +13,11 @@ export default async function Home() {
   return (
     <main className="flex flex-col gap-6 mt-10">
       <Hero />
-      <Stats />
+      <div className="-mb-20 z-10">
+        <Stats />
+      </div>
       <AboutSection />
-      <div className="-mt-10 z-10">
+      <div className="-mt-20 z-10">
         <PolicySection />
         <PartnersSection />
       </div>

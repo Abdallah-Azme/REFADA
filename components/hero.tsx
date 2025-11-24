@@ -2,11 +2,16 @@
 
 import { motion } from "framer-motion";
 import ImageFallback from "./shared/image-fallback";
-import { useEffect, useState, useCallback } from "react";
-import useEmblaCarousel from "embla-carousel-react";
+import { useEffect, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import Fade from "embla-carousel-fade";
 import { useDirection } from "@/hooks/use-direction";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 
 const carouselSlides = [
   {
@@ -76,17 +81,8 @@ export default function Hero() {
   const [dots, setDots] = useState<{ id: number; top: number; left: number }[]>(
     []
   );
+  const [api, setApi] = useState<CarouselApi>();
   const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, direction: isRTL ? "rtl" : "ltr" },
-    [Autoplay({ delay: 5000, stopOnInteraction: false }), Fade()]
-  );
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
 
   useEffect(() => {
     const newDots = Array.from({ length: 10 }, (_, i) => ({
@@ -98,13 +94,19 @@ export default function Hero() {
   }, []);
 
   useEffect(() => {
-    if (!emblaApi) return;
-    onSelect();
-    emblaApi.on("select", onSelect);
-    return () => {
-      emblaApi.off("select", onSelect);
+    if (!api) return;
+
+    const onSelect = () => {
+      setSelectedIndex(api.selectedScrollSnap());
     };
-  }, [emblaApi, onSelect]);
+
+    onSelect();
+    api.on("select", onSelect);
+
+    return () => {
+      api.off("select", onSelect);
+    };
+  }, [api]);
 
   return (
     <section className="relative overflow-visible container mx-auto px-4 w-full">
@@ -132,11 +134,21 @@ export default function Hero() {
 
       {/* Carousel Container */}
       <div className="relative">
-        {/* Embla Carousel */}
-        <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex">
+        {/* Shadcn Carousel */}
+        <Carousel
+          setApi={setApi}
+          opts={{
+            loop: true,
+            direction: isRTL ? "rtl" : "ltr",
+          }}
+          plugins={[
+            Autoplay({ delay: 2000, stopOnInteraction: false }),
+            Fade({}),
+          ]}
+        >
+          <CarouselContent className="py-5">
             {carouselSlides.map((slide) => (
-              <div key={slide.id} className="flex-[0_0_100%] min-w-0">
+              <CarouselItem key={slide.id} className="pl-0">
                 <div className="flex flex-col-reverse sm:flex-row gap-8 items-center w-full">
                   {/* Text Section */}
                   <div className="flex-1 max-w-[609px] text-center sm:text-start z-10">
@@ -264,17 +276,17 @@ export default function Hero() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </CarouselItem>
             ))}
-          </div>
-        </div>
+          </CarouselContent>
+        </Carousel>
 
         {/* Navigation Dots */}
         <div className="flex gap-2 mt-8 z-20 justify-center">
           {carouselSlides.map((slide, index) => (
             <button
               key={slide.id}
-              onClick={() => emblaApi?.scrollTo(index)}
+              onClick={() => api?.scrollTo(index)}
               className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
                 selectedIndex === index
                   ? "bg-primary  "

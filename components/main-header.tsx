@@ -45,7 +45,7 @@ export default function MainHeader() {
               <Link
                 href={item.href}
                 className={cn(
-                  "relative hover:text-primary font-semibold transition text-muted",
+                  "relative overflow-hidden hover:text-primary font-semibold transition text-muted",
                   item.href === pathName && "font-bold text-primary"
                 )}
               >

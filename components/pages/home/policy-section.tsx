@@ -16,7 +16,7 @@ export default function PolicySection({
         <Lock
           className={cn(
             "w-10 h-10 ",
-            secondary ? "text-primary" : "text-secondary"
+            secondary ? "text-secondary" : " text-primary"
           )}
         />
       ),
@@ -29,7 +29,7 @@ export default function PolicySection({
         <FileText
           className={cn(
             "w-10 h-10 ",
-            secondary ? "text-primary" : "text-secondary"
+            secondary ? "text-secondary" : " text-primary"
           )}
         />
       ),
@@ -42,7 +42,7 @@ export default function PolicySection({
         <Shield
           className={cn(
             "w-10 h-10 ",
-            secondary ? "text-primary" : "text-secondary"
+            secondary ? "text-secondary" : " text-primary"
           )}
         />
       ),
