@@ -19,7 +19,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="flex-1 flex flex-col justify-center px-8 py-10">
         {/* Header */}
         <div className="flex flex-col items-center mb-6 text-center gap-5 w-full  ">
-          <Logo />
+          <div className="flex  items-center gap-2">
+            <Logo />
+            <div className="flex flex-col gap-2 text-start">
+              <p className="text-primary font-bold ">
+                المنظومة الإنسانية الرشيدة
+              </p>
+              <p className="text-primary font-bold ">قطـــــــاع غـــزة</p>
+            </div>
+          </div>
 
           <div className="flex-1 w-full px-2 max-w-[350px] mx-auto">
             {children}

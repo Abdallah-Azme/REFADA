@@ -1,25 +1,20 @@
 "use client";
 
-import * as React from "react";
-import Image from "next/image";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
-  FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Lock } from "lucide-react";
-import ImageFallback from "@/components/shared/image-fallback";
-import Logo from "@/components/logo";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Lock, Mail } from "lucide-react";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const formSchema = z.object({
   email: z.string().email({ message: "يرجى إدخال بريد إلكتروني صالح" }),
@@ -64,18 +59,18 @@ export default function RefadLogin() {
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="">
                     <FormControl>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+                      <div className="relative ">
+                        <Mail className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
                         <Input
                           placeholder="البريد الإلكتروني"
-                          className="pl-9 text-right"
+                          className="ps-9 h-[50px] bg-[#EEEADD]"
                           {...field}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage className="text-right" />
+                    <FormMessage className="" />
                   </FormItem>
                 )}
               />
@@ -87,21 +82,21 @@ export default function RefadLogin() {
                   <FormItem>
                     <FormControl>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+                        <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
                         <Input
                           type="password"
                           placeholder="كلمة المرور"
-                          className="pl-9 text-right"
+                          className="ps-9 h-[50px] bg-[#EEEADD]"
                           {...field}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage className="text-right" />
+                    <FormMessage className="" />
                   </FormItem>
                 )}
               />
 
-              <div className="text-right text-sm text-gray-600">
+              <div className=" text-sm text-gray-600">
                 {/* <Link href="#" className="hover:underline">
                   نسيت كلمة المرور
                 </Link> */}
@@ -109,7 +104,7 @@ export default function RefadLogin() {
 
               <Button
                 type="submit"
-                className="w-full bg-[#c8b78a] hover:bg-[#b5a678] text-gray-800 font-semibold"
+                className="w-full rounded-full! bg-secondary hover:bg-[#b5a678] text-primary py-6 font-bold text-lg"
               >
                 دخول
               </Button>
@@ -127,15 +122,15 @@ export default function RefadLogin() {
                   <FormItem>
                     <FormControl>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+                        <Mail className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
                         <Input
                           placeholder="البريد الإلكتروني"
-                          className="pl-9 text-right"
+                          className="ps-9 h-[50px] bg-[#EEEADD]"
                           {...field}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage className="text-right" />
+                    <FormMessage className="" />
                   </FormItem>
                 )}
               />
@@ -147,23 +142,23 @@ export default function RefadLogin() {
                   <FormItem>
                     <FormControl>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+                        <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
                         <Input
                           type="password"
                           placeholder="كلمة المرور"
-                          className="pl-9 text-right"
+                          className="ps-9 h-[50px] bg-[#EEEADD]"
                           {...field}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage className="text-right" />
+                    <FormMessage className="" />
                   </FormItem>
                 )}
               />
 
               <Button
                 type="submit"
-                className="w-full bg-[#c8b78a] hover:bg-[#b5a678] text-gray-800 font-semibold"
+                className="w-full rounded-full! bg-secondary hover:bg-[#b5a678] text-primary py-6 font-bold text-lg"
               >
                 دخول
               </Button>

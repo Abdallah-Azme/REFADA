@@ -69,7 +69,11 @@ export default function ContributorRegisterForm() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="الاسم رباعي" {...field} />
+                  <Input
+                    className="h-[50px] bg-[#EEEADD]"
+                    placeholder="الاسم رباعي"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -83,7 +87,11 @@ export default function ContributorRegisterForm() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="رقم الهوية" {...field} />
+                  <Input
+                    className="h-[50px] bg-[#EEEADD]"
+                    placeholder="رقم الهوية"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -98,6 +106,7 @@ export default function ContributorRegisterForm() {
               <FormItem>
                 <FormControl>
                   <Input
+                    className="h-[50px] bg-[#EEEADD]"
                     type="email"
                     placeholder="البريد الإلكتروني"
                     {...field}
@@ -115,7 +124,11 @@ export default function ContributorRegisterForm() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="رقم التواصل" {...field} />
+                  <Input
+                    className="h-[50px] bg-[#EEEADD]"
+                    placeholder="رقم التواصل"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -130,8 +143,8 @@ export default function ContributorRegisterForm() {
               <FormItem className="w-full">
                 <FormControl>
                   <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="الصفة الإدارية" />
+                    <SelectTrigger className="w-full h-[50px] bg-[#EEEADD]">
+                      <SelectValue placeholder="الصفة الإدارية" className="" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="manager">مدير</SelectItem>
@@ -152,7 +165,11 @@ export default function ContributorRegisterForm() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="رقم الترخيص" {...field} />
+                  <Input
+                    className="h-[50px] bg-[#EEEADD]"
+                    placeholder="رقم الترخيص"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -166,7 +183,12 @@ export default function ContributorRegisterForm() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input type="password" placeholder="كلمة المرور" {...field} />
+                  <Input
+                    className="h-[50px] bg-[#EEEADD]"
+                    type="password"
+                    placeholder="كلمة المرور"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -202,7 +224,7 @@ export default function ContributorRegisterForm() {
           {/* Submit button */}
           <Button
             type="submit"
-            className="w-full bg-[#c8b78a] hover:bg-[#b5a678] text-gray-800 font-semibold"
+            className="w-full bg-secondary rounded-full text-primary  hover:bg-[#b5a678] py-3! font-semibold"
           >
             دخول
           </Button>
