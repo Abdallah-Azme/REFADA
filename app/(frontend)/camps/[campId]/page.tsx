@@ -6,8 +6,11 @@ import { Breadcrumb } from "@/components/shared/breadcrumb";
 import ImageFallback from "@/components/shared/image-fallback";
 import { PageSection } from "@/components/shared/page-section";
 import { motion } from "framer-motion";
-import { Info } from "lucide-react";
+import { Info, SquareKanban } from "lucide-react";
 import { useTranslations } from "next-intl";
+import CampaignCards from "@/features/campaign/components/campaign-cards";
+import ProjectsSection from "@/features/campaign/components/projects-section";
+import { Button } from "@/components/ui/button";
 export default function Page() {
   const t = useTranslations();
 
@@ -41,8 +44,8 @@ export default function Page() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <Info />
-          <h1 className="text-xl font-semibold text-[#1E1E1E]">
+          <Info className="text-[#4A8279]" />
+          <h1 className="text-xl font-bold text-[#1E1E1E]">
             {t("gablyaCamp")}
           </h1>
         </motion.div>
@@ -120,7 +123,29 @@ export default function Page() {
         </div>
       </motion.div>
 
-      <CampProjects />
+      <div className="my-6 flex flex-col gap-4 sm:my-12">
+        {/* Title */}
+        <motion.div
+          className="flex items-center gap-2"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <SquareKanban className="text-[#4A8279]" />
+          <h2 className="text-xl font-bold text-[#1E1E1E]">
+            المشاريع المقامة داخل المخيم
+          </h2>
+        </motion.div>
+        <ProjectsSection />
+        <div className="flex justify-center mt-12">
+          <Button
+            variant={"outline"}
+            className="px-12! py-6! border-2 rounded-full font-semibold text-primary border-primary transition-colors flex items-center gap-2"
+          >
+            المزيد
+          </Button>
+        </div>
+      </div>
     </section>
   );
 }
