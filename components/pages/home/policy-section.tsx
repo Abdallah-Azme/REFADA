@@ -54,8 +54,8 @@ export default function PolicySection({
   return (
     <section
       className={cn(
-        " text-white py-5 lg:py-20 overflow-hidden rounded-t-[50px] sm:rounded-t-[100px]   mt-[-50px]",
-        secondary ? "bg-white" : "bg-primary"
+        " text-white py-5 lg:py-20 overflow-hidden rounded-t-[50px] sm:rounded-t-[100px]  ",
+        secondary ? "bg-white" : "bg-primary  mt-[-50px]"
       )}
     >
       <div className="container relative mx-auto px-6 ">

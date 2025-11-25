@@ -25,7 +25,6 @@ export default function Page() {
         />
       </motion.div>
 
-      {/* Decorative images (fade-in softly) */}
       <motion.div
         className="absolute inset-0 pointer-events-none z-0"
         initial={{ opacity: 0 }}

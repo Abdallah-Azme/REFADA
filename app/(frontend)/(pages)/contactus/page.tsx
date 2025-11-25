@@ -27,6 +27,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Breadcrumb } from "@/components/shared/breadcrumb";
 import ImageFallback from "@/components/shared/image-fallback";
 import { MessageCirclePlus, Send } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useDirection } from "@/hooks/use-direction";
 
 // 🧩 Validation schema
 const formSchema = z.object({
@@ -40,6 +42,8 @@ const formSchema = z.object({
 
 export default function ContactSection() {
   const t = useTranslations();
+
+  const { isRTL } = useDirection();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -73,14 +77,12 @@ export default function ContactSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <MessageCirclePlus className="text-primary" />
-        <h1 className="text-xl font-semibold text-[#1E1E1E]">
-          {t("contactus")}
-        </h1>
+        <MessageCirclePlus className="text-[#4A8279]" />
+        <h1 className="text-xl font-bold text-[#1E1E1E]">{t("contactus")}</h1>
       </motion.div>
 
       {/* 🧱 Main form container */}
-      <div className="w-full bg-white rounded-2xl mt-5 mb-10 py-12 border relative overflow-hidden">
+      <div className="w-full bg-white rounded-2xl mt-5 mb-10 py-12 relative overflow-hidden">
         {/* 🌾 Decorative images behind */}
         <div className="absolute inset-0 pointer-events-none z-0">
           <ImageFallback
@@ -123,6 +125,7 @@ export default function ContactSection() {
                       <FormItem>
                         <FormControl>
                           <Input
+                            className="h-[50px] bg-[#EEEADD]"
                             placeholder={t("namePlaceholder")}
                             {...field}
                           />
@@ -139,6 +142,7 @@ export default function ContactSection() {
                       <FormItem>
                         <FormControl>
                           <Input
+                            className="h-[50px] bg-[#EEEADD]"
                             placeholder={t("phonePlaceholder")}
                             {...field}
                           />
@@ -158,6 +162,7 @@ export default function ContactSection() {
                       <FormItem>
                         <FormControl>
                           <Input
+                            className="h-[50px] bg-[#EEEADD]"
                             placeholder={t("emailPlaceholder")}
                             {...field}
                           />
@@ -177,7 +182,7 @@ export default function ContactSection() {
                           defaultValue={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="h-[50px]! bg-[#EEEADD]">
                               <SelectValue
                                 placeholder={t("categoryPlaceholder")}
                               />
@@ -209,6 +214,7 @@ export default function ContactSection() {
                     <FormItem>
                       <FormControl>
                         <Input
+                          className="h-[50px] bg-[#EEEADD]"
                           placeholder={t("subjectPlaceholder")}
                           {...field}
                         />
@@ -226,8 +232,8 @@ export default function ContactSection() {
                     <FormItem>
                       <FormControl>
                         <Textarea
+                          className="h-[150px] bg-[#EEEADD]"
                           placeholder={t("messagePlaceholder")}
-                          className="h-32 resize-none"
                           {...field}
                         />
                       </FormControl>
@@ -244,10 +250,16 @@ export default function ContactSection() {
                 >
                   <Button
                     type="submit"
-                    className="bg-secondary flex gap-2 items-center hover:bg-secondary/90 text-white rounded-full p-6"
+                    className="bg-secondary flex gap-2 items-center px-15! font-semibold hover:bg-secondary/90 text-primary rounded-full p-6"
                   >
                     {t("send")}
-                    <Send />
+
+                    <Send
+                      className={cn(
+                        "text-primary text-sm",
+                        isRTL ? "-scale-x-100" : ""
+                      )}
+                    />
                   </Button>
                 </motion.div>
               </form>

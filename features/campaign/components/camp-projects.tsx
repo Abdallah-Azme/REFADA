@@ -41,8 +41,8 @@ export default function CampProjects({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
       >
-        <Tent />
-        <h2 className="text-xl font-bold text-[#1E1E1E]">الإيواءات</h2>
+        <Tent className="text-[#4A8279]" />
+        <h1 className="text-xl font-bold text-[#1E1E1E]">الإيواءات</h1>
       </motion.div>
 
       {/* Form Section */}
@@ -164,7 +164,12 @@ export default function CampProjects({
       {/* Camps Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-8">
         {shelters.map((shelter, index) => (
-          <CampCard key={index} {...shelter} index={index} dashboard />
+          <CampCard
+            key={index}
+            {...shelter}
+            index={index}
+            dashboard={dashboard}
+          />
         ))}
       </div>
     </section>

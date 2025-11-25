@@ -5,6 +5,7 @@ import ImageFallback from "@/components/shared/image-fallback";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { NotepadText } from "lucide-react";
 export default function CampaignPage() {
   const t = useTranslations();
   return (
@@ -58,16 +59,22 @@ export default function CampaignPage() {
         </motion.div>
         <div className="">
           <main className="max-w-7xl mx-auto px-4 py-12">
-            <div className="flex items-center justify-between mb-8">
-              <h1 className="text-3xl font-bold text-gray-900">الإحصائيات</h1>
-            </div>
+            <motion.div
+              className="flex items-center gap-2  mb-5"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              <NotepadText size={20} className="text-[#4a8279]" />
+              <h1 className="text-xl font-bold text-[#1E1E1E]">{t("stats")}</h1>
+            </motion.div>
 
             <CampaignCards />
 
             <div className="flex justify-center mt-12">
               <Button
                 variant={"outline"}
-                className="px-12! py-6! border-2     rounded-full font-semibold  transition-colors flex items-center gap-2"
+                className="px-12! py-6! border-2 rounded-full font-semibold text-primary border-primary transition-colors flex items-center gap-2"
               >
                 المزيد
               </Button>
