@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -13,6 +15,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Plus } from "lucide-react";
 import AdminCampsTable from "@/features/dashboard/components/admin-camps-table";
 import {
@@ -20,57 +30,86 @@ import {
   dummyCamps,
 } from "@/features/dashboard/table-cols/admin-camps-cols";
 
+const campSchema = z
+  .object({
+    name: z.string().min(1, "اسم المخيم مطلوب"),
+    location: z.string().min(1, "الموقع مطلوب"),
+    description: z.string().min(10, "الوصف يجب أن يكون 10 أحرف على الأقل"),
+    capacity: z.number().min(1, "السعة يجب أن تكون أكبر من 0"),
+    currentOccupancy: z.number().min(0, "الإشغال يجب أن يكون 0 أو أكثر"),
+    coordinates: z.object({
+      lat: z.number().min(-90).max(90, "خط العرض يجب أن يكون بين -90 و 90"),
+      lng: z.number().min(-180).max(180, "خط الطول يجب أن يكون بين -180 و 180"),
+    }),
+  })
+  .refine((data) => data.currentOccupancy <= data.capacity, {
+    message: "الإشغال الحالي لا يمكن أن يكون أكبر من السعة الكلية",
+    path: ["currentOccupancy"],
+  });
+
+type CampFormValues = z.infer<typeof campSchema>;
+
 export default function AdminCampsPage() {
   const [camps, setCamps] = useState<Camp[]>(dummyCamps);
-
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCamp, setEditingCamp] = useState<Camp | null>(null);
-  const [formData, setFormData] = useState<Partial<Camp>>({
-    name: "",
-    location: "",
-    description: "",
-    capacity: 0,
-    currentOccupancy: 0,
-    coordinates: { lat: 0, lng: 0 },
-    status: "active",
+
+  const form = useForm<CampFormValues>({
+    resolver: zodResolver(campSchema),
+    defaultValues: {
+      name: "",
+      location: "",
+      description: "",
+      capacity: 0,
+      currentOccupancy: 0,
+      coordinates: { lat: 0, lng: 0 },
+    },
   });
 
   const handleOpenDialog = (camp?: Camp) => {
     if (camp) {
       setEditingCamp(camp);
-      setFormData(camp);
+      form.reset({
+        name: camp.name,
+        location: camp.location,
+        description: camp.description,
+        capacity: camp.capacity,
+        currentOccupancy: camp.currentOccupancy,
+        coordinates: camp.coordinates,
+      });
     } else {
       setEditingCamp(null);
-      setFormData({
+      form.reset({
         name: "",
         location: "",
         description: "",
         capacity: 0,
         currentOccupancy: 0,
         coordinates: { lat: 0, lng: 0 },
-        status: "active",
       });
     }
     setIsDialogOpen(true);
   };
 
-  const handleSaveCamp = () => {
+  const onSubmit = (data: CampFormValues) => {
     if (editingCamp) {
       // Update existing camp
       setCamps(
         camps.map((camp) =>
-          camp.id === editingCamp.id ? ({ ...camp, ...formData } as Camp) : camp
+          camp.id === editingCamp.id ? { ...camp, ...data } : camp
         )
       );
     } else {
       // Create new camp
       const newCamp: Camp = {
         id: Date.now().toString(),
-        ...formData,
-      } as Camp;
+        ...data,
+        status: "active",
+      };
       setCamps([...camps, newCamp]);
     }
     setIsDialogOpen(false);
+    form.reset();
   };
 
   const handleDeleteCamp = (id: string) => {
@@ -109,130 +148,159 @@ export default function AdminCampsPage() {
                 {editingCamp ? "تعديل المخيم" : "إضافة مخيم جديد"}
               </DialogTitle>
             </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">اسم المخيم</Label>
-                <Input
-                  id="name"
-                  placeholder="أدخل اسم المخيم"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4 py-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>اسم المخيم</FormLabel>
+                      <FormControl>
+                        <Input placeholder="أدخل اسم المخيم" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="location">الموقع</Label>
-                <Input
-                  id="location"
-                  placeholder="أدخل موقع المخيم"
-                  value={formData.location}
-                  onChange={(e) =>
-                    setFormData({ ...formData, location: e.target.value })
-                  }
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>الموقع</FormLabel>
+                      <FormControl>
+                        <Input placeholder="أدخل موقع المخيم" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="description">الوصف</Label>
-                <Textarea
-                  id="description"
-                  placeholder="أدخل وصف المخيم"
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
-                  className="min-h-[100px]"
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>الوصف</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="أدخل وصف المخيم"
+                          className="min-h-[100px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="capacity">السعة الكلية</Label>
-                  <Input
-                    id="capacity"
-                    type="number"
-                    placeholder="0"
-                    value={formData.capacity}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        capacity: parseInt(e.target.value) || 0,
-                      })
-                    }
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="capacity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>السعة الكلية</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(parseInt(e.target.value) || 0)
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="currentOccupancy"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>الإشغال الحالي</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(parseInt(e.target.value) || 0)
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="occupancy">الإشغال الحالي</Label>
-                  <Input
-                    id="occupancy"
-                    type="number"
-                    placeholder="0"
-                    value={formData.currentOccupancy}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        currentOccupancy: parseInt(e.target.value) || 0,
-                      })
-                    }
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="coordinates.lat"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>خط العرض (Latitude)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.000001"
+                            placeholder="31.5"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(parseFloat(e.target.value) || 0)
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="coordinates.lng"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>خط الطول (Longitude)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.000001"
+                            placeholder="34.45"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(parseFloat(e.target.value) || 0)
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="lat">خط العرض (Latitude)</Label>
-                  <Input
-                    id="lat"
-                    type="number"
-                    step="0.000001"
-                    placeholder="31.5"
-                    value={formData.coordinates?.lat}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        coordinates: {
-                          ...formData.coordinates!,
-                          lat: parseFloat(e.target.value) || 0,
-                        },
-                      })
-                    }
-                  />
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsDialogOpen(false)}
+                  >
+                    إلغاء
+                  </Button>
+                  <Button type="submit">حفظ</Button>
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="lng">خط الطول (Longitude)</Label>
-                  <Input
-                    id="lng"
-                    type="number"
-                    step="0.000001"
-                    placeholder="34.45"
-                    value={formData.coordinates?.lng}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        coordinates: {
-                          ...formData.coordinates!,
-                          lng: parseFloat(e.target.value) || 0,
-                        },
-                      })
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-2 pt-4">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsDialogOpen(false)}
-                >
-                  إلغاء
-                </Button>
-                <Button onClick={handleSaveCamp}>حفظ</Button>
-              </div>
-            </div>
+              </form>
+            </Form>
           </DialogContent>
         </Dialog>
       </div>

@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,27 +12,47 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Mail } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import RichTextEditor from "@/components/rich-text-editor";
 import AdminMessagesTable from "@/features/dashboard/components/admin-messages-table";
 import {
   ContactMessage,
   dummyMessages,
 } from "@/features/dashboard/table-cols/admin-messages-cols";
 
+const replySchema = z.object({
+  replyText: z.string().min(10, "الرد يجب أن يكون 10 أحرف على الأقل"),
+});
+
+type ReplyFormValues = z.infer<typeof replySchema>;
+
 export default function ContactMessagesPage() {
   const [messages, setMessages] = useState<ContactMessage[]>(dummyMessages);
-
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(
     null
   );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [replyText, setReplyText] = useState("");
+
+  const form = useForm<ReplyFormValues>({
+    resolver: zodResolver(replySchema),
+    defaultValues: {
+      replyText: "",
+    },
+  });
 
   const handleViewMessage = (message: ContactMessage) => {
     setSelectedMessage(message);
     setIsDialogOpen(true);
+    form.reset({ replyText: "" });
 
     // Mark as read if it's new
     if (message.status === "new") {
@@ -47,12 +70,12 @@ export default function ContactMessagesPage() {
     }
   };
 
-  const handleSendReply = () => {
-    if (!selectedMessage || !replyText.trim()) return;
+  const onSubmitReply = (data: ReplyFormValues) => {
+    if (!selectedMessage) return;
 
     // Here you would typically send the reply via email
     console.log("Sending reply to:", selectedMessage.email);
-    console.log("Reply:", replyText);
+    console.log("Reply:", data.replyText);
 
     // Update message status
     setMessages(
@@ -61,7 +84,7 @@ export default function ContactMessagesPage() {
       )
     );
 
-    setReplyText("");
+    form.reset();
     setIsDialogOpen(false);
     alert("تم إرسال الرد بنجاح!");
   };
@@ -155,29 +178,43 @@ export default function ContactMessagesPage() {
               </div>
 
               <div className="border-t pt-4">
-                <Label htmlFor="reply">الرد على الرسالة</Label>
-                <Textarea
-                  id="reply"
-                  placeholder="اكتب ردك هنا..."
-                  value={replyText}
-                  onChange={(e) => setReplyText(e.target.value)}
-                  className="mt-2 min-h-[120px]"
-                />
-                <div className="flex justify-end gap-2 mt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsDialogOpen(false)}
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmitReply)}
+                    className="space-y-4"
                   >
-                    إغلاق
-                  </Button>
-                  <Button
-                    onClick={handleSendReply}
-                    disabled={!replyText.trim()}
-                  >
-                    <Mail className="h-4 w-4 mr-2" />
-                    إرسال الرد
-                  </Button>
-                </div>
+                    <FormField
+                      control={form.control}
+                      name="replyText"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>الرد على الرسالة</FormLabel>
+                          <FormControl>
+                            <RichTextEditor
+                              content={field.value}
+                              onChange={field.onChange}
+                              placeholder="اكتب ردك هنا..."
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsDialogOpen(false)}
+                      >
+                        إغلاق
+                      </Button>
+                      <Button type="submit">
+                        <Mail className="h-4 w-4 mr-2" />
+                        إرسال الرد
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
               </div>
             </div>
           )}

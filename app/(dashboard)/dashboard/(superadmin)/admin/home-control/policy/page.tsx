@@ -1,20 +1,42 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import RichTextEditor from "@/components/rich-text-editor";
 
-export default function PolicyControlPage() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+const policySchema = z.object({
+  title: z.string().min(1, "العنوان مطلوب"),
+  content: z.string().min(10, "المحتوى يجب أن يكون 10 أحرف على الأقل"),
+});
 
-  const handleSave = () => {
-    console.log("Title:", title);
-    console.log("Content:", content);
+type PolicyFormValues = z.infer<typeof policySchema>;
+
+export default function PolicyControlPage() {
+  const form = useForm<PolicyFormValues>({
+    resolver: zodResolver(policySchema),
+    defaultValues: {
+      title: "",
+      content: "",
+    },
+  });
+
+  const onSubmit = (data: PolicyFormValues) => {
+    console.log("Saving policy:", data);
     // Here you would typically save to your backend
+    alert("تم حفظ التغييرات بنجاح!");
   };
 
   return (
@@ -25,27 +47,44 @@ export default function PolicyControlPage() {
         <CardHeader>
           <CardTitle>تعديل السياسات</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">العنوان</Label>
-            <Input
-              id="title"
-              placeholder="أدخل العنوان"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>العنوان</FormLabel>
+                    <FormControl>
+                      <Input placeholder="أدخل العنوان" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div className="space-y-2">
-            <Label htmlFor="content">المحتوى</Label>
-            <RichTextEditor
-              content={content}
-              onChange={setContent}
-              placeholder="أدخل محتوى السياسات"
-            />
-          </div>
+              <FormField
+                control={form.control}
+                name="content"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>المحتوى</FormLabel>
+                    <FormControl>
+                      <RichTextEditor
+                        content={field.value}
+                        onChange={field.onChange}
+                        placeholder="أدخل محتوى السياسات"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <Button onClick={handleSave}>حفظ التغييرات</Button>
+              <Button type="submit">حفظ التغييرات</Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>
