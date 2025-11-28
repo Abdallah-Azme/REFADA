@@ -6,6 +6,7 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
@@ -22,6 +23,10 @@ import {
   Tent,
   Menu,
   X,
+  ChevronDown,
+  UserCog,
+  HeartHandshake,
+  Mail,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -29,6 +34,11 @@ import Logo from "@/components/logo";
 import Link from "next/link";
 import ImageFallback from "@/components/shared/image-fallback";
 import { useDirection } from "@/hooks/use-direction";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
@@ -37,8 +47,8 @@ export default function DashboardSidebar() {
 
   useEffect(() => setOpen(false), [pathname]);
 
-  // NORMAL DASHBOARD MENU
-  const defaultMenu = [
+  // REPRESENTATIVE MENU (default dashboard menu)
+  const representativeMenu = [
     { label: "الرئيسية", icon: Home, href: "/dashboard" },
     { label: "بيانات المخيم", icon: Tent, href: "/dashboard/camps" },
     { label: "العائلات", icon: Users, href: "/dashboard/families" },
@@ -53,11 +63,94 @@ export default function DashboardSidebar() {
     { label: "المخيمات", icon: Tent, href: "/dashboard/contributor/camps" },
   ];
 
-  // DETECT IF USER IS INSIDE CONTRIBUTOR ROUTE
-  const isContributor = pathname.includes("contributor");
+  // ADMIN MAIN MENU
+  const adminMenu = [
+    { label: "الرئيسية", icon: Home, href: "/dashboard/admin" },
+    { label: "المخيمات", icon: Tent, href: "/dashboard/admin/camps" },
+    { label: "الرسائل", icon: Mail, href: "/dashboard/admin/messages" },
+    { label: "الإعدادات", icon: Settings, href: "/dashboard/admin/settings" },
+  ];
 
-  // USE THE CORRECT MENU
-  const menuItems = isContributor ? contributorMenu : defaultMenu;
+  // ENTITY MANAGEMENT MENU (Admin only)
+  const entityManagementMenu = [
+    {
+      label: "إدارة المشاريع",
+      icon: FolderOpen,
+      href: "/dashboard/admin/projects",
+    },
+    {
+      label: "إدارة المندوبين",
+      icon: UserCog,
+      href: "/dashboard/admin/representatives",
+    },
+    {
+      label: "إدارة المساهمين",
+      icon: HeartHandshake,
+      href: "/dashboard/admin/contributors",
+    },
+  ];
+
+  // HOME PAGE CONTROL MENU (Admin only)
+  const homeControlMenu = [
+    {
+      label: "الرئيسية (Hero)",
+      icon: Home,
+      href: "/dashboard/admin/home-control/hero",
+    },
+    {
+      label: "الإحصائيات",
+      icon: BarChart3,
+      href: "/dashboard/admin/home-control/stats",
+    },
+    {
+      label: "من نحن",
+      icon: Users,
+      href: "/dashboard/admin/home-control/about",
+    },
+    {
+      label: "السياسات",
+      icon: FolderOpen,
+      href: "/dashboard/admin/home-control/policy",
+    },
+    {
+      label: "الشركاء",
+      icon: Users,
+      href: "/dashboard/admin/home-control/partners",
+    },
+    {
+      label: "المخيمات",
+      icon: Tent,
+      href: "/dashboard/admin/home-control/camps",
+    },
+    {
+      label: "المشاريع",
+      icon: FolderOpen,
+      href: "/dashboard/admin/home-control/projects",
+    },
+    {
+      label: "آراء المستفيدين",
+      icon: Users,
+      href: "/dashboard/admin/home-control/testimonials",
+    },
+    {
+      label: "تواصل معنا",
+      icon: Menu,
+      href: "/dashboard/admin/home-control/contact",
+    },
+  ];
+
+  // DETECT USER ROLE FROM URL PATH
+  const isAdmin = pathname.includes("/dashboard/admin");
+  const isContributor = pathname.includes("/dashboard/contributor");
+  const isRepresentative = !isAdmin && !isContributor;
+
+  // SELECT THE CORRECT MAIN MENU BASED ON ROLE
+  let mainMenu = representativeMenu;
+  if (isAdmin) {
+    mainMenu = adminMenu;
+  } else if (isContributor) {
+    mainMenu = contributorMenu;
+  }
 
   const side = isRTL ? "right" : "left";
 
@@ -117,45 +210,153 @@ export default function DashboardSidebar() {
           </div>
 
           {/* MENU LIST */}
-          <SidebarContent className="flex-1 px-3 py-6">
-            <SidebarGroup>
-              <SidebarGroupContent>
-                <SidebarMenu className="space-y-1">
-                  {menuItems.map((item, i) => {
-                    const isActive =
-                      item.href === "/dashboard" ||
-                      item.href === "/dashboard/contributor"
-                        ? pathname === item.href
-                        : pathname.startsWith(item.href);
+          <SidebarContent className="flex-1 px-3 py-6 custom-scrollbar gap-4">
+            {/* MAIN MENU GROUP */}
+            <Collapsible defaultOpen className="group/collapsible">
+              <SidebarGroup>
+                <SidebarGroupLabel asChild>
+                  <CollapsibleTrigger className="flex w-full items-center justify-between text-white/70 mb-2 px-2 hover:text-white transition-colors">
+                    {isAdmin ? "لوحة الإدارة" : "لوحة التحكم"}
+                    <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                  </CollapsibleTrigger>
+                </SidebarGroupLabel>
+                <CollapsibleContent>
+                  <SidebarGroupContent>
+                    <SidebarMenu className="space-y-1">
+                      {mainMenu.map((item, i) => {
+                        const isActive =
+                          pathname === item.href ||
+                          (item.href !== "/dashboard" &&
+                            item.href !== "/dashboard/admin" &&
+                            item.href !== "/dashboard/contributor" &&
+                            pathname.startsWith(item.href));
 
-                    return (
-                      <SidebarMenuItem key={i}>
-                        <Link href={item.href}>
-                          <SidebarMenuButton
-                            size="lg"
-                            className={`
-                              w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
-                              ${
-                                isActive
-                                  ? "bg-[#D9CBA8] text-black shadow-sm"
-                                  : "text-white hover:bg-white/10"
-                              }
-                            `}
-                          >
-                            <item.icon
-                              className={`w-4 h-4 ${
-                                isActive ? "text-black" : "text-white"
-                              }`}
-                            />
-                            <span>{item.label}</span>
-                          </SidebarMenuButton>
-                        </Link>
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
+                        return (
+                          <SidebarMenuItem key={i}>
+                            <Link href={item.href}>
+                              <SidebarMenuButton
+                                size="default"
+                                className={`
+                                  w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all
+                                  ${
+                                    isActive
+                                      ? "bg-[#D9CBA8] text-black shadow-sm"
+                                      : "text-white hover:bg-white/10"
+                                  }
+                                `}
+                              >
+                                <item.icon
+                                  className={`w-4 h-4 ${
+                                    isActive ? "text-black" : "text-white"
+                                  }`}
+                                />
+                                <span>{item.label}</span>
+                              </SidebarMenuButton>
+                            </Link>
+                          </SidebarMenuItem>
+                        );
+                      })}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                </CollapsibleContent>
+              </SidebarGroup>
+            </Collapsible>
+
+            {/* ENTITY MANAGEMENT GROUP - Admin Only */}
+            {isAdmin && (
+              <Collapsible defaultOpen className="group/collapsible">
+                <SidebarGroup>
+                  <SidebarGroupLabel asChild>
+                    <CollapsibleTrigger className="flex w-full items-center justify-between text-white/70 mb-2 px-2 hover:text-white transition-colors">
+                      إدارة النظام
+                      <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                    </CollapsibleTrigger>
+                  </SidebarGroupLabel>
+                  <CollapsibleContent>
+                    <SidebarGroupContent>
+                      <SidebarMenu className="space-y-1">
+                        {entityManagementMenu.map((item, i) => {
+                          const isActive = pathname === item.href;
+
+                          return (
+                            <SidebarMenuItem key={i}>
+                              <Link href={item.href}>
+                                <SidebarMenuButton
+                                  size="default"
+                                  className={`
+                                    w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all
+                                    ${
+                                      isActive
+                                        ? "bg-[#D9CBA8] text-black shadow-sm"
+                                        : "text-white hover:bg-white/10"
+                                    }
+                                  `}
+                                >
+                                  <item.icon
+                                    className={`w-4 h-4 ${
+                                      isActive ? "text-black" : "text-white"
+                                    }`}
+                                  />
+                                  <span>{item.label}</span>
+                                </SidebarMenuButton>
+                              </Link>
+                            </SidebarMenuItem>
+                          );
+                        })}
+                      </SidebarMenu>
+                    </SidebarGroupContent>
+                  </CollapsibleContent>
+                </SidebarGroup>
+              </Collapsible>
+            )}
+
+            {/* HOME CONTROL GROUP - Admin Only */}
+            {isAdmin && (
+              <Collapsible defaultOpen className="group/collapsible">
+                <SidebarGroup>
+                  <SidebarGroupLabel asChild>
+                    <CollapsibleTrigger className="flex w-full items-center justify-between text-white/70 mb-2 px-2 hover:text-white transition-colors">
+                      التحكم في الرئيسية
+                      <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                    </CollapsibleTrigger>
+                  </SidebarGroupLabel>
+                  <CollapsibleContent>
+                    <SidebarGroupContent>
+                      <SidebarMenu className="space-y-1">
+                        {homeControlMenu.map((item, i) => {
+                          const isActive = pathname === item.href;
+
+                          return (
+                            <SidebarMenuItem key={i}>
+                              <Link href={item.href}>
+                                <SidebarMenuButton
+                                  size="default"
+                                  className={`
+                                    w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all
+                                    ${
+                                      isActive
+                                        ? "bg-[#D9CBA8] text-black shadow-sm"
+                                        : "text-white hover:bg-white/10"
+                                    }
+                                  `}
+                                >
+                                  <item.icon
+                                    className={`w-4 h-4 ${
+                                      isActive ? "text-black" : "text-white"
+                                    }`}
+                                  />
+                                  <span>{item.label}</span>
+                                </SidebarMenuButton>
+                              </Link>
+                            </SidebarMenuItem>
+                          );
+                        })}
+                      </SidebarMenu>
+                    </SidebarGroupContent>
+                  </CollapsibleContent>
+                </SidebarGroup>
+              </Collapsible>
+            )}
           </SidebarContent>
 
           {/* LOGOUT */}
