@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarFooter,
-} from "@/components/ui/sidebar";
+} from "@/shared/ui/sidebar";
 
 import {
   Home,
@@ -38,7 +38,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@/shared/ui/collapsible";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();

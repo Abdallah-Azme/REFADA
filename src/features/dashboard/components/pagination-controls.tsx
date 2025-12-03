@@ -8,14 +8,14 @@ import {
   ChevronsRight,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/shared/ui/select";
 
 export default function PaginationControls<T>({ table }: { table: Table<T> }) {
   const pageIndex = table.getState().pagination.pageIndex;

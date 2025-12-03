@@ -1,21 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/src/shared/ui/button";
+import { Dialog, DialogTrigger } from "@/src/shared/ui/dialog";
 import { Plus, Tent } from "lucide-react";
-import AdminCampsTable from "@/features/dashboard/components/admin-camps-table";
+import MainHeader from "@/src/shared/components/main-header";
 import {
+  CampFormDialog,
+  CampsTable,
   Camp,
-  dummyCamps,
-} from "@/features/dashboard/table-cols/admin-camps-cols";
-import MainHeader from "@/features/dashboard/components/main-header";
-import CampFormDialog, {
   CampFormValues,
-} from "@/features/dashboard/components/camp-form-dialog";
+  mockCamps,
+} from "@/features/camps";
 
 export default function AdminCampsPage() {
-  const [camps, setCamps] = useState<Camp[]>(dummyCamps);
+  const [camps, setCamps] = useState<Camp[]>(mockCamps);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCamp, setEditingCamp] = useState<Camp | null>(null);
 
@@ -93,7 +92,7 @@ export default function AdminCampsPage() {
       {/* Admin Camps Table - styled like representative page */}
       <div className="w-full bg-white rounded-xl p-6">
         <h3 className="text-lg font-bold text-gray-900 mb-4">قائمة المخيمات</h3>
-        <AdminCampsTable
+        <CampsTable
           data={camps}
           onEdit={handleOpenDialog}
           onDelete={handleDeleteCamp}

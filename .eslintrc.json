@@ -1,0 +1,65 @@
+{
+  "extends": ["next/core-web-vitals"],
+  "plugins": ["import"],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json"
+      }
+    }
+  },
+  "rules": {
+    "import/no-restricted-paths": [
+      "error",
+      {
+        "zones": [
+          {
+            "target": "./src/features/**/components",
+            "from": "./src/features/**/services",
+            "message": "Components cannot import services directly. Use hooks instead."
+          },
+          {
+            "target": "./src/features/**/components",
+            "from": "./src/features/**/api",
+            "message": "Components cannot import API directly. Use hooks instead."
+          },
+          {
+            "target": "./src/features/**/services",
+            "from": "./src/features/**/components",
+            "message": "Services cannot import UI components."
+          },
+          {
+            "target": "./src/features/**/services",
+            "from": "./src/features/**/hooks",
+            "message": "Services cannot import hooks."
+          },
+          {
+            "target": "./src/features/**/types",
+            "from": "./src/features/**/!(types)",
+            "message": "Types cannot import from other layers."
+          }
+        ]
+      }
+    ],
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["@/features/*/components/*", "!@/features/*/components"],
+            "message": "Import from feature's index.ts instead of internal component paths."
+          },
+          {
+            "group": ["@/features/*/services/*", "!@/features/*/services"],
+            "message": "Import from feature's index.ts instead of internal service paths."
+          },
+          {
+            "group": ["@/features/*/hooks/*", "!@/features/*/hooks"],
+            "message": "Import from feature's index.ts instead of internal hook paths."
+          }
+        ]
+      }
+    ]
+  }
+}

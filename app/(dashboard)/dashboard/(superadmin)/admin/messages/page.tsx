@@ -4,14 +4,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Button } from "@/shared/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/shared/ui/dialog";
 import {
   Form,
   FormControl,
@@ -19,15 +19,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "@/shared/ui/form";
 import { Mail } from "lucide-react";
-import { Label } from "@/components/ui/label";
+import { Label } from "@/shared/ui/label";
 import RichTextEditor from "@/components/rich-text-editor";
-import AdminMessagesTable from "@/features/dashboard/components/admin-messages-table";
 import {
   ContactMessage,
-  dummyMessages,
-} from "@/features/dashboard/table-cols/admin-messages-cols";
+  mockMessages,
+  AdminMessagesTable,
+} from "@/features/messages";
 
 const replySchema = z.object({
   replyText: z.string().min(10, "الرد يجب أن يكون 10 أحرف على الأقل"),
@@ -36,7 +36,7 @@ const replySchema = z.object({
 type ReplyFormValues = z.infer<typeof replySchema>;
 
 export default function ContactMessagesPage() {
-  const [messages, setMessages] = useState<ContactMessage[]>(dummyMessages);
+  const [messages, setMessages] = useState<ContactMessage[]>(mockMessages);
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(
     null
   );
