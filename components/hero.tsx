@@ -165,7 +165,7 @@ export default function Hero() {
                   </div>
 
                   {/* Image Section */}
-                  <div className="flex-1 flex justify-center items-center relative overflow-visible">
+                  <div className="flex-[1.2] flex justify-center items-center relative overflow-visible min-w-[350px] sm:min-w-[450px] lg:min-w-[600px]">
                     {/* Boy Wrapper */}
                     <div className="relative flex justify-center items-center overflow-visible">
                       {/* Boy Gradient Circle Background */}
@@ -242,29 +242,13 @@ export default function Hero() {
                       <motion.div
                         className="relative z-20 w-[120px] sm:w-[160px] lg:w-[200px] h-[120px] sm:h-[160px] lg:h-[200px] rounded-full overflow-hidden"
                         animate={{
-                          y: [0, -10, 0],
-                          rotateY: [0, 360],
+                          y: [0, -8, 0],
                         }}
                         transition={{
-                          y: {
-                            duration: 6,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                            delay: 1,
-                          },
-                          rotateY: {
-                            duration: 10,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                            delay: 2,
-                          },
+                          duration: 4,
+                          repeat: Infinity,
+                          ease: "easeInOut",
                         }}
-                        whileHover={{
-                          rotateY: 180,
-                          scale: 1.05,
-                          transition: { duration: 0.6 },
-                        }}
-                        style={{ transformStyle: "preserve-3d" }}
                       >
                         <ImageFallback
                           alt={slide.girlAlt}

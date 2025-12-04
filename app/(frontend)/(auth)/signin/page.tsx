@@ -11,28 +11,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock, Mail } from "lucide-react";
+import { Lock, Mail, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-const formSchema = z.object({
-  email: z.string().email({ message: "يرجى إدخال بريد إلكتروني صالح" }),
-  password: z
-    .string()
-    .min(6, { message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل" }),
-});
+import { loginSchema, useLogin, type LoginFormValues } from "@/features/auth";
 
 export default function RefadLogin() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { mutate: login, isPending } = useLogin();
+
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {};
+  const onSubmit = (values: LoginFormValues) => {
+    login(values);
+  };
 
   return (
     <div className=" flex flex-col gap-5 ">
@@ -66,6 +63,7 @@ export default function RefadLogin() {
                         <Input
                           placeholder="البريد الإلكتروني"
                           className="ps-9 h-[50px] bg-[#EEEADD]"
+                          disabled={isPending}
                           {...field}
                         />
                       </div>
@@ -87,6 +85,7 @@ export default function RefadLogin() {
                           type="password"
                           placeholder="كلمة المرور"
                           className="ps-9 h-[50px] bg-[#EEEADD]"
+                          disabled={isPending}
                           {...field}
                         />
                       </div>
@@ -97,16 +96,24 @@ export default function RefadLogin() {
               />
 
               <div className=" text-sm text-gray-600">
-                {/* <Link href="#" className="hover:underline">
-                  نسيت كلمة المرور
-                </Link> */}
+                <Link href="/forgot-password" className="hover:underline">
+                  نسيت كلمة المرور؟
+                </Link>
               </div>
 
               <Button
                 type="submit"
+                disabled={isPending}
                 className="w-full rounded-full! bg-secondary hover:bg-[#b5a678] text-primary py-6 font-bold text-lg"
               >
-                دخول
+                {isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    جاري تسجيل الدخول...
+                  </>
+                ) : (
+                  "دخول"
+                )}
               </Button>
             </form>
           </Form>{" "}
@@ -126,6 +133,7 @@ export default function RefadLogin() {
                         <Input
                           placeholder="البريد الإلكتروني"
                           className="ps-9 h-[50px] bg-[#EEEADD]"
+                          disabled={isPending}
                           {...field}
                         />
                       </div>
@@ -147,6 +155,7 @@ export default function RefadLogin() {
                           type="password"
                           placeholder="كلمة المرور"
                           className="ps-9 h-[50px] bg-[#EEEADD]"
+                          disabled={isPending}
                           {...field}
                         />
                       </div>
@@ -156,11 +165,25 @@ export default function RefadLogin() {
                 )}
               />
 
+              <div className=" text-sm text-gray-600">
+                <Link href="/forgot-password" className="hover:underline">
+                  نسيت كلمة المرور؟
+                </Link>
+              </div>
+
               <Button
                 type="submit"
+                disabled={isPending}
                 className="w-full rounded-full! bg-secondary hover:bg-[#b5a678] text-primary py-6 font-bold text-lg"
               >
-                دخول
+                {isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    جاري تسجيل الدخول...
+                  </>
+                ) : (
+                  "دخول"
+                )}
               </Button>
             </form>
           </Form>

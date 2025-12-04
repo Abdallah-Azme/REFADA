@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Tent, Search } from "lucide-react";
-import { shelters } from "../../../components/pages/home/camps-section";
+import { shelters } from "@/components/pages/home/camps-section";
 import { CampCard } from "./camp-card";
 
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
