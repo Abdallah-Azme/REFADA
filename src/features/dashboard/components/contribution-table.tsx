@@ -171,7 +171,7 @@ export default function ContributionTable() {
                     )}
                   />
 
-                  {/* المخيم */}
+                  {/* الإيواء */}
                   <FormField
                     control={form.control}
                     name="camp"
@@ -183,11 +183,11 @@ export default function ContributionTable() {
                             value={field.value}
                           >
                             <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                              <SelectValue placeholder="المخيم" />
+                              <SelectValue placeholder="الإيواء" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="camp1">مخيم 1</SelectItem>
-                              <SelectItem value="camp2">مخيم 2</SelectItem>
+                              <SelectItem value="camp1">إيواء 1</SelectItem>
+                              <SelectItem value="camp2">إيواء 2</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>

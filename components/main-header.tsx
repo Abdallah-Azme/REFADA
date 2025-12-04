@@ -32,7 +32,7 @@ export default function MainHeader() {
   ];
 
   return (
-    <div className="py-4 bg-white">
+    <div className="py-4 bg-white shadow-sm">
       <div className="flex items-center justify-between px-4 container mx-auto ">
         {/* --- Desktop Navigation --- */}
         <nav className="hidden lg:flex gap-10 font-medium text-sm">

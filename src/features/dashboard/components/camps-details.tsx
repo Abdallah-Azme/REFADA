@@ -8,7 +8,7 @@ export default function CampsDetails({
   return (
     <div className="lg:w-1/2 p-4 bg-white rounded-r-2xl" dir="rtl">
       <div className="flex items-center justify-between mb-8">
-        <h3 className="text-lg font-bold text-gray-900">بيانات المخيم</h3>
+        <h3 className="text-lg font-bold text-gray-900">بيانات الإيواء</h3>
       </div>
 
       <div className="grid grid-cols-2 gap-4">

@@ -29,15 +29,15 @@ interface Camp {
 const camps: Camp[] = [
   {
     id: 1,
-    name: "مخيم جباليا",
-    location: "المخيم الشمالي - غزة",
+    name: "إيواء جباليا",
+    location: "الإيواء الشمالي - غزة",
     phone: "+972 22 222 2222",
     image: "/pages/home/gaza-camp-1.webp",
     position: [31.535, 34.495],
   },
   {
     id: 2,
-    name: "مخيم الشاطئ",
+    name: "إيواء الشاطئ",
     location: "غرب مدينة غزة",
     phone: "+972 22 333 3333",
     image: "/pages/home/gaza-camp-2.webp",
@@ -45,7 +45,7 @@ const camps: Camp[] = [
   },
   {
     id: 3,
-    name: "مخيم النصيرات",
+    name: "إيواء النصيرات",
     location: "وسط قطاع غزة",
     phone: "+972 22 444 4444",
     image: "/pages/home/gaza-camp-3.webp",
@@ -79,10 +79,10 @@ export default function CampsMapSection({
           viewport={{ once: true }}
         >
           <h2 className="text-2xl font-bold text-[#1C3A34] mb-2">
-            مواقع المخيمات
+            مواقع الإيواءات
           </h2>
           <p className="text-gray-600 text-sm">
-            من خلال الخريطة التفاعلية التالية يمكنك استعراض أماكن المخيمات
+            من خلال الخريطة التفاعلية التالية يمكنك استعراض أماكن الإيواءات
             المنتشرة في مختلف المناطق بغزة
           </p>
         </motion.div>
@@ -179,7 +179,7 @@ export default function CampsMapSection({
       {/* Footer Note */}
       {!secondary && (
         <p className="text-center text-gray-600 text-sm mt-8">
-          اضغط على أي موقع في الخريطة للاطلاع على تفاصيل المخيم وعدد الأسر
+          اضغط على أي موقع في الخريطة للاطلاع على تفاصيل الإيواء وعدد الأسر
           والخدمات المتوفرة
         </p>
       )}

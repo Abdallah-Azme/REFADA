@@ -20,63 +20,63 @@ import Link from "next/link";
 export const shelters = [
   {
     id: 1,
-    title: "مخيم المغازي",
+    title: "إيواء المغازي",
     location: "خان يونس",
     families: 2400,
     image: "/pages/home/gaza-camp-1.webp",
   },
   {
     id: 2,
-    title: "مخيم أصدقاء",
+    title: "إيواء أصدقاء",
     location: "خان يونس",
     families: 2400,
     image: "/pages/home/gaza-camp-2.webp",
   },
   {
     id: 3,
-    title: "مخيم النصيرات",
+    title: "إيواء النصيرات",
     location: "خان يونس",
     families: 3000,
     image: "/pages/home/gaza-camp-3.webp",
   },
   {
     id: 4,
-    title: "مخيم جباليا",
+    title: "إيواء جباليا",
     location: "خان يونس",
     families: 2400,
     image: "/pages/home/gaza-camp-4.webp",
   },
   {
     id: 5,
-    title: "مخيم المغازي",
+    title: "إيواء المغازي",
     location: "خان يونس",
     families: 2400,
     image: "/pages/home/gaza-camp-1.webp",
   },
   {
     id: 6,
-    title: "مخيم أصدقاء",
+    title: "إيواء أصدقاء",
     location: "خان يونس",
     families: 2400,
     image: "/pages/home/gaza-camp-2.webp",
   },
   {
     id: 7,
-    title: "مخيم النصيرات",
+    title: "إيواء النصيرات",
     location: "خان يونس",
     families: 3000,
     image: "/pages/home/gaza-camp-3.webp",
   },
   {
     id: 8,
-    title: "مخيم جباليا",
+    title: "إيواء جباليا",
     location: "خان يونس",
     families: 2400,
     image: "/pages/home/gaza-camp-4.webp",
   },
   {
     id: 9,
-    title: "مخيم أصدقاء",
+    title: "إيواء أصدقاء",
     location: "خان يونس",
     families: 2400,
     image: "/pages/home/gaza-camp-2.webp",
@@ -133,7 +133,7 @@ export default function CampsSection() {
           loop: true,
           direction: isRTL ? "rtl" : "ltr",
         }}
-        plugins={[autoplay.current]}
+        plugins={[autoplay.current] as any}
         className="relative"
       >
         <CarouselContent className="-ml-4">
@@ -172,7 +172,7 @@ export default function CampsSection() {
       >
         <Link href="/camps">
           {!isRTL && <MoveRight />}
-          المزيد من المشاريع
+          المزيد من الإيواءات
           {isRTL && <MoveLeft />}
         </Link>
       </Button>

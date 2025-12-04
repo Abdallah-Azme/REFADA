@@ -150,7 +150,7 @@ export const createColumnsForContributor = (
   },
   {
     accessorKey: "camp",
-    header: "المخيم",
+    header: "الإيواء",
     cell: ({ row }) => (
       <div className="text-center text-gray-600">{row.original.camp}</div>
     ),

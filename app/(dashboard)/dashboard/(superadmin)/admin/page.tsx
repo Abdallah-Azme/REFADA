@@ -50,8 +50,8 @@ const adminLinks = [
     color: "text-indigo-500",
   },
   {
-    title: "المخيمات",
-    description: "إعدادات قسم المخيمات",
+    title: "الإيواءات",
+    description: "إعدادات قسم الإيواءات",
     icon: Tent,
     href: "/dashboard/admin/home-control/camps",
     color: "text-red-500",

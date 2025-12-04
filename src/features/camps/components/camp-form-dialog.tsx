@@ -40,7 +40,7 @@ export function CampFormDialog({
     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
-          {initialData ? "تعديل المخيم" : "إضافة مخيم جديد"}
+          {initialData ? "تعديل الإيواء" : "إضافة إيواء جديد"}
         </DialogTitle>
       </DialogHeader>
       <Form {...form}>
@@ -53,9 +53,9 @@ export function CampFormDialog({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>اسم المخيم</FormLabel>
+                <FormLabel>اسم الإيواء</FormLabel>
                 <FormControl>
-                  <Input placeholder="أدخل اسم المخيم" {...field} />
+                  <Input placeholder="أدخل اسم الإيواء" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -69,7 +69,7 @@ export function CampFormDialog({
               <FormItem>
                 <FormLabel>الموقع</FormLabel>
                 <FormControl>
-                  <Input placeholder="أدخل موقع المخيم" {...field} />
+                  <Input placeholder="أدخل موقع الإيواء" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -84,7 +84,7 @@ export function CampFormDialog({
                 <FormLabel>الوصف</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="أدخل وصف المخيم"
+                    placeholder="أدخل وصف الإيواء"
                     className="min-h-[100px]"
                     {...field}
                   />

@@ -220,7 +220,7 @@ export const createColumns = (
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        المخيم
+        الإيواء
         <ArrowUpDown className="mr-2 h-4 w-4" />
       </Button>
     ),

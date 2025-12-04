@@ -77,7 +77,8 @@ export default function ContributeDialog({
         <div className="p-6">
           <DialogHeader className="flex flex-row items-center justify-between mb-6">
             <DialogTitle className="text-xl font-bold text-center w-full text-gray-800">
-              {project.projectName} {project.camp ? `مخيم ${project.camp}` : ""}
+              {project.projectName}{" "}
+              {project.camp ? `إيواء ${project.camp}` : ""}
             </DialogTitle>
           </DialogHeader>
 

@@ -8,7 +8,7 @@ export default function Page() {
   return (
     <main className="w-full flex flex-col  gap-6 p-8 bg-gray-50  ">
       <div className="flex items-center justify-between mb-5">
-        <MainHeader header="مخيم اصداء">
+        <MainHeader header="إيواء اصداء">
           <Tent />
         </MainHeader>
       </div>

@@ -20,7 +20,7 @@ export const analyticsService = {
 
   getStatLabel(key: keyof AnalyticsStats): string {
     const labels: Record<keyof AnalyticsStats, string> = {
-      totalCamps: "إجمالي المخيمات",
+      totalCamps: "إجمالي الإيواءات",
       totalProjects: "إجمالي المشاريع",
       totalContributors: "إجمالي المساهمين",
       totalFamilies: "إجمالي العائلات",

@@ -76,7 +76,7 @@ export default function AdminCampsTable({
     <div className="space-y-4">
       <div className="flex items-center py-4">
         <Input
-          placeholder="بحث عن مخيم..."
+          placeholder="بحث عن إيواء..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)

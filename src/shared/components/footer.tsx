@@ -80,7 +80,7 @@ export default function Footer() {
                   href="/camps"
                   className="hover:text-white transition cursor-pointer"
                 >
-                  المخيمات
+                  الإيواءات
                 </Link>
               </li>
               <li>

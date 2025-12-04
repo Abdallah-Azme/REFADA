@@ -19,7 +19,7 @@ import * as z from "zod";
 
 // Zod Schema
 const campSchema = z.object({
-  campName: z.string().min(1, "اسم المخيم مطلوب"),
+  campName: z.string().min(1, "اسم الإيواء مطلوب"),
   email: z.string().email("البريد الإلكتروني غير صحيح"),
   phoneNumber: z.string().min(10, "رقم الهاتف غير صحيح"),
   whatsappNumber: z.string().min(10, "رقم الواتساب غير صحيح"),

@@ -106,7 +106,7 @@ export default function ProjectDetailsDialog({
             </div>
             <div className="bg-white p-3 rounded-md text-center shadow-sm border border-gray-100">
               <span className="text-sm font-semibold text-gray-800 block">
-                {project.camp ? `مخيم ${project.camp}` : "مخيم أصداء"}
+                {project.camp ? `إيواء ${project.camp}` : "إيواء أصداء"}
               </span>
             </div>
             <div className="bg-white p-3 rounded-md text-center shadow-sm border border-gray-100">

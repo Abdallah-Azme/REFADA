@@ -48,7 +48,7 @@ export default function AdminCampsPage() {
   };
 
   const handleDeleteCamp = (id: string) => {
-    if (confirm("هل أنت متأكد من حذف هذا المخيم؟")) {
+    if (confirm("هل أنت متأكد من حذف هذا الإيواء؟")) {
       setCamps(camps.filter((camp) => camp.id !== id));
     }
   };
@@ -70,7 +70,7 @@ export default function AdminCampsPage() {
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">
       {/* Header with Add Button */}
       <div className="flex items-center justify-between">
-        <MainHeader header="إدارة المخيمات">
+        <MainHeader header="إدارة الإيواءات">
           <Tent className="text-primary" />
         </MainHeader>
 
@@ -78,7 +78,7 @@ export default function AdminCampsPage() {
           <DialogTrigger asChild>
             <Button onClick={() => handleOpenDialog()}>
               <Plus className="h-4 w-4 mr-2" />
-              إضافة مخيم جديد
+              إضافة إيواء جديد
             </Button>
           </DialogTrigger>
           <CampFormDialog
@@ -91,7 +91,9 @@ export default function AdminCampsPage() {
 
       {/* Admin Camps Table - styled like representative page */}
       <div className="w-full bg-white rounded-xl p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">قائمة المخيمات</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-4">
+          قائمة الإيواءات
+        </h3>
         <CampsTable
           data={camps}
           onEdit={handleOpenDialog}

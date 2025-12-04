@@ -56,6 +56,37 @@ export default function CampProjects({
             بحث حسب
           </p>
 
+          {/* Governorate */}
+          <FormField
+            control={form.control}
+            name="region"
+            render={({ field }) => (
+              <FormItem className="flex-1 min-w-[150px]">
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="w-full bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 focus:ring-0">
+                      <SelectValue placeholder="المحافظة" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="شمال غزة">شمال غزة</SelectItem>
+                    <SelectItem value="غزة">غزة</SelectItem>
+                    <SelectItem value="دير البلح">دير البلح</SelectItem>
+                    <SelectItem value="خان يونس">خان يونس</SelectItem>
+                    <SelectItem value="رفح">رفح</SelectItem>
+                    <SelectItem value="الخليل">الخليل</SelectItem>
+                    <SelectItem value="بيت لحم">بيت لحم</SelectItem>
+                    <SelectItem value="القدس">القدس</SelectItem>
+                    <SelectItem value="رام الله والبيرة">
+                      رام الله والبيرة
+                    </SelectItem>
+                    <SelectItem value="نابلس">نابلس</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+
           {/* Shelter Name */}
           <FormField
             control={form.control}
@@ -78,7 +109,7 @@ export default function CampProjects({
           />
 
           {/* Camp Name */}
-          <FormField
+          {/* <FormField
             control={form.control}
             name="campName"
             render={({ field }) => (
@@ -86,17 +117,17 @@ export default function CampProjects({
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 focus:ring-0">
-                      <SelectValue placeholder="اسم المخيم" />
+                      <SelectValue placeholder="اسم الإيواء" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="مخيم الأمل">مخيم الأمل</SelectItem>
-                    <SelectItem value="مخيم الرحمة">مخيم الرحمة</SelectItem>
+                    <SelectItem value="إيواء الأمل">إيواء الأمل</SelectItem>
+                    <SelectItem value="إيواء الرحمة">إيواء الرحمة</SelectItem>
                   </SelectContent>
                 </Select>
               </FormItem>
             )}
-          />
+          /> */}
 
           {/* Camp Title */}
           <FormField
@@ -107,33 +138,12 @@ export default function CampProjects({
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 focus:ring-0">
-                      <SelectValue placeholder="عنوان المخيم" />
+                      <SelectValue placeholder="عنوان الإيواء" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="الإعمار">الإعمار</SelectItem>
                     <SelectItem value="الإغاثة">الإغاثة</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
-          />
-
-          {/* Region */}
-          <FormField
-            control={form.control}
-            name="region"
-            render={({ field }) => (
-              <FormItem className="flex-1 min-w-[150px]">
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 focus:ring-0">
-                      <SelectValue placeholder="المنطقة" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="الشمال">الشمال</SelectItem>
-                    <SelectItem value="الجنوب">الجنوب</SelectItem>
                   </SelectContent>
                 </Select>
               </FormItem>

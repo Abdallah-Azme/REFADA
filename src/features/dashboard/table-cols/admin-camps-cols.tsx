@@ -20,9 +20,9 @@ export interface Camp {
 export const dummyCamps: Camp[] = [
   {
     id: "1",
-    name: "مخيم أصداء",
+    name: "إيواء أصداء",
     location: "غزة - الشمال",
-    description: "مخيم رئيسي يوفر المأوى والخدمات الأساسية",
+    description: "إيواء رئيسي يوفر المأوى والخدمات الأساسية",
     capacity: 500,
     currentOccupancy: 350,
     coordinates: { lat: 31.5, lng: 34.45 },
@@ -30,9 +30,9 @@ export const dummyCamps: Camp[] = [
   },
   {
     id: "2",
-    name: "مخيم النور",
+    name: "إيواء النور",
     location: "غزة - الجنوب",
-    description: "مخيم طوارئ للعائلات النازحة",
+    description: "إيواء طوارئ للعائلات النازحة",
     capacity: 300,
     currentOccupancy: 280,
     coordinates: { lat: 31.3, lng: 34.3 },
@@ -53,7 +53,7 @@ export const createAdminCampColumns = ({
 }: AdminCampColumnsProps): ColumnDef<Camp>[] => [
   {
     accessorKey: "name",
-    header: "اسم المخيم",
+    header: "اسم الإيواء",
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue("name")}</div>
     ),

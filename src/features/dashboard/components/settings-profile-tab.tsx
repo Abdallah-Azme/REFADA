@@ -32,7 +32,7 @@ const profileSchema = z.object({
   idNumber: z.string().min(10, "رقم الهوية غير صالح"),
   phone: z.string().min(7, "رقم الجوال غير صالح"),
   backupNumber: z.string().optional(),
-  camp: z.string().min(2, "اسم المخيم مطلوب"),
+  camp: z.string().min(2, "اسم الإيواء مطلوب"),
   email: z.string().email("البريد الإلكتروني غير صالح"),
   job: z.string().min(2, "الوظيفة مطلوبة"),
 });
@@ -53,7 +53,7 @@ export default function SettingsProfileTab() {
       idNumber: "3220123456789098997655454",
       phone: "+972 00 323 9876",
       backupNumber: "3220123456789098997655454",
-      camp: "مخيم اجدع",
+      camp: "إيواء اجدع",
       email: "Ahmed_mohamed83421@gmail.com",
       job: "مندوب ميداني",
     },
@@ -175,7 +175,7 @@ export default function SettingsProfileTab() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className=" text-sm font-medium text-gray-700">
-                      المخيم
+                      الإيواء
                     </FormLabel>
                     <Select
                       onValueChange={field.onChange}
@@ -188,8 +188,8 @@ export default function SettingsProfileTab() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="مخيم اجدع">مخيم اجدع</SelectItem>
-                        <SelectItem value="مخيم آخر">مخيم آخر</SelectItem>
+                        <SelectItem value="إيواء اجدع">إيواء اجدع</SelectItem>
+                        <SelectItem value="إيواء آخر">إيواء آخر</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

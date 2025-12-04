@@ -50,7 +50,7 @@ export default function DashboardSidebar() {
   // REPRESENTATIVE MENU (default dashboard menu)
   const representativeMenu = [
     { label: "الرئيسية", icon: Home, href: "/dashboard" },
-    { label: "بيانات المخيم", icon: Tent, href: "/dashboard/camps" },
+    { label: "بيانات الإيواء", icon: Tent, href: "/dashboard/camps" },
     { label: "العائلات", icon: Users, href: "/dashboard/families" },
     { label: "المشاريع", icon: FolderOpen, href: "/dashboard/projects" },
     { label: "التقارير", icon: BarChart3, href: "/dashboard/reports" },
@@ -60,13 +60,13 @@ export default function DashboardSidebar() {
   // CONTRIBUTOR MENU
   const contributorMenu = [
     { label: "معلومات المساهم", icon: Users, href: "/dashboard/contributor" },
-    { label: "المخيمات", icon: Tent, href: "/dashboard/contributor/camps" },
+    { label: "الإيواءات", icon: Tent, href: "/dashboard/contributor/camps" },
   ];
 
   // ADMIN MAIN MENU
   const adminMenu = [
     { label: "الرئيسية", icon: Home, href: "/dashboard/admin" },
-    { label: "المخيمات", icon: Tent, href: "/dashboard/admin/camps" },
+    { label: "الإيواءات", icon: Tent, href: "/dashboard/admin/camps" },
     { label: "الرسائل", icon: Mail, href: "/dashboard/admin/messages" },
     { label: "الإعدادات", icon: Settings, href: "/dashboard/admin/settings" },
   ];
@@ -118,7 +118,7 @@ export default function DashboardSidebar() {
       href: "/dashboard/admin/home-control/partners",
     },
     {
-      label: "المخيمات",
+      label: "الإيواءات",
       icon: Tent,
       href: "/dashboard/admin/home-control/camps",
     },

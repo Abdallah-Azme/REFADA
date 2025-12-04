@@ -14,7 +14,7 @@ export default function CambDetailsCard() {
             width={90}
             height={90}
             src="/camb-image.png"
-            alt="مخيم جباليا"
+            alt="إيواء جباليا"
             className="w-full h-full object-cover rounded-2xl bg-gray-200"
             onError={(e) => {
               e.currentTarget.src =
@@ -25,9 +25,10 @@ export default function CambDetailsCard() {
         {/* Text Content */}
         <div className="flex-1 space-y-4">
           <p className="text-gray-700 leading-8 text-lg font-medium">
-            يُعتبر مخيم جباليا أكبر مخيم للاجئين الفلسطينيين في فلسطين، حيث يعيش
-            فيه 119,000 فلسطيني يتوزعون على مساحة لا تتجاوز 1.4 كيلومتر مربع،
-            مما يجعله واحدًا من أكثر الأماكن اكتظاظًا بالسكان 1948. يُعتبر مخيم
+            يُعتبر إيواء جباليا أكبر إيواء للاجئين الفلسطينيين في فلسطين، حيث
+            يعيش فيه 119,000 فلسطيني يتوزعون على مساحة لا تتجاوز 1.4 كيلومتر
+            مربع، مما يجعله واحدًا من أكثر الأماكن اكتظاظًا بالسكان 1948. يُعتبر
+            إيواء
           </p>
         </div>
       </div>

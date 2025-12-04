@@ -105,7 +105,7 @@ export default function CampaignCards() {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:gap-6   gap-4">
       {campaigns.map((campaign, index) => (
         <div key={index}>
-          <h4 className="my-2 text-[#1E1E1E]">مخيم أصداء</h4>
+          <h4 className="my-2 text-[#1E1E1E]">إيواء أصداء</h4>
           <CampaignCard campaign={campaign} />
         </div>
       ))}

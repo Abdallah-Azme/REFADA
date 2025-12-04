@@ -40,11 +40,11 @@ export default function CampsControlPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">تحكم في قسم المخيمات</h1>
+      <h1 className="text-2xl font-bold">تحكم في قسم الإيواءات</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle>تعديل محتوى قسم المخيمات</CardTitle>
+          <CardTitle>تعديل محتوى قسم الإيواءات</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -82,9 +82,9 @@ export default function CampsControlPage() {
               />
 
               <div className="space-y-2">
-                <FormLabel>إدارة المخيمات المعروضة</FormLabel>
+                <FormLabel>إدارة الإيواءات المعروضة</FormLabel>
                 <p className="text-sm text-muted-foreground">
-                  يتم عرض المخيمات تلقائياً من قاعدة البيانات. يمكنك هنا تخصيص
+                  يتم عرض الإيواءات تلقائياً من قاعدة البيانات. يمكنك هنا تخصيص
                   العنوان والوصف العام للقسم.
                 </p>
               </div>

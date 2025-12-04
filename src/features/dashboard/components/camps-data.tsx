@@ -9,7 +9,7 @@ export interface CampsStats {
 }
 
 export const campStats = [
-  { label: "اسم المخيم", value: "اضافه" },
+  { label: "اسم الإيواء", value: "اضافه" },
   { label: "عدد العائلات", value: "320 عائلة" },
   { label: "عدد الأطفال", value: "3120 طفل" },
   { label: "عدد كبار السن", value: "32 شيخ" },

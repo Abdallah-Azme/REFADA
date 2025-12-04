@@ -24,7 +24,7 @@ import { Camp } from "@/features/dashboard/table-cols/admin-camps-cols";
 
 const campSchema = z
   .object({
-    name: z.string().min(1, "اسم المخيم مطلوب"),
+    name: z.string().min(1, "اسم الإيواء مطلوب"),
     location: z.string().min(1, "الموقع مطلوب"),
     description: z.string().min(10, "الوصف يجب أن يكون 10 أحرف على الأقل"),
     capacity: z.number().min(1, "السعة يجب أن تكون أكبر من 0"),
@@ -94,7 +94,7 @@ export default function CampFormDialog({
     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
-          {initialData ? "تعديل المخيم" : "إضافة مخيم جديد"}
+          {initialData ? "تعديل الإيواء" : "إضافة إيواء جديد"}
         </DialogTitle>
       </DialogHeader>
       <Form {...form}>
@@ -107,9 +107,9 @@ export default function CampFormDialog({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>اسم المخيم</FormLabel>
+                <FormLabel>اسم الإيواء</FormLabel>
                 <FormControl>
-                  <Input placeholder="أدخل اسم المخيم" {...field} />
+                  <Input placeholder="أدخل اسم الإيواء" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -123,7 +123,7 @@ export default function CampFormDialog({
               <FormItem>
                 <FormLabel>الموقع</FormLabel>
                 <FormControl>
-                  <Input placeholder="أدخل موقع المخيم" {...field} />
+                  <Input placeholder="أدخل موقع الإيواء" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -138,7 +138,7 @@ export default function CampFormDialog({
                 <FormLabel>الوصف</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="أدخل وصف المخيم"
+                    placeholder="أدخل وصف الإيواء"
                     className="min-h-[100px]"
                     {...field}
                   />

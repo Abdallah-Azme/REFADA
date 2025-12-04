@@ -31,7 +31,7 @@ export const dummyMessages: ContactMessage[] = [
     email: "fatima@example.com",
     phone: "+970598765432",
     subject: "طلب مساعدة",
-    message: "نحتاج مساعدة عاجلة في المخيم...",
+    message: "نحتاج مساعدة عاجلة في الإيواء...",
     status: "read",
     createdAt: new Date("2024-01-14T14:20:00"),
   },

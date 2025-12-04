@@ -21,6 +21,6 @@ export const representativeService = {
   },
 
   formatAssignedCamps(count: number): string {
-    return count === 0 ? "لا يوجد" : `${count} مخيم`;
+    return count === 0 ? "لا يوجد" : `${count} إيواء`;
   },
 };

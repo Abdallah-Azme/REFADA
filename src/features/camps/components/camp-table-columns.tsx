@@ -13,7 +13,7 @@ export const createAdminCampColumns = ({
 }: CampTableColumn): ColumnDef<Camp>[] => [
   {
     accessorKey: "name",
-    header: "اسم المخيم",
+    header: "اسم الإيواء",
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue("name")}</div>
     ),

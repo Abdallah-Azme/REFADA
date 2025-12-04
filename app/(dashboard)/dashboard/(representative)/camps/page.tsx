@@ -10,7 +10,7 @@ import { Tent } from "lucide-react";
 export default function Page() {
   return (
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">
-      <MainHeader header="مخيم أصداء">
+      <MainHeader header="إيواء أصداء">
         <Tent className="text-primary" />
       </MainHeader>
 

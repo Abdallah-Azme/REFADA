@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const campSchema = z
   .object({
-    name: z.string().min(1, "اسم المخيم مطلوب"),
+    name: z.string().min(1, "اسم الإيواء مطلوب"),
     location: z.string().min(1, "الموقع مطلوب"),
     description: z.string().min(10, "الوصف يجب أن يكون 10 أحرف على الأقل"),
     capacity: z.number().min(1, "السعة يجب أن تكون أكبر من 0"),

@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import ImageFallback from "./shared/image-fallback";
 import { useEffect, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
-import Fade from "embla-carousel-fade";
 import { useDirection } from "@/hooks/use-direction";
 import {
   Carousel,
@@ -141,10 +140,7 @@ export default function Hero() {
             loop: true,
             direction: isRTL ? "rtl" : "ltr",
           }}
-          plugins={[
-            Autoplay({ delay: 2000, stopOnInteraction: false }),
-            Fade({}),
-          ]}
+          plugins={[Autoplay({ delay: 2000, stopOnInteraction: false })] as any}
         >
           <CarouselContent className="py-5">
             {carouselSlides.map((slide) => (
@@ -194,17 +190,6 @@ export default function Hero() {
                           duration: 5,
                           repeat: Infinity,
                           ease: "easeInOut",
-                        }}
-                        whileHover={{
-                          rotateY: 180,
-                          scale: 1.05,
-                          transition: { duration: 0.6 },
-                        }}
-                        style={{
-                          transformStyle: "preserve-3d",
-                          perspective: "1000px",
-                          backfaceVisibility: "hidden",
-                          WebkitBackfaceVisibility: "hidden",
                         }}
                       >
                         <ImageFallback

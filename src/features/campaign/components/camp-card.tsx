@@ -54,11 +54,11 @@ export function CampCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
         {/* Content */}
-        <div className="absolute top-4 start-4 text-right text-white">
+        <div className="absolute bottom-4 start-4 end-4 text-right text-white">
           <h3 className="text-lg font-bold">{title}</h3>
-          <p className="text-sm text-gray-200 flex items-center justify-end gap-1">
+          <div className="text-sm text-gray-200 flex items-center justify-between gap-2">
             <span>{families} عائلة</span>
-            <span>•</span>
+
             <span className="flex items-center gap-1">
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                 <path
@@ -69,7 +69,7 @@ export function CampCard({
               </svg>
               {location}
             </span>
-          </p>
+          </div>
         </div>
 
         {/* Donate Button */}
