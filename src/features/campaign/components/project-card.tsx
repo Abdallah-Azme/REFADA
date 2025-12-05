@@ -16,6 +16,7 @@ interface ProjectCardProps {
   current: number;
   donors: number;
   percentage: number;
+  camp: string;
 }
 
 export function ProjectCard({
@@ -29,6 +30,7 @@ export function ProjectCard({
   current,
   donors,
   percentage,
+  camp,
 }: ProjectCardProps) {
   // ✅ Format to 2 decimal places safely
   const formattedPercentage = Number(percentage.toFixed(2));
@@ -68,7 +70,7 @@ export function ProjectCard({
             )}`}
             className="bg-[#D2EBFF] text-blue-500 rounded-md text-xs px-2 py-1"
           >
-            {title}
+            {camp}
           </Link>
         </div>
 

@@ -49,35 +49,28 @@ export default function MobileMenu({ navItems }: MobileMenuProps) {
 
             return (
               <SheetClose asChild key={i}>
-                <motion.div
-                  whileHover={{
-                    x: 8,
-                    backgroundColor: "rgba(39, 69, 64, 0.08)",
-                  }}
-                  transition={{ type: "spring", stiffness: 250 }}
+                <Link
+                  href={item.href}
                   className={`
-                    rounded-lg px-3 py-2 cursor-pointer transition-all duration-200
-                    ${
-                      isActive
-                        ? "bg-[#274540]/10 border-b-2 border-[#C8BA90]"
-                        : ""
-                    }
-                  `}
+                  rounded-lg px-3 py-2 cursor-pointer transition-all duration-200 block
+                  ${
+                    isActive
+                      ? "bg-[#274540]/10 border-b-2 border-[#C8BA90] text-[#274540]"
+                      : "text-gray-700 hover:text-[#274540]"
+                  }
+                `}
                 >
-                  <Link
-                    href={item.href}
-                    className={`
-                      block transition-colors duration-200
-                      ${
-                        isActive
-                          ? "text-[#274540]"
-                          : "text-gray-700 hover:text-[#274540]"
-                      }
-                    `}
+                  <motion.span
+                    whileHover={{
+                      x: 8,
+                      backgroundColor: "rgba(39, 69, 64, 0.08)",
+                    }}
+                    transition={{ type: "spring", stiffness: 250 }}
+                    className="block w-full rounded-lg"
                   >
                     {item.label}
-                  </Link>
-                </motion.div>
+                  </motion.span>
+                </Link>
               </SheetClose>
             );
           })}

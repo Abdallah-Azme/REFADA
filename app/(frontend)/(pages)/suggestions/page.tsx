@@ -65,7 +65,7 @@ export default function ContactSection() {
           { name: t("home"), href: "/" },
           { name: t("suggestions"), href: "/suggestions" },
         ]}
-        className="container mx-auto px-4 py-2"
+        className="container mx-auto px-4 pt-10"
       />
 
       {/* 🧩 Title */}
@@ -82,7 +82,7 @@ export default function ContactSection() {
       </motion.div>
 
       {/* 🧱 Main form container */}
-      <div className="w-full bg-white rounded-2xl mt-5 mb-10 py-12  relative overflow-hidden">
+      <div className="w-full  mt-5 mb-10 py-12  relative overflow-hidden">
         {/* 🌾 Decorative images behind */}
         <div className="absolute inset-0 pointer-events-none z-0">
           <ImageFallback
@@ -154,7 +154,7 @@ export default function ContactSection() {
                 </div>
 
                 {/* Email + Category */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
                   <FormField
                     control={form.control}
                     name="email"
@@ -182,12 +182,13 @@ export default function ContactSection() {
                           defaultValue={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger className="w-full h-[50px] bg-[#EEEADD]">
+                            <SelectTrigger className="w-full h-[50px]! bg-[#EEEADD] flex items-center">
                               <SelectValue
                                 placeholder={t("categoryPlaceholder")}
                               />
                             </SelectTrigger>
                           </FormControl>
+
                           <SelectContent>
                             <SelectItem value="technical">
                               {t("categoryTechnical")}
@@ -200,6 +201,7 @@ export default function ContactSection() {
                             </SelectItem>
                           </SelectContent>
                         </Select>
+
                         <FormMessage />
                       </FormItem>
                     )}

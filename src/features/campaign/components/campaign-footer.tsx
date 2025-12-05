@@ -1,9 +1,16 @@
-import { Mail, Phone, Instagram, Twitter, Linkedin, Facebook } from "lucide-react"
+import {
+  Mail,
+  Phone,
+  Instagram,
+  Twitter,
+  Linkedin,
+  Facebook,
+} from "lucide-react";
 
 export default function CampaignFooter() {
   return (
     <footer className="bg-gray-900 text-white mt-20" dir="rtl">
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="  mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
           <div>
             <h3 className="font-bold mb-4">الرئيسية</h3>
@@ -119,5 +126,5 @@ export default function CampaignFooter() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

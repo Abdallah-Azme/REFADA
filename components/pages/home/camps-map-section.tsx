@@ -65,7 +65,7 @@ export default function CampsMapSection({
   return (
     <section
       className={cn(
-        "bg-[#E6F0EC]  px-6",
+        "bg-[#E6F0EC] h-full px-6",
         secondary ? "py-4 rounded-2xl" : "py-16"
       )}
     >
@@ -91,8 +91,8 @@ export default function CampsMapSection({
       {/* Map Section */}
       <div
         className={cn(
-          "max-w-5xl mx-auto relative  bg-white rounded-2xl overflow-hidden shadow",
-          secondary ? "h-80" : "h-[400px]"
+          "max-w-5xl mx-auto relative h-full bg-white rounded-2xl overflow-hidden shadow",
+          secondary ? "" : "h-[400px]"
         )}
       >
         <MapContainer
@@ -139,7 +139,7 @@ export default function CampsMapSection({
         </MapContainer>
 
         {/* Camp Card */}
-        {selected && (
+        {selected && !secondary && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

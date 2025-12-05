@@ -67,7 +67,7 @@ export default function ContactSection() {
           { name: t("home"), href: "/" },
           { name: t("contactus"), href: "/contactus" },
         ]}
-        className="container mx-auto px-4 py-2"
+        className="container mx-auto px-4 pt-10"
       />
 
       {/* 🧩 Title */}
@@ -82,7 +82,7 @@ export default function ContactSection() {
       </motion.div>
 
       {/* 🧱 Main form container */}
-      <div className="w-full bg-white rounded-2xl mt-5 mb-10 py-12 relative overflow-hidden">
+      <div className="w-full   mt-5 mb-10 pb-6 relative overflow-hidden">
         {/* 🌾 Decorative images behind */}
         <div className="absolute inset-0 pointer-events-none z-0">
           <ImageFallback

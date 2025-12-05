@@ -46,7 +46,7 @@ export default function ContactSection() {
   function onSubmit(values: z.infer<typeof formSchema>) {}
 
   return (
-    <section className="bg-[#274540] text-white h-fit md:min-h-[800px]">
+    <section className="bg-[#274540] text-white h-fit md:min-h-[600px]">
       <div className="  flex gap-8 h-full">
         {/* --- Right: Logo (TOP) --- */}
         <motion.div
@@ -54,7 +54,7 @@ export default function ContactSection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="md:flex relative h-full flex-1  min-h-[800px] hidden"
+          className="md:flex relative h-full flex-1  min-h-[600px] hidden"
         >
           <div className="w-full absolute inset-0">
             <ImageFallback
@@ -72,7 +72,7 @@ export default function ContactSection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="w-fit py-16 px-6 flex-1 h-auto my-auto mx-auto"
+          className="w-fit py-10 px-6 flex-1 h-auto my-auto mx-auto"
         >
           <h2 className="text-2xl md:text-3xl font-bold mb-8">
             {t("contact_title")}

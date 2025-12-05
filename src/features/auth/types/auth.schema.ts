@@ -28,6 +28,7 @@ export const registerSchema = z
     accept_terms: z.boolean().refine((val) => val === true, {
       message: "يجب الموافقة على الشروط والأحكام",
     }),
+    camp_name: z.string().optional(),
   })
   .refine((data) => data.password === data.password_confirmation, {
     message: "كلمات المرور غير متطابقة",
@@ -37,13 +38,13 @@ export const registerSchema = z
     (data) => {
       // If role is delegate, admin_position and license_number are required
       if (data.role === "delegate") {
-        return !!data.admin_position && !!data.license_number;
+        return !!data.camp_name;
       }
       return true;
     },
     {
-      message: "المنصب الإداري ورقم الترخيص مطلوبان للمندوب",
-      path: ["admin_position"],
+      message: "اسم المخيم مطلوب للمندوب",
+      path: ["camp_name"],
     }
   );
 

@@ -15,7 +15,7 @@ export default function CampaignPage() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.5 }}
-          className="pt-6"
+          className="pt-10"
         >
           <Breadcrumb
             items={[
@@ -58,7 +58,7 @@ export default function CampaignPage() {
           />
         </motion.div>
         <div className="">
-          <main className="max-w-7xl mx-auto px-4 py-12">
+          <main className="mx-auto px-4 py-12">
             <motion.div
               className="flex items-center gap-2  mb-5"
               initial={{ opacity: 0, y: -10 }}

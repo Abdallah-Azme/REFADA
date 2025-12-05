@@ -1,19 +1,27 @@
 "use client";
 
-import CampProjects from "@/features/campaign/components/camp-projects";
+import ImageDecorations from "@/components/image-decorations";
 import CampsMapSection from "@/components/pages/home/camps-map-section";
 import { Breadcrumb } from "@/components/shared/breadcrumb";
 import ImageFallback from "@/components/shared/image-fallback";
-import { PageSection } from "@/components/shared/page-section";
+import { Button } from "@/components/ui/button";
+import ProjectsSection from "@/features/campaign/components/projects-section";
+import CampDetailsSection from "@/features/camps/components/camp-details-section";
+import { cn } from "@/lib/utils";
+import CampStats from "@/src/features/camps/components/camp-stats";
 import { motion } from "framer-motion";
 import { Info, SquareKanban } from "lucide-react";
 import { useTranslations } from "next-intl";
-import CampaignCards from "@/features/campaign/components/campaign-cards";
-import ProjectsSection from "@/features/campaign/components/projects-section";
-import { Button } from "@/components/ui/button";
+
 export default function Page() {
   const t = useTranslations();
-
+  const campDetails = {
+    name: "إيواء جباليا",
+    location: "الإيواء الشمالي - غزة",
+    phone: "+972 22 222 2222",
+    image: "/pages/home/gaza-camp-1.webp",
+    position: [31.535, 34.495],
+  };
   return (
     <section className="container mx-auto px-4">
       {/* Breadcrumb with animation */}
@@ -51,74 +59,53 @@ export default function Page() {
         </motion.div>
 
         {/* Decorative images (fade-in softly) */}
-        <motion.div
-          className="absolute inset-0 pointer-events-none z-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.4 }}
-          transition={{ delay: 0.4, duration: 1 }}
-        >
-          <ImageFallback
-            src="/pages/pages/wheat.webp"
-            width={136}
-            height={184}
-            className="absolute bottom-0 right-0 w-[136px] h-[184px]"
-          />
-          <ImageFallback
-            src="/pages/pages/heart.webp"
-            width={78}
-            height={64}
-            className="absolute top-0 left-1/4 w-16 h-[78px]"
-          />
-        </motion.div>
-        <div className="flex flex-col sm:flex-row gap-7">
+        <ImageDecorations />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 items-stretch">
+          <CampDetailsSection />
+
+          <CampsMapSection secondary />
+
+          <CampStats />
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="flex-1"
+            className={cn(
+              "bg-white rounded-xl shadow-sm border p-4 flex items-center gap-4 pointer-events-auto",
+              "h-full"
+            )}
           >
-            <PageSection
-              description={
-                <>
-                  <p>{t("transparencyDescription")}</p>
-                  <p className="leading-10 line-clamp-6">
-                    يُعتبر إيواء جباليا أكبر إيواء للاجئين الفلسطينيين في
-                    فلسطين، حيث يعيش فيه 119,000 فلسطيني يتوزعون على مساحة لا
-                    تتجاوز 1.4 كيلومتر مربع، مما يجعله واحدًا من أكثر الأماكن
-                    اكتظاظاً بالسكان في العالم. ينحدر لاجئو جباليا من أحفاد
-                    38,000 فلسطيني تم تطهيرهم عرقيًا من أسدود ويافا والرملة
-                    واللد وبئر السبع خلال نكبة عام 1948.يُعتبر إيواء جباليا أكبر
-                    إيواء للاجئين الفلسطينيين في فلسطين، حيث يعيش فيه 119,000
-                    فلسطيني يتوزعون على مساحة لا تتجاوز 1.4 كيلومتر مربع، مما
-                    يجعله واحدًا من أكثر الأماكن اكتظاظاً بالسكان في العالم.
-                    ينحدر لاجئو جباليا من أحفاد 38,000 فلسطيني تم تطهيرهم عرقيًا
-                    من أسدود ويافا والرملة واللد وبئر السبع خلال نكبة عام 1948.
-                  </p>
-                  <div className="flex flex-col sm:flex-row items-center justify-between text-[#1E1E1E] px-4 py-2 rounded-md bg-[#FAF8F8]">
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold ">عدد العائلات: </p>
-                      <p className=""> 500 عائلة </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold ">عددالمواليد: </p>
-                      <p className="">5000 مولود</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold ">عددالمشاريع: </p>
-                      <p className="">20 مشاريع</p>
-                    </div>
-                  </div>
-                </>
-              }
-            />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="flex-1 relative hidden sm:block"
-          >
-            <CampsMapSection secondary />
+            {/* Image */}
+            <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
+              <ImageFallback
+                src={campDetails.image}
+                alt={campDetails.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 flex flex-col gap-1 text-right h-full justify-around">
+              <h3 className="font-semibold text-[#1C3A34] leading-tight">
+                {campDetails.name}
+              </h3>
+
+              <p className="text-gray-600  flex items-center gap-1 leading-relaxed">
+                <span className="text-gray-400">📍</span>
+                شمال قطاع غزة - على بُعد نحو 4 كيلومترات
+              </p>
+
+              <p className="text-gray-600  flex items-center gap-1 leading-relaxed">
+                <span className="text-gray-400">📞</span>
+                تواصل معنا: {campDetails.phone}
+              </p>
+
+              <p className="text-gray-600  flex items-center gap-1 leading-relaxed">
+                <span className="text-gray-400">🏦</span>
+                الحساب البنكي: 10008890003444
+              </p>
+            </div>
           </motion.div>
         </div>
       </motion.div>

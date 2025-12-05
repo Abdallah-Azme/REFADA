@@ -16,23 +16,29 @@ export default function CampaignCard({ campaign }: { campaign: CampaignCard }) {
       <div className="flex items-center justify-center gap-4">
         {/* Stats Section */}
         <div className="space-y-2 text-sm text-gray-700">
-          <div className="flex items-center gap-2 justify-between">
-            <span className="size-2 rounded-full bg-[#C8BA90]"></span>
-            <span>عدد العائلات المسجلة</span>
+          <div className="flex items-center gap-2 justify-between w-full">
+            <div className="flex items-center gap-2">
+              <span className="size-2 rounded-full bg-[#C8BA90]"></span>
+              <span>عدد العائلات المسجلة</span>
+            </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold">{campaign.stats.cases}</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="size-2 rounded-full bg-[#C8BA90]"></span>
-            <span>عدد المشاريع الحالية</span>
+          <div className="flex items-center gap-2 w-full justify-between">
+            <div className="flex items-center gap-2">
+              <span className="size-2 rounded-full bg-[#C8BA90]"></span>
+              <span>عدد المشاريع الحالية</span>
+            </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold">{campaign.stats.projects}</span>
             </div>
           </div>
-          <div className="flex items-center gap-2  ">
-            <span className="size-2 rounded-full bg-[#C8BA90]"></span>
-            <span>المساهمات</span>
+          <div className="flex items-center gap-2 w-full justify-between ">
+            <div className="flex items-center gap-2">
+              <span className="size-2 rounded-full bg-[#C8BA90]"></span>
+              <span>المساهمات</span>
+            </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold">
                 {campaign.stats.participation}%

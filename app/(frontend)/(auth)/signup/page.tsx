@@ -1,26 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2 } from "lucide-react";
-import Link from "next/link";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   registerSchema,
   useRegister,
   type RegisterFormValues,
 } from "@/features/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function RegisterPage() {
   const [activeRole, setActiveRole] = useState<"contributor" | "delegate">(
@@ -39,9 +39,9 @@ export default function RegisterPage() {
       phone: "",
       backup_phone: "",
       role: "contributor",
-      admin_position: "",
       license_number: "",
       accept_terms: false,
+      camp_name: "",
     },
   });
 
@@ -55,8 +55,7 @@ export default function RegisterPage() {
 
     // Clear delegate-specific fields when switching to contributor
     if (role === "contributor") {
-      form.setValue("admin_position", "");
-      form.setValue("license_number", "");
+      form.setValue("camp_name", "");
     }
   };
 
@@ -190,13 +189,13 @@ export default function RegisterPage() {
                 {/* المنصب الإداري */}
                 <FormField
                   control={form.control}
-                  name="admin_position"
+                  name="camp_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
                         <Input
                           className="h-[50px] bg-[#EEEADD]"
-                          placeholder="المنصب الإداري"
+                          placeholder="اسم المخيم"
                           disabled={isPending}
                           {...field}
                         />

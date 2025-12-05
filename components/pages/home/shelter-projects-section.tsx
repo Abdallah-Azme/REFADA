@@ -27,6 +27,7 @@ export const projects = [
     donors: 165,
     image: "/pages/pages/project-1.webp",
     tag: "مقدم للنشاطين",
+    camp: "مخيم أصداء",
   },
   {
     id: 2,
@@ -39,6 +40,7 @@ export const projects = [
     donors: 165,
     image: "/pages/pages/project-2.webp",
     tag: "مقدم للنشاطين",
+    camp: "مخيم جباليا",
   },
   {
     id: 3,
@@ -51,6 +53,7 @@ export const projects = [
     donors: 165,
     image: "/pages/pages/project-3.webp",
     tag: "مقدم للنشاطين",
+    camp: "مخيم أصداء",
   },
   {
     id: 4,
@@ -63,6 +66,7 @@ export const projects = [
     donors: 745,
     image: "/pages/pages/project-1.webp",
     tag: "مقدم للنشاطين",
+    camp: "مخيم جباليا",
   },
   {
     id: 5,
@@ -75,6 +79,7 @@ export const projects = [
     donors: 165,
     image: "/pages/pages/project-2.webp",
     tag: "مقدم للنشاطين",
+    camp: "مخيم أصداء",
   },
   {
     id: 6,
@@ -87,6 +92,7 @@ export const projects = [
     donors: 165,
     image: "/pages/pages/project-3.webp",
     tag: "مقدم للنشاطين",
+    camp: "مخيم جباليا",
   },
   {
     id: 7,
@@ -99,6 +105,7 @@ export const projects = [
     donors: 165,
     image: "/pages/pages/project-1.webp",
     tag: "مقدم للنشاطين",
+    camp: "مخيم أصداء",
   },
   {
     id: 8,
@@ -111,6 +118,7 @@ export const projects = [
     donors: 745,
     image: "/pages/pages/project-2.webp",
     tag: "مقدم للنشاطين",
+    camp: "مخيم جباليا",
   },
   {
     id: 9,
@@ -123,6 +131,7 @@ export const projects = [
     donors: 745,
     image: "/pages/pages/project-3.webp",
     tag: "مقدم للنشاطين",
+    camp: "مخيم أصداء",
   },
 ];
 
@@ -206,7 +215,7 @@ export default function CurrentProjectsSection() {
           loop: true,
           direction: isRTL ? "rtl" : "ltr",
         }}
-        plugins={[autoplay.current]}
+        plugins={[autoplay.current] as any}
         className="relative"
       >
         <CarouselContent className="-ml-4 py-2">
@@ -214,7 +223,7 @@ export default function CurrentProjectsSection() {
             const percentage = Math.round(
               (project.current / project.goal) * 100
             );
-
+            console.log({ project });
             return (
               <CarouselItem
                 key={index}
@@ -231,6 +240,7 @@ export default function CurrentProjectsSection() {
                   current={project.current}
                   donors={project.donors}
                   percentage={percentage}
+                  camp={project.camp}
                 />
               </CarouselItem>
             );
