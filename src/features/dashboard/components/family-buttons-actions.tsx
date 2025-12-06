@@ -8,15 +8,23 @@ export default function FamilyButtonsActions({
 }: {
   form: UseFormReturn<
     {
-      familyName: string;
-      status: string;
-      caseStatus: string;
+      familyName?: string;
+      status?: string;
+      caseStatus?: string;
+      familySize?: string;
+      hasChildren?: string;
+      ageFrom?: Date;
+      ageTo?: Date;
     },
     any,
     {
-      familyName: string;
-      status: string;
-      caseStatus: string;
+      familyName?: string;
+      status?: string;
+      caseStatus?: string;
+      familySize?: string;
+      hasChildren?: string;
+      ageFrom?: Date;
+      ageTo?: Date;
     }
   >;
 }) {

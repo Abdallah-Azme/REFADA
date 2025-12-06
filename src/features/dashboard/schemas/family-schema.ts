@@ -2,13 +2,12 @@ import z from "zod";
 
 export const familySchema = z.object({
   firstName: z.string().min(1, "الرجاء إدخال اسم العائلة"),
-  fatherName: z.string().min(1),
   idNumber: z.string().min(1),
   dateOfBirth: z.string().min(1),
   phone: z.string().min(1),
-  email: z.string().email().optional().or(z.literal("")),
+  secondaryPhone: z.string().optional().or(z.literal("")),
   medicalCondition: z.string().min(1),
-  elderly: z.string().min(1),
+  status: z.string().min(1),
   childrenCount: z.string().min(1),
 
   familyMembers: z

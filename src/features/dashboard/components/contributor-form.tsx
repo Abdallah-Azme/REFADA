@@ -80,7 +80,7 @@ export default function ContributorForm() {
         <div className="flex gap-8 items-center border border-gray-200 p-4  rounded-xl ">
           <div className="w-full space-y-3 mt-6">
             <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
-              <span className="text-sm text-gray-600">اسم المندوب:</span>
+              <span className="text-sm text-gray-600">اسم المساهم:</span>
               <span className="text-base text-gray-900 font-medium">
                 {form.getValues("representativeName")}
               </span>

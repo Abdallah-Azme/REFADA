@@ -9,11 +9,11 @@ import React from "react";
 export default function Page() {
   return (
     <section className=" p-7 flex flex-col gap-4">
-      <div className="flex items-center justify-between">
+      <div className="flex  items-center justify-between">
         <MainHeader header="العائلات">
           <Users className="text-primary" />
         </MainHeader>
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
           <PrintingProjects />
           <ExportingProjects />
           <AddFamilyDialog />

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
 import {
+  ChevronDownIcon,
   CirclePlus,
   FileSpreadsheet,
   PlusCircle,
@@ -40,6 +41,13 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { familySchema } from "../schemas/family-schema";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Label } from "@/components/ui/label";
 
 export default function AddFamilyDialog() {
   const [file, setFile] = useState<File | null>(null);
@@ -48,13 +56,12 @@ export default function AddFamilyDialog() {
     resolver: zodResolver(familySchema),
     defaultValues: {
       firstName: "",
-      fatherName: "",
       dateOfBirth: "",
       idNumber: "",
       phone: "",
-      email: "",
+      secondaryPhone: "",
       medicalCondition: "",
-      elderly: "",
+      status: "",
       childrenCount: "",
       familyMembers: [],
       location: "",
@@ -62,6 +69,25 @@ export default function AddFamilyDialog() {
       note: "",
     },
   });
+
+  const childrenCount = form.watch("childrenCount"); // watch the selected number
+
+  // Sync the familyMembers array whenever childrenCount changes
+  useEffect(() => {
+    const count = Number(childrenCount || 0);
+
+    if (count > fields.length) {
+      // Add new members
+      for (let i = fields.length; i < count; i++) {
+        append({ name: "", idNumber: "", gender: "", dateOfBirth: "" });
+      }
+    } else if (count < fields.length) {
+      // Remove extra members
+      for (let i = fields.length; i > count; i--) {
+        remove(i - 1);
+      }
+    }
+  }, [childrenCount]); // re-run whenever childrenCount changes
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -111,28 +137,11 @@ export default function AddFamilyDialog() {
                       <FormControl>
                         <Input
                           className="bg-white"
-                          placeholder="اسم العائلة"
+                          placeholder="اسم العائلة رباعي"
                           {...field}
                         />
                       </FormControl>
                       <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* اسم الأب */}
-                <FormField
-                  control={form.control}
-                  name="fatherName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          className="bg-white"
-                          placeholder="اسم الأب"
-                          {...field}
-                        />
-                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -158,17 +167,42 @@ export default function AddFamilyDialog() {
                 <FormField
                   control={form.control}
                   name="dateOfBirth"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          className="bg-white"
-                          placeholder="تاريخ الميلاد"
-                          {...field}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
+                  render={({ field }) => {
+                    const date = field.value
+                      ? new Date(field.value)
+                      : undefined;
+
+                    return (
+                      <FormItem className="flex flex-col gap-2">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="bg-white w-full justify-between font-normal"
+                            >
+                              تاريخ الميلاد{" "}
+                              <ChevronDownIcon className="h-4 w-4 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+
+                          <PopoverContent
+                            className="w-auto p-0 overflow-hidden z-[9999]"
+                            align="start"
+                          >
+                            <Calendar
+                              mode="single"
+                              captionLayout="dropdown"
+                              onSelect={(selected) => {
+                                field.onChange(selected?.toISOString() || "");
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
                 />
 
                 {/* رقم الهاتف */}
@@ -191,13 +225,13 @@ export default function AddFamilyDialog() {
                 {/* البريد الإلكتروني */}
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="secondaryPhone"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
                         <Input
                           className="bg-white"
-                          placeholder="البريد الإلكتروني"
+                          placeholder="رقم الهاتف الثانوي"
                           {...field}
                         />
                       </FormControl>
@@ -231,10 +265,9 @@ export default function AddFamilyDialog() {
                   )}
                 />
 
-                {/* كبار السن */}
                 <FormField
                   control={form.control}
-                  name="elderly"
+                  name="status"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
@@ -243,14 +276,11 @@ export default function AddFamilyDialog() {
                           defaultValue={field.value}
                         >
                           <SelectTrigger className="w-full bg-white">
-                            {field.value || "كبار السن"}
+                            {field.value || "الحالة الاجتماعية"}
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="none">لا يوجد</SelectItem>
                             <SelectItem value="one">شخص واحد</SelectItem>
-                            <SelectItem value="multiple">
-                              أكثر من واحد
-                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -270,13 +300,16 @@ export default function AddFamilyDialog() {
                           defaultValue={field.value}
                         >
                           <SelectTrigger className="w-full bg-white">
-                            {field.value || "أطفال رضع"}
+                            {field.value || "عدد األفراد"}
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="0">لا يوجد</SelectItem>
-                            <SelectItem value="1">طفل واحد</SelectItem>
-                            <SelectItem value="2">طفلان</SelectItem>
-                            <SelectItem value="3+">3 أو أكثر</SelectItem>
+                            {Array.from({ length: 20 }, (_, i) => i + 1).map(
+                              (num) => (
+                                <SelectItem key={num} value={String(num)}>
+                                  {num}
+                                </SelectItem>
+                              )
+                            )}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -367,18 +400,89 @@ export default function AddFamilyDialog() {
                     )}
                   />
 
+                  <FormField
+                    control={form.control}
+                    name={`familyMembers.${index}.gender`}
+                    render={({ field }) => (
+                      <FormItem className="flex-1 w-full">
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-full bg-white">
+                              {field.value || "صلة القرابة"}
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="father">أب</SelectItem>
+                              <SelectItem value="mother">أم</SelectItem>
+                              <SelectItem value="son">ابن</SelectItem>
+                              <SelectItem value="daughter">بنت</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
                   {/* تاريخ الميلاد */}
                   <FormField
                     control={form.control}
                     name={`familyMembers.${index}.dateOfBirth`}
                     render={({ field }) => (
-                      <FormItem className="flex-1 w-full">
+                      <FormItem className="flex flex-col gap-2">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="bg-white w-full justify-between font-normal"
+                            >
+                              تاريخ الميلاد{" "}
+                              <ChevronDownIcon className="h-4 w-4 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+
+                          <PopoverContent
+                            className="w-auto p-0 overflow-hidden z-[9999]"
+                            align="start"
+                          >
+                            <Calendar
+                              mode="single"
+                              captionLayout="dropdown"
+                              onSelect={(selected) => {
+                                field.onChange(selected?.toISOString() || "");
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="medicalCondition"
+                    render={({ field }) => (
+                      <FormItem>
                         <FormControl>
-                          <Input
-                            className="bg-white"
-                            placeholder="تاريخ الميلاد"
-                            {...field}
-                          />
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-full bg-white">
+                              {field.value || "الحالات المرضية"}
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="none">لا يوجد</SelectItem>
+                              <SelectItem value="chronic">
+                                أمراض مزمنة
+                              </SelectItem>
+                              <SelectItem value="disability">إعاقة</SelectItem>
+                              <SelectItem value="urgent">حالة حرجة</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </FormControl>
                       </FormItem>
                     )}

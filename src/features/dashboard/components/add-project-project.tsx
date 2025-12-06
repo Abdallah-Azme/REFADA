@@ -96,19 +96,8 @@ export default function AddProjectDialog() {
                   name="type"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="w-full bg-white">
-                            {field.value || "النوع"}
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="option1">خيار 1</SelectItem>
-                            <SelectItem value="option2">خيار 2</SelectItem>
-                          </SelectContent>
-                        </Select>
+                      <FormControl className="bg-white">
+                        <Input placeholder="النوع" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -164,19 +153,6 @@ export default function AddProjectDialog() {
                   )}
                 />
 
-                {/* الرقم */}
-                <FormField
-                  control={form.control}
-                  name="number"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl className="bg-white">
-                        <Input placeholder="الرقم" {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
                 {/* عدد العائلات المستفيدة */}
                 <FormField
                   control={form.control}
@@ -196,17 +172,13 @@ export default function AddProjectDialog() {
 
               {/* FILE UPLOAD */}
               <div className="bg-[#F4F4F4] p-4 rounded-xl flex flex-col lg:flex-row items-start lg:items-center gap-3 lg:gap-6 justify-between">
-                {/* <p className="text-sm font-medium whitespace-nowrap ml-4">
-                  اضافة تقارير عن الحالات الحرجة
-                </p> */}
-
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-1 w-full">
-                  {/* Hidden input */}
+                  {/* Hidden image input */}
                   <input
                     type="file"
-                    id="critical-upload"
+                    id="image-upload"
+                    accept="image/*"
                     className="hidden"
-                    accept=".pdf,.jpg,.jpeg,.png,.xlsx,.xls"
                     onChange={(e) => {
                       const selected = e.target.files?.[0];
                       if (selected) setFile(selected);
@@ -214,16 +186,21 @@ export default function AddProjectDialog() {
                   />
 
                   {/* Upload Box */}
-                  <div className="flex items-center rounded-xl ps-2 bg-white border overflow-hidden h-11 w-full sm:w-auto">
+                  <div
+                    className="flex items-center rounded-xl ps-2 bg-white border overflow-hidden h-11 w-full sm:w-auto cursor-pointer"
+                    onClick={() =>
+                      document.getElementById("image-upload")?.click()
+                    }
+                  >
                     <div className="flex items-center gap-1 ">
                       <ImageFallback
-                        src="/excel-image.png"
+                        src="/image-icon.png" // <-- change to your image icon
                         width={24}
                         height={24}
                         className="size-6"
                       />
                       <span className="text-xs text-gray-600 px-4 whitespace-nowrap">
-                        إضافة ملف إكسيل
+                        إضافة صورة
                       </span>
                     </div>
 
@@ -232,26 +209,27 @@ export default function AddProjectDialog() {
                     <Button
                       variant="ghost"
                       type="button"
-                      onClick={() =>
-                        document.getElementById("critical-upload")?.click()
-                      }
                       className="h-full px-6 rounded-none text-gray-700 bg-[#f7f7f7] font-medium"
                     >
                       تحميل
                     </Button>
                   </div>
 
-                  {/* File Preview */}
+                  {/* Image Preview */}
                   {file && (
-                    <div className="flex items-center bg-white border gap-2 rounded-xl px-4 py-2 shadow-sm">
-                      <span className="ml-2 bg-green-500 text-white rounded-xl p-1">
-                        <FileSpreadsheet className="w-4 h-4" />
+                    <div className="flex items-center gap-3 bg-white border rounded-xl px-4 py-2 shadow-sm">
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt="preview"
+                        className="w-12 h-12 object-cover rounded-lg border"
+                      />
+
+                      <span className="text-xs text-gray-700 max-w-[120px] truncate">
+                        {file.name}
                       </span>
 
-                      <span className="text-xs text-gray-700">{file.name}</span>
-
                       <button
-                        className="text-gray-500 hover:text-gray-700 mr-2"
+                        className="text-gray-500 hover:text-gray-700"
                         onClick={() => setFile(null)}
                         type="button"
                       >
@@ -281,7 +259,7 @@ export default function AddProjectDialog() {
                   type="submit"
                   className="bg-primary text-white min-w-[160px]"
                 >
-                  إضافة عائلة
+                  إضافة مشروع
                 </Button>
 
                 <DialogClose asChild>

@@ -1,14 +1,14 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { MapPin, Phone, Tent } from "lucide-react";
-import L from "leaflet";
-import { useState } from "react";
-import "leaflet/dist/leaflet.css";
-import { cn } from "@/lib/utils";
 import ImageFallback from "@/components/shared/image-fallback";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { MapPin } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 // Custom icon
 const campIcon = new L.Icon({

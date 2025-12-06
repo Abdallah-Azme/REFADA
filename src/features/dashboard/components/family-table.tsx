@@ -48,7 +48,13 @@ const formSchema = z.object({
   familyName: z.string().optional(),
   status: z.string().optional(),
   caseStatus: z.string().optional(),
+  familySize: z.string().optional(),
+  hasChildren: z.string().optional(),
+  ageFrom: z.date().optional(),
+  ageTo: z.date().optional(),
 });
+
+type FormValues = z.infer<typeof formSchema>;
 
 export default function FamilyTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -69,12 +75,16 @@ export default function FamilyTable() {
 
   const [data] = React.useState<Family[]>(dummyData);
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       familyName: "",
       status: "",
       caseStatus: "",
+      familySize: "",
+      hasChildren: "",
+      ageFrom: undefined,
+      ageTo: undefined,
     },
   });
 
@@ -127,7 +137,7 @@ export default function FamilyTable() {
   return (
     <div className="bg-white rounded-lg p-1 shadow-sm border border-gray-100">
       {/* Header with Filtering Form and Action Buttons */}
-      <div className="flex items-center justify-between p-2">
+      <div className="flex flex-wrap flex-col md:flex-row gap-4 items-center justify-between p-2">
         {/* Filtering Form */}
         <div className="flex flex-col gap-2">
           <FamilyFilteringForm form={form} />
