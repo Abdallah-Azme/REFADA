@@ -44,8 +44,10 @@ import {
 import ProjectDetailsDialog from "./project-details-dialog";
 
 import ContributeDialog from "./contribute-dialog";
+import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
+  name: z.string().optional(),
   project: z.string().optional(),
   status: z.string().optional(),
   family: z.string().optional(),
@@ -55,6 +57,7 @@ export default function CurrentProjectsTableContribution() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
       project: "",
       status: "",
       family: "",
@@ -157,6 +160,22 @@ export default function CurrentProjectsTableContribution() {
               onSubmit={form.handleSubmit(onSubmit)}
               className="flex items-center gap-3"
             >
+              {/* اسم المشروع */}
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="اسم المشروع"
+                        {...field}
+                        className="w-[200px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
               {/* العائلة */}
               <FormField
                 control={form.control}

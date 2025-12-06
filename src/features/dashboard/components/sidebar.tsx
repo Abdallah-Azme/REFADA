@@ -61,6 +61,11 @@ export default function DashboardSidebar() {
   const contributorMenu = [
     { label: "معلومات المساهم", icon: Users, href: "/dashboard/contributor" },
     { label: "الإيواءات", icon: Tent, href: "/dashboard/contributor/camps" },
+    {
+      label: "الإعدادات",
+      icon: Settings,
+      href: "/dashboard/contributor/settings",
+    },
   ];
 
   // ADMIN MAIN MENU
