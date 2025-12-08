@@ -1,4 +1,4 @@
-import { PendingUser } from "../types/pending-users.schema";
+import { PendingUser } from "@/features/representatives/types/pending-users.schema";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
@@ -36,15 +36,15 @@ async function apiRequest<T>(
   return data as T;
 }
 
-export interface RepresentativesResponse {
+export interface ContributorsResponse {
   success: boolean;
   message: string;
-  data: PendingUser[]; // Reusing PendingUser as it likely has the same shape + status
+  data: PendingUser[];
 }
 
-export async function getRepresentativesApi(): Promise<RepresentativesResponse> {
-  return apiRequest<RepresentativesResponse>(
-    `/admin/users?role=delegate&status=approved`,
+export async function getContributorsApi(): Promise<ContributorsResponse> {
+  return apiRequest<ContributorsResponse>(
+    `/admin/users?role=contributor&status=approved`,
     {
       method: "GET",
     }

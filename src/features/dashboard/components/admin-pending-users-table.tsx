@@ -46,8 +46,8 @@ export default function AdminPendingUsersTable() {
     pageSize: 10,
   });
 
-  // Fetch pending delegates only
-  const { data: response, isLoading, error } = usePendingUsers("delegate");
+  // Fetch all pending users (delegates and contributors)
+  const { data: response, isLoading, error } = usePendingUsers();
   const { mutate: approveUser } = useApproveUser();
   const { mutate: rejectUser } = useRejectUser();
 
@@ -64,6 +64,12 @@ export default function AdminPendingUsersTable() {
   const [initialCampData, setInitialCampData] = React.useState<any>(null);
 
   const handleApprove = (user: PendingUser): void => {
+    // Contributors don't need camp assignment
+    if (user.role === "contributor") {
+      approveUser({ userId: user.id });
+      return;
+    }
+
     const campName = user.campName;
 
     // If no camp name, approve without ID (handle potential backend error or assume valid)

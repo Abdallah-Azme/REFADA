@@ -21,12 +21,11 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import React from "react";
-import {
-  createAdminContributorColumns,
-  dummyAdminContributors,
-  AdminContributor,
-} from "../table-cols/admin-contributors-cols";
+import { createApprovedContributorsColumns } from "../table-cols/admin-contributors-cols";
 import PaginationControls from "./pagination-controls";
+import { useContributors } from "@/features/contributors/hooks/use-contributors";
+import { PendingUser } from "@/features/representatives/types/pending-users.schema";
+import { Loader2 } from "lucide-react";
 
 export default function AdminContributorsTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -40,40 +39,17 @@ export default function AdminContributorsTable() {
     pageSize: 10,
   });
 
-  const [data, setData] = React.useState<AdminContributor[]>(
-    dummyAdminContributors
-  );
+  // Fetch contributors
+  const { data: response, isLoading, error } = useContributors();
 
-  const handleToggleStatus = (contributor: AdminContributor): void => {
-    setData((prevData) =>
-      prevData.map((c) =>
-        c.id === contributor.id
-          ? { ...c, status: c.status === "active" ? "inactive" : "active" }
-          : c
-      )
-    );
-  };
+  // Filter only approved contributors (though API should handle this, safety check if API changes)
+  const data = React.useMemo(() => {
+    return response?.data?.filter((user) => user.status === "approved") || [];
+  }, [response]);
 
-  const handleEdit = (contributor: AdminContributor): void => {
-    console.log("Edit:", contributor);
-  };
-
-  const handleDelete = (contributor: AdminContributor): void => {
-    setData((prevData) => prevData.filter((c) => c.id !== contributor.id));
-  };
-
-  const handleView = (contributor: AdminContributor): void => {
-    console.log("View:", contributor);
-  };
-
-  const table = useReactTable<AdminContributor>({
+  const table = useReactTable<PendingUser>({
     data,
-    columns: createAdminContributorColumns({
-      onToggleStatus: handleToggleStatus,
-      onEdit: handleEdit,
-      onDelete: handleDelete,
-      onView: handleView,
-    }),
+    columns: createApprovedContributorsColumns(),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -89,6 +65,23 @@ export default function AdminContributorsTable() {
       pagination,
     },
   });
+
+  if (isLoading) {
+    return (
+      <div className="rounded-lg bg-white p-8 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="mr-2">جاري تحميل المساهمين...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-lg bg-white p-8 text-center text-red-600">
+        حدث خطأ أثناء تحميل البيانات
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-lg bg-white">
@@ -130,17 +123,10 @@ export default function AdminContributorsTable() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={
-                    createAdminContributorColumns({
-                      onToggleStatus: handleToggleStatus,
-                      onEdit: handleEdit,
-                      onDelete: handleDelete,
-                      onView: handleView,
-                    }).length
-                  }
+                  colSpan={createApprovedContributorsColumns().length}
                   className="h-24 text-center"
                 >
-                  لا توجد نتائج.
+                  لا يوجد مساهمين معتمدين.
                 </TableCell>
               </TableRow>
             )}

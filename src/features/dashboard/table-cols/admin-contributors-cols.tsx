@@ -238,3 +238,127 @@ export const createAdminContributorColumns = (
     enableHiding: false,
   },
 ];
+
+import { PendingUser } from "@/features/representatives/types/pending-users.schema";
+
+export const createApprovedContributorsColumns =
+  (): ColumnDef<PendingUser>[] => [
+    {
+      accessorKey: "name",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            الاسم
+            <ArrowUpDown className="ms-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="text-right font-medium">{row.original.name}</div>
+      ),
+    },
+
+    {
+      accessorKey: "email",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            البريد الإلكتروني
+            <ArrowUpDown className="ms-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => <div className="text-right">{row.original.email}</div>,
+    },
+
+    {
+      accessorKey: "phone",
+      header: () => <div className="text-center font-semibold">رقم الهاتف</div>,
+      cell: ({ row }) => (
+        <div className="text-center">{row.original.phone}</div>
+      ),
+    },
+
+    {
+      accessorKey: "idNumber",
+      header: () => <div className="text-center font-semibold">رقم الهوية</div>,
+      cell: ({ row }) => (
+        <div className="text-center">{row.original.idNumber}</div>
+      ),
+    },
+
+    {
+      accessorKey: "licenseNumber",
+      header: () => (
+        <div className="text-center font-semibold">رقم الترخيص</div>
+      ),
+      cell: ({ row }) => (
+        <div className="text-center">{row.original.licenseNumber || "-"}</div>
+      ),
+    },
+
+    {
+      accessorKey: "status",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            الحالة
+            <ArrowUpDown className="ms-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const status = row.original.status;
+        return (
+          <div className="flex justify-center">
+            <Badge
+              variant={status === "approved" ? "default" : "secondary"}
+              className={
+                status === "approved"
+                  ? "bg-green-500 hover:bg-green-600"
+                  : status === "pending"
+                  ? "bg-yellow-500 hover:bg-yellow-600"
+                  : "bg-red-500 hover:bg-red-600"
+              }
+            >
+              {status === "approved"
+                ? "مقبول"
+                : status === "pending"
+                ? "قيد الانتظار"
+                : "مرفوض"}
+            </Badge>
+          </div>
+        );
+      },
+    },
+
+    {
+      accessorKey: "createdAt",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            تاريخ التسجيل
+            <ArrowUpDown className="ms-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const date = new Date(row.original.createdAt);
+        return (
+          <div className="text-center">{date.toLocaleDateString("ar-EG")}</div>
+        );
+      },
+    },
+  ];
