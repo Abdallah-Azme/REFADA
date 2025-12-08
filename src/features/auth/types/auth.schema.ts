@@ -98,6 +98,7 @@ export interface RegisterRequest {
   role: "delegate" | "contributor";
   admin_position?: string; // Required for delegate
   license_number?: string; // Required for delegate
+  camp_name?: string; // Required for delegate
   accept_terms: boolean;
 }
 
@@ -136,10 +137,11 @@ export interface User {
 }
 
 export interface AuthTokens {
-  access_token: string;
-  refresh_token: string;
-  token_type: "Bearer";
-  expires_in?: number;
+  accessToken: string;
+  refreshToken: string;
+  tokenType: "Bearer";
+  accessExpiresIn?: number;
+  refreshExpiresIn?: number;
 }
 
 export interface LoginResponse {
@@ -147,7 +149,11 @@ export interface LoginResponse {
   message: string;
   data: {
     user: User;
-    tokens: AuthTokens;
+    accessToken: string;
+    refreshToken: string;
+    tokenType: "Bearer";
+    accessExpiresIn: number;
+    refreshExpiresIn: number;
   };
 }
 
@@ -156,7 +162,11 @@ export interface RegisterResponse {
   message: string;
   data: {
     user: User;
-    tokens?: AuthTokens; // May auto-login or require verification
+    accessToken?: string;
+    refreshToken?: string;
+    tokenType?: "Bearer";
+    accessExpiresIn?: number;
+    refreshExpiresIn?: number;
   };
 }
 

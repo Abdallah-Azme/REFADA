@@ -27,6 +27,7 @@ import {
   UserCog,
   HeartHandshake,
   Mail,
+  Landmark,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -89,9 +90,19 @@ export default function DashboardSidebar() {
       href: "/dashboard/admin/representatives",
     },
     {
+      label: "المستخدمين المعلقين",
+      icon: Users,
+      href: "/dashboard/admin/pending-users",
+    },
+    {
       label: "إدارة المساهمين",
       icon: HeartHandshake,
       href: "/dashboard/admin/contributors",
+    },
+    {
+      label: "إدارة المحافظات",
+      icon: Landmark,
+      href: "/dashboard/admin/governorates",
     },
   ];
 

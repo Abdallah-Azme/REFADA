@@ -3,6 +3,7 @@ import { Cairo } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import Providers from "./providers";
+import { Toaster } from "@/components/ui/sonner";
 
 const cairo = Cairo({
   subsets: ["arabic"],
@@ -24,6 +25,7 @@ export default async function RootLayout({
       <body className={`${cairo.className} antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>{children}</Providers>
+          <Toaster />
         </NextIntlClientProvider>
       </body>
     </html>

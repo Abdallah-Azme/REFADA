@@ -2,15 +2,24 @@ import { z } from "zod";
 
 export const campSchema = z
   .object({
-    name: z.string().min(1, "اسم الإيواء مطلوب"),
+    name_ar: z.string().min(1, "الاسم بالعربية مطلوب"),
+    name_en: z.string().min(1, "الاسم بالإنجليزية مطلوب"),
     location: z.string().min(1, "الموقع مطلوب"),
-    description: z.string().min(10, "الوصف يجب أن يكون 10 أحرف على الأقل"),
-    capacity: z.number().min(1, "السعة يجب أن تكون أكبر من 0"),
-    currentOccupancy: z.number().min(0, "الإشغال يجب أن يكون 0 أو أكثر"),
+    description_ar: z.string().optional(),
+    description_en: z.string().optional(),
+    capacity: z.number().min(0, "السعة يجب أن تكون 0 أو أكبر").default(0),
+    currentOccupancy: z.number().min(0).default(0),
     coordinates: z.object({
-      lat: z.number().min(-90).max(90, "خط العرض يجب أن يكون بين -90 و 90"),
-      lng: z.number().min(-180).max(180, "خط الطول يجب أن يكون بين -180 و 180"),
+      lat: z.number().default(0),
+      lng: z.number().default(0),
     }),
+    governorate_id: z.string().min(1, "المحافظة مطلوبة"), // Using string for select value usually, or coerce number
+    camp_img: z
+      .any()
+      .refine(
+        (val) => val instanceof File || typeof val === "string",
+        "صورة المخيم مطلوبة"
+      ),
   })
   .refine((data) => data.currentOccupancy <= data.capacity, {
     message: "الإشغال الحالي لا يمكن أن يكون أكبر من السعة الكلية",
@@ -19,9 +28,23 @@ export const campSchema = z
 
 export type CampFormValues = z.infer<typeof campSchema>;
 
-export interface Camp extends CampFormValues {
-  id: string;
+export interface Camp {
+  id: number;
+  name: string;
+  description?: string;
+  slug?: string;
+  governorate?: any;
+  familyCount?: number;
+  childrenCount?: number;
+  elderlyCount?: number;
+  location?: string;
+  campImg?: string;
   status: "active" | "inactive";
+  // Add other form values if they are part of the response
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
 }
 
 export type CreateCampDto = Omit<Camp, "id" | "status">;

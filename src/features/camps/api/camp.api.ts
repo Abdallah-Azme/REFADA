@@ -1,0 +1,99 @@
+import { Camp, CreateCampDto, CampFormValues } from "../types/camp.schema";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+
+type CampsResponse = {
+  success: boolean;
+  message: string;
+  data: Camp[];
+};
+
+type CampResponse = {
+  success: boolean;
+  message: string;
+  data: Camp;
+};
+
+async function apiRequest<T>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const headers: Record<string, string> = {
+    Accept: "application/json",
+    "Accept-Language": "ar",
+  };
+
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("auth_token");
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+  }
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      ...headers,
+      ...options.headers,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw { ...data, status: response.status };
+  }
+
+  return data as T;
+}
+
+export const campsApi = {
+  getAll: async (): Promise<CampsResponse> => {
+    return apiRequest<CampsResponse>("/camps");
+  },
+
+  create: async (data: CampFormValues): Promise<CampResponse> => {
+    const formData = new FormData();
+
+    formData.append("name[ar]", data.name_ar);
+    formData.append("name[en]", data.name_en);
+    formData.append("location", data.location);
+    if (data.description_ar)
+      formData.append("description[ar]", data.description_ar);
+    if (data.description_en)
+      formData.append("description[en]", data.description_en);
+    formData.append("capacity", data.capacity.toString());
+    formData.append("currentOccupancy", data.currentOccupancy.toString());
+    formData.append("governorate_id", data.governorate_id.toString());
+
+    // Coordinates
+    if (data.coordinates) {
+      formData.append("latitude", data.coordinates.lat.toString());
+      formData.append("longitude", data.coordinates.lng.toString());
+    }
+
+    // Image
+    if (data.camp_img instanceof File) {
+      formData.append("camp_img", data.camp_img);
+    }
+
+    const response = await fetch(`${API_BASE_URL}/camps`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+        Accept: "application/json",
+        "Accept-Language": "ar",
+      },
+      body: formData,
+    });
+
+    const resData = await response.json();
+
+    if (!response.ok) {
+      throw { ...resData, status: response.status };
+    }
+
+    return resData;
+  },
+};

@@ -11,8 +11,17 @@ export function useLogin() {
   return useMutation({
     mutationFn: (credentials: LoginRequest) => loginApi(credentials),
     onSuccess: (response) => {
+      // Create tokens object from response
+      const tokens = {
+        accessToken: response.data.accessToken,
+        refreshToken: response.data.refreshToken,
+        tokenType: response.data.tokenType,
+        accessExpiresIn: response.data.accessExpiresIn,
+        refreshExpiresIn: response.data.refreshExpiresIn,
+      };
+
       // Store tokens and user data
-      authService.storeTokens(response.data.tokens);
+      authService.storeTokens(tokens);
       authService.storeUser(response.data.user);
 
       // Show success message
@@ -23,7 +32,7 @@ export function useLogin() {
       if (role === "admin") {
         router.push("/dashboard/admin");
       } else if (role === "delegate") {
-        router.push("/dashboard");
+        router.push("/dashboard/");
       } else if (role === "contributor") {
         router.push("/dashboard/contributor");
       } else {

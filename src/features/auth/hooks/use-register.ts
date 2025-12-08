@@ -15,18 +15,26 @@ export function useRegister() {
       toast.success(response.message || "تم إنشاء الحساب بنجاح");
 
       // If tokens are provided, auto-login
-      if (response.data.tokens) {
-        authService.storeTokens(response.data.tokens);
+      if (response.data.accessToken) {
+        const tokens = {
+          accessToken: response.data.accessToken!,
+          refreshToken: response.data.refreshToken!,
+          tokenType: response.data.tokenType || "Bearer",
+          accessExpiresIn: response.data.accessExpiresIn,
+          refreshExpiresIn: response.data.refreshExpiresIn,
+        };
+
+        authService.storeTokens(tokens);
         authService.storeUser(response.data.user);
 
         // Redirect based on user role
         const role = response.data.user.role;
         if (role === "admin") {
-          router.push("/dashboard/admin");
+          router.push("/dashboard/(superadmin)");
         } else if (role === "delegate") {
-          router.push("/dashboard");
+          router.push("/dashboard/(representative)");
         } else if (role === "contributor") {
-          router.push("/dashboard/contributor");
+          router.push("/dashboard/(contributor)");
         } else {
           router.push("/dashboard");
         }

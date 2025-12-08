@@ -25,6 +25,9 @@ export {
 // Services
 export { authService } from "./services/auth.service";
 
+// Context
+export { AuthProvider, useAuth, useRequireAuth } from "./context/auth-context";
+
 // Hooks
 export * from "./hooks";
 

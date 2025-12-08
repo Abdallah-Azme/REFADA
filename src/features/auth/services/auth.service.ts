@@ -1,30 +1,51 @@
 import { User, AuthTokens } from "../types/auth.schema";
+import { setCookie, getCookie, deleteCookie } from "cookies-next";
 
 export const authService = {
   // Token management
   storeTokens(tokens: AuthTokens): void {
     if (typeof window !== "undefined") {
-      localStorage.setItem("auth_token", tokens.access_token);
-      localStorage.setItem("refresh_token", tokens.refresh_token);
+      // Store in localStorage (legacy/backup)
+      localStorage.setItem("auth_token", tokens.accessToken);
+      localStorage.setItem("refresh_token", tokens.refreshToken);
+
+      // Store in cookies for middleware
+      setCookie("auth_token", tokens.accessToken, {
+        maxAge: tokens.accessExpiresIn || 60 * 60 * 2, // Default 2 hours
+        path: "/",
+        sameSite: "lax",
+      });
+      setCookie("refresh_token", tokens.refreshToken, {
+        maxAge: tokens.refreshExpiresIn || 60 * 60 * 24 * 30, // Default 30 days
+        path: "/",
+        sameSite: "lax",
+      });
     }
   },
 
   storeToken(token: string): void {
     if (typeof window !== "undefined") {
       localStorage.setItem("auth_token", token);
+      setCookie("auth_token", token, { path: "/" });
     }
   },
 
   getToken(): string | null {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("auth_token");
+      return (
+        (getCookie("auth_token") as string) ||
+        localStorage.getItem("auth_token")
+      );
     }
     return null;
   },
 
   getRefreshToken(): string | null {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("refresh_token");
+      return (
+        (getCookie("refresh_token") as string) ||
+        localStorage.getItem("refresh_token")
+      );
     }
     return null;
   },
@@ -33,6 +54,8 @@ export const authService = {
     if (typeof window !== "undefined") {
       localStorage.removeItem("auth_token");
       localStorage.removeItem("refresh_token");
+      deleteCookie("auth_token");
+      deleteCookie("refresh_token");
     }
   },
 
@@ -40,6 +63,8 @@ export const authService = {
   storeUser(user: User): void {
     if (typeof window !== "undefined") {
       localStorage.setItem("user", JSON.stringify(user));
+      // Store role in cookie for middleware
+      setCookie("user_role", user.role, { path: "/" });
     }
   },
 
@@ -54,6 +79,7 @@ export const authService = {
   removeUser(): void {
     if (typeof window !== "undefined") {
       localStorage.removeItem("user");
+      deleteCookie("user_role");
     }
   },
 

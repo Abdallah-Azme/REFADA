@@ -11,12 +11,16 @@ export const campService = {
     }
 
     return {
-      name: camp.name,
-      location: camp.location,
-      description: camp.description,
-      capacity: camp.capacity,
-      currentOccupancy: camp.currentOccupancy,
-      coordinates: camp.coordinates,
+      name_ar: camp.name, // Mapping existing name to AR
+      name_en: "", // No EN name in current Camp interface
+      location: camp.location || "",
+      description_ar: camp.description || "",
+      description_en: "",
+      capacity: camp.capacity || 0,
+      currentOccupancy: camp.currentOccupancy || 0,
+      coordinates: camp.coordinates || { lat: 0, lng: 0 },
+      governorate_id: camp.governorate?.id?.toString() || "",
+      camp_img: undefined, // Files can't be pre-filled
     };
   },
 
