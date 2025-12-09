@@ -30,6 +30,7 @@ import {
   Landmark,
   Activity,
   Users2,
+  MessageSquareWarning,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -76,6 +77,11 @@ export default function DashboardSidebar() {
     { label: "الرئيسية", icon: Home, href: "/dashboard/admin" },
     { label: "الإيواءات", icon: Tent, href: "/dashboard/admin/camps" },
     { label: "الرسائل", icon: Mail, href: "/dashboard/admin/messages" },
+    {
+      label: "الشكاوى والاقتراحات",
+      icon: MessageSquareWarning,
+      href: "/dashboard/admin/complaints",
+    },
     { label: "الإعدادات", icon: Settings, href: "/dashboard/admin/settings" },
   ];
 

@@ -18,7 +18,8 @@ export interface Complaint {
   phone: string;
   topic: string;
   message: string;
-  camp_id: number;
-  createdAt?: string;
-  updatedAt?: string;
+  campId: number;
+  campName: string;
+  createdAt: string;
+  updatedAt: string;
 }
