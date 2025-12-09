@@ -53,7 +53,7 @@ export function ComplaintViewDialog({
 
         <div className="space-y-6 py-4">
           {/* User Info Card */}
-          <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+          <Card className="bg-linear-to-br from-primary/5 to-primary/10 border-primary/20">
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold mb-4 text-primary flex items-center gap-2">
                 <User className="h-5 w-5" />

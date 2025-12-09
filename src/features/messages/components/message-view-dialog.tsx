@@ -61,7 +61,7 @@ export function MessageViewDialog({
 
         <div className="space-y-6 py-4">
           {/* User Info Card */}
-          <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+          <Card className="bg-linear-to-br from-primary/5 to-primary/10 border-primary/20">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
