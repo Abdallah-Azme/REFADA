@@ -69,3 +69,24 @@ export async function getProjectsApi(): Promise<ProjectsResponse> {
     method: "GET",
   });
 }
+
+export async function approveProjectApi(
+  id: number,
+  status: "in_progress" | "cancelled"
+): Promise<{ success: boolean; message: string; data: Project }> {
+  const formData = new FormData();
+  formData.append("status", status);
+
+  return apiRequest(`/projects/${id}/approve`, {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export async function deleteProjectApi(
+  id: number
+): Promise<{ success: boolean; message: string }> {
+  return apiRequest(`/projects/${id}`, {
+    method: "DELETE",
+  });
+}

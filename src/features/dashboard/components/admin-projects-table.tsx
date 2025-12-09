@@ -30,8 +30,21 @@ import PaginationControls from "./pagination-controls";
 
 import { Loader2 } from "lucide-react";
 import { useProjects } from "@/features/projects/hooks/use-projects";
+import { Project } from "@/features/projects/api/projects.api";
 
-export default function AdminProjectsTable() {
+interface AdminProjectsTableProps {
+  data?: Project[];
+  onApprove?: (project: Project) => void;
+  onView?: (project: Project) => void;
+  onDelete?: (project: Project) => void;
+}
+
+export default function AdminProjectsTable({
+  data: propData,
+  onApprove,
+  onView,
+  onDelete,
+}: AdminProjectsTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -44,6 +57,9 @@ export default function AdminProjectsTable() {
   });
 
   const { data: response, isLoading, error } = useProjects();
+
+  // Use propData if provided, otherwise fetch from API
+  const apiData = propData || response?.data || [];
 
   const data = React.useMemo(() => {
     // Map API Project to AdminProject (UI model) if needed, or use directly if columns adjusted.
@@ -63,7 +79,7 @@ export default function AdminProjectsTable() {
     // project.totalRemaining = budget? No, remaining needed.
     // project.totalReceived = collected.
 
-    return (response?.data || []).map((p) => ({
+    return apiData.map((p) => ({
       id: p.id,
       name: p.name,
       type: p.type,
@@ -74,20 +90,30 @@ export default function AdminProjectsTable() {
       status: p.status as "pending" | "approved" | "rejected",
       image: p.projectImage,
     }));
-  }, [response]);
+  }, [apiData]);
 
   const handleAccept = (project: any): void => {
-    // Implement Accept API later
-    console.log("Accept", project);
+    // Find the original project from apiData
+    const originalProject = apiData.find((p) => p.id === project.id);
+    if (originalProject && onApprove) {
+      onApprove(originalProject);
+    }
   };
 
   const handleDecline = (project: any): void => {
-    // Implement Decline API later
-    console.log("Decline", project);
+    // Find the original project from apiData
+    const originalProject = apiData.find((p) => p.id === project.id);
+    if (originalProject && onDelete) {
+      onDelete(originalProject);
+    }
   };
 
   const handleView = (project: any): void => {
-    console.log("View:", project);
+    // Find the original project from apiData
+    const originalProject = apiData.find((p) => p.id === project.id);
+    if (originalProject && onView) {
+      onView(originalProject);
+    }
   };
 
   const table = useReactTable({
