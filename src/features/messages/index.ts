@@ -1,11 +1,14 @@
 // Components
 export { createAdminMessageColumns } from "./components/message-table-columns";
 export { default as AdminMessagesTable } from "./components/admin-messages-table";
+export { MessageViewDialog } from "./components/message-view-dialog";
 
 // Hooks
 export {
   useContactMessages,
   useCreateContactMessage,
+  useDeleteContactMessage,
+  useContactMessage,
 } from "./hooks/use-contact-messages";
 
 // API

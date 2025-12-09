@@ -3,7 +3,7 @@ import { ContactMessage } from "./message.schema";
 
 export interface MessageTableColumn {
   onView: (message: ContactMessage) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
 }
 
 export type MessageColumnDef = ColumnDef<ContactMessage>;

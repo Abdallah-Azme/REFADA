@@ -29,7 +29,7 @@ import { Input } from "@/shared/ui/input";
 interface AdminMessagesTableProps {
   data: ContactMessage[];
   onView: (message: ContactMessage) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
 }
 
 export default function AdminMessagesTable({
@@ -72,12 +72,20 @@ export default function AdminMessagesTable({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center py-4">
+      <div className="flex items-center gap-4 py-4">
         <Input
-          placeholder="بحث عن رسالة..."
-          value={(table.getColumn("subject")?.getFilterValue() as string) ?? ""}
+          placeholder="البحث بالاسم..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("subject")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <Input
+          placeholder="البحث بالبريد الإلكتروني..."
+          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("email")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

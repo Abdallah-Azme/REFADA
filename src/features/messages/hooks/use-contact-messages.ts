@@ -10,6 +10,14 @@ export function useContactMessages() {
   });
 }
 
+export function useContactMessage(id: number) {
+  return useQuery({
+    queryKey: ["contact-message", id],
+    queryFn: () => contactMessagesApi.getById(id),
+    enabled: !!id,
+  });
+}
+
 export function useCreateContactMessage() {
   const queryClient = useQueryClient();
 
@@ -19,6 +27,21 @@ export function useCreateContactMessage() {
     onSuccess: (response) => {
       toast.success(response.message || "تم إرسال رسالتك بنجاح");
       queryClient.invalidateQueries({ queryKey: ["contact-messages"] });
+    },
+  });
+}
+
+export function useDeleteContactMessage() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => contactMessagesApi.delete(id),
+    onSuccess: (response) => {
+      toast.success(response.message || "تم حذف الرسالة بنجاح");
+      queryClient.invalidateQueries({ queryKey: ["contact-messages"] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "حدث خطأ أثناء حذف الرسالة");
     },
   });
 }

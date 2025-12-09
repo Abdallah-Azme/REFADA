@@ -61,12 +61,24 @@ export const contactMessagesApi = {
     return apiRequest<ContactMessagesResponse>("/contact-us");
   },
 
+  getById: async (id: number): Promise<ContactMessageResponse> => {
+    return apiRequest<ContactMessageResponse>(`/contact-us/${id}`);
+  },
+
   create: async (
     data: Omit<ContactMessageFormValues, "subject">
   ): Promise<ContactMessageResponse> => {
     return apiRequest<ContactMessageResponse>("/contact-us", {
       method: "POST",
       body: JSON.stringify(data),
+    });
+  },
+
+  delete: async (
+    id: number
+  ): Promise<{ success: boolean; message: string }> => {
+    return apiRequest(`/contact-us/${id}`, {
+      method: "DELETE",
     });
   },
 };
