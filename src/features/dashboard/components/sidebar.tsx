@@ -94,6 +94,11 @@ export default function DashboardSidebar() {
       href: "/dashboard/admin/projects",
     },
     {
+      label: "إدارة العائلات",
+      icon: Users,
+      href: "/dashboard/admin/families",
+    },
+    {
       label: "إدارة المندوبين",
       icon: UserCog,
       href: "/dashboard/admin/representatives",
