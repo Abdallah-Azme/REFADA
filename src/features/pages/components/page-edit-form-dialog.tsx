@@ -1,0 +1,253 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/shared/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shared/ui/form";
+import { Input } from "@/shared/ui/input";
+import { Button } from "@/shared/ui/button";
+import { Textarea } from "@/shared/ui/textarea";
+import {
+  pageUpdateSchema,
+  PageUpdateFormValues,
+  PageData,
+} from "../types/page.schema";
+import { useEffect, useState } from "react";
+import { Loader2, Upload, FileText, ImageIcon } from "lucide-react";
+import Image from "next/image";
+
+interface PageEditFormDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  pageData: PageData;
+  onSubmit: (data: PageUpdateFormValues) => void;
+  isPending?: boolean;
+}
+
+export function PageEditFormDialog({
+  open,
+  onOpenChange,
+  pageData,
+  onSubmit,
+  isPending,
+}: PageEditFormDialogProps) {
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const form = useForm<PageUpdateFormValues>({
+    resolver: zodResolver(pageUpdateSchema),
+    defaultValues: {
+      title_ar: "",
+      title_en: "",
+      description_ar: "",
+      description_en: "",
+      image: undefined,
+    },
+  });
+
+  useEffect(() => {
+    if (pageData && open) {
+      // Assuming pageData contains current values.
+      // If API only returns localized, we fill what we have.
+      // Ideally we should have both languages.
+      // For now, I'll populate both fields with the same value if we don't have separate.
+      // But typically for "Update", we start with empty or current.
+      // If returning separate fields:
+      const titleAr = pageData.title_ar || pageData.title || "";
+      const titleEn = pageData.title_en || ""; // Might be missing
+      const descAr = pageData.description_ar || pageData.description || "";
+      const descEn = pageData.description_en || ""; // Might be missing
+
+      form.reset({
+        title_ar: titleAr,
+        title_en: titleEn,
+        description_ar: descAr,
+        description_en: descEn,
+        image: undefined,
+      });
+
+      if (pageData.image) {
+        setImagePreview(pageData.image);
+      }
+    }
+  }, [pageData, open, form]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      form.setValue("image", file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = (data: PageUpdateFormValues) => {
+    onSubmit(data);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>تعديل محتوى الصفحة: {pageData.title}</DialogTitle>
+        </DialogHeader>
+
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6"
+          >
+            {/* Image Upload */}
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field: { value, onChange, ...field } }) => (
+                <FormItem>
+                  <FormLabel>صورة الصفحة</FormLabel>
+                  <FormControl>
+                    <div className="flex flex-col gap-4">
+                      <div className="relative h-48 w-full rounded-lg overflow-hidden border-2 border-dashed bg-gray-50 flex items-center justify-center shrink-0">
+                        {imagePreview ? (
+                          <Image
+                            src={imagePreview}
+                            alt="Preview"
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="flex flex-col items-center gap-2 text-gray-400">
+                            <ImageIcon className="h-10 w-10" />
+                            <span className="text-sm">معاينة الصورة</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          {...field}
+                          className="cursor-pointer"
+                        />
+                      </div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Titles */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="title_ar"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>العنوان (بالعربية)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="العنوان بالعربية..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="title_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>العنوان (بالإنجليزي)</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="English Title..."
+                        className="direction-ltr"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Descriptions */}
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="description_ar"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>الوصف (بالعربية)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="الوصف بالعربية..."
+                        className="resize-none h-40"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="description_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>الوصف (بالإنجليزي)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="English Description..."
+                        className="resize-none h-40 direction-ltr"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={isPending}
+              >
+                إلغاء
+              </Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin ml-2" />
+                    جاري الحفظ...
+                  </>
+                ) : (
+                  "حفظ التعديلات"
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}

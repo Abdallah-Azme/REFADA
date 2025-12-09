@@ -31,6 +31,7 @@ import {
   Activity,
   Users2,
   MessageSquareWarning,
+  FileText,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -170,6 +171,32 @@ export default function DashboardSidebar() {
       label: "آراء المستفيدين",
       icon: Users,
       href: "/dashboard/admin/home-control/testimonials",
+    },
+    {
+      label: "الصفحات",
+      icon: FileText,
+      // href is optional for parents
+      href: "#",
+      children: [
+        {
+          label: "شروط الاستخدام",
+          href: "/dashboard/admin/home-control/pages/terms",
+        },
+        {
+          label: "سياسة الخصوصية",
+          href: "/dashboard/admin/home-control/pages/privacy",
+        },
+        {
+          label: "الشفافية",
+          href: "/dashboard/admin/home-control/pages/transparency",
+        },
+        {
+          label: "رسالتنا",
+          href: "/dashboard/admin/home-control/pages/mission",
+        },
+        { label: "رؤيتنا", href: "/dashboard/admin/home-control/pages/vision" },
+        { label: "أهدافنا", href: "/dashboard/admin/home-control/pages/goals" },
+      ],
     },
     {
       label: "تواصل معنا",
@@ -368,8 +395,64 @@ export default function DashboardSidebar() {
                     <SidebarGroupContent>
                       <SidebarMenu className="space-y-1">
                         {homeControlMenu.map((item, i) => {
-                          const isActive = pathname === item.href;
+                          // Check if it has children
+                          if ((item as any).children) {
+                            const children = (item as any).children;
+                            const isChildActive = children.some(
+                              (child: any) => pathname === child.href
+                            );
 
+                            return (
+                              <Collapsible
+                                key={i}
+                                defaultOpen={isChildActive}
+                                className="group/sub"
+                              >
+                                <SidebarMenuItem>
+                                  <CollapsibleTrigger asChild>
+                                    <SidebarMenuButton
+                                      size="default"
+                                      className="w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/10 transition-all"
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        <item.icon className="w-4 h-4 text-white" />
+                                        <span>{item.label}</span>
+                                      </div>
+                                      <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/sub:rotate-180 text-white/70" />
+                                    </SidebarMenuButton>
+                                  </CollapsibleTrigger>
+                                  <CollapsibleContent>
+                                    <div className="flex flex-col space-y-1 mt-1 pr-4 border-r border-white/10 mr-2">
+                                      {children.map(
+                                        (child: any, idx: number) => {
+                                          const isItemActive =
+                                            pathname === child.href;
+                                          return (
+                                            <Link key={idx} href={child.href}>
+                                              <div
+                                                className={`
+                                                                text-sm font-medium py-2 px-3 rounded-lg transition-colors
+                                                                ${
+                                                                  isItemActive
+                                                                    ? "text-[#D9CBA8] bg-white/5"
+                                                                    : "text-white/70 hover:text-white hover:bg-white/5"
+                                                                }
+                                                            `}
+                                              >
+                                                {child.label}
+                                              </div>
+                                            </Link>
+                                          );
+                                        }
+                                      )}
+                                    </div>
+                                  </CollapsibleContent>
+                                </SidebarMenuItem>
+                              </Collapsible>
+                            );
+                          }
+
+                          const isActive = pathname === item.href;
                           return (
                             <SidebarMenuItem key={i}>
                               <Link href={item.href}>
