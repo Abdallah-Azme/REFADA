@@ -26,7 +26,7 @@ export const createMaritalStatusColumns = (
       const status = row.original;
 
       return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 justify-center">
           <Button
             variant="ghost"
             size="sm"

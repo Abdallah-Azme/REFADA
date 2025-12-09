@@ -26,36 +26,59 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { Breadcrumb } from "@/components/shared/breadcrumb";
 import ImageFallback from "@/components/shared/image-fallback";
-import { MessageCirclePlus, Send } from "lucide-react";
+import { Loader2, MessageCirclePlus, Send } from "lucide-react";
 import { useDirection } from "@/hooks/use-direction";
 import { cn } from "@/lib/utils";
+import { useCreateComplaint } from "@/features/complaints";
+import { useCamps } from "@/features/camps";
+import { toast } from "sonner";
 
 // 🧩 Validation schema
 const formSchema = z.object({
   name: z.string().min(2, { message: "nameRequired" }),
   phone: z.string().min(8, { message: "phoneRequired" }),
   email: z.string().email({ message: "invalidEmail" }),
-  category: z.string().min(1, { message: "categoryRequired" }),
-  subject: z.string().min(2, { message: "subjectRequired" }),
+  camp_id: z.string().min(1, { message: "campRequired" }),
+  topic: z.string().min(2, { message: "subjectRequired" }),
   message: z.string().min(5, { message: "messageRequired" }),
 });
 
 export default function ContactSection() {
   const t = useTranslations();
   const { isRTL } = useDirection();
+  const { data: campsData, isLoading: campsLoading } = useCamps();
+  const { mutate: createComplaint, isPending } = useCreateComplaint();
+
+  const camps = campsData?.data || [];
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       phone: "",
       email: "",
-      category: "",
-      subject: "",
+      camp_id: "",
+      topic: "",
       message: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {}
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    createComplaint(
+      {
+        ...values,
+        camp_id: parseInt(values.camp_id),
+      },
+      {
+        onSuccess: () => {
+          form.reset();
+        },
+        onError: (error: any) => {
+          toast.error(error?.message || "حدث خطأ أثناء إرسال الشكوى/الاقتراح");
+        },
+      }
+    );
+  }
 
   return (
     <section className="bg-[#F4F4F4] overflow-hidden">
@@ -153,7 +176,7 @@ export default function ContactSection() {
                   />
                 </div>
 
-                {/* Email + Category */}
+                {/* Email + Camp */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
                   <FormField
                     control={form.control}
@@ -174,31 +197,35 @@ export default function ContactSection() {
 
                   <FormField
                     control={form.control}
-                    name="category"
+                    name="camp_id"
                     render={({ field }) => (
                       <FormItem>
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
+                          disabled={campsLoading}
                         >
                           <FormControl>
                             <SelectTrigger className="w-full h-[50px]! bg-[#EEEADD] flex items-center">
                               <SelectValue
-                                placeholder={t("categoryPlaceholder")}
+                                placeholder={
+                                  campsLoading
+                                    ? "جاري التحميل..."
+                                    : "اختر الإيواء"
+                                }
                               />
                             </SelectTrigger>
                           </FormControl>
 
                           <SelectContent>
-                            <SelectItem value="technical">
-                              {t("categoryTechnical")}
-                            </SelectItem>
-                            <SelectItem value="suggestion">
-                              {t("categorySuggestion")}
-                            </SelectItem>
-                            <SelectItem value="other">
-                              {t("categoryOther")}
-                            </SelectItem>
+                            {camps.map((camp) => (
+                              <SelectItem
+                                key={camp.id}
+                                value={camp.id.toString()}
+                              >
+                                {camp.name}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
 
@@ -208,10 +235,10 @@ export default function ContactSection() {
                   />
                 </div>
 
-                {/* Subject */}
+                {/* Topic */}
                 <FormField
                   control={form.control}
-                  name="subject"
+                  name="topic"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
@@ -246,22 +273,31 @@ export default function ContactSection() {
 
                 {/* Submit */}
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: isPending ? 1 : 1.05 }}
+                  whileTap={{ scale: isPending ? 1 : 0.95 }}
                   transition={{ duration: 0.2 }}
                 >
                   <Button
                     type="submit"
+                    disabled={isPending}
                     className="bg-secondary flex gap-2 items-center px-15! font-semibold hover:bg-secondary/90 text-primary rounded-full p-6"
                   >
-                    {t("send")}
-
-                    <Send
-                      className={cn(
-                        "text-primary text-sm",
-                        isRTL ? "-scale-x-100" : ""
-                      )}
-                    />
+                    {isPending ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        جاري الإرسال...
+                      </>
+                    ) : (
+                      <>
+                        {t("send")}
+                        <Send
+                          className={cn(
+                            "text-primary text-sm",
+                            isRTL ? "-scale-x-100" : ""
+                          )}
+                        />
+                      </>
+                    )}
                   </Button>
                 </motion.div>
               </form>
