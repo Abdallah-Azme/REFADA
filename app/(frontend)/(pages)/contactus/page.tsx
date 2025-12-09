@@ -26,9 +26,11 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { Breadcrumb } from "@/components/shared/breadcrumb";
 import ImageFallback from "@/components/shared/image-fallback";
-import { MessageCirclePlus, Send } from "lucide-react";
+import { MessageCirclePlus, Send, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDirection } from "@/hooks/use-direction";
+import { useCreateContactMessage } from "@/features/messages";
+import { toast } from "sonner";
 
 // 🧩 Validation schema
 const formSchema = z.object({
@@ -42,8 +44,8 @@ const formSchema = z.object({
 
 export default function ContactSection() {
   const t = useTranslations();
-
   const { isRTL } = useDirection();
+  const { mutate: createMessage, isPending } = useCreateContactMessage();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,7 +59,22 @@ export default function ContactSection() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {}
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // API only needs name, email, phone, and message
+    const { name, email, phone, message } = values;
+
+    createMessage(
+      { name, email, phone, message },
+      {
+        onSuccess: () => {
+          form.reset();
+        },
+        onError: (error: any) => {
+          toast.error(error?.message || "حدث خطأ أثناء إرسال الرسالة");
+        },
+      }
+    );
+  }
 
   return (
     <section className="bg-[#F4F4F4] overflow-hidden">
@@ -244,22 +261,31 @@ export default function ContactSection() {
 
                 {/* Submit */}
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: isPending ? 1 : 1.05 }}
+                  whileTap={{ scale: isPending ? 1 : 0.95 }}
                   transition={{ duration: 0.2 }}
                 >
                   <Button
                     type="submit"
-                    className="bg-secondary flex gap-2 items-center px-15! font-semibold hover:bg-secondary/90 text-primary rounded-full p-6"
+                    disabled={isPending}
+                    className="bg-secondary flex gap-2 items-center px-15! font-semibold hover:bg-secondary/90 text-primary rounded-full p-6 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {t("send")}
-
-                    <Send
-                      className={cn(
-                        "text-primary text-sm",
-                        isRTL ? "-scale-x-100" : ""
-                      )}
-                    />
+                    {isPending ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        {t("sending")}
+                      </>
+                    ) : (
+                      <>
+                        {t("send")}
+                        <Send
+                          className={cn(
+                            "text-primary text-sm",
+                            isRTL ? "-scale-x-100" : ""
+                          )}
+                        />
+                      </>
+                    )}
                   </Button>
                 </motion.div>
               </form>

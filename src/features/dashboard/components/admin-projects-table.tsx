@@ -28,6 +28,9 @@ import {
 } from "../table-cols/admin-projects-cols";
 import PaginationControls from "./pagination-controls";
 
+import { Loader2 } from "lucide-react";
+import { useProjects } from "@/features/projects/hooks/use-projects";
+
 export default function AdminProjectsTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -40,29 +43,54 @@ export default function AdminProjectsTable() {
     pageSize: 10,
   });
 
-  const [data, setData] = React.useState<AdminProject[]>(dummyAdminProjects);
+  const { data: response, isLoading, error } = useProjects();
 
-  const handleAccept = (project: AdminProject): void => {
-    setData((prevData) =>
-      prevData.map((p) =>
-        p.id === project.id ? { ...p, status: "approved" as const } : p
-      )
-    );
+  const data = React.useMemo(() => {
+    // Map API Project to AdminProject (UI model) if needed, or use directly if columns adjusted.
+    // The columns expect AdminProject. let's check mapping.
+    // API: id, name, type, addedBy, beneficiaryCount, college, status... projectImage
+    // UI (AdminProject): id, name, type, location (missing in API, maybe 'camp'?), beneficiaryCount, budget (missing?), collected (totalReceived), status, image (projectImage).
+
+    // I will map API data to AdminProject shape to minimize column refactor,
+    // OR BETTER: Update columns to match API.
+
+    // Let's look at `createAdminProjectColumns`. It uses `AdminProject`.
+    // I should probably map the API data to match `AdminProject` to be safe,
+    // or update `AdminProject` type in cols file.
+
+    // Mapping seems safer and quicker to get "display" working.
+    // project.camp is the location?
+    // project.totalRemaining = budget? No, remaining needed.
+    // project.totalReceived = collected.
+
+    return (response?.data || []).map((p) => ({
+      id: p.id,
+      name: p.name,
+      type: p.type,
+      location: p.camp, // Use camp as location for now
+      beneficiaryCount: p.beneficiaryCount,
+      budget: p.totalRemaining + p.totalReceived, // Estimate budget? Or just show remaining?
+      collected: p.totalReceived,
+      status: p.status as "pending" | "approved" | "rejected",
+      image: p.projectImage,
+    }));
+  }, [response]);
+
+  const handleAccept = (project: any): void => {
+    // Implement Accept API later
+    console.log("Accept", project);
   };
 
-  const handleDecline = (project: AdminProject): void => {
-    setData((prevData) =>
-      prevData.map((p) =>
-        p.id === project.id ? { ...p, status: "rejected" as const } : p
-      )
-    );
+  const handleDecline = (project: any): void => {
+    // Implement Decline API later
+    console.log("Decline", project);
   };
 
-  const handleView = (project: AdminProject): void => {
+  const handleView = (project: any): void => {
     console.log("View:", project);
   };
 
-  const table = useReactTable<AdminProject>({
+  const table = useReactTable({
     data,
     columns: createAdminProjectColumns({
       onAccept: handleAccept,
@@ -84,6 +112,23 @@ export default function AdminProjectsTable() {
       pagination,
     },
   });
+
+  if (isLoading) {
+    return (
+      <div className="rounded-lg bg-white p-8 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="mr-2">جاري تحميل المشاريع...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-lg bg-white p-8 text-center text-red-600">
+        حدث خطأ أثناء تحميل البيانات
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-lg bg-white">
@@ -134,7 +179,7 @@ export default function AdminProjectsTable() {
                   }
                   className="h-24 text-center"
                 >
-                  لا توجد نتائج.
+                  لا يوجد مشاريع.
                 </TableCell>
               </TableRow>
             )}

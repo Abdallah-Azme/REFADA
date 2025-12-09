@@ -7,11 +7,11 @@ export const metadata: Metadata = {
 
 export default function AdminPendingUsersPage() {
   return (
-    <div className="space-y-6">
+    <section className=" p-7 flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">طلبات المناديب</h1>
       </div>
       <AdminPendingUsersTable />
-    </div>
+    </section>
   );
 }

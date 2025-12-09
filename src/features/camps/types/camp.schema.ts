@@ -28,19 +28,42 @@ export const campSchema = z
 
 export type CampFormValues = z.infer<typeof campSchema>;
 
+export interface Project {
+  id: number;
+  name: string;
+  type: string;
+  addedBy: string;
+  beneficiaryCount: number;
+  college: string;
+  status: string;
+  isApproved: boolean;
+  notes: string | null;
+  projectImage: string;
+  totalReceived: number;
+  totalRemaining: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Camp {
   id: number;
   name: string;
   description?: string;
   slug?: string;
-  governorate?: any;
+  governorate?: string | null;
   familyCount?: number;
   childrenCount?: number;
   elderlyCount?: number;
+  latitude?: number | null;
+  longitude?: number | null;
   location?: string;
+  bankAccount?: string | null;
   campImg?: string;
-  status: "active" | "inactive";
-  // Add other form values if they are part of the response
+  projects?: Project[];
+  createdAt?: string;
+  updatedAt?: string;
+  status?: "active" | "inactive";
+  // Form-specific coordinates (for backward compatibility)
   coordinates?: {
     lat: number;
     lng: number;

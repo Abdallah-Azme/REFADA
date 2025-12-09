@@ -153,6 +153,11 @@ export default function DashboardSidebar() {
       icon: Menu,
       href: "/dashboard/admin/home-control/contact",
     },
+    {
+      label: "إعدادات الموقع",
+      icon: Settings,
+      href: "/dashboard/admin/home-control/website-settings",
+    },
   ];
 
   // DETECT USER ROLE FROM URL PATH

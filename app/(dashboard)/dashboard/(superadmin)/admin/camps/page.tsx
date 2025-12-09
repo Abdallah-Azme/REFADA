@@ -3,20 +3,22 @@
 import { useState } from "react";
 import { Button } from "@/src/shared/ui/button";
 import { Dialog, DialogTrigger } from "@/src/shared/ui/dialog";
-import { Plus, Tent } from "lucide-react";
+import { Plus, Tent, Loader2 } from "lucide-react";
 import MainHeader from "@/src/shared/components/main-header";
 import {
   CampFormDialog,
   CampsTable,
   Camp,
   CampFormValues,
-  mockCamps,
+  useCamps,
 } from "@/features/camps";
 
 export default function AdminCampsPage() {
-  const [camps, setCamps] = useState<Camp[]>(mockCamps);
+  const { data, isLoading, error } = useCamps();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCamp, setEditingCamp] = useState<Camp | null>(null);
+
+  const camps = data?.data || [];
 
   const handleOpenDialog = (camp?: Camp) => {
     if (camp) {
@@ -28,42 +30,21 @@ export default function AdminCampsPage() {
   };
 
   const onSubmit = (data: CampFormValues) => {
-    if (editingCamp) {
-      // Update existing camp
-      setCamps(
-        camps.map((camp) =>
-          camp.id === editingCamp.id ? { ...camp, ...data } : camp
-        )
-      );
-    } else {
-      // Create new camp
-      const newCamp: Camp = {
-        id: Date.now().toString(),
-        ...data,
-        status: "active",
-      };
-      setCamps([...camps, newCamp]);
-    }
+    // TODO: Implement create/update API calls
+    console.log("Form data:", data);
     setIsDialogOpen(false);
   };
 
   const handleDeleteCamp = (id: string) => {
     if (confirm("هل أنت متأكد من حذف هذا الإيواء؟")) {
-      setCamps(camps.filter((camp) => camp.id !== id));
+      // TODO: Implement delete API call
+      console.log("Delete camp:", id);
     }
   };
 
   const handleToggleStatus = (id: string) => {
-    setCamps(
-      camps.map((camp) =>
-        camp.id === id
-          ? {
-              ...camp,
-              status: camp.status === "active" ? "inactive" : "active",
-            }
-          : camp
-      )
-    );
+    // TODO: Implement toggle status API call
+    console.log("Toggle status for camp:", id);
   };
 
   return (
@@ -94,12 +75,24 @@ export default function AdminCampsPage() {
         <h3 className="text-lg font-bold text-gray-900 mb-4">
           قائمة الإيواءات
         </h3>
-        <CampsTable
-          data={camps}
-          onEdit={handleOpenDialog}
-          onDelete={handleDeleteCamp}
-          onToggleStatus={handleToggleStatus}
-        />
+
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <span className="mr-3 text-gray-600">جاري تحميل البيانات...</span>
+          </div>
+        ) : error ? (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-red-600">حدث خطأ أثناء تحميل البيانات</p>
+          </div>
+        ) : (
+          <CampsTable
+            data={camps}
+            onEdit={handleOpenDialog}
+            onDelete={handleDeleteCamp}
+            onToggleStatus={handleToggleStatus}
+          />
+        )}
       </div>
     </div>
   );

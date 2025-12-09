@@ -4,9 +4,15 @@ export { CampsTable } from "./components/camps-table";
 
 // Hooks
 export { useCampForm } from "./hooks/use-camp-form";
+export { useCamps, useCreateCamp } from "./hooks/use-camps";
 
 // Types
-export type { Camp, CampFormValues, CreateCampDto } from "./types/camp.schema";
+export type {
+  Camp,
+  CampFormValues,
+  CreateCampDto,
+  Project,
+} from "./types/camp.schema";
 export { CampStatus, campSchema } from "./types/camp.schema";
 export type { CampTableColumn } from "./types/camp-table.types";
 
