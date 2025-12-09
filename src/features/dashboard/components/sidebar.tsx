@@ -28,6 +28,8 @@ import {
   HeartHandshake,
   Mail,
   Landmark,
+  Activity,
+  Users2,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -103,6 +105,21 @@ export default function DashboardSidebar() {
       label: "إدارة المحافظات",
       icon: Landmark,
       href: "/dashboard/admin/governorates",
+    },
+    {
+      label: "الحالات الاجتماعية",
+      icon: HeartHandshake,
+      href: "/dashboard/admin/marital-status",
+    },
+    {
+      label: "الحالات الطبية",
+      icon: Activity,
+      href: "/dashboard/admin/medical-condition",
+    },
+    {
+      label: "العلاقات",
+      icon: Users2,
+      href: "/dashboard/admin/relationship",
     },
   ];
 
