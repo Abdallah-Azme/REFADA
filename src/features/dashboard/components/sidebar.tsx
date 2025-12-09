@@ -109,6 +109,11 @@ export default function DashboardSidebar() {
       href: "/dashboard/admin/contributors",
     },
     {
+      label: "سجل النشاطات",
+      icon: Activity,
+      href: "/dashboard/admin/activities",
+    },
+    {
       label: "إدارة المحافظات",
       icon: Landmark,
       href: "/dashboard/admin/governorates",

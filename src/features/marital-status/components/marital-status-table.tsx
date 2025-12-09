@@ -10,6 +10,7 @@ import {
   SortingState,
   getFilteredRowModel,
   ColumnFiltersState,
+  PaginationState,
 } from "@tanstack/react-table";
 
 import {
@@ -20,9 +21,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/ui/table";
-import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { useState } from "react";
+import PaginationControls from "@/src/features/dashboard/components/pagination-controls";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -35,6 +36,10 @@ export function MaritalStatusTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   const table = useReactTable({
     data,
@@ -45,9 +50,11 @@ export function MaritalStatusTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
+      pagination,
     },
   });
 
@@ -115,23 +122,8 @@ export function MaritalStatusTable<TData, TValue>({
         </Table>
       </div>
 
-      <div className="flex items-center justify-end space-x-2 space-x-reverse">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          السابق
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          التالي
-        </Button>
+      <div className="flex items-center justify-center px-2">
+        <PaginationControls table={table} />
       </div>
     </div>
   );

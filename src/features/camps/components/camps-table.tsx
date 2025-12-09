@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { createAdminCampColumns } from "./camp-table-columns";
 import { Camp } from "../types/camp.schema";
 import { CampTableColumn } from "../types/camp-table.types";
+import PaginationControls from "@/src/features/dashboard/components/pagination-controls";
 
 interface CampsTableProps extends CampTableColumn {
   data: Camp[];
@@ -138,26 +139,7 @@ export function CampsTable({
       </div>
 
       <div className="flex items-center justify-center px-2">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="px-4 py-2 border rounded disabled:opacity-50"
-          >
-            السابق
-          </button>
-          <span className="text-sm">
-            صفحة {table.getState().pagination.pageIndex + 1} من{" "}
-            {table.getPageCount()}
-          </span>
-          <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="px-4 py-2 border rounded disabled:opacity-50"
-          >
-            التالي
-          </button>
-        </div>
+        <PaginationControls table={table} />
       </div>
     </div>
   );

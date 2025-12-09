@@ -10,7 +10,8 @@ interface ImageUploadProps {
   onChange: (file: File | null) => void;
   onRemove?: () => void;
   disabled?: boolean;
-  className?: string;
+  className?: string; // Container class
+  imageClassName?: string; // Image wrapper class
   placeholder?: string;
 }
 
@@ -20,6 +21,7 @@ export function ImageUpload({
   onRemove,
   disabled,
   className,
+  imageClassName,
   placeholder = "Upload Image",
 }: ImageUploadProps) {
   const [preview, setPreview] = useState<string | null>(null);
@@ -61,7 +63,11 @@ export function ImageUpload({
   return (
     <div className={`flex items-center gap-4 ${className}`}>
       {preview ? (
-        <div className="relative h-40 w-40 overflow-hidden rounded-md border">
+        <div
+          className={`relative overflow-hidden rounded-md border ${
+            imageClassName || "h-40 w-40"
+          }`}
+        >
           <Image src={preview} alt="Preview" fill className="object-cover" />
           <Button
             type="button"
@@ -75,7 +81,11 @@ export function ImageUpload({
           </Button>
         </div>
       ) : (
-        <div className="flex h-40 w-40 flex-col items-center justify-center rounded-md border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100">
+        <div
+          className={`flex flex-col items-center justify-center rounded-md border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 ${
+            imageClassName || "h-40 w-40"
+          }`}
+        >
           <label className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2">
             <ImagePlus className="h-8 w-8 text-gray-400" />
             <span className="text-xs text-gray-500">{placeholder}</span>
