@@ -2,124 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Check, Pencil, Trash2 } from "lucide-react";
-
-// ============================================================================
-// DUMMY DATA
-// In production, this would come from an API call
-// Simulating server data for demonstration purposes
-
-export type Project = {
-  id: number;
-  projectName: string;
-  status: string;
-  total: number;
-  received: number;
-  remaining: number;
-  contributions: number;
-  requests: string;
-};
-
-// ============================================================================
-export const dummyData: Project[] = [
-  {
-    id: 1,
-    projectName: "مشروع 1200 علبة لبن",
-    status: "قيد التنفيذ",
-    total: 1200,
-    received: 700,
-    remaining: 500,
-    contributions: 3,
-    requests: "3 طلبات",
-  },
-  {
-    id: 2,
-    projectName: "مشروع 50 حقيبة",
-    status: "تم التسليم",
-    total: 50,
-    received: 20,
-    remaining: 30,
-    contributions: 33,
-    requests: "3 طلبات",
-  },
-  {
-    id: 3,
-    projectName: "مشروع 130 علبة لبن",
-    status: "تم التسليم",
-    total: 130,
-    received: 100,
-    remaining: 30,
-    contributions: 10,
-    requests: "3 طلبات",
-  },
-  {
-    id: 4,
-    projectName: "مشروع 30 عبوة دقيق",
-    status: "قيد التنفيذ",
-    total: 30,
-    received: 10,
-    remaining: 20,
-    contributions: 2,
-    requests: "3 طلبات",
-  },
-  {
-    id: 5,
-    projectName: "مشروع 20 علبة لبن",
-    status: "ملغي",
-    total: 20,
-    received: 10,
-    remaining: 10,
-    contributions: 2,
-    requests: "3 طلبات",
-  },
-  {
-    id: 6,
-    projectName: "مشروع 20 علبة لبن",
-    status: "تم التسليم",
-    total: 1200,
-    received: 1200,
-    remaining: 1200,
-    contributions: 1200,
-    requests: "3 طلبات",
-  },
-  {
-    id: 7,
-    projectName: "مشروع 20 علبة لبن",
-    status: "ملغي",
-    total: 1200,
-    received: 10,
-    remaining: 10,
-    contributions: 1200,
-    requests: "3 طلبات",
-  },
-  {
-    id: 8,
-    projectName: "مشروع 20 علبة لبن",
-    status: "في الانتظار",
-    total: 1200,
-    received: 1200,
-    remaining: 1200,
-    contributions: 1200,
-    requests: "3 طلبات",
-  },
-];
+import { Project } from "@/features/projects";
 
 /**
  * Creates column definitions for the data table
  *
  * @param handlers - Object containing callback functions for actions
  * @returns Array of column definitions compatible with @tanstack/react-table
- *
- * Each column definition includes:
- * - id or accessorKey: Unique identifier or data field accessor
- * - header: Function/ReactNode to render the header cell
- * - cell: Function to render each body cell
- * - enableSorting: Whether this column supports sorting
- * - enableHiding: Whether this column can be hidden via column visibility
- *
- * This pattern follows the shadcn/ui documentation structure where:
- * 1. We separate column definitions from the table component
- * 2. We pass action handlers as parameters for flexibility
- * 3. We use TanStack Table's built-in features for sorting, filtering, etc.
  */
 
 type ActionHandlers = {
@@ -161,18 +50,10 @@ export const createColumns = (
   },
 
   // ========================================
-  // PROJECT NAME COLUMN
-  // Main column showing project details
-  // Includes sortable header with shadcn/ui Button component
+  // PROJECT NAME COLUMN (Project)
   // ========================================
   {
-    accessorKey: "projectName",
-    /**
-     * Header with sort button
-     * Following shadcn/ui pattern: use Button with ghost variant
-     * Click toggles between ascending, descending, and no sort
-     * column.getIsSorted() returns 'asc', 'desc', or false
-     */
+    accessorKey: "name",
     header: ({ column }) => {
       return (
         <Button
@@ -184,17 +65,13 @@ export const createColumns = (
         </Button>
       );
     },
-    /**
-     * Cell rendering
-     * row.original gives access to the full data object
-     * We show project name as main text and requests as subtext
-     */
     cell: ({ row }) => (
       <div className="text-right">
-        <div className="font-semibold text-gray-900">
-          {row.original.projectName}
+        <div className="font-semibold text-gray-900">{row.original.name}</div>
+        <div className="text-sm text-gray-500">
+          {/* Requests field not in API, using beneficiaryCount as substitute or empty */}
+          {row.original.beneficiaryCount} مستفيد
         </div>
-        <div className="text-sm text-gray-500">{row.original.requests}</div>
       </div>
     ),
   },
@@ -250,11 +127,10 @@ export const createColumns = (
   },
 
   // ========================================
-  // TOTAL COLUMN (الاجمالي)
-  // Shows total count with center alignment
+  // TOTAL COLUMN
   // ========================================
   {
-    accessorKey: "total",
+    id: "total",
     header: ({ column }) => {
       return (
         <Button
@@ -266,15 +142,18 @@ export const createColumns = (
         </Button>
       );
     },
-    cell: ({ row }) => <div className="text-center">{row.original.total}</div>,
+    cell: ({ row }) => (
+      <div className="text-center">
+        {row.original.totalReceived + row.original.totalRemaining}
+      </div>
+    ),
   },
 
   // ========================================
-  // RECEIVED COLUMN (تم تسليم)
-  // Shows delivered/received count
+  // RECEIVED COLUMN
   // ========================================
   {
-    accessorKey: "received",
+    accessorKey: "totalReceived",
     header: ({ column }) => {
       return (
         <Button
@@ -287,16 +166,15 @@ export const createColumns = (
       );
     },
     cell: ({ row }) => (
-      <div className="text-center">{row.original.received}</div>
+      <div className="text-center">{row.original.totalReceived}</div>
     ),
   },
 
   // ========================================
-  // REMAINING COLUMN (المتبقي)
-  // Shows remaining count
+  // REMAINING COLUMN
   // ========================================
   {
-    accessorKey: "remaining",
+    accessorKey: "totalRemaining",
     header: ({ column }) => {
       return (
         <Button
@@ -309,16 +187,15 @@ export const createColumns = (
       );
     },
     cell: ({ row }) => (
-      <div className="text-center">{row.original.remaining}</div>
+      <div className="text-center">{row.original.totalRemaining}</div>
     ),
   },
 
   // ========================================
-  // CONTRIBUTIONS COLUMN (المساهمات)
-  // Shows number of contributions
+  // CONTRIBUTIONS COLUMN
   // ========================================
   {
-    accessorKey: "contributions",
+    id: "contributions",
     header: ({ column }) => {
       return (
         <Button
@@ -331,7 +208,7 @@ export const createColumns = (
       );
     },
     cell: ({ row }) => (
-      <div className="text-center">{row.original.contributions}</div>
+      <div className="text-center">0</div> // API doesn't return contributions count yet
     ),
   },
 

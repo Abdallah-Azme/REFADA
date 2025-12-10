@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getProjectsApi,
+  createProjectApi,
+  updateProjectApi,
   approveProjectApi,
   deleteProjectApi,
 } from "../api/projects.api";
@@ -10,6 +12,37 @@ export function useProjects() {
   return useQuery({
     queryKey: ["projects"],
     queryFn: () => getProjectsApi(),
+  });
+}
+
+export function useCreateProject() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: FormData) => createProjectApi(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      toast.success("تم إضافة المشروع بنجاح");
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "حدث خطأ أثناء إضافة المشروع");
+    },
+  });
+}
+
+export function useUpdateProject() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: FormData }) =>
+      updateProjectApi(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      toast.success("تم تحديث المشروع بنجاح");
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "حدث خطأ أثناء تحديث المشروع");
+    },
   });
 }
 

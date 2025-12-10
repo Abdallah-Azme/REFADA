@@ -1,5 +1,5 @@
 // Types
-export type { Project, ProjectFormValues } from "./types/project.schema";
+export type { ProjectFormValues } from "./types/project.schema";
 export { ProjectStatus, projectSchema } from "./types/project.schema";
 
 // Services

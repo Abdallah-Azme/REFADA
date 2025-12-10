@@ -49,19 +49,13 @@ export const createComplaintColumns = (
 
       return (
         <div className="flex items-center gap-2 justify-center">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onView(complaint)}
-            className="h-8 w-8 p-0"
-          >
+          <Button variant="outline" size="sm" onClick={() => onView(complaint)}>
             <Eye className="h-4 w-4" />
           </Button>
           <Button
-            variant="ghost"
+            variant="destructive"
             size="sm"
             onClick={() => onDelete(complaint.id)}
-            className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
           >
             <Trash2 className="h-4 w-4" />
           </Button>

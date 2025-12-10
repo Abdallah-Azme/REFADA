@@ -1,8 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,42 +11,32 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import { useForm } from "react-hook-form";
-
-// ----------------------
-// 🟦 ZOD SCHEMA
-// ----------------------
-const passwordSchema = z
-  .object({
-    currentPassword: z
-      .string()
-      .min(6, "كلمة المرور الحالية يجب أن تكون 6 أحرف على الأقل"),
-    newPassword: z
-      .string()
-      .min(6, "كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "كلمتا المرور غير متطابقتين",
-  });
-
-// TypeScript type inferred from schema
-type PasswordFormType = z.infer<typeof passwordSchema>;
+import {
+  useChangePassword,
+  changePasswordSchema,
+  ChangePasswordFormValues,
+} from "@/features/profile";
+import { Loader2 } from "lucide-react";
 
 export default function SettingsPasswordTab() {
-  const passwordForm = useForm<PasswordFormType>({
-    resolver: zodResolver(passwordSchema),
+  const changePassword = useChangePassword();
+
+  const passwordForm = useForm<ChangePasswordFormValues>({
+    resolver: zodResolver(changePasswordSchema),
     defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
+      current_password: "",
+      new_password: "",
+      new_password_confirmation: "",
     },
   });
 
-  const onPasswordSubmit = (data: PasswordFormType) => {
-    console.log("Password submitted:", data);
+  const onPasswordSubmit = (data: ChangePasswordFormValues) => {
+    changePassword.mutate(data, {
+      onSuccess: () => {
+        passwordForm.reset();
+      },
+    });
   };
 
   return (
@@ -63,7 +51,7 @@ export default function SettingsPasswordTab() {
             {/* Current Password */}
             <FormField
               control={passwordForm.control}
-              name="currentPassword"
+              name="current_password"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-right text-sm font-medium text-gray-700">
@@ -82,10 +70,11 @@ export default function SettingsPasswordTab() {
               )}
             />
             <div className="hidden md:block" />
+
             {/* New Password */}
             <FormField
               control={passwordForm.control}
-              name="newPassword"
+              name="new_password"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-right text-sm font-medium text-gray-700">
@@ -107,7 +96,7 @@ export default function SettingsPasswordTab() {
             {/* Confirm Password */}
             <FormField
               control={passwordForm.control}
-              name="confirmPassword"
+              name="new_password_confirmation"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-right text-sm font-medium text-gray-700">
@@ -131,14 +120,23 @@ export default function SettingsPasswordTab() {
           <div className="flex justify-start mt-8 gap-3">
             <Button
               type="submit"
+              disabled={changePassword.isPending}
               className="bg-[#1B4854] hover:bg-[#1B4854]/90 text-white px-10 py-2.5 text-base rounded-lg shadow-sm"
             >
-              حفظ ✓
+              {changePassword.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 ml-2 animate-spin" />
+                  جاري الحفظ...
+                </>
+              ) : (
+                "حفظ ✓"
+              )}
             </Button>
 
             <Button
               type="button"
               onClick={() => passwordForm.reset()}
+              disabled={changePassword.isPending}
               className="bg-[#C4A862] hover:bg-[#C4A862]/90 text-white px-10 py-2.5 text-base rounded-lg shadow-sm"
             >
               إلغاء ✗

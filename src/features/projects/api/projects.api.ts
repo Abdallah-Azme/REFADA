@@ -70,6 +70,25 @@ export async function getProjectsApi(): Promise<ProjectsResponse> {
   });
 }
 
+export async function createProjectApi(
+  data: FormData
+): Promise<{ success: boolean; message: string; data: Project }> {
+  return apiRequest(`/projects`, {
+    method: "POST",
+    body: data,
+  });
+}
+
+export async function updateProjectApi(
+  id: number,
+  data: FormData
+): Promise<{ success: boolean; message: string; data: Project }> {
+  return apiRequest(`/projects/${id}`, {
+    method: "POST",
+    body: data,
+  });
+}
+
 export async function approveProjectApi(
   id: number,
   status: "in_progress" | "cancelled"

@@ -1,9 +1,7 @@
-// Updated AddProjectDialog component matching the inputs shown in the image
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -29,57 +27,165 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 
-import { FileSpreadsheet, PlusCircle, SquareKanban, X } from "lucide-react";
+import { PlusCircle, SquareKanban, X, Loader2, Pencil } from "lucide-react";
 
-import { projectSchema } from "../schemas/project-schema";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import ImageFallback from "@/components/shared/image-fallback";
+import {
+  useCreateProject,
+  useUpdateProject,
+  Project,
+} from "@/features/projects";
+import { useCamps } from "@/features/camps";
 
-export default function AddProjectDialog() {
+// Schema matching the API requirements
+const projectFormSchema = z.object({
+  name: z.string().min(1, "اسم المشروع مطلوب"),
+  type: z.string().min(1, "النوع مطلوب"),
+  beneficiary_count: z.string().min(1, "عدد المستفيدين مطلوب"),
+  college: z.string().min(1, "الكلية مطلوبة"),
+  notes: z.string().optional(),
+  camp_id: z.string().min(1, "المخيم مطلوب"),
+});
+
+interface ProjectFormDialogProps {
+  project?: Project;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  trigger?: React.ReactNode;
+}
+
+export default function ProjectFormDialog({
+  project,
+  open: controlledOpen,
+  onOpenChange: setControlledOpen,
+  trigger,
+}: ProjectFormDialogProps) {
   const [file, setFile] = useState<File | null>(null);
+  const [internalOpen, setInternalOpen] = useState(false);
 
-  const form = useForm<z.infer<typeof projectSchema>>({
-    resolver: zodResolver(projectSchema),
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+  const setOpen = isControlled ? setControlledOpen! : setInternalOpen;
+
+  const createProject = useCreateProject();
+  const updateProject = useUpdateProject();
+  const { data: campsData } = useCamps();
+  const camps = campsData?.data || [];
+
+  const isEdit = !!project;
+
+  const form = useForm<z.infer<typeof projectFormSchema>>({
+    resolver: zodResolver(projectFormSchema),
     defaultValues: {
-      projectName: "",
+      name: "",
       type: "",
-      quantity: "",
-      status: "",
-      beneficiariesCount: "",
-      number: "",
-      note: "",
+      beneficiary_count: "",
+      college: "",
+      notes: "",
+      camp_id: "",
     },
   });
 
-  const onSubmit = (values: any) => console.log(values);
+  // Reset form when project changes or dialog opens
+  useEffect(() => {
+    if (open) {
+      if (project) {
+        // Find camp ID by name
+        const camp = camps.find((c) => c.name === project.camp);
+
+        form.reset({
+          name: project.name,
+          type: project.type,
+          beneficiary_count: project.beneficiaryCount.toString(),
+          college: project.college,
+          notes: project.notes || "",
+          camp_id: camp ? camp.id.toString() : "",
+        });
+        setFile(null); // Reset file on edit open unless we want to show existing?
+        // Note: API doesn't return file object, just URL string project.projectImage
+      } else {
+        form.reset({
+          name: "",
+          type: "",
+          beneficiary_count: "",
+          college: "",
+          notes: "",
+          camp_id: "",
+        });
+        setFile(null);
+      }
+    }
+  }, [open, project, camps, form]);
+
+  const onSubmit = (values: z.infer<typeof projectFormSchema>) => {
+    const formData = new FormData();
+    formData.append("name", values.name);
+    formData.append("type", values.type);
+    formData.append("beneficiary_count", values.beneficiary_count);
+    formData.append("college", values.college);
+    formData.append("camp_id", values.camp_id);
+    if (values.notes) {
+      formData.append("notes", values.notes);
+    }
+    if (file) {
+      formData.append("project_image", file);
+    }
+
+    if (isEdit && project) {
+      updateProject.mutate(
+        { id: project.id, data: formData },
+        {
+          onSuccess: () => {
+            setOpen(false);
+            setFile(null);
+          },
+        }
+      );
+    } else {
+      createProject.mutate(formData, {
+        onSuccess: () => {
+          setOpen(false);
+          form.reset();
+          setFile(null);
+        },
+      });
+    }
+  };
+
+  const isLoading = createProject.isPending || updateProject.isPending;
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-[#1F423B] text-white px-6 py-5! rounded-xl flex items-center gap-2">
-          إضافة مشروع <PlusCircle className="w-4 h-4" />
-        </Button>
+        {trigger ? (
+          trigger
+        ) : (
+          <Button className="bg-[#1F423B] text-white px-6 py-5! rounded-xl flex items-center gap-2">
+            إضافة مشروع <PlusCircle className="w-4 h-4" />
+          </Button>
+        )}
       </DialogTrigger>
 
-      <DialogContent className="rounded-xl">
+      <DialogContent className="rounded-xl max-w-3xl">
         <div className="flex justify-between items-center px-6 py-4 border-b">
-          <DialogTitle className="font-bold text-[#1E1E1E] text-lg">
+          <DialogTitle className="font-bold text-[#1E1E1E] text-lg flex items-center gap-2">
             <SquareKanban className="text-primary" />
-            إضافة مشروع
+            {isEdit ? "تعديل مشروع" : "إضافة مشروع"}
           </DialogTitle>
         </div>
 
-        <div className="px-6 py-5 max-h-[75vh] overflow-y-auto bg-[#f4f4f4] rounded-xl ">
+        <div className="px-6 py-5 max-h-[75vh] overflow-y-auto bg-[#f4f4f4] rounded-xl">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* TOP GRID */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4   p-4 rounded-xl">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-xl">
                 {/* اسم المشروع */}
                 <FormField
                   control={form.control}
-                  name="projectName"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl className="bg-white">
@@ -96,75 +202,89 @@ export default function AddProjectDialog() {
                   name="type"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormControl className="bg-white">
-                        <Input placeholder="النوع" {...field} />
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className="w-full bg-white">
+                            {field.value || "النوع"}
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="male">ذكور</SelectItem>
+                            <SelectItem value="female">إناث</SelectItem>
+                            <SelectItem value="bebficia">مستفيدين</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {/* الكمية */}
+                {/* عدد المستفيدين */}
                 <FormField
                   control={form.control}
-                  name="quantity"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="w-full bg-white">
-                            {field.value || "الكمية"}
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="10">10</SelectItem>
-                            <SelectItem value="20">20</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                {/* الحالة */}
-                <FormField
-                  control={form.control}
-                  name="status"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="w-full bg-white">
-                            {field.value || "الحالة"}
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="new">جديد</SelectItem>
-                            <SelectItem value="pending">قيد التنفيذ</SelectItem>
-                            <SelectItem value="done">منتهي</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                {/* عدد العائلات المستفيدة */}
-                <FormField
-                  control={form.control}
-                  name="beneficiariesCount"
+                  name="beneficiary_count"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl className="bg-white">
                         <Input
-                          placeholder="عدد العائلات المستفيدة"
+                          type="number"
+                          placeholder="عدد المستفيدين"
                           {...field}
                         />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* الكلية */}
+                <FormField
+                  control={form.control}
+                  name="college"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl className="bg-white">
+                        <Input type="text" placeholder="الكلية" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* المخيم */}
+                <FormField
+                  control={form.control}
+                  name="camp_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className="w-full bg-white">
+                            {field.value
+                              ? camps.find(
+                                  (c) => c.id.toString() === field.value
+                                )?.name || "اختر المخيم"
+                              : "اختر المخيم"}
+                          </SelectTrigger>
+                          <SelectContent>
+                            {camps.map((camp) => (
+                              <SelectItem
+                                key={camp.id}
+                                value={camp.id.toString()}
+                              >
+                                {camp.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -192,15 +312,21 @@ export default function AddProjectDialog() {
                       document.getElementById("image-upload")?.click()
                     }
                   >
-                    <div className="flex items-center gap-1 ">
+                    <div className="flex items-center gap-1">
                       <ImageFallback
-                        src="/image-icon.png" // <-- change to your image icon
+                        src={
+                          file
+                            ? URL.createObjectURL(file)
+                            : isEdit && project?.projectImage
+                            ? project.projectImage
+                            : "/image-icon.png"
+                        }
                         width={24}
                         height={24}
-                        className="size-6"
+                        className="size-6 transition-all object-cover"
                       />
                       <span className="text-xs text-gray-600 px-4 whitespace-nowrap">
-                        إضافة صورة
+                        {isEdit ? "تغيير الصورة" : "إضافة صورة"}
                       </span>
                     </div>
 
@@ -218,12 +344,6 @@ export default function AddProjectDialog() {
                   {/* Image Preview */}
                   {file && (
                     <div className="flex items-center gap-3 bg-white border rounded-xl px-4 py-2 shadow-sm">
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt="preview"
-                        className="w-12 h-12 object-cover rounded-lg border"
-                      />
-
                       <span className="text-xs text-gray-700 max-w-[120px] truncate">
                         {file.name}
                       </span>
@@ -243,11 +363,11 @@ export default function AddProjectDialog() {
               {/* NOTE */}
               <FormField
                 control={form.control}
-                name="note"
+                name="notes"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl className="bg-white">
-                      <Textarea placeholder="اكتب هنا..." {...field} />
+                      <Textarea placeholder="ملاحظات (اختياري)..." {...field} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -257,9 +377,19 @@ export default function AddProjectDialog() {
               <div className="flex justify-center gap-4">
                 <Button
                   type="submit"
+                  disabled={isLoading}
                   className="bg-primary text-white min-w-[160px]"
                 >
-                  إضافة مشروع
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 ml-2 animate-spin" />
+                      {isEdit ? "جاري التحديث..." : "جاري الإضافة..."}
+                    </>
+                  ) : isEdit ? (
+                    "تحديث المشروع"
+                  ) : (
+                    "إضافة المشروع"
+                  )}
                 </Button>
 
                 <DialogClose asChild>

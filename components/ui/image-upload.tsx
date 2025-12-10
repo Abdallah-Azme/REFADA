@@ -69,16 +69,35 @@ export function ImageUpload({
           }`}
         >
           <Image src={preview} alt="Preview" fill className="object-cover" />
-          <Button
-            type="button"
-            onClick={handleRemove}
-            variant="destructive"
-            size="icon"
-            className="absolute right-1 top-1 h-6 w-6"
-            disabled={disabled}
-          >
-            <X className="h-4 w-4" />
-          </Button>
+          {!disabled && (
+            <>
+              <Button
+                type="button"
+                onClick={handleRemove}
+                variant="destructive"
+                size="icon"
+                className="absolute right-1 top-1 h-6 w-6 z-10"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+              <label className="absolute bottom-1 left-1 right-1 cursor-pointer">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  className="w-full text-xs pointer-events-none"
+                >
+                  تغيير الصورة
+                </Button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </label>
+            </>
+          )}
         </div>
       ) : (
         <div
