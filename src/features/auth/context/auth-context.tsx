@@ -81,9 +81,9 @@ export function useRequireAuth(allowedRoles?: User["role"][]) {
     if (allowedRoles && !allowedRoles.includes(user.role)) {
       // Redirect to appropriate dashboard based on user role
       const dashboardMap: Record<User["role"], string> = {
-        admin: "/dashboard/(superadmin)/admin",
-        delegate: "/dashboard/(representative)",
-        contributor: "/dashboard/(contributor)",
+        admin: "/dashboard/admin",
+        delegate: "/dashboard/families",
+        contributor: "/dashboard/contributor",
       };
 
       const correctDashboard = dashboardMap[user.role];

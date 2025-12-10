@@ -30,11 +30,11 @@ export function useRegister() {
         // Redirect based on user role
         const role = response.data.user.role;
         if (role === "admin") {
-          router.push("/dashboard/(superadmin)");
+          router.push("/dashboard/admin");
         } else if (role === "delegate") {
-          router.push("/dashboard/(representative)");
+          router.push("/dashboard/families");
         } else if (role === "contributor") {
-          router.push("/dashboard/(contributor)");
+          router.push("/dashboard/contributor");
         } else {
           router.push("/dashboard");
         }

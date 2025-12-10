@@ -28,7 +28,7 @@ export default function AdminFamiliesPage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletingFamily, setDeletingFamily] = useState<Family | null>(null);
 
-  const families = response?.data || [];
+  const families = response?.data ?? [];
 
   const handleCreate = () => {
     setEditingFamily(null);

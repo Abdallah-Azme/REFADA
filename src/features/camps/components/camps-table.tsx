@@ -36,6 +36,7 @@ export function CampsTable({
   onEdit,
   onDelete,
   onToggleStatus,
+  onView,
 }: CampsTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -54,6 +55,7 @@ export function CampsTable({
       onEdit,
       onDelete,
       onToggleStatus,
+      onView,
     }),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -126,6 +128,7 @@ export function CampsTable({
                       onEdit,
                       onDelete,
                       onToggleStatus,
+                      onView,
                     }).length
                   }
                   className="h-24 text-center"

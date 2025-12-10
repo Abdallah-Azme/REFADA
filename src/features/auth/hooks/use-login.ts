@@ -32,7 +32,7 @@ export function useLogin() {
       if (role === "admin") {
         router.push("/dashboard/admin");
       } else if (role === "delegate") {
-        router.push("/dashboard/");
+        router.push("/dashboard/families");
       } else if (role === "contributor") {
         router.push("/dashboard/contributor");
       } else {

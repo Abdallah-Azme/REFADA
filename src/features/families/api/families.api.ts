@@ -38,6 +38,11 @@ async function apiRequest<T>(
     throw { ...data, status: response.status };
   }
 
+  // Check if the response has a success field and it's false
+  if ("success" in data && data.success === false) {
+    throw { ...data, status: response.status };
+  }
+
   return data as T;
 }
 

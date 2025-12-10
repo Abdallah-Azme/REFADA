@@ -2,10 +2,7 @@ import { z } from "zod";
 
 export const familySchema = z.object({
   familyName: z.string().min(1, "اسم العائلة مطلوب"),
-  nationalId: z
-    .string()
-    .min(14, "رقم الهوية يجب أن يكون 14 رقم")
-    .max(14, "رقم الهوية يجب أن يكون 14 رقم"),
+  nationalId: z.string().min(8, "قم بإدخال رقم الهوية"),
   dob: z.string().min(1, "تاريخ الميلاد مطلوب"),
   phone: z.string().min(1, "رقم الهاتف مطلوب"),
   backupPhone: z.string().optional(),

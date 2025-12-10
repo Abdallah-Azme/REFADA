@@ -1,10 +1,17 @@
 // Components
 export { CampFormDialog } from "./components/camp-form-dialog";
 export { CampsTable } from "./components/camps-table";
+export { CampDetailsDialog } from "./components/camp-details-dialog";
 
 // Hooks
 export { useCampForm } from "./hooks/use-camp-form";
-export { useCamps, useCreateCamp } from "./hooks/use-camps";
+export {
+  useCamps,
+  useCreateCamp,
+  useUpdateCamp,
+  useDeleteCamp,
+  useCampDetails,
+} from "./hooks/use-camps";
 
 // Types
 export type {

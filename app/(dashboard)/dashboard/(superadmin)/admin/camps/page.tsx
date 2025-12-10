@@ -11,12 +11,28 @@ import {
   Camp,
   CampFormValues,
   useCamps,
+  useCreateCamp,
+  useUpdateCamp,
+  useDeleteCamp,
+  CampDetailsDialog,
+  useCampDetails,
 } from "@/features/camps";
+import { DeleteConfirmDialog } from "@/features/marital-status";
 
 export default function AdminCampsPage() {
   const { data, isLoading, error } = useCamps();
+  const createCamp = useCreateCamp();
+  const updateCamp = useUpdateCamp();
+  const deleteCamp = useDeleteCamp();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCamp, setEditingCamp] = useState<Camp | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deletingCamp, setDeletingCamp] = useState<Camp | null>(null);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [viewingSlug, setViewingSlug] = useState<string | null>(null);
+
+  const { data: campDetails, isLoading: isLoadingDetails } =
+    useCampDetails(viewingSlug);
 
   const camps = data?.data || [];
 
@@ -30,21 +46,56 @@ export default function AdminCampsPage() {
   };
 
   const onSubmit = (data: CampFormValues) => {
-    // TODO: Implement create/update API calls
-    console.log("Form data:", data);
-    setIsDialogOpen(false);
-  };
-
-  const handleDeleteCamp = (id: string) => {
-    if (confirm("هل أنت متأكد من حذف هذا الإيواء؟")) {
-      // TODO: Implement delete API call
-      console.log("Delete camp:", id);
+    if (editingCamp && editingCamp.slug) {
+      // Update existing camp
+      updateCamp.mutate(
+        { slug: editingCamp.slug, data },
+        {
+          onSuccess: () => {
+            setIsDialogOpen(false);
+            setEditingCamp(null);
+          },
+        }
+      );
+    } else {
+      // Create new camp
+      createCamp.mutate(data, {
+        onSuccess: () => {
+          setIsDialogOpen(false);
+        },
+      });
     }
   };
 
-  const handleToggleStatus = (id: string) => {
+  const handleDeleteCamp = (slug: string) => {
+    const camp = camps.find((c) => c.slug === slug);
+    if (camp) {
+      setDeletingCamp(camp);
+      setDeleteDialogOpen(true);
+    }
+  };
+
+  const handleConfirmDelete = () => {
+    if (deletingCamp && deletingCamp.slug) {
+      deleteCamp.mutate(deletingCamp.slug, {
+        onSuccess: () => {
+          setDeleteDialogOpen(false);
+          setDeletingCamp(null);
+        },
+      });
+    }
+  };
+
+  const handleToggleStatus = (slug: string) => {
     // TODO: Implement toggle status API call
-    console.log("Toggle status for camp:", id);
+    console.log("Toggle status for camp:", slug);
+  };
+
+  const handleViewCamp = (camp: Camp) => {
+    if (camp.slug) {
+      setViewingSlug(camp.slug);
+      setViewDialogOpen(true);
+    }
   };
 
   return (
@@ -85,15 +136,44 @@ export default function AdminCampsPage() {
           <div className="flex items-center justify-center py-12">
             <p className="text-red-600">حدث خطأ أثناء تحميل البيانات</p>
           </div>
+        ) : createCamp.isPending ||
+          updateCamp.isPending ||
+          deleteCamp.isPending ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <span className="mr-3 text-gray-600">جاري معالجة الطلب...</span>
+          </div>
         ) : (
           <CampsTable
             data={camps}
             onEdit={handleOpenDialog}
             onDelete={handleDeleteCamp}
             onToggleStatus={handleToggleStatus}
+            onView={handleViewCamp}
           />
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        title="حذف الإيواء"
+        description="هل أنت متأكد من حذف هذا الإيواء؟ هذا الإجراء لا يمكن التراجع عنه."
+        isPending={deleteCamp.isPending}
+      />
+
+      {/* View Details Dialog */}
+      <CampDetailsDialog
+        open={viewDialogOpen}
+        onOpenChange={(open) => {
+          setViewDialogOpen(open);
+          if (!open) setViewingSlug(null);
+        }}
+        camp={campDetails?.data || null}
+        isLoading={isLoadingDetails}
+      />
     </div>
   );
 }

@@ -22,3 +22,38 @@ export function useCreateCamp() {
     // Global error handler will catch errors
   });
 }
+
+export function useUpdateCamp() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ slug, data }: { slug: string; data: CampFormValues }) =>
+      campsApi.update(slug, data),
+    onSuccess: (response) => {
+      toast.success(response.message || "تم تحديث المخيم بنجاح");
+      queryClient.invalidateQueries({ queryKey: ["camps"] });
+    },
+    // Global error handler will catch errors
+  });
+}
+
+export function useDeleteCamp() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (slug: string) => campsApi.delete(slug),
+    onSuccess: (response) => {
+      toast.success(response.message || "تم حذف المخيم بنجاح");
+      queryClient.invalidateQueries({ queryKey: ["camps"] });
+    },
+    // Global error handler will catch errors
+  });
+}
+
+export function useCampDetails(slug: string | null) {
+  return useQuery({
+    queryKey: ["camp", slug],
+    queryFn: () => campsApi.getCampBySlug(slug!),
+    enabled: !!slug,
+  });
+}

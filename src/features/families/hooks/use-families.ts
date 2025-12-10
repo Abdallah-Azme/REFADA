@@ -13,6 +13,7 @@ export function useFamilies(params?: string) {
   return useQuery({
     queryKey: ["families", params],
     queryFn: () => getFamiliesApi(params),
+    placeholderData: (previousData) => previousData,
   });
 }
 

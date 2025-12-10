@@ -96,4 +96,73 @@ export const campsApi = {
 
     return resData;
   },
+
+  update: async (slug: string, data: CampFormValues): Promise<CampResponse> => {
+    const formData = new FormData();
+
+    formData.append("name[ar]", data.name_ar);
+    formData.append("name[en]", data.name_en);
+    formData.append("location", data.location);
+    if (data.description_ar)
+      formData.append("description[ar]", data.description_ar);
+    if (data.description_en)
+      formData.append("description[en]", data.description_en);
+    formData.append("capacity", data.capacity.toString());
+    formData.append("currentOccupancy", data.currentOccupancy.toString());
+    formData.append("governorate_id", data.governorate_id.toString());
+
+    // Coordinates
+    if (data.coordinates) {
+      formData.append("latitude", data.coordinates.lat.toString());
+      formData.append("longitude", data.coordinates.lng.toString());
+    }
+
+    // Image - only append if it's a new file
+    if (data.camp_img instanceof File) {
+      formData.append("camp_img", data.camp_img);
+    }
+
+    const response = await fetch(`${API_BASE_URL}/camps/${slug}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+        Accept: "application/json",
+        "Accept-Language": "ar",
+      },
+      body: formData,
+    });
+
+    const resData = await response.json();
+
+    if (!response.ok) {
+      throw { ...resData, status: response.status };
+    }
+
+    return resData;
+  },
+
+  delete: async (
+    slug: string
+  ): Promise<{ success: boolean; message: string }> => {
+    const response = await fetch(`${API_BASE_URL}/camps/${slug}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+        Accept: "application/json",
+        "Accept-Language": "ar",
+      },
+    });
+
+    const resData = await response.json();
+
+    if (!response.ok) {
+      throw { ...resData, status: response.status };
+    }
+
+    return resData;
+  },
+
+  getCampBySlug: async (slug: string): Promise<CampResponse> => {
+    return apiRequest<CampResponse>(`/camps/${slug}`);
+  },
 };

@@ -17,9 +17,14 @@ export const campSchema = z
     camp_img: z
       .any()
       .refine(
-        (val) => val instanceof File || typeof val === "string",
-        "صورة المخيم مطلوبة"
-      ),
+        (val) =>
+          !val ||
+          val instanceof File ||
+          typeof val === "string" ||
+          val === undefined,
+        "صورة المخيم يجب أن تكون ملف أو رابط صحيح"
+      )
+      .optional(),
   })
   .refine((data) => data.currentOccupancy <= data.capacity, {
     message: "الإشغال الحالي لا يمكن أن يكون أكبر من السعة الكلية",
@@ -50,7 +55,7 @@ export interface Camp {
   name: string;
   description?: string;
   slug?: string;
-  governorate?: string | null;
+  governorate?: string | { id: number; name: string } | null;
   familyCount?: number;
   childrenCount?: number;
   elderlyCount?: number;
@@ -63,6 +68,8 @@ export interface Camp {
   createdAt?: string;
   updatedAt?: string;
   status?: "active" | "inactive";
+  capacity?: number;
+  currentOccupancy?: number;
   // Form-specific coordinates (for backward compatibility)
   coordinates?: {
     lat: number;

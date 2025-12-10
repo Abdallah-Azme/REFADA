@@ -10,17 +10,30 @@ export const campService = {
       return createEmptyCamp();
     }
 
+    // Extract governorate_id - it could be in different formats
+    let governorateId = "";
+    if (camp.governorate) {
+      if (typeof camp.governorate === "object" && "id" in camp.governorate) {
+        governorateId = camp.governorate.id.toString();
+      } else if (typeof camp.governorate === "string") {
+        governorateId = camp.governorate;
+      }
+    }
+
     return {
-      name_ar: camp.name, // Mapping existing name to AR
+      name_ar: camp.name || "", // Mapping existing name to AR
       name_en: "", // No EN name in current Camp interface
       location: camp.location || "",
       description_ar: camp.description || "",
       description_en: "",
       capacity: camp.capacity || 0,
       currentOccupancy: camp.currentOccupancy || 0,
-      coordinates: camp.coordinates || { lat: 0, lng: 0 },
-      governorate_id: camp.governorate?.id?.toString() || "",
-      camp_img: undefined, // Files can't be pre-filled
+      coordinates: {
+        lat: camp.latitude || 0,
+        lng: camp.longitude || 0,
+      },
+      governorate_id: governorateId,
+      camp_img: camp.campImg || undefined, // Use existing image URL or undefined
     };
   },
 
@@ -35,7 +48,8 @@ export const campService = {
    * Calculates occupancy rate as a percentage
    */
   calculateOccupancyRate(camp: Camp): number {
-    if (camp.capacity === 0) return 0;
+    if (!camp.capacity || camp.capacity === 0) return 0;
+    if (!camp.currentOccupancy) return 0;
     return Math.round((camp.currentOccupancy / camp.capacity) * 100);
   },
 
@@ -43,6 +57,7 @@ export const campService = {
    * Checks if camp is over capacity
    */
   isOverCapacity(camp: Camp): boolean {
+    if (!camp.capacity || !camp.currentOccupancy) return false;
     return camp.currentOccupancy > camp.capacity;
   },
 
@@ -51,7 +66,7 @@ export const campService = {
    */
   formatOccupancy(camp: Camp): string {
     const percentage = this.calculateOccupancyRate(camp);
-    return `${camp.currentOccupancy} (${percentage}%)`;
+    return `${camp.currentOccupancy || 0} (${percentage}%)`;
   },
 
   /**

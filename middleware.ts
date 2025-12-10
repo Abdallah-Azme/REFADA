@@ -83,7 +83,7 @@ function redirectToDashboard(request: NextRequest, role: string) {
       url.pathname = "/dashboard/admin";
       break;
     case "delegate":
-      url.pathname = "/dashboard";
+      url.pathname = "/dashboard/families"; // Delegate dashboard - using families as default landing page
       break;
     case "contributor":
       url.pathname = "/dashboard/contributor";
