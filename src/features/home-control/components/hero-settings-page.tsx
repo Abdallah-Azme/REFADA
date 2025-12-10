@@ -9,7 +9,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
@@ -21,11 +20,18 @@ import {
   CardTitle,
   CardDescription,
 } from "@/shared/ui/card";
-import { Separator } from "@/shared/ui/separator";
 import { useHero, useUpdateHero } from "../hooks/use-hero";
-import { heroSchema, HeroFormValues } from "../types/hero.schema";
-import { useEffect } from "react";
-import { Loader2, Save, FileText, ImageIcon } from "lucide-react";
+import { heroSchema, HeroFormValues, HeroSlide } from "../types/hero.schema";
+import { useEffect, useState } from "react";
+import {
+  Loader2,
+  Save,
+  FileText,
+  ImageIcon,
+  Edit,
+  ArrowLeft,
+  ArrowRight,
+} from "lucide-react";
 import MainHeader from "@/shared/components/main-header";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
@@ -33,6 +39,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 export default function HeroSettingsPage() {
   const { data: heroData, isLoading, error } = useHero();
   const updateMutation = useUpdateHero();
+  const [selectedSlide, setSelectedSlide] = useState<HeroSlide | null>(null);
 
   const form = useForm<HeroFormValues>({
     resolver: zodResolver(heroSchema),
@@ -48,43 +55,53 @@ export default function HeroSettingsPage() {
     },
   });
 
+  // Populate form when a slide is selected
   useEffect(() => {
-    if (heroData?.data) {
-      let data: any = heroData.data;
-
-      // Handle array response (if API returns collection)
-      if (Array.isArray(data)) {
-        data = data.length > 0 ? data[0] : null;
-      }
-
-      if (!data) return;
-
-      // Helper to safely get localized value whether it's flat or nested
-      const getLocalized = (val: any, lang: "ar" | "en") => {
-        if (!val) return "";
-        if (typeof val === "string") return val;
-        if (typeof val === "object" && val[lang]) return val[lang];
-        return "";
-      };
-
-      // API returns camelCase keys: heroTitle, heroDescription, heroSubtitle, heroImage, smallHeroImage
-      const formValues = {
-        hero_title_ar: getLocalized(data.heroTitle, "ar") || "",
-        hero_title_en: getLocalized(data.heroTitle, "en") || "",
-        hero_description_ar: getLocalized(data.heroDescription, "ar") || "",
-        hero_description_en: getLocalized(data.heroDescription, "en") || "",
-        hero_subtitle_ar: getLocalized(data.heroSubtitle, "ar") || "",
-        hero_subtitle_en: getLocalized(data.heroSubtitle, "en") || "",
-        hero_image: data.heroImage,
-        small_hero_image: data.smallHeroImage,
-      };
-
-      form.reset(formValues);
+    if (selectedSlide) {
+      form.reset({
+        id: selectedSlide.id,
+        hero_title_ar: selectedSlide.heroTitle?.ar || "",
+        hero_title_en: selectedSlide.heroTitle?.en || "",
+        hero_description_ar: selectedSlide.heroDescription?.ar || "",
+        hero_description_en: selectedSlide.heroDescription?.en || "",
+        hero_subtitle_ar: selectedSlide.heroSubtitle?.ar || "",
+        hero_subtitle_en: selectedSlide.heroSubtitle?.en || "",
+        hero_image: selectedSlide.heroImage || undefined,
+        small_hero_image: selectedSlide.smallHeroImage || undefined,
+      });
     }
-  }, [heroData, form]);
+  }, [selectedSlide, form]);
 
   const onSubmit = (values: HeroFormValues) => {
-    updateMutation.mutate(values);
+    updateMutation.mutate(
+      {
+        formValues: values,
+        allSlides: slides,
+        isNew: selectedSlide?.id === 0,
+      },
+      {
+        onSuccess: () => {
+          setSelectedSlide(null);
+        },
+      }
+    );
+  };
+
+  const handleAddSlide = () => {
+    // Create a temporary object for the new slide state
+    // We cast to any or partial because it won't have an ID yet
+    setSelectedSlide({ id: 0 } as HeroSlide);
+    // Reset form to default values explicitly
+    form.reset({
+      hero_title_ar: "",
+      hero_title_en: "",
+      hero_description_ar: "",
+      hero_description_en: "",
+      hero_subtitle_ar: "",
+      hero_subtitle_en: "",
+      hero_image: undefined,
+      small_hero_image: undefined,
+    });
   };
 
   if (isLoading) {
@@ -109,68 +126,217 @@ export default function HeroSettingsPage() {
     );
   }
 
+  const slides = heroData?.data?.slides || [];
+
   return (
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50/50 min-h-screen">
-      <MainHeader header="إعدادات الواجهة الرئيسية" />
+      <MainHeader
+        header="إعدادات الواجهة الرئيسية"
+        subheader={
+          selectedSlide
+            ? selectedSlide.id === 0
+              ? "إضافة شريحة جديدة"
+              : "تعديل الشريحة"
+            : "قائمة الشرائح المعروضة"
+        }
+      />
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Tabs defaultValue="content" className="w-full">
-            <div className="flex items-center justify-between mb-6">
-              <TabsList className="bg-white border">
-                <TabsTrigger
-                  value="content"
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  <FileText className="w-4 h-4 ml-2" />
-                  المحتوى النصي
-                </TabsTrigger>
-                <TabsTrigger
-                  value="media"
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  <ImageIcon className="w-4 h-4 ml-2" />
-                  الوسائط (الصور)
-                </TabsTrigger>
-              </TabsList>
-
-              <Button
-                type="submit"
-                size="lg"
-                disabled={updateMutation.isPending}
-                className="min-w-[150px]"
-              >
-                {updateMutation.isPending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                    جاري الحفظ...
-                  </>
+      {/* List View */}
+      {!selectedSlide && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {slides.map((slide, index) => (
+            <Card
+              key={slide.id || index}
+              className="overflow-hidden hover:shadow-md transition-shadow"
+            >
+              <div className="relative h-48 bg-gray-200">
+                {slide.heroImage ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={slide.heroImage}
+                    alt="Hero"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
-                  <>
-                    <Save className="h-4 w-4 ml-2" />
-                    حفظ التعديلات
-                  </>
+                  <div className="flex items-center justify-center h-full text-gray-400">
+                    <ImageIcon className="w-12 h-12" />
+                  </div>
                 )}
-              </Button>
-            </div>
+                <div className="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded text-xs font-bold shadow-sm">
+                  #{index + 1}
+                </div>
+              </div>
+              <CardContent className="p-4 space-y-4">
+                <div>
+                  <h4
+                    className="font-semibold line-clamp-1 text-right"
+                    dir="rtl"
+                  >
+                    {slide.heroTitle?.ar || "بدون عنوان"}
+                  </h4>
+                  <p
+                    className="text-sm text-gray-500 line-clamp-2 mt-1 text-right"
+                    dir="rtl"
+                  >
+                    {slide.heroDescription?.ar || "بدون وصف"}
+                  </p>
+                </div>
+                <Button
+                  onClick={() => setSelectedSlide(slide)}
+                  className="w-full"
+                  variant="outline"
+                >
+                  <Edit className="w-4 h-4 ml-2" />
+                  تعديل الشريحة
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
 
-            <TabsContent value="content" className="space-y-6">
+          {/* Add New Slide Button Block */}
+          <Card
+            className="flex flex-col items-center justify-center min-h-[300px] border-dashed border-2 cursor-pointer hover:bg-gray-50 hover:border-primary transition-colors group"
+            onClick={handleAddSlide}
+          >
+            <div className="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-primary/10 transition-colors mb-4">
+              <div className="text-gray-400 group-hover:text-primary transition-colors text-4xl font-light">
+                +
+              </div>
+            </div>
+            <h3 className="font-semibold text-gray-600 group-hover:text-primary">
+              إضافة شريحة جديدة
+            </h3>
+          </Card>
+
+          {slides.length === 0 && (
+            <div className="col-span-full text-center py-12 text-gray-500">
+              لا توجد شرائح مضاف لعرضها.
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Edit View */}
+      {selectedSlide && (
+        <div className="space-y-6">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <div className="flex items-center justify-between">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setSelectedSlide(null)}
+                >
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                  العودة للقائمة
+                </Button>
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={updateMutation.isPending}
+                  className="min-w-[150px]"
+                >
+                  {updateMutation.isPending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin ml-2" />
+                      جاري الحفظ...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4 ml-2" />
+                      {selectedSlide.id === 0
+                        ? "إنشاء الشريحة"
+                        : "حفظ التعديلات"}
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {/* Media Section */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card className="border-none shadow-sm">
+                  <CardHeader>
+                    <CardTitle className="text-lg">
+                      الصورة الرئيسية (Banner)
+                    </CardTitle>
+                    <CardDescription>
+                      الصورة الكبيرة في الخلفية. يفضل مقاس عرضي (16:9).
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <FormField
+                      control={form.control}
+                      name="hero_image"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <ImageUpload
+                              value={field.value}
+                              onChange={field.onChange}
+                              disabled={updateMutation.isPending}
+                              imageClassName="w-full h-auto aspect-video object-cover"
+                              className="w-full max-w-[250px]"
+                              placeholder="رفع صورة البانر"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </Card>
+
+                <Card className="border-none shadow-sm">
+                  <CardHeader>
+                    <CardTitle className="text-lg">الصورة المصغرة</CardTitle>
+                    <CardDescription>
+                      الصورة الجانبية أو المتراكبة. يفضل مقاس مربع (1:1).
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <FormField
+                      control={form.control}
+                      name="small_hero_image"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <ImageUpload
+                              value={field.value}
+                              onChange={field.onChange}
+                              disabled={updateMutation.isPending}
+                              imageClassName="w-full h-auto aspect-square object-cover"
+                              className="w-full max-w-[150px] justify-center"
+                              placeholder="رفع صورة مصغرة"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Content Section */}
               <Card className="border-none shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <FileText className="h-5 w-5 text-primary" />
-                    النصوص الرئيسية
+                    النصوص الرئيسية{" "}
+                    {selectedSlide.id !== 0 &&
+                      `- شريحة #${
+                        slides.findIndex((s) => s.id === selectedSlide.id) + 1
+                      }`}
                   </CardTitle>
                   <CardDescription>
-                    تخصيص العناوين والوصف للواجهة الرئيسية
+                    تخصيص العناوين والوصف لهذه الشريحة
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-8">
-                  {/* Global Styles for inputs */}
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
-                      <h3 className="font-semibold text-gray-900 border-b pb-2">
+                      <h3 className="font-semibold text-gray-900 border-b pb-2 text-right">
                         العربية
                       </h3>
                       <FormField
@@ -218,7 +384,10 @@ export default function HeroSettingsPage() {
                     </div>
 
                     <div className="space-y-4">
-                      <h3 className="font-semibold text-gray-900 border-b pb-2">
+                      <h3
+                        className="font-semibold text-gray-900 border-b pb-2 text-left"
+                        dir="ltr"
+                      >
                         English
                       </h3>
                       <FormField
@@ -226,15 +395,21 @@ export default function HeroSettingsPage() {
                         name="hero_title_en"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Main Title</FormLabel>
+                            <FormLabel
+                              className="text-left w-full block"
+                              dir="ltr"
+                            >
+                              Main Title
+                            </FormLabel>
                             <FormControl>
                               <Input
                                 {...field}
                                 className="direction-ltr bg-gray-50/50"
                                 placeholder="English Title"
+                                dir="ltr"
                               />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="text-left" dir="ltr" />
                           </FormItem>
                         )}
                       />
@@ -243,15 +418,21 @@ export default function HeroSettingsPage() {
                         name="hero_subtitle_en"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Subtitle</FormLabel>
+                            <FormLabel
+                              className="text-left w-full block"
+                              dir="ltr"
+                            >
+                              Subtitle
+                            </FormLabel>
                             <FormControl>
                               <Input
                                 {...field}
                                 className="direction-ltr bg-gray-50/50"
                                 placeholder="English Subtitle"
+                                dir="ltr"
                               />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="text-left" dir="ltr" />
                           </FormItem>
                         )}
                       />
@@ -260,15 +441,21 @@ export default function HeroSettingsPage() {
                         name="hero_description_en"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Description</FormLabel>
+                            <FormLabel
+                              className="text-left w-full block"
+                              dir="ltr"
+                            >
+                              Description
+                            </FormLabel>
                             <FormControl>
                               <Textarea
                                 {...field}
                                 className="direction-ltr min-h-[120px] bg-gray-50/50 resize-none"
                                 placeholder="English Description"
+                                dir="ltr"
                               />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="text-left" dir="ltr" />
                           </FormItem>
                         )}
                       />
@@ -276,76 +463,10 @@ export default function HeroSettingsPage() {
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-
-            <TabsContent value="media" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="border-none shadow-sm">
-                  <CardHeader>
-                    <CardTitle className="text-lg">
-                      الصورة الرئيسية (Banner)
-                    </CardTitle>
-                    <CardDescription>
-                      الصورة الكبيرة في الخلفية. يفضل مقاس عرضي (16:9).
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <FormField
-                      control={form.control}
-                      name="hero_image"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <ImageUpload
-                              value={field.value}
-                              onChange={field.onChange}
-                              disabled={updateMutation.isPending}
-                              imageClassName="w-full h-auto aspect-video object-cover"
-                              className="w-full"
-                              placeholder="رفع صورة البانر"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </CardContent>
-                </Card>
-
-                <Card className="border-none shadow-sm">
-                  <CardHeader>
-                    <CardTitle className="text-lg">الصورة المصغرة</CardTitle>
-                    <CardDescription>
-                      الصورة الجانبية أو المتراكبة. يفضل مقاس مربع (1:1).
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <FormField
-                      control={form.control}
-                      name="small_hero_image"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <ImageUpload
-                              value={field.value}
-                              onChange={field.onChange}
-                              disabled={updateMutation.isPending}
-                              imageClassName="w-full h-auto aspect-square object-cover max-w-[300px] mx-auto"
-                              className="w-full justify-center"
-                              placeholder="رفع صورة مصغرة"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </form>
-      </Form>
+            </form>
+          </Form>
+        </div>
+      )}
     </div>
   );
 }

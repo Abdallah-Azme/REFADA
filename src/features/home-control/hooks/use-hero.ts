@@ -14,15 +14,22 @@ export function useUpdateHero() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: HeroFormValues) => heroApi.update(data),
+    mutationFn: (params: {
+      formValues: HeroFormValues;
+      allSlides: any[];
+      isNew?: boolean;
+    }) => {
+      if (params.isNew) {
+        return heroApi.create(params.formValues);
+      }
+      return heroApi.update(params);
+    },
     onSuccess: (response) => {
-      toast.success(
-        response.message || "تم تحديث بيانات الواجهة الرئيسية بنجاح"
-      );
+      toast.success(response.message || "تم حفظ بيانات الواجهة الرئيسية بنجاح");
       queryClient.invalidateQueries({ queryKey: ["home-hero"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "حدث خطأ أثناء تحديث البيانات");
+      toast.error(error.message || "حدث خطأ أثناء حفظ البيانات");
     },
   });
 }
