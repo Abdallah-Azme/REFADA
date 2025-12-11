@@ -11,8 +11,14 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Logo from "../logo";
+import { Settings } from "@/features/settings/types/settings.schema";
+import ImageFallback from "../shared/image-fallback";
 
-export default function Footer() {
+interface FooterProps {
+  settings?: Settings;
+}
+
+export default function Footer({ settings }: FooterProps) {
   return (
     <footer className="bg-[#10201C] text-white pt-10 pb-4  ">
       <div className="container px-4 mx-auto">
@@ -128,24 +134,59 @@ export default function Footer() {
         >
           {/* Contact Info */}
           <div className="flex flex-col items-center md:items-start gap-2 text-sm text-gray-300">
-            <div className="flex items-center gap-2">
-              <Phone size={16} />
-              <span>+972-22-333-4444</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Mail size={16} />
-              <span>info@hemtna.com</span>
-            </div>
+            {settings?.phone && (
+              <div className="flex items-center gap-2">
+                <Phone size={16} />
+                <span dir="ltr">{settings.phone}</span>
+              </div>
+            )}
+            {settings?.email && (
+              <div className="flex items-center gap-2">
+                <Mail size={16} />
+                <span>{settings.email}</span>
+              </div>
+            )}
+            {/* Fallback if no settings */}
+            {!settings && (
+              <>
+                <div className="flex items-center gap-2">
+                  <Phone size={16} />
+                  <span>+972-22-333-4444</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Mail size={16} />
+                  <span>info@hemtna.com</span>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Social Icons */}
           <div className="flex items-center gap-4">
             {[
-              { Icon: Instagram, label: "Instagram", href: "#" },
-              { Icon: Twitter, label: "Twitter", href: "#" },
-              { Icon: Facebook, label: "Facebook", href: "#" },
-              { Icon: Linkedin, label: "LinkedIn", href: "#" },
+              {
+                Icon: Instagram,
+                label: "Instagram",
+                href: settings?.instagram || "#",
+              },
+              {
+                Icon: Twitter,
+                label: "Twitter",
+                href: settings?.twitter || "#",
+              },
+              {
+                Icon: Facebook,
+                label: "Facebook",
+                href: settings?.facebook || "#",
+              },
+              {
+                Icon: Linkedin,
+                label: "LinkedIn",
+                href: settings?.linkedin || "#",
+              },
             ].map(({ Icon, label, href }) => (
+              // Only render if href is valid or just render anyway?
+              // Assuming # is placeholder.
               <motion.a
                 key={label}
                 href={href}
@@ -153,6 +194,8 @@ export default function Footer() {
                 whileTap={{ scale: 0.95 }}
                 className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition cursor-pointer"
                 aria-label={label}
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <Icon size={18} />
               </motion.a>
@@ -160,13 +203,24 @@ export default function Footer() {
           </div>
 
           {/* Logo */}
-          <Logo />
+          {settings?.siteLogo ? (
+            <div className="relative w-32 h-12">
+              <ImageFallback
+                src={settings.siteLogo}
+                alt={settings.siteName?.ar || "Logo"}
+                fill
+                className="object-contain"
+              />
+            </div>
+          ) : (
+            <Logo />
+          )}
         </motion.div>
       </div>
 
       {/* Bottom Bar */}
       <div className="bg-[#203730] mt-6 py-3 text-center text-xs text-gray-400">
-        جميع الحقوق محفوظة لجمعية رفاد © 2025
+        جميع الحقوق محفوظة لجمعية رفاد © {new Date().getFullYear()}
       </div>
     </footer>
   );

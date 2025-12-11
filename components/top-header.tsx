@@ -2,10 +2,15 @@
 
 import { motion, Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Facebook, Instagram, Phone, Twitter } from "lucide-react";
+import { Facebook, Instagram, Phone, Twitter, Linkedin } from "lucide-react"; // Linkedin added
 import Logo from "./logo";
+import { Settings } from "@/features/settings/types/settings.schema";
 
-export default function TopHeader() {
+interface TopHeaderProps {
+  settings?: Settings;
+}
+
+export default function TopHeader({ settings }: TopHeaderProps) {
   const containerVariants: Variants = {
     hidden: { opacity: 0, y: -20 },
     visible: {
@@ -46,9 +51,18 @@ export default function TopHeader() {
           variants={itemVariants}
           className="flex items-center gap-2 text-sm font-medium"
         >
-          <span className="hover:text-secondary transition-colors duration-300">
-            +972-22-333-4444
-          </span>
+          {settings?.phone ? (
+            <span
+              className="hover:text-secondary transition-colors duration-300"
+              dir="ltr"
+            >
+              {settings.phone}
+            </span>
+          ) : (
+            <span className="hover:text-secondary transition-colors duration-300">
+              +972-22-333-4444
+            </span>
+          )}
           <motion.div
             whileHover={{ rotate: 15, scale: 1.1 }}
             className="hidden sm:block"
@@ -68,7 +82,14 @@ export default function TopHeader() {
           variants={itemVariants}
           className="flex items-center gap-1 sm:gap-4"
         >
-          {[Instagram, Twitter, Facebook].map((Icon, i) => (
+          {[
+            { Icon: Instagram, href: settings?.instagram },
+            { Icon: Twitter, href: settings?.twitter },
+            { Icon: Facebook, href: settings?.facebook },
+          ].map(({ Icon, href }, i) => (
+            // Conditionally render if we want, or just default to placeholder
+            // If href unavailable, maybe hide it? Or default.
+            // Let's render if we have settings, or keep existing map if not.
             <motion.div
               key={i}
               whileHover={{
@@ -81,8 +102,11 @@ export default function TopHeader() {
                 size="icon"
                 variant="ghost"
                 className="bg-white/10 hover:bg-white/20 rounded-full w-9 h-9 text-white transition-all duration-300"
+                asChild
               >
-                <Icon size={18} />
+                <a href={href || "#"} target="_blank" rel="noopener noreferrer">
+                  <Icon size={18} />
+                </a>
               </Button>
             </motion.div>
           ))}

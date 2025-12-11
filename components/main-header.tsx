@@ -18,8 +18,13 @@ import MobileMenu from "./mobile-menu";
 import { useDirection } from "@/hooks/use-direction";
 import { useAuth } from "@/features/auth/context/auth-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Settings } from "@/features/settings/types/settings.schema";
 
-export default function MainHeader() {
+interface MainHeaderProps {
+  settings?: Settings;
+}
+
+export default function MainHeader({ settings }: MainHeaderProps) {
   const pathName = usePathname();
   const t = useTranslations();
   const { isRTL } = useDirection();
