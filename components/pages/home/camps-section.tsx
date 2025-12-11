@@ -9,6 +9,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi,
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -16,74 +17,13 @@ import { useDirection } from "@/hooks/use-direction";
 import { MoveLeft, MoveRight } from "lucide-react";
 import { CampCard } from "@/features/campaign/components/camp-card";
 import Link from "next/link";
+import { Camp } from "@/features/camps/types/camp.schema";
 
-export const shelters = [
-  {
-    id: 1,
-    title: "إيواء المغازي",
-    location: "خان يونس",
-    families: 2400,
-    image: "/pages/home/gaza-camp-1.webp",
-  },
-  {
-    id: 2,
-    title: "إيواء أصدقاء",
-    location: "خان يونس",
-    families: 2400,
-    image: "/pages/home/gaza-camp-2.webp",
-  },
-  {
-    id: 3,
-    title: "إيواء النصيرات",
-    location: "خان يونس",
-    families: 3000,
-    image: "/pages/home/gaza-camp-3.webp",
-  },
-  {
-    id: 4,
-    title: "إيواء جباليا",
-    location: "خان يونس",
-    families: 2400,
-    image: "/pages/home/gaza-camp-4.webp",
-  },
-  {
-    id: 5,
-    title: "إيواء المغازي",
-    location: "خان يونس",
-    families: 2400,
-    image: "/pages/home/gaza-camp-1.webp",
-  },
-  {
-    id: 6,
-    title: "إيواء أصدقاء",
-    location: "خان يونس",
-    families: 2400,
-    image: "/pages/home/gaza-camp-2.webp",
-  },
-  {
-    id: 7,
-    title: "إيواء النصيرات",
-    location: "خان يونس",
-    families: 3000,
-    image: "/pages/home/gaza-camp-3.webp",
-  },
-  {
-    id: 8,
-    title: "إيواء جباليا",
-    location: "خان يونس",
-    families: 2400,
-    image: "/pages/home/gaza-camp-4.webp",
-  },
-  {
-    id: 9,
-    title: "إيواء أصدقاء",
-    location: "خان يونس",
-    families: 2400,
-    image: "/pages/home/gaza-camp-2.webp",
-  },
-];
+interface CampsSectionProps {
+  camps?: Camp[];
+}
 
-export default function CampsSection() {
+export default function CampsSection({ camps = [] }: CampsSectionProps) {
   const { isRTL } = useDirection();
 
   const autoplay = React.useRef(
@@ -94,7 +34,7 @@ export default function CampsSection() {
     })
   );
 
-  const [api, setApi] = React.useState<any>();
+  const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
 
   React.useEffect(() => {
@@ -137,12 +77,20 @@ export default function CampsSection() {
         className="relative"
       >
         <CarouselContent className="-ml-4">
-          {shelters.map((shelter, index) => (
+          {camps.map((camp, index) => (
             <CarouselItem
-              key={shelter.id}
+              key={camp.id}
               className="pl-4 sm:basis-1/2 lg:basis-1/4"
             >
-              <CampCard {...shelter} index={index} />
+              <CampCard
+                id={camp.id}
+                title={camp.name}
+                location={camp.location || ""}
+                families={camp.familyCount || 0}
+                image={camp.campImg || "/placeholder.jpg"}
+                index={index}
+                slug={camp.slug}
+              />
             </CarouselItem>
           ))}
         </CarouselContent>
@@ -150,7 +98,7 @@ export default function CampsSection() {
 
       {/* Dots */}
       <div className="flex justify-center mt-6 gap-2">
-        {Array.from({ length: Math.ceil(shelters.length / 4) }).map((_, i) => (
+        {Array.from({ length: Math.ceil(camps.length / 4) }).map((_, i) => (
           <button
             key={i}
             onClick={() => api?.scrollTo(i * 4)}

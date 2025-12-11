@@ -8,6 +8,7 @@ import Link from "next/link";
 interface CampCardProps {
   id: number;
   title: string;
+  slug?: string;
   location: string;
   families: number;
   image: string;
@@ -18,6 +19,7 @@ interface CampCardProps {
 export function CampCard({
   id,
   title,
+  slug,
   location,
   families,
   image,
@@ -27,7 +29,9 @@ export function CampCard({
   return (
     <Link
       href={
-        dashboard ? `/dashboard/contributor/camps/${id}` : `/camps/${title}`
+        dashboard
+          ? `/dashboard/contributor/camps/${id}`
+          : `/camps/${slug || title}`
       }
       key={id}
     >
