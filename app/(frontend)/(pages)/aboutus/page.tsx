@@ -94,9 +94,10 @@ export default function Page() {
                     <div className="h-4 bg-gray-200 rounded animate-pulse w-4/6" />
                   </div>
                 ) : (
-                  <p className="leading-10 whitespace-pre-line">
-                    {description}
-                  </p>
+                  <div
+                    className="leading-10 whitespace-pre-line [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
+                    dangerouslySetInnerHTML={{ __html: description }}
+                  />
                 )
               }
             />

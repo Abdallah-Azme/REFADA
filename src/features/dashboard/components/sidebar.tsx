@@ -147,36 +147,36 @@ export default function DashboardSidebar() {
       icon: Home,
       href: "/dashboard/admin/home-control/hero",
     },
-    {
-      label: "الإحصائيات",
-      icon: BarChart3,
-      href: "/dashboard/admin/home-control/stats",
-    },
+    // {
+    //   label: "الإحصائيات",
+    //   icon: BarChart3,
+    //   href: "/dashboard/admin/home-control/stats",
+    // },
     {
       label: "من نحن",
       icon: Users,
       href: "/dashboard/admin/home-control/about",
     },
-    {
-      label: "السياسات",
-      icon: FolderOpen,
-      href: "/dashboard/admin/home-control/policy",
-    },
+    // {
+    //   label: "السياسات",
+    //   icon: FolderOpen,
+    //   href: "/dashboard/admin/home-control/policy",
+    // },
     {
       label: "الشركاء",
       icon: Users,
       href: "/dashboard/admin/home-control/partners",
     },
-    {
-      label: "الإيواءات",
-      icon: Tent,
-      href: "/dashboard/admin/home-control/camps",
-    },
-    {
-      label: "المشاريع",
-      icon: FolderOpen,
-      href: "/dashboard/admin/home-control/projects",
-    },
+    // {
+    //   label: "الإيواءات",
+    //   icon: Tent,
+    //   href: "/dashboard/admin/home-control/camps",
+    // },
+    // {
+    //   label: "المشاريع",
+    //   icon: FolderOpen,
+    //   href: "/dashboard/admin/home-control/projects",
+    // },
     {
       label: "آراء المستفيدين",
       icon: Users,
@@ -208,11 +208,11 @@ export default function DashboardSidebar() {
         { label: "أهدافنا", href: "/dashboard/admin/home-control/pages/goals" },
       ],
     },
-    {
-      label: "تواصل معنا",
-      icon: Menu,
-      href: "/dashboard/admin/home-control/contact",
-    },
+    // {
+    //   label: "تواصل معنا",
+    //   icon: Menu,
+    //   href: "/dashboard/admin/home-control/contact",
+    // },
     {
       label: "إعدادات الموقع",
       icon: Settings,
