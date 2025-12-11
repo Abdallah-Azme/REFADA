@@ -73,7 +73,11 @@ export default async function Home() {
       </div>
       <CampsSection camps={camps} />
       <CampsMapSection camps={camps} />
-      <ShelterProjectsSection />
+      <ShelterProjectsSection
+        projects={camps.flatMap(
+          (c) => c.projects?.map((p) => ({ ...p, campName: c.name })) || []
+        )}
+      />
       <TestimonialsSection testimonials={testimonials} />
       <ContactSection />
     </main>

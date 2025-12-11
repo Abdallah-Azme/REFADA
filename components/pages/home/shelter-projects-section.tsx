@@ -15,127 +15,15 @@ import Autoplay from "embla-carousel-autoplay";
 import { motion } from "framer-motion";
 import { MoveLeft, MoveRight } from "lucide-react";
 import * as React from "react";
+import { Project } from "@/features/camps/types/camp.schema";
 
-export const projects = [
-  {
-    id: 1,
-    title: "توزيع الطرود الغذائية",
-    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
-    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
-    goal: 3600,
-    current: 2500,
-    donors: 165,
-    image: "/pages/pages/project-1.webp",
-    tag: "مقدم للنشاطين",
-    camp: "مخيم أصداء",
-  },
-  {
-    id: 2,
+interface ShelterProjectsSectionProps {
+  projects?: (Project & { campName?: string })[];
+}
 
-    title: "توزيع الطرود الغذائية",
-    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
-    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
-    goal: 3600,
-    current: 1900,
-    donors: 165,
-    image: "/pages/pages/project-2.webp",
-    tag: "مقدم للنشاطين",
-    camp: "مخيم جباليا",
-  },
-  {
-    id: 3,
-
-    title: "توزيع الطرود الغذائية",
-    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
-    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
-    goal: 3600,
-    current: 1300,
-    donors: 165,
-    image: "/pages/pages/project-3.webp",
-    tag: "مقدم للنشاطين",
-    camp: "مخيم أصداء",
-  },
-  {
-    id: 4,
-
-    title: "توزيع الطرود الغذائية",
-    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
-    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
-    goal: 3600,
-    current: 1100,
-    donors: 745,
-    image: "/pages/pages/project-1.webp",
-    tag: "مقدم للنشاطين",
-    camp: "مخيم جباليا",
-  },
-  {
-    id: 5,
-
-    title: "توزيع الطرود الغذائية",
-    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
-    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
-    goal: 3600,
-    current: 2500,
-    donors: 165,
-    image: "/pages/pages/project-2.webp",
-    tag: "مقدم للنشاطين",
-    camp: "مخيم أصداء",
-  },
-  {
-    id: 6,
-
-    title: "توزيع الطرود الغذائية",
-    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
-    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
-    goal: 3600,
-    current: 1900,
-    donors: 165,
-    image: "/pages/pages/project-3.webp",
-    tag: "مقدم للنشاطين",
-    camp: "مخيم جباليا",
-  },
-  {
-    id: 7,
-
-    title: "توزيع الطرود الغذائية",
-    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
-    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
-    goal: 3600,
-    current: 1300,
-    donors: 165,
-    image: "/pages/pages/project-1.webp",
-    tag: "مقدم للنشاطين",
-    camp: "مخيم أصداء",
-  },
-  {
-    id: 8,
-
-    title: "توزيع الطرود الغذائية",
-    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
-    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
-    goal: 3600,
-    current: 1100,
-    donors: 745,
-    image: "/pages/pages/project-2.webp",
-    tag: "مقدم للنشاطين",
-    camp: "مخيم جباليا",
-  },
-  {
-    id: 9,
-
-    title: "توزيع الطرود الغذائية",
-    description: "من خلال الحصار الجائر، وتفاقم أزمات الجفاف، استمرار الحصار",
-    location: "الأراضي الفلسطينية في قطاع غزة وخارجه",
-    goal: 3600,
-    current: 1100,
-    donors: 745,
-    image: "/pages/pages/project-3.webp",
-    tag: "مقدم للنشاطين",
-    camp: "مخيم أصداء",
-  },
-];
-
-export default function CurrentProjectsSection() {
+export default function ShelterProjectsSection({
+  projects = [],
+}: ShelterProjectsSectionProps) {
   const { isRTL } = useDirection();
 
   const autoplay = React.useRef(
@@ -156,16 +44,20 @@ export default function CurrentProjectsSection() {
     api.on("select", () => setCurrent(api.selectedScrollSnap()));
 
     // Start autoplay when ready
-    try {
-      autoplay.current.play?.();
-    } catch (err) {}
+    const autoplayPlugin = api.plugins()?.autoplay as any;
+    if (autoplayPlugin && autoplayPlugin.play) {
+      autoplayPlugin.play();
+    }
 
     return () => {
-      try {
-        autoplay.current.stop?.();
-      } catch (err) {}
+      const autoplayPlugin = api.plugins()?.autoplay as any;
+      if (autoplayPlugin && autoplayPlugin.stop) {
+        autoplayPlugin.stop();
+      }
     };
   }, [api]);
+
+  if (!projects || projects.length === 0) return null;
 
   return (
     <section className="relative container mx-auto px-4 py-16 overflow-hidden">
@@ -198,6 +90,7 @@ export default function CurrentProjectsSection() {
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
         className="mb-10 text-center"
+        id="projects"
       >
         <h2 className="text-2xl md:text-3xl font-bold mb-2">
           المشاريع الحالية
@@ -220,27 +113,28 @@ export default function CurrentProjectsSection() {
       >
         <CarouselContent className="-ml-4 py-2">
           {projects.map((project, index) => {
-            const percentage = Math.round(
-              (project.current / project.goal) * 100
-            );
-            console.log({ project });
+            const goal = project.totalRemaining + project.totalReceived;
+            const current = project.totalReceived;
+            const percentage =
+              goal > 0 ? Math.round((current / goal) * 100) : 0;
+
             return (
               <CarouselItem
-                key={index}
+                key={project.id}
                 className="pl-4 sm:basis-1/2 lg:basis-1/4"
               >
                 <ProjectCard
                   index={index}
-                  image={project.image}
-                  title={project.title}
-                  description={project.description}
-                  location={project.location}
-                  tag={project.tag}
-                  goal={project.goal}
-                  current={project.current}
-                  donors={project.donors}
+                  image={project.projectImage || "/placeholder.jpg"}
+                  title={project.name}
+                  description={project.notes || "وصف المشروع غير متوفر حالياً"}
+                  location={project.campName || "غزة"}
+                  tag={project.type || "مشروع إغاثي"}
+                  goal={goal}
+                  current={current}
+                  donors={project.beneficiaryCount || 0}
                   percentage={percentage}
-                  camp={project.camp}
+                  camp={project.campName || ""}
                 />
               </CarouselItem>
             );
