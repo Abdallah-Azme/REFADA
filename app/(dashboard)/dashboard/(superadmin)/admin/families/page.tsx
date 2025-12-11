@@ -14,6 +14,7 @@ import {
 import { FamilyFormDialog } from "@/features/families/components/family-form-dialog";
 import FamilyDetailsDialog from "@/features/families/components/family-details-dialog";
 import { DeleteConfirmDialog } from "@/features/marital-status";
+import AddFamilyDialog from "@/src/features/dashboard/components/add-family-dialog";
 
 export default function AdminFamiliesPage() {
   const { data: response, isLoading, error } = useFamilies();
@@ -71,10 +72,12 @@ export default function AdminFamiliesPage() {
           <Users className="text-primary" />
         </MainHeader>
 
-        <Button onClick={handleCreate}>
+        {/* <Button onClick={handleCreate}>
           <Plus className="h-4 w-4 mr-2" />
           إضافة عائلة جديدة
-        </Button>
+        </Button> */}
+
+        <AddFamilyDialog />
       </div>
 
       {/* Content */}
