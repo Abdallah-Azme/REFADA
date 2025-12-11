@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import { Tent, Search } from "lucide-react";
-import { shelters } from "@/components/pages/home/camps-section";
 import { CampCard } from "./camp-card";
+import { Camp } from "@/features/camps/types/camp.schema";
 
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import {
@@ -17,8 +17,10 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 
 export default function CampProjects({
+  camps = [],
   dashboard = false,
 }: {
+  camps?: Camp[];
   dashboard?: boolean;
 }) {
   const form = useForm({
@@ -108,27 +110,6 @@ export default function CampProjects({
             )}
           />
 
-          {/* Camp Name */}
-          {/* <FormField
-            control={form.control}
-            name="campName"
-            render={({ field }) => (
-              <FormItem className="flex-1 min-w-[150px]">
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 focus:ring-0">
-                      <SelectValue placeholder="اسم الإيواء" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="إيواء الأمل">إيواء الأمل</SelectItem>
-                    <SelectItem value="إيواء الرحمة">إيواء الرحمة</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
-          /> */}
-
           {/* Camp Title */}
           <FormField
             control={form.control}
@@ -173,11 +154,16 @@ export default function CampProjects({
 
       {/* Camps Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-8">
-        {shelters.map((shelter, index) => (
+        {camps.map((camp, index) => (
           <CampCard
-            key={index}
-            {...shelter}
+            key={camp.id}
+            id={camp.id}
+            title={camp.name}
+            location={camp.location || ""}
+            families={camp.familyCount || 0}
+            image={camp.campImg || "/placeholder.jpg"}
             index={index}
+            slug={camp.slug}
             dashboard={dashboard}
           />
         ))}

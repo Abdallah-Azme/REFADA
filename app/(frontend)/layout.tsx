@@ -42,7 +42,7 @@ export default async function layout({
   return (
     <div>
       <Header settings={settings} />
-      {children}
+      <div className="min-h-screen">{children}</div>
       <Footer settings={settings} />
     </div>
   );
