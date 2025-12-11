@@ -25,7 +25,11 @@ export function useCreateProject() {
       toast.success("تم إضافة المشروع بنجاح");
     },
     onError: (error: any) => {
-      toast.error(error?.message || "حدث خطأ أثناء إضافة المشروع");
+      const message = error?.message || "حدث خطأ أثناء إضافة المشروع";
+      const validationErrors = error?.errors
+        ? Object.values(error.errors).flat().join(", ")
+        : "";
+      toast.error(validationErrors ? `${message}: ${validationErrors}` : message);
     },
   });
 }

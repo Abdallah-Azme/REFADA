@@ -247,7 +247,7 @@ export default function ProjectFormDialog({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl className="bg-white">
-                        <Input type="text" placeholder="الكلية" {...field} />
+                        <Input type="number" placeholder="الكلية" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
