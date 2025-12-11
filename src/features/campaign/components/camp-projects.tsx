@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
+import { useGovernorates } from "@/features/dashboard/hooks/use-governorates";
+import { useMemo } from "react";
 
 export default function CampProjects({
   camps = [],
@@ -32,7 +34,77 @@ export default function CampProjects({
     },
   });
 
-  const onSubmit = (data: any) => {};
+  const { data: governoratesData, isLoading: isLoadingGovernorates } = useGovernorates();
+  const watchedValues = form.watch();
+
+  // Get unique governorates from camps and API
+  const governorates = useMemo(() => {
+    const apiGovernorates = governoratesData?.data || [];
+    const campGovernorates = camps
+      .map((camp) => {
+        if (!camp.governorate) return null;
+        if (typeof camp.governorate === "string") {
+          return { id: 0, name: camp.governorate };
+        }
+        return camp.governorate;
+      })
+      .filter((gov) => gov !== null) as { id: number; name: string }[];
+
+    // Combine and deduplicate by name
+    const allGovernorates = [...apiGovernorates, ...campGovernorates];
+    const uniqueGovernorates = Array.from(
+      new Map(allGovernorates.map((gov) => [gov.name, gov])).values()
+    );
+    return uniqueGovernorates;
+  }, [governoratesData, camps]);
+
+  // Get unique camp names
+  const campNames = useMemo(() => {
+    return camps.map((camp) => ({
+      id: camp.id,
+      name: camp.name,
+      slug: camp.slug,
+    }));
+  }, [camps]);
+
+  // Filter camps based on form values
+  const filteredCamps = useMemo(() => {
+    let filtered = [...camps];
+
+    // Filter by governorate/region
+    if (watchedValues.region) {
+      filtered = filtered.filter((camp) => {
+        if (!camp.governorate) return false;
+        const governorateName = typeof camp.governorate === "string" 
+          ? camp.governorate 
+          : camp.governorate.name;
+        return governorateName === watchedValues.region;
+      });
+    }
+
+    // Filter by camp name (shelterName)
+    if (watchedValues.shelterName) {
+      filtered = filtered.filter((camp) => camp.name === watchedValues.shelterName);
+    }
+
+    // Filter by camp title (if needed - this might need to be based on project types or other criteria)
+    // For now, we'll skip this as it's not clear what campTitle refers to in the data structure
+
+    return filtered;
+  }, [camps, watchedValues.region, watchedValues.shelterName]);
+
+  const onSubmit = (data: any) => {
+    // Form submission is handled by real-time filtering via watch()
+  };
+
+  const handleClearFilters = () => {
+    form.reset({
+      region: "",
+      campName: "",
+      campTitle: "",
+      shelterName: "",
+    });
+  };
 
   return (
     <section className="container mx-auto px-4 py-8">
@@ -71,18 +143,21 @@ export default function CampProjects({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="شمال غزة">شمال غزة</SelectItem>
-                    <SelectItem value="غزة">غزة</SelectItem>
-                    <SelectItem value="دير البلح">دير البلح</SelectItem>
-                    <SelectItem value="خان يونس">خان يونس</SelectItem>
-                    <SelectItem value="رفح">رفح</SelectItem>
-                    <SelectItem value="الخليل">الخليل</SelectItem>
-                    <SelectItem value="بيت لحم">بيت لحم</SelectItem>
-                    <SelectItem value="القدس">القدس</SelectItem>
-                    <SelectItem value="رام الله والبيرة">
-                      رام الله والبيرة
-                    </SelectItem>
-                    <SelectItem value="نابلس">نابلس</SelectItem>
+                    {isLoadingGovernorates ? (
+                      <SelectItem value="loading" disabled>
+                        جاري التحميل...
+                      </SelectItem>
+                    ) : governorates.length > 0 ? (
+                      governorates.map((governorate) => (
+                        <SelectItem key={governorate.id || governorate.name} value={governorate.name}>
+                          {governorate.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="no-data" disabled>
+                        لا توجد محافظات
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </FormItem>
@@ -102,8 +177,17 @@ export default function CampProjects({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="إيواء الشمال">إيواء الشمال</SelectItem>
-                    <SelectItem value="إيواء الجنوب">إيواء الجنوب</SelectItem>
+                    {campNames.length > 0 ? (
+                      campNames.map((camp) => (
+                        <SelectItem key={camp.id} value={camp.name}>
+                          {camp.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="no-data" disabled>
+                        لا توجد إيواءات
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </FormItem>
@@ -133,12 +217,25 @@ export default function CampProjects({
 
           {/* Search Button */}
           <Button
-            type="submit"
+            type="button"
+            onClick={form.handleSubmit(onSubmit)}
             className="flex items-center gap-1 bg-[#CBBF8C] text-gray-800 hover:bg-[#b2a672] transition-colors h-10 px-4"
           >
             <Search className="w-4 h-4" />
             بحث
           </Button>
+
+          {/* Clear Filters Button */}
+          {(watchedValues.region || watchedValues.shelterName || watchedValues.campTitle) && (
+            <Button
+              type="button"
+              onClick={handleClearFilters}
+              variant="outline"
+              className="flex items-center gap-1 h-10 px-4 border-gray-300"
+            >
+              مسح
+            </Button>
+          )}
         </form>
       </Form>
 
@@ -153,21 +250,31 @@ export default function CampProjects({
       </motion.p>
 
       {/* Camps Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-8">
-        {camps.map((camp, index) => (
-          <CampCard
-            key={camp.id}
-            id={camp.id}
-            title={camp.name}
-            location={camp.location || ""}
-            families={camp.familyCount || 0}
-            image={camp.campImg || "/placeholder.jpg"}
-            index={index}
-            slug={camp.slug}
-            dashboard={dashboard}
-          />
-        ))}
-      </div>
+      {filteredCamps.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-8">
+          {filteredCamps.map((camp, index) => (
+            <CampCard
+              key={camp.id}
+              id={camp.id}
+              title={camp.name}
+              location={camp.location || ""}
+              families={camp.familyCount || 0}
+              image={camp.campImg || "/placeholder.jpg"}
+              index={index}
+              slug={camp.slug}
+              dashboard={dashboard}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12 mt-8">
+          <p className="text-gray-500 text-lg">
+            {watchedValues.region || watchedValues.shelterName || watchedValues.campTitle
+              ? "لا توجد نتائج مطابقة للبحث"
+              : "لا توجد إيواءات متاحة"}
+          </p>
+        </div>
+      )}
     </section>
   );
 }

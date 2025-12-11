@@ -8,20 +8,27 @@ import { Button } from "@/components/ui/button";
 import ProjectsSection from "@/features/campaign/components/projects-section";
 import CampDetailsSection from "@/features/camps/components/camp-details-section";
 import { cn } from "@/lib/utils";
-import CampStats from "@/src/features/camps/components/camp-stats";
+import CampStats from "@/features/camps/components/camp-stats";
 import { motion } from "framer-motion";
 import { Info, SquareKanban } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
+import { useCampDetails } from "@/features/camps/hooks/use-camps";
 
 export default function Page() {
   const t = useTranslations();
-  const campDetails = {
-    name: "إيواء جباليا",
-    location: "الإيواء الشمالي - غزة",
-    phone: "+972 22 222 2222",
-    image: "/pages/home/gaza-camp-1.webp",
-    position: [31.535, 34.495],
-  };
+  const params = useParams();
+  const campSlug = params?.campId as string;
+  const { data: campData, isLoading } = useCampDetails(campSlug || null);
+
+  const camp = campData?.data;
+  const projects = camp?.projects || [];
+
+  // Get coordinates for map
+  const position: [number, number] | null =
+    camp?.latitude && camp?.longitude
+      ? [parseFloat(String(camp.latitude)), parseFloat(String(camp.longitude))]
+      : null;
   return (
     <section className="container mx-auto px-4">
       {/* Breadcrumb with animation */}
@@ -34,7 +41,8 @@ export default function Page() {
         <Breadcrumb
           items={[
             { name: t("home"), href: "/" },
-            { name: t("gablyaCamp"), href: "#" },
+            { name: t("camps"), href: "/camps" },
+            { name: camp?.name || t("gablyaCamp"), href: "#" },
           ]}
         />
       </motion.div>
@@ -54,18 +62,22 @@ export default function Page() {
         >
           <Info className="text-[#4A8279]" />
           <h1 className="text-xl font-bold text-[#1E1E1E]">
-            {t("gablyaCamp")}
+            {isLoading ? "جاري التحميل..." : camp?.name || t("gablyaCamp")}
           </h1>
         </motion.div>
 
         {/* Decorative images (fade-in softly) */}
         <ImageDecorations />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 items-stretch">
-          <CampDetailsSection />
+          <CampDetailsSection description={camp?.description} />
 
-          <CampsMapSection secondary />
+          {position && <CampsMapSection secondary camps={camp ? [camp] : []} />}
 
-          <CampStats />
+          <CampStats
+            familyCount={camp?.familyCount || 0}
+            childrenCount={camp?.childrenCount || 0}
+            projectsCount={projects.length}
+          />
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -78,8 +90,8 @@ export default function Page() {
             {/* Image */}
             <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
               <ImageFallback
-                src={campDetails.image}
-                alt={campDetails.name}
+                src={camp?.campImg || "/pages/home/gaza-camp-1.webp"}
+                alt={camp?.name || "Camp"}
                 fill
                 className="object-cover"
               />
@@ -88,23 +100,31 @@ export default function Page() {
             {/* Content */}
             <div className="flex-1 flex flex-col gap-1 text-right h-full justify-around">
               <h3 className="font-semibold text-[#1C3A34] leading-tight">
-                {campDetails.name}
+                {camp?.name || "جاري التحميل..."}
               </h3>
 
-              <p className="text-gray-600  flex items-center gap-1 leading-relaxed">
-                <span className="text-gray-400">📍</span>
-                شمال قطاع غزة - على بُعد نحو 4 كيلومترات
-              </p>
+              {camp?.location && (
+                <p className="text-gray-600  flex items-center gap-1 leading-relaxed">
+                  <span className="text-gray-400">📍</span>
+                  {camp.location}
+                </p>
+              )}
 
-              <p className="text-gray-600  flex items-center gap-1 leading-relaxed">
-                <span className="text-gray-400">📞</span>
-                تواصل معنا: {campDetails.phone}
-              </p>
+              {camp?.governorate && (
+                <p className="text-gray-600  flex items-center gap-1 leading-relaxed">
+                  <span className="text-gray-400">🏛️</span>
+                  {typeof camp.governorate === "string"
+                    ? camp.governorate
+                    : camp.governorate.name}
+                </p>
+              )}
 
-              <p className="text-gray-600  flex items-center gap-1 leading-relaxed">
-                <span className="text-gray-400">🏦</span>
-                الحساب البنكي: 10008890003444
-              </p>
+              {camp?.bankAccount && (
+                <p className="text-gray-600  flex items-center gap-1 leading-relaxed">
+                  <span className="text-gray-400">🏦</span>
+                  الحساب البنكي: {camp.bankAccount}
+                </p>
+              )}
             </div>
           </motion.div>
         </div>
@@ -123,15 +143,15 @@ export default function Page() {
             المشاريع المقامة داخل الإيواء
           </h2>
         </motion.div>
-        <ProjectsSection />
-        <div className="flex justify-center mt-12">
+        <ProjectsSection projects={projects} campName={camp?.name || ""} />
+        {/* <div className="flex justify-center mt-12">
           <Button
             variant={"outline"}
             className="px-12! py-6! border-2 rounded-full font-semibold text-primary border-primary transition-colors flex items-center gap-2"
           >
             المزيد
           </Button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

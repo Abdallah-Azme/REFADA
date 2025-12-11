@@ -13,14 +13,21 @@ import { heroApi } from "@/features/home-control/api/hero.api";
 import { campsApi } from "@/features/camps/api/camp.api";
 import { partnerApi } from "@/features/partners/api/partner.api";
 import { testimonialApi } from "@/features/testimonials/api/testimonial.api";
+import { HomePageData } from "@/features/home-control/types/hero.schema";
 
-async function getHeroSlides() {
+async function getHomePageData(): Promise<HomePageData> {
   try {
     const response = await heroApi.get();
-    return response.data.slides || [];
+    return response.data;
   } catch (error) {
-    console.error("Failed to fetch hero slides:", error);
-    return [];
+    console.error("Failed to fetch home page data:", error);
+    return {
+      slides: [],
+      campsCount: 0,
+      contributorsCount: 0,
+      projectsCount: 0,
+      familiesCount: 0,
+    };
   }
 }
 
@@ -55,7 +62,8 @@ async function getTestimonials() {
 }
 
 export default async function Home() {
-  const slides = await getHeroSlides();
+  const homePageData = await getHomePageData();
+  const slides = homePageData.slides || [];
   const camps = await getCamps();
   const partners = await getPartners();
   const testimonials = await getTestimonials();
@@ -64,7 +72,12 @@ export default async function Home() {
     <main className="flex flex-col gap-6 mt-10">
       <Hero slides={slides} />
       <div className="-mb-20 z-10">
-        <Stats />
+        <Stats
+          projectsCount={homePageData.projectsCount || 0}
+          familiesCount={homePageData.familiesCount || 0}
+          contributorsCount={homePageData.contributorsCount || 0}
+          campsCount={homePageData.campsCount || 0}
+        />
       </div>
       <AboutSection />
       <div className="-mt-20 z-10">

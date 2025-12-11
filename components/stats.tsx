@@ -26,12 +26,24 @@ function Counter({ value = 1, suffix = "" }) {
   );
 }
 
-export default function Stats() {
+interface StatsProps {
+  projectsCount?: number;
+  familiesCount?: number;
+  contributorsCount?: number;
+  campsCount?: number;
+}
+
+export default function Stats({
+  projectsCount = 0,
+  familiesCount = 0,
+  contributorsCount = 0,
+  campsCount = 0,
+}: StatsProps) {
   const stats = [
-    { number: 1400, suffix: "+", label: "مشروع" },
-    { number: 6500, suffix: "+", label: "عائلة" },
-    { number: 3200, suffix: "+", label: "مساهم" },
-    { number: 30, suffix: "+", label: "الإيواءات" },
+    { number: projectsCount, suffix: "+", label: "مشروع" },
+    { number: familiesCount, suffix: "+", label: "عائلة" },
+    { number: contributorsCount, suffix: "+", label: "مساهم" },
+    { number: campsCount, suffix: "+", label: "الإيواءات" },
   ];
 
   return (

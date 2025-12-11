@@ -57,3 +57,10 @@ export function useCampDetails(slug: string | null) {
     enabled: !!slug,
   });
 }
+
+export function useCampStatistics() {
+  return useQuery({
+    queryKey: ["camp-statistics"],
+    queryFn: campsApi.getStatistics,
+  });
+}

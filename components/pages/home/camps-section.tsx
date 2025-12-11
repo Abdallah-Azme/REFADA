@@ -37,25 +37,57 @@ export default function CampsSection({ camps = [] }: CampsSectionProps) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
 
+  // Don't render carousel if no camps
+  if (!camps || camps.length === 0) {
+    return null;
+  }
+
   React.useEffect(() => {
-    if (!api) return;
+    if (!api || camps.length === 0) return;
 
-    setCurrent(api.selectedScrollSnap());
-    api.on("select", () => setCurrent(api.selectedScrollSnap()));
+    try {
+      setCurrent(api.selectedScrollSnap());
+      api.on("select", () => setCurrent(api.selectedScrollSnap()));
 
-    // Access autoplay plugin via api
-    const autoplayPlugin = api.plugins()?.autoplay as any;
-    if (autoplayPlugin && autoplayPlugin.play) {
-      autoplayPlugin.play();
+      // Access autoplay plugin via api
+      // plugins() returns an array or object depending on embla version
+      const plugins = api.plugins();
+      if (!plugins) return;
+
+      // Try accessing as object first (newer embla versions)
+      let autoplayPlugin = (plugins as any)?.autoplay;
+      
+      // If not found, try finding in array (older embla versions)
+      if (!autoplayPlugin && Array.isArray(plugins)) {
+        autoplayPlugin = plugins.find((plugin: any) => plugin?.play || plugin?.stop);
+      }
+      
+      if (autoplayPlugin && typeof autoplayPlugin.play === "function") {
+        autoplayPlugin.play();
+      }
+    } catch (error) {
+      // Silently handle errors during initialization
+      console.warn("Carousel initialization error:", error);
     }
 
     return () => {
-      const autoplayPlugin = api.plugins()?.autoplay as any;
-      if (autoplayPlugin && autoplayPlugin.stop) {
-        autoplayPlugin.stop();
+      try {
+        const plugins = api?.plugins();
+        if (!plugins) return;
+
+        let autoplayPlugin = (plugins as any)?.autoplay;
+        if (!autoplayPlugin && Array.isArray(plugins)) {
+          autoplayPlugin = plugins.find((plugin: any) => plugin?.stop);
+        }
+
+        if (autoplayPlugin && typeof autoplayPlugin.stop === "function") {
+          autoplayPlugin.stop();
+        }
+      } catch (error) {
+        // Silently handle cleanup errors
       }
     };
-  }, [api]);
+  }, [api, camps.length]);
 
   return (
     <section id="camps" className="container mx-auto px-4 py-12 text-center">

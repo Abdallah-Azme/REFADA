@@ -83,3 +83,22 @@ export enum CampStatus {
   Active = "active",
   Inactive = "inactive",
 }
+
+export interface CampStatistics {
+  id: number;
+  name: string;
+  registeredFamilies: number;
+  currentProjects: number;
+  contributionsPercentage: string;
+}
+
+export interface CampStatisticsResponse {
+  success: boolean;
+  message: string;
+  data: CampStatistics[];
+  pagination: {
+    current_page: number;
+    last_page: number;
+    total: number;
+  };
+}

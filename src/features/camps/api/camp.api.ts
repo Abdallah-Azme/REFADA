@@ -1,4 +1,4 @@
-import { Camp, CreateCampDto, CampFormValues } from "../types/camp.schema";
+import { Camp, CreateCampDto, CampFormValues, CampStatisticsResponse } from "../types/camp.schema";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
@@ -164,5 +164,9 @@ export const campsApi = {
 
   getCampBySlug: async (slug: string): Promise<CampResponse> => {
     return apiRequest<CampResponse>(`/camps/${slug}`);
+  },
+
+  getStatistics: async (): Promise<CampStatisticsResponse> => {
+    return apiRequest<CampStatisticsResponse>("/camps/statistics");
   },
 };

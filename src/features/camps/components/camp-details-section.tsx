@@ -13,10 +13,16 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-export default function campDetailsSection() {
+interface CampDetailsSectionProps {
+  description?: string | null;
+}
+
+export default function campDetailsSection({ 
+  description 
+}: CampDetailsSectionProps = {}) {
   const t = useTranslations();
 
-  const fullText = `
+  const fullText = description || `
 يُعتبر إيواء جباليا أكبر إيواء للاجئين الفلسطينيين في فلسطين، حيث يعيش فيه 119,000 فلسطيني يتوزعون على مساحة لا تتجاوز 1.4 كيلومتر مربع، مما يجعله واحدًا من أكثر الأماكن اكتظاظاً بالسكان في العالم. ينحدر لاجئو جباليا من أحفاد 38,000 فلسطيني تم تطهيرهم عرقيًا من أسدود ويافا والرملة واللد وبئر السبع خلال نكبة عام 1948.
 يُعتبر إيواء جباليا أكبر إيواء للاجئين الفلسطينيين في فلسطين، حيث يعيش فيه 119,000 فلسطيني يتوزعون على مساحة لا تتجاوز 1.4 كيلومتر مربع، مما يجعله واحدًا من أكثر الأماكن اكتظاظاً بالسكان في العالم.
   `;
