@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { pagesApi } from "../api/pages.api";
+import { aboutUsApi } from "../api/about-us.api";
 import { PageUpdateFormValues } from "../types/page.schema";
 
 export function usePages() {
@@ -37,5 +38,12 @@ export function useUpdatePage() {
     onError: (error: any) => {
       toast.error(error.message || "حدث خطأ أثناء تحديث الصفحة");
     },
+  });
+}
+
+export function useAboutUs() {
+  return useQuery({
+    queryKey: ["about-us"],
+    queryFn: aboutUsApi.get,
   });
 }

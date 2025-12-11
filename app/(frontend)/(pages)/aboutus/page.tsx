@@ -8,10 +8,20 @@ import MissionVisionGoals from "@/components/shared/mission-vision-goals";
 import { PageSection } from "@/components/shared/page-section";
 import { motion } from "framer-motion";
 import { Info } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useAboutUs } from "@/features/pages/hooks/use-pages";
 
 export default function Page() {
   const t = useTranslations();
+  const locale = useLocale();
+  const { data: aboutUsData, isLoading } = useAboutUs();
+
+  // Get localized content
+  const title =
+    aboutUsData?.data?.title?.[locale as "ar" | "en"] || t("aboutus");
+  const description =
+    aboutUsData?.data?.description?.[locale as "ar" | "en"] || "";
+  const image = aboutUsData?.data?.image || "/pages/pages/shaking-hands.webp";
 
   return (
     <section className="flex flex-col gap-8 sm:gap-12 container mx-auto px-4">
@@ -45,7 +55,7 @@ export default function Page() {
           transition={{ delay: 0.2, duration: 0.5 }}
         >
           <Info size={20} className="text-[#4a8279]" />
-          <h1 className="text-xl font-bold text-[#1E1E1E]">{t("aboutus")}</h1>
+          <h1 className="text-xl font-bold text-[#1E1E1E]">{title}</h1>
         </motion.div>
 
         {/* Decorative images (fade-in softly) */}
@@ -77,12 +87,17 @@ export default function Page() {
           >
             <PageSection
               description={
-                <>
-                  <p>{t("transparencyDescription")}</p>
-                  <p className="leading-10 line-clamp-6">
-                    {t("transparencyParagraph")}
+                isLoading ? (
+                  <div className="space-y-4">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6" />
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-4/6" />
+                  </div>
+                ) : (
+                  <p className="leading-10 whitespace-pre-line">
+                    {description}
                   </p>
-                </>
+                )
               }
             />
           </motion.div>
@@ -90,9 +105,9 @@ export default function Page() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="flex-1 relative hidden sm:block"
+            className="flex-1 relative hidden sm:block min-h-[300px]"
           >
-            <ImageFallback src="/pages/pages/shaking-hands.webp" fill />
+            <ImageFallback src={image} fill alt={title} />
           </motion.div>
         </div>
       </motion.div>

@@ -23,7 +23,7 @@ export const aboutUsApi = {
       }
     }
 
-    const response = await fetch(`${API_BASE_URL}/about-us`, {
+    const response = await fetch(`${API_BASE_URL}/about-us/`, {
       method: "GET",
       headers,
       next: { revalidate: 0 }, // Ensure fresh data
