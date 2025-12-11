@@ -66,7 +66,7 @@ export const contactMessagesApi = {
   },
 
   create: async (
-    data: Omit<ContactMessageFormValues, "subject">
+    data: ContactMessageFormValues
   ): Promise<ContactMessageResponse> => {
     return apiRequest<ContactMessageResponse>("/contact-us", {
       method: "POST",

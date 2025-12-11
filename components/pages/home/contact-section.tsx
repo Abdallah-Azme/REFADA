@@ -15,14 +15,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Send } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
 import ImageFallback from "@/components/shared/image-fallback";
 import { useTranslations } from "next-intl";
 import { useDirection } from "@/hooks/use-direction";
+import { contactMessagesApi } from "@/features/messages/api/contact-message.api";
+import { toast } from "sonner";
+import { useState } from "react";
 
 export default function ContactSection() {
   const t = useTranslations();
   const { isRTL } = useDirection();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Define schema inside component to use translations
   const formSchema = z.object({
     name: z.string().min(2, t("required_name")),
@@ -43,7 +48,29 @@ export default function ContactSection() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {}
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
+    try {
+      const response = await contactMessagesApi.create(values);
+      toast.success(response.message);
+      form.reset();
+    } catch (error: any) {
+      console.error("Failed to send message:", error);
+      const errors = error?.errors || {};
+      // If validation errors, showing first one or generic
+      if (Object.keys(errors).length > 0) {
+        Object.values(errors)
+          .flat()
+          .forEach((err: any) => {
+            toast.error(err as string);
+          });
+      } else {
+        toast.error(t("messages.error_sending"));
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <section className="bg-[#274540] text-white h-fit md:min-h-[600px]">
@@ -179,10 +206,17 @@ export default function ContactSection() {
               <div className="flex justify-center md:justify-start pt-2">
                 <Button
                   type="submit"
+                  disabled={isSubmitting}
                   className="rounded-full bg-[#C9B47A] text-primary hover:bg-[#b6a26e] flex items-center gap-2 px-8 h-12 font-semibold text-base"
                 >
-                  {t("send_button")}
-                  <Send size={18} className={isRTL ? "scale-x-[-1]" : ""} />
+                  {isSubmitting ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    t("send_button")
+                  )}
+                  {!isSubmitting && (
+                    <Send size={18} className={isRTL ? "scale-x-[-1]" : ""} />
+                  )}
                 </Button>
               </div>
             </form>
