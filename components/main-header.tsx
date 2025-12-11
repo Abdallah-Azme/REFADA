@@ -16,11 +16,14 @@ import LangSwitcher from "./lang-switcher";
 import { motion, AnimatePresence } from "framer-motion";
 import MobileMenu from "./mobile-menu";
 import { useDirection } from "@/hooks/use-direction";
+import { useAuth } from "@/features/auth/context/auth-context";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function MainHeader() {
   const pathName = usePathname();
   const t = useTranslations();
   const { isRTL } = useDirection();
+  const { user, isAuthenticated } = useAuth();
 
   const navItems = [
     { label: t("home"), href: "/" },
@@ -71,15 +74,38 @@ export default function MainHeader() {
         <div className="flex items-center justify-between gap-4 w-full lg:w-fit">
           <div className="flex items-center gap-2">
             <LangSwitcher />
-            <Button
-              asChild
-              className="bg-secondary text-primary hover:text-secondary hover:bg-primary px-5 py-3 font-semibold rounded-full gap-2 transition-all duration-300 shadow-sm hover:shadow-md"
-            >
-              <Link href="/signin">
-                {t("sign_in")}
-                {isRTL ? <ArrowLeft size={18} /> : <ArrowRight size={18} />}
+            {isAuthenticated && user ? (
+              <Link
+                href={
+                  user.role === "admin"
+                    ? "/dashboard/admin"
+                    : user.role === "delegate"
+                    ? "/dashboard/families"
+                    : "/dashboard/contributor"
+                }
+                className="relative h-10 w-10 rounded-full overflow-hidden hover:opacity-80 transition-opacity"
+              >
+                <Avatar className="flex items-center justify-center">
+                  <AvatarImage
+                    src={`https://ui-avatars.com/api/?name=${user.name}&background=random`}
+                    alt={user.name}
+                  />
+                  <AvatarFallback className="bg-primary  text-white">
+                    {user.name?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
               </Link>
-            </Button>
+            ) : (
+              <Button
+                asChild
+                className="bg-secondary text-primary hover:text-secondary hover:bg-primary px-5 py-3 font-semibold rounded-full gap-2 transition-all duration-300 shadow-sm hover:shadow-md"
+              >
+                <Link href="/signin">
+                  {t("sign_in")}
+                  {isRTL ? <ArrowLeft size={18} /> : <ArrowRight size={18} />}
+                </Link>
+              </Button>
+            )}
           </div>
 
           {/* --- Mobile Menu --- */}
