@@ -11,77 +11,22 @@ import {
   CarouselItem,
   type CarouselApi,
 } from "@/components/ui/carousel";
+import { HeroSlide } from "@/features/home-control/types/hero.schema";
 
-const carouselSlides = [
-  {
-    id: 0,
-    title: "بتبرعك تقدر تخفف معاناة",
-    highlightedText: "أهل غزة",
-    subtitle: "وتنشر الأمل في قلوب محتاجة للدعم والصمود 💚",
-    description:
-      "نحن نعمل على تطوير مشاريع مهمة تخدم المجتمع وتساهم في بناء مستقبل أفضل. من خلال شراكاتنا مع منظمات عالمية، نقدم حلولاً مبتكرة وفعالة.",
-    boyImage: "/pages/home/gaza-boy.webp",
-    girlImage: "/pages/home/gaza-girl.webp",
-    boyAlt: "Gaza boy with happy smile :)",
-    girlAlt: "Gaza girl smiling :)",
-  },
-  {
-    id: 1,
-    title: "بتبرعك تقدر تخفف معاناة",
-    highlightedText: "أهل غزة",
-    subtitle: "وتنشر الأمل في قلوب محتاجة للدعم والصمود 💚",
-    description:
-      "نحن نعمل على تطوير مشاريع مهمة تخدم المجتمع وتساهم في بناء مستقبل أفضل. من خلال شراكاتنا مع منظمات عالمية، نقدم حلولاً مبتكرة وفعالة.",
-    boyImage: "/pages/home/gaza-boy.webp",
-    girlImage: "/pages/home/gaza-girl.webp",
-    boyAlt: "Gaza boy with happy smile :)",
-    girlAlt: "Gaza girl smiling :)",
-  },
-  {
-    id: 2,
-    title: "بتبرعك تقدر تخفف معاناة",
-    highlightedText: "أهل غزة",
-    subtitle: "وتنشر الأمل في قلوب محتاجة للدعم والصمود 💚",
-    description:
-      "نحن نعمل على تطوير مشاريع مهمة تخدم المجتمع وتساهم في بناء مستقبل أفضل. من خلال شراكاتنا مع منظمات عالمية، نقدم حلولاً مبتكرة وفعالة.",
-    boyImage: "/pages/home/gaza-boy.webp",
-    girlImage: "/pages/home/gaza-girl.webp",
-    boyAlt: "Gaza boy with happy smile :)",
-    girlAlt: "Gaza girl smiling :)",
-  },
-  {
-    id: 3,
-    title: "بتبرعك تقدر تخفف معاناة",
-    highlightedText: "أهل غزة",
-    subtitle: "وتنشر الأمل في قلوب محتاجة للدعم والصمود 💚",
-    description:
-      "نحن نعمل على تطوير مشاريع مهمة تخدم المجتمع وتساهم في بناء مستقبل أفضل. من خلال شراكاتنا مع منظمات عالمية، نقدم حلولاً مبتكرة وفعالة.",
-    boyImage: "/pages/home/gaza-boy.webp",
-    girlImage: "/pages/home/gaza-girl.webp",
-    boyAlt: "Gaza boy with happy smile :)",
-    girlAlt: "Gaza girl smiling :)",
-  },
-  {
-    id: 4,
-    title: "بتبرعك تقدر تخفف معاناة",
-    highlightedText: "أهل غزة",
-    subtitle: "وتنشر الأمل في قلوب محتاجة للدعم والصمود 💚",
-    description:
-      "نحن نعمل على تطوير مشاريع مهمة تخدم المجتمع وتساهم في بناء مستقبل أفضل. من خلال شراكاتنا مع منظمات عالمية، نقدم حلولاً مبتكرة وفعالة.",
-    boyImage: "/pages/home/gaza-boy.webp",
-    girlImage: "/pages/home/gaza-girl.webp",
-    boyAlt: "Gaza boy with happy smile :)",
-    girlAlt: "Gaza girl smiling :)",
-  },
-];
+interface HeroProps {
+  slides?: HeroSlide[];
+}
 
-export default function Hero() {
+export default function Hero({ slides = [] }: HeroProps) {
   const { isRTL } = useDirection();
   const [dots, setDots] = useState<{ id: number; top: number; left: number }[]>(
     []
   );
   const [api, setApi] = useState<CarouselApi>();
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const activeSlides = slides && slides.length > 0 ? slides : [];
+  const lang = isRTL ? "ar" : "en";
 
   useEffect(() => {
     const newDots = Array.from({ length: 10 }, (_, i) => ({
@@ -106,6 +51,10 @@ export default function Hero() {
       api.off("select", onSelect);
     };
   }, [api]);
+
+  // If no slides, we might want to render nothing or a default state.
+  // For now, let's render nothing to avoid broken UI.
+  if (activeSlides.length === 0) return null;
 
   return (
     <section className="relative overflow-visible container mx-auto px-4 w-full">
@@ -140,31 +89,30 @@ export default function Hero() {
             loop: true,
             direction: isRTL ? "rtl" : "ltr",
           }}
-          plugins={[Autoplay({ delay: 2000, stopOnInteraction: false })] as any}
+          plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })] as any}
         >
           <CarouselContent className="py-5">
-            {carouselSlides.map((slide) => (
+            {activeSlides.map((slide) => (
               <CarouselItem key={slide.id} className="pl-0">
                 <div className="flex flex-col-reverse sm:flex-row gap-8 items-center w-full">
                   {/* Text Section */}
                   <div className="flex-1 max-w-[609px] text-center sm:text-start z-10">
                     <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-light-black leading-[1.4] tracking-wide">
-                      {slide.title}{" "}
-                      <span className="text-secondary">
-                        {slide.highlightedText}
+                      {slide.heroTitle[lang]}
+                      <span className="text-secondary block mt-2 text-2xl sm:text-3xl font-medium">
+                        {slide.heroSubtitle[lang]}
                       </span>
-                      {slide.subtitle}
                     </h1>
                     <p className="text-light-black text-sm sm:text-base leading-relaxed mb-6 max-w-[350px] mx-auto sm:mx-0">
-                      {slide.description}
+                      {slide.heroDescription[lang]}
                     </p>
                   </div>
 
                   {/* Image Section */}
                   <div className="flex-[1.2] flex justify-center items-center relative overflow-visible min-w-[350px] sm:min-w-[450px] lg:min-w-[600px]">
-                    {/* Boy Wrapper */}
+                    {/* Main Image Wrapper (Boy position) */}
                     <div className="relative flex justify-center items-center overflow-visible">
-                      {/* Boy Gradient Circle Background */}
+                      {/* Gradient Circle Background */}
                       <motion.div
                         className="absolute inset-0 m-auto w-[300px] sm:w-[400px] lg:w-[520px] h-[300px] sm:h-[400px] lg:h-[520px] rounded-full bg-gradient-to-tl from-primary to-secondary z-0"
                         animate={{
@@ -180,9 +128,9 @@ export default function Hero() {
                         }}
                       />
 
-                      {/* Boy Image */}
+                      {/* Main Image */}
                       <motion.div
-                        className="relative z-10 w-[280px] sm:w-[380px] lg:w-[500px] h-[280px] sm:h-[380px] lg:h-[500px] rounded-full overflow-hidden"
+                        className="relative z-10 w-[280px] sm:w-[380px] lg:w-[500px] h-[280px] sm:h-[380px] lg:h-[500px] rounded-full overflow-hidden bg-white"
                         animate={{
                           y: [0, -10, 0],
                         }}
@@ -192,57 +140,65 @@ export default function Hero() {
                           ease: "easeInOut",
                         }}
                       >
-                        <ImageFallback
-                          alt={slide.boyAlt}
-                          src={slide.boyImage}
-                          fill
-                          className="object-cover object-center"
+                        {slide.heroImage ? (
+                          <ImageFallback
+                            alt={slide.heroTitle[lang]}
+                            src={slide.heroImage}
+                            fill
+                            className="object-cover object-center"
+                            style={{
+                              backfaceVisibility: "hidden",
+                              WebkitBackfaceVisibility: "hidden",
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
+                            No Image
+                          </div>
+                        )}
+                      </motion.div>
+                    </div>
+
+                    {/* Secondary Image Wrapper (Girl position) */}
+                    {slide.smallHeroImage && (
+                      <div className="absolute bottom-4 sm:bottom-10 start-6 sm:start-20 flex justify-center items-center overflow-visible">
+                        {/* Small Gradient Circle Background */}
+                        <motion.div
+                          className="absolute inset-0 m-auto w-[130px] sm:w-[170px] lg:w-[210px] h-[130px] sm:h-[170px] lg:h-[210px] rounded-full bg-gradient-to-tl from-primary to-secondary z-10"
+                          animate={{
+                            backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
+                          }}
+                          transition={{
+                            duration: 8,
+                            repeat: Infinity,
+                            ease: "linear",
+                          }}
                           style={{
-                            backfaceVisibility: "hidden",
-                            WebkitBackfaceVisibility: "hidden",
+                            backgroundSize: "200% 200%",
                           }}
                         />
-                      </motion.div>
-                    </div>
 
-                    {/* Girl Wrapper */}
-                    <div className="absolute bottom-4 sm:bottom-10 start-6 sm:start-20 flex justify-center items-center overflow-visible">
-                      {/* Girl Gradient Circle Background */}
-                      <motion.div
-                        className="absolute inset-0 m-auto w-[130px] sm:w-[170px] lg:w-[210px] h-[130px] sm:h-[170px] lg:h-[210px] rounded-full bg-gradient-to-tl from-primary to-secondary z-10"
-                        animate={{
-                          backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
-                        }}
-                        transition={{
-                          duration: 8,
-                          repeat: Infinity,
-                          ease: "linear",
-                        }}
-                        style={{
-                          backgroundSize: "200% 200%",
-                        }}
-                      />
-
-                      {/* Girl Image */}
-                      <motion.div
-                        className="relative z-20 w-[120px] sm:w-[160px] lg:w-[200px] h-[120px] sm:h-[160px] lg:h-[200px] rounded-full overflow-hidden"
-                        animate={{
-                          y: [0, -8, 0],
-                        }}
-                        transition={{
-                          duration: 4,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }}
-                      >
-                        <ImageFallback
-                          alt={slide.girlAlt}
-                          src={slide.girlImage}
-                          fill
-                          className="object-cover object-center"
-                        />
-                      </motion.div>
-                    </div>
+                        {/* Small Image */}
+                        <motion.div
+                          className="relative z-20 w-[120px] sm:w-[160px] lg:w-[200px] h-[120px] sm:h-[160px] lg:h-[200px] rounded-full overflow-hidden bg-white"
+                          animate={{
+                            y: [0, -8, 0],
+                          }}
+                          transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          }}
+                        >
+                          <ImageFallback
+                            alt="Small Hero Image"
+                            src={slide.smallHeroImage}
+                            fill
+                            className="object-cover object-center"
+                          />
+                        </motion.div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </CarouselItem>
@@ -252,9 +208,9 @@ export default function Hero() {
 
         {/* Navigation Dots */}
         <div className="flex gap-2 mt-8 z-20 justify-center">
-          {carouselSlides.map((slide, index) => (
+          {activeSlides.map((slide, index) => (
             <button
-              key={slide.id}
+              key={slide.id || index}
               onClick={() => api?.scrollTo(index)}
               className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
                 selectedIndex === index
