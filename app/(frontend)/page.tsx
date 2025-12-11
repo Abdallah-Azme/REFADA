@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import Hero from "@/components/hero";
 import AboutSection from "@/components/pages/home/about-section";
 import CampsMapSection from "@/components/pages/home/camps-map-section";
@@ -71,7 +72,7 @@ export default async function Home() {
         <PartnersSection partners={partners} />
       </div>
       <CampsSection camps={camps} />
-      <CampsMapSection />
+      <CampsMapSection camps={camps} />
       <ShelterProjectsSection />
       <TestimonialsSection testimonials={testimonials} />
       <ContactSection />

@@ -43,10 +43,17 @@ export default function CampsSection({ camps = [] }: CampsSectionProps) {
     setCurrent(api.selectedScrollSnap());
     api.on("select", () => setCurrent(api.selectedScrollSnap()));
 
-    autoplay.current.play?.();
+    // Access autoplay plugin via api
+    const autoplayPlugin = api.plugins()?.autoplay as any;
+    if (autoplayPlugin && autoplayPlugin.play) {
+      autoplayPlugin.play();
+    }
 
     return () => {
-      autoplay.current.stop?.();
+      const autoplayPlugin = api.plugins()?.autoplay as any;
+      if (autoplayPlugin && autoplayPlugin.stop) {
+        autoplayPlugin.stop();
+      }
     };
   }, [api]);
 
