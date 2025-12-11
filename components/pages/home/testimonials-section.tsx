@@ -14,67 +14,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import ImageFallback from "@/components/shared/image-fallback";
 import { useDirection } from "@/hooks/use-direction";
+import { Testimonial } from "@/features/testimonials/types/testimonial.schema";
 
-const testimonials = [
-  {
-    name: "أحمد عبد الله",
-    date: "12/10/2025",
-    message:
-      "فخورين بشراكتنا مع هذا الفريق المتميز، التنظيم والتزامهم جعل العمل معنا تجربة مثمرة.",
-    image: "/pages/pages/user.webp",
-  },
-  {
-    name: "فاطمة السيد",
-    date: "12/10/2025",
-    message:
-      "تجربتي كمتطوعة كانت رائعة جداً، لم أتخيل أن كل جهد بسيط يصنع فرق حقيقي.",
-    image: "/pages/pages/user.webp",
-  },
-  {
-    name: "محمد علي",
-    date: "12/10/2025",
-    message:
-      "ما كنت أتوقع إن التواصل يكون بالسلاسة دي، حسّيت إن في حد فعلاً مهتم يسمعني ويساعد.",
-    image: "/pages/pages/user.webp",
-  },
-  {
-    name: "أمير عصام",
-    date: "12/10/2025",
-    message:
-      "المنصة خلّت التعامل بمهنية، كل البيانات محفوظة وعملية وهتخلينا نكمل بثقة.",
-    image: "/pages/pages/user.webp",
-  },
-  {
-    name: "أحمد عبد الله",
-    date: "12/10/2025",
-    message:
-      "فخورين بشراكتنا مع هذا الفريق المتميز، التنظيم والتزامهم جعل العمل معنا تجربة مثمرة.",
-    image: "/pages/pages/user.webp",
-  },
-  {
-    name: "فاطمة السيد",
-    date: "12/10/2025",
-    message:
-      "تجربتي كمتطوعة كانت رائعة جداً، لم أتخيل أن كل جهد بسيط يصنع فرق حقيقي.",
-    image: "/pages/pages/user.webp",
-  },
-  {
-    name: "محمد علي",
-    date: "12/10/2025",
-    message:
-      "ما كنت أتوقع إن التواصل يكون بالسلاسة دي، حسّيت إن في حد فعلاً مهتم يسمعني ويساعد.",
-    image: "/pages/pages/user.webp",
-  },
-  {
-    name: "أمير عصام",
-    date: "12/10/2025",
-    message:
-      "المنصة خلّت التعامل بمهنية، كل البيانات محفوظة وعملية وهتخلينا نكمل بثقة.",
-    image: "/pages/pages/user.webp",
-  },
-];
+interface TestimonialsSectionProps {
+  testimonials?: Testimonial[];
+}
 
-export default function TestimonialsSection() {
+export default function TestimonialsSection({
+  testimonials = [],
+}: TestimonialsSectionProps) {
   const { isRTL } = useDirection();
 
   const autoplay = React.useRef(
@@ -88,6 +36,9 @@ export default function TestimonialsSection() {
     setCurrent(api.selectedScrollSnap());
     api.on("select", () => setCurrent(api.selectedScrollSnap()));
   }, [api]);
+
+  // Optionally hide if empty
+  if (testimonials.length === 0) return null;
 
   return (
     <div className="bg-[#EEEADD] -mb-6">
@@ -132,7 +83,7 @@ export default function TestimonialsSection() {
         {/* Carousel */}
         <Carousel
           setApi={setApi}
-          plugins={[autoplay.current]}
+          plugins={[autoplay.current as any]}
           opts={{
             align: "center",
             loop: true,
@@ -153,19 +104,25 @@ export default function TestimonialsSection() {
                 >
                   <div className="flex items-center gap-3 mb-4 self-start">
                     <ImageFallback
-                      src={t.image}
+                      src={t.user_image || "/pages/pages/user.webp"}
                       width={60}
                       height={60}
                       className="size-15 shrink-0  "
                     />
                   </div>
                   <div className="flex flex-col gap-2 text-start">
-                    <h4 className="font-bold text-sm text-black">{t.name}</h4>
+                    <h4 className="font-bold text-sm text-black">
+                      {t.user_name}
+                    </h4>
                     <p className="text-[8px] font-semibold text-[#747474]">
-                      {t.date}
+                      {t.created_at
+                        ? new Date(t.created_at).toLocaleDateString(
+                            isRTL ? "ar" : "en-US"
+                          )
+                        : ""}
                     </p>
                     <p className="text-black text-sm leading-relaxed line-clamp-3">
-                      {t.message}
+                      {t.opinion}
                     </p>
                   </div>
                 </motion.div>

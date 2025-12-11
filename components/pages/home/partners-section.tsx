@@ -51,7 +51,7 @@ export default function PartnersSection({
             loop: true,
             direction: isRTL ? "rtl" : "ltr",
           }}
-          plugins={[autoplay.current]}
+          plugins={[autoplay.current as any]}
           className="w-full"
         >
           <CarouselContent className="-ml-4">

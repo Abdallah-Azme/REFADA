@@ -72,7 +72,7 @@ export default function ContactSection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="w-fit py-10 px-6 flex-1 h-auto my-auto mx-auto"
+          className="w-fit py-10 px-6 flex-1 h-auto my-auto mx-auto  "
         >
           <h2 className="text-2xl md:text-3xl font-bold mb-8">
             {t("contact_title")}

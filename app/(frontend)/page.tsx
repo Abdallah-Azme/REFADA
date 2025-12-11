@@ -11,6 +11,7 @@ import Stats from "@/components/stats";
 import { heroApi } from "@/features/home-control/api/hero.api";
 import { campsApi } from "@/features/camps/api/camp.api";
 import { partnerApi } from "@/features/partners/api/partner.api";
+import { testimonialApi } from "@/features/testimonials/api/testimonial.api";
 
 async function getHeroSlides() {
   try {
@@ -42,10 +43,21 @@ async function getPartners() {
   }
 }
 
+async function getTestimonials() {
+  try {
+    const response = await testimonialApi.getAll();
+    return response.data || [];
+  } catch (error) {
+    console.error("Failed to fetch testimonials:", error);
+    return [];
+  }
+}
+
 export default async function Home() {
   const slides = await getHeroSlides();
   const camps = await getCamps();
   const partners = await getPartners();
+  const testimonials = await getTestimonials();
 
   return (
     <main className="flex flex-col gap-6 mt-10">
@@ -61,7 +73,7 @@ export default async function Home() {
       <CampsSection camps={camps} />
       <CampsMapSection />
       <ShelterProjectsSection />
-      <TestimonialsSection />
+      <TestimonialsSection testimonials={testimonials} />
       <ContactSection />
     </main>
   );
