@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { authService } from "@/features/auth";
 import { User } from "@/features/auth/types/auth.schema";
@@ -62,36 +68,52 @@ export function useAuth() {
 
 /**
  * Hook to require authentication and optionally check role
+ * Note: The middleware already handles auth redirects for dashboard routes.
+ * This hook is a client-side fallback for edge cases.
  */
 export function useRequireAuth(allowedRoles?: User["role"][]) {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const hasCheckedRef = useRef(false);
 
   useEffect(() => {
+    // Don't do anything while loading
     if (isLoading) return;
 
-    // Not authenticated - redirect to login
-    if (!isAuthenticated || !user) {
-      router.push(`/signin?redirect=${encodeURIComponent(pathname)}`);
+    // Only perform the check once per mount to avoid race conditions
+    if (hasCheckedRef.current) return;
+    hasCheckedRef.current = true;
+
+    // Double-check token directly from storage to avoid React state race conditions
+    const token = authService.getToken();
+    const storedUser = authService.getUser();
+
+    // If there's a valid token and user in storage, we're authenticated
+    // even if React state hasn't caught up yet
+    if (token && storedUser) {
+      // Check role if specified
+      if (allowedRoles && !allowedRoles.includes(storedUser.role)) {
+        const dashboardMap: Record<User["role"], string> = {
+          admin: "/dashboard/admin",
+          delegate: "/dashboard/families",
+          contributor: "/dashboard/contributor",
+        };
+
+        const correctDashboard = dashboardMap[storedUser.role];
+        if (correctDashboard && pathname !== correctDashboard) {
+          router.replace(correctDashboard);
+        }
+      }
       return;
     }
 
-    // Check role if specified
-    if (allowedRoles && !allowedRoles.includes(user.role)) {
-      // Redirect to appropriate dashboard based on user role
-      const dashboardMap: Record<User["role"], string> = {
-        admin: "/dashboard/admin",
-        delegate: "/dashboard/families",
-        contributor: "/dashboard/contributor",
-      };
-
-      const correctDashboard = dashboardMap[user.role];
-      if (correctDashboard && pathname !== correctDashboard) {
-        router.push(correctDashboard);
-      }
+    // Not authenticated - redirect to login
+    // Only redirect if we're sure there's no token
+    if (!token || !storedUser) {
+      router.replace(`/signin?redirect=${encodeURIComponent(pathname)}`);
     }
-  }, [isAuthenticated, user, isLoading, router, pathname, allowedRoles]);
+  }, [isLoading, router, pathname, allowedRoles, isAuthenticated, user]);
 
   return { user, isAuthenticated, isLoading };
 }
