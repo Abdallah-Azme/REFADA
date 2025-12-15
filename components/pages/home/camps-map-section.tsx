@@ -3,13 +3,28 @@
 import ImageFallback from "@/components/shared/image-fallback";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 import { MapPin } from "lucide-react";
 import Image from "next/image";
-import { useState, useMemo } from "react";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { useState, useMemo, useEffect } from "react";
 import { Camp } from "@/features/camps/types/camp.schema";
+import dynamic from "next/dynamic";
+
+// Dynamically import Leaflet components to prevent SSR issues with CSS
+const MapContainer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const Marker = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Marker),
+  { ssr: false }
+);
+const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
+  ssr: false,
+});
 
 export default function CampsMapSection({
   secondary,
@@ -20,12 +35,19 @@ export default function CampsMapSection({
   dashboard?: boolean;
   camps?: Camp[];
 }) {
-  const campIcon = useMemo(() => {
-    if (typeof window === "undefined") return undefined;
-    return new L.Icon({
-      iconUrl: "/pages/pages/camping.webp", // put your marker icon here
-      iconSize: [24, 24],
-      iconAnchor: [16, 40],
+  const [campIcon, setCampIcon] = useState<any>(undefined);
+
+  // Dynamically import Leaflet and its CSS on client-side only
+  useEffect(() => {
+    import("leaflet/dist/leaflet.css");
+    import("leaflet").then((L) => {
+      setCampIcon(
+        new L.Icon({
+          iconUrl: "/pages/pages/camping.webp",
+          iconSize: [24, 24],
+          iconAnchor: [16, 40],
+        })
+      );
     });
   }, []);
   // Filter camps with valid coordinates
