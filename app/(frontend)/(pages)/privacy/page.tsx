@@ -3,12 +3,19 @@
 import { Breadcrumb } from "@/components/shared/breadcrumb";
 import ImageFallback from "@/components/shared/image-fallback";
 import { PageSection } from "@/components/shared/page-section";
+import { usePage } from "@/features/pages/hooks/use-pages";
 import { motion } from "framer-motion";
-import { BookKey, Lock } from "lucide-react";
+import { BookKey } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function Page() {
   const t = useTranslations();
+  const { data: pageData, isLoading } = usePage("privacy");
+
+  // Get data from API or fallback to translations
+  const title = pageData?.data?.title || t("privacy");
+  const description = pageData?.data?.description || "";
+  const image = pageData?.data?.image;
 
   return (
     <motion.div
@@ -39,7 +46,7 @@ export default function Page() {
         transition={{ delay: 0.2, duration: 0.5 }}
       >
         <BookKey className="text-[#4A8279]" />
-        <h1 className="text-xl font-bold text-[#1E1E1E]">{t("privacy")} </h1>
+        <h1 className="text-xl font-bold text-[#1E1E1E]">{title}</h1>
       </motion.div>
 
       {/* Decorative images (fade-in softly) */}
@@ -64,20 +71,41 @@ export default function Page() {
       </motion.div>
 
       {/* Content Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.6 }}
-      >
-        <PageSection
-          description={
-            <>
-              <p>{t("transparencyDescription")}</p>
-              <p className="leading-10">{t("transparencyParagraph")}</p>
-            </>
-          }
-        />
-      </motion.div>
+      <div className="flex flex-col sm:flex-row gap-7">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="flex-1"
+        >
+          <PageSection
+            description={
+              isLoading ? (
+                <div className="space-y-4">
+                  <div className="h-4 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6" />
+                  <div className="h-4 bg-gray-200 rounded animate-pulse w-4/6" />
+                </div>
+              ) : (
+                <div
+                  className="leading-10 whitespace-pre-line [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
+                  dangerouslySetInnerHTML={{ __html: description }}
+                />
+              )
+            }
+          />
+        </motion.div>
+        {image && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="flex-1 relative hidden sm:block min-h-[300px]"
+          >
+            <ImageFallback src={image} fill alt={title} />
+          </motion.div>
+        )}
+      </div>
     </motion.div>
   );
 }
