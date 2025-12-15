@@ -13,7 +13,7 @@ import Image from "next/image";
 interface DynamicPageComponentProps {
   pageType: string;
   title: string;
-}-
+}
 
 export default function DynamicPageComponent({
   pageType,

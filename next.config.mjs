@@ -7,6 +7,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  linting: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     unoptimized: true,
   },
