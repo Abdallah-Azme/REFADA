@@ -37,9 +37,21 @@ export default function CampsMapSection({
 }) {
   const [campIcon, setCampIcon] = useState<any>(undefined);
 
-  // Dynamically import Leaflet and its CSS on client-side only
+  // Dynamically load Leaflet CSS via link tag and import Leaflet JS on client-side only
   useEffect(() => {
-    import("leaflet/dist/leaflet.css");
+    // Inject Leaflet CSS via link tag to avoid build-time processing
+    const linkId = "leaflet-css";
+    if (!document.getElementById(linkId)) {
+      const link = document.createElement("link");
+      link.id = linkId;
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      link.integrity = "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=";
+      link.crossOrigin = "";
+      document.head.appendChild(link);
+    }
+
+    // Dynamically import Leaflet JS
     import("leaflet").then((L) => {
       setCampIcon(
         new L.Icon({
