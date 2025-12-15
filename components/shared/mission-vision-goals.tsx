@@ -2,9 +2,9 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { ShieldCheck, Eye, Target } from "lucide-react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import ImageFallback from "./image-fallback";
+import { usePages } from "@/features/pages/hooks/use-pages";
 
 // Animation Variants
 const containerVariants = {
@@ -25,23 +25,24 @@ const cardVariants = {
   },
 };
 
-const listContainer = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.15 },
-  },
-};
-
-const listItem = {
-  hidden: { opacity: 0, x: 20 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.4, ease: "easeOut" as const },
-  },
-};
-
 export default function MissionVisionGoals() {
+  const { data: pagesData, isLoading } = usePages();
+
+  // Get mission, vision, goals data from API
+  const pages = pagesData?.data || [];
+  const mission = pages.find((p) => p.pageType === "mission");
+  const vision = pages.find((p) => p.pageType === "vision");
+  const goals = pages.find((p) => p.pageType === "goals");
+
+  // Loading skeleton
+  const LoadingSkeleton = () => (
+    <div className="space-y-3 animate-pulse">
+      <div className="h-5 bg-gray-200 rounded w-1/4" />
+      <div className="h-4 bg-gray-200 rounded w-full" />
+      <div className="h-4 bg-gray-200 rounded w-5/6" />
+    </div>
+  );
+
   return (
     <section className="container relative mx-auto px-4 py-10 grid md:grid-cols-2 gap-10 items-center overflow-hidden">
       {/* Decorative Backgrounds */}
@@ -100,12 +101,18 @@ export default function MissionVisionGoals() {
             <CardContent className="p-4 flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="text-primary" size={20} />
-                <h3 className="font-bold text-lg">رسالتنا</h3>
+                <h3 className="font-bold text-lg">
+                  {mission?.title || "رسالتنا"}
+                </h3>
               </div>
-              <p className="text-gray-600 leading-relaxed">
-                نحافظ على سرية بيانات المتبرعين والمستفيدين، ونستخدمها فقط لخدمة
-                العمل الإنساني وفق أعلى معايير الأمان.
-              </p>
+              {isLoading ? (
+                <LoadingSkeleton />
+              ) : (
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                  {mission?.description ||
+                    "نحافظ على سرية بيانات المتبرعين والمستفيدين، ونستخدمها فقط لخدمة العمل الإنساني وفق أعلى معايير الأمان."}
+                </p>
+              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -116,12 +123,18 @@ export default function MissionVisionGoals() {
             <CardContent className="p-4 flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <Eye className="text-primary" size={20} />
-                <h3 className="font-bold text-lg">رؤيتنا</h3>
+                <h3 className="font-bold text-lg">
+                  {vision?.title || "رؤيتنا"}
+                </h3>
               </div>
-              <p className="text-gray-600 leading-relaxed">
-                نطمح لعلاقة مميزة مع المتبرعين والمتطوعين بما يضمن الثقة
-                والمسؤولية المشتركة في تحقيق أهدافنا الإنسانية.
-              </p>
+              {isLoading ? (
+                <LoadingSkeleton />
+              ) : (
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                  {vision?.description ||
+                    "نطمح لعلاقة مميزة مع المتبرعين والمتطوعين بما يضمن الثقة والمسؤولية المشتركة في تحقيق أهدافنا الإنسانية."}
+                </p>
+              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -132,28 +145,18 @@ export default function MissionVisionGoals() {
             <CardContent className="p-4 flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <Target className="text-primary" size={20} />
-                <h3 className="font-bold text-lg">أهدافنا</h3>
+                <h3 className="font-bold text-lg">
+                  {goals?.title || "أهدافنا"}
+                </h3>
               </div>
-
-              {/* Animated list */}
-              <motion.ul
-                variants={listContainer}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                className="list-disc pr-5 space-y-2 text-gray-600"
-              >
-                {[
-                  "تقديم الإغاثة العاجلة للفئات الأكثر احتياجاً من خلال المساعدات الطبية والخدمات الصحية.",
-                  "دعم البرامج التعليمية وبناء القدرات للأطفال والأيتام وذوي الهمم.",
-                  "بناء تعاون مع الجهات المحلية لتحقيق التنمية المستدامة وخدمة العمل الإنساني.",
-                  "نشر روح التعاون والتكافل بين أفراد المجتمع.",
-                ].map((text, i) => (
-                  <motion.li key={i} variants={listItem}>
-                    {text}
-                  </motion.li>
-                ))}
-              </motion.ul>
+              {isLoading ? (
+                <LoadingSkeleton />
+              ) : (
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                  {goals?.description ||
+                    "نسعى لتحقيق أهداف واضحة تشمل دعم الأسر المحتاجة، تنفيذ مشاريع مستدامة، وبناء شراكات مجتمعية فاعلة."}
+                </p>
+              )}
             </CardContent>
           </Card>
         </motion.div>
