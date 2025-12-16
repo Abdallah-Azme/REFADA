@@ -143,7 +143,11 @@
     "attachments": "ملفات مرفقة (صورة، تقرير)",
     "adding": "جاري الإضافة...",
     "cancel": "إلغاء",
-    "status_prefix": "الحالة:"
+    "status_prefix": "الحالة:",
+    "page_title": "إدارة العائلات",
+    "list_title": "قائمة العائلات",
+    "loading_data": "جاري تحميل البيانات...",
+    "error_loading": "حدث خطأ أثناء تحميل البيانات"
   },
   "projects": {
     "add_project": "إضافة مشروع",

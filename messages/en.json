@@ -142,7 +142,11 @@
     "attachments": "Attachments (Image, Report)",
     "adding": "Adding...",
     "cancel": "Cancel",
-    "status_prefix": "Status:"
+    "status_prefix": "Status:",
+    "page_title": "Manage Families",
+    "list_title": "Families List",
+    "loading_data": "Loading data...",
+    "error_loading": "Error loading data"
   },
   "projects": {
     "add_project": "Add Project",

@@ -16,7 +16,10 @@ import FamilyDetailsDialog from "@/features/families/components/family-details-d
 import { DeleteConfirmDialog } from "@/features/marital-status";
 import AddFamilyDialog from "@/src/features/dashboard/components/add-family-dialog";
 
+import { useTranslations } from "next-intl";
+
 export default function AdminFamiliesPage() {
+  const t = useTranslations("families");
   const { data: response, isLoading, error } = useFamilies();
   const deleteMutation = useDeleteFamily();
 
@@ -68,7 +71,7 @@ export default function AdminFamiliesPage() {
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <MainHeader header="إدارة العائلات">
+        <MainHeader header={t("page_title")}>
           <Users className="text-primary" />
         </MainHeader>
 
@@ -77,21 +80,24 @@ export default function AdminFamiliesPage() {
           إضافة عائلة جديدة
         </Button> */}
 
+        <FamilyFormDialog />
         <AddFamilyDialog />
       </div>
 
       {/* Content */}
       <div className="w-full bg-white rounded-xl p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">قائمة العائلات</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-4">
+          {t("list_title")}
+        </h3>
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="mr-3 text-gray-600">جاري تحميل البيانات...</span>
+            <span className="mr-3 text-gray-600">{t("loading_data")}</span>
           </div>
         ) : error ? (
           <div className="flex items-center justify-center py-12">
-            <p className="text-red-600">حدث خطأ أثناء تحميل البيانات</p>
+            <p className="text-red-600">{t("error_loading")}</p>
           </div>
         ) : (
           <FamilyTable data={families} columns={columns} />
