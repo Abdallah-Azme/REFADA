@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -12,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  registerSchema,
+  createRegisterSchema,
   useRegister,
   type RegisterFormValues,
 } from "@/features/auth";
@@ -23,10 +25,12 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function RegisterPage() {
+  const t = useTranslations("auth");
   const [activeRole, setActiveRole] = useState<"contributor" | "delegate">(
     "contributor"
   );
   const { mutate: register, isPending } = useRegister();
+  const registerSchema = createRegisterSchema(t);
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -62,7 +66,7 @@ export default function RegisterPage() {
   return (
     <div className="bg-white rounded-xl">
       <h2 className="text-center text-lg font-semibold mb-6">
-        تسجيل حساب جديد
+        {t("create_account")}
       </h2>
 
       <Tabs
@@ -75,13 +79,13 @@ export default function RegisterPage() {
             value="contributor"
             className="data-[state=active]:bg-[#c8b78a] data-[state=active]:text-white rounded-full px-4 py-1 text-sm"
           >
-            مساهم
+            {t("contributor")}
           </TabsTrigger>
           <TabsTrigger
             value="delegate"
             className="data-[state=active]:bg-[#c8b78a] data-[state=active]:text-white rounded-full px-4 py-1 text-sm"
           >
-            مندوب
+            {t("delegate")}
           </TabsTrigger>
         </TabsList>
 
@@ -96,7 +100,7 @@ export default function RegisterPage() {
                   <FormControl>
                     <Input
                       className="h-[50px] bg-[#EEEADD]"
-                      placeholder="الاسم الكامل"
+                      placeholder={t("full_name")}
                       disabled={isPending}
                       {...field}
                     />
@@ -115,7 +119,7 @@ export default function RegisterPage() {
                   <FormControl>
                     <Input
                       className="h-[50px] bg-[#EEEADD]"
-                      placeholder="رقم الهوية"
+                      placeholder={t("id_number")}
                       disabled={isPending}
                       {...field}
                     />
@@ -135,7 +139,7 @@ export default function RegisterPage() {
                     <Input
                       className="h-[50px] bg-[#EEEADD]"
                       type="email"
-                      placeholder="البريد الإلكتروني"
+                      placeholder={t("email")}
                       disabled={isPending}
                       {...field}
                     />
@@ -154,7 +158,7 @@ export default function RegisterPage() {
                   <FormControl>
                     <Input
                       className="h-[50px] bg-[#EEEADD]"
-                      placeholder="رقم الهاتف"
+                      placeholder={t("phone")}
                       disabled={isPending}
                       {...field}
                     />
@@ -173,7 +177,7 @@ export default function RegisterPage() {
                   <FormControl>
                     <Input
                       className="h-[50px] bg-[#EEEADD]"
-                      placeholder="رقم هاتف احتياطي (اختياري)"
+                      placeholder={t("backup_phone")}
                       disabled={isPending}
                       {...field}
                     />
@@ -195,7 +199,7 @@ export default function RegisterPage() {
                       <FormControl>
                         <Input
                           className="h-[50px] bg-[#EEEADD]"
-                          placeholder="اسم المخيم"
+                          placeholder={t("camp_name")}
                           disabled={isPending}
                           {...field}
                         />
@@ -214,7 +218,7 @@ export default function RegisterPage() {
                       <FormControl>
                         <Input
                           className="h-[50px] bg-[#EEEADD]"
-                          placeholder="رقم الترخيص"
+                          placeholder={t("license_number")}
                           disabled={isPending}
                           {...field}
                         />
@@ -236,7 +240,7 @@ export default function RegisterPage() {
                     <Input
                       className="h-[50px] bg-[#EEEADD]"
                       type="password"
-                      placeholder="كلمة المرور"
+                      placeholder={t("password")}
                       disabled={isPending}
                       {...field}
                     />
@@ -256,7 +260,7 @@ export default function RegisterPage() {
                     <Input
                       className="h-[50px] bg-[#EEEADD]"
                       type="password"
-                      placeholder="تأكيد كلمة المرور"
+                      placeholder={t("confirm_password")}
                       disabled={isPending}
                       {...field}
                     />
@@ -280,12 +284,12 @@ export default function RegisterPage() {
                     />
                   </FormControl>
                   <span className="text-sm text-gray-700">
-                    أوافق على{" "}
+                    {t("agree_to")}{" "}
                     <Link
                       href="/terms-and-conditions"
                       className="text-secondary hover:underline font-medium"
                     >
-                      الشروط والأحكام
+                      {t("terms_conditions")}
                     </Link>
                   </span>
                   <FormMessage />
@@ -302,20 +306,20 @@ export default function RegisterPage() {
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  جاري إنشاء الحساب...
+                  {t("creating_account")}
                 </>
               ) : (
-                "تسجيل"
+                t("register")
               )}
             </Button>
 
             <p className="text-center text-sm text-gray-600">
-              لديك حساب بالفعل؟{" "}
+              {t("already_have_account")}{" "}
               <Link
                 href="/signin"
                 className="text-[#c8b78a] font-medium hover:underline"
               >
-                دخول
+                {t("sign_in")}
               </Link>
             </p>
           </form>

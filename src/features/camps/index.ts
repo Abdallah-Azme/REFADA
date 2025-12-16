@@ -20,7 +20,7 @@ export type {
   CreateCampDto,
   Project,
 } from "./types/camp.schema";
-export { CampStatus, campSchema } from "./types/camp.schema";
+export { CampStatus, createCampSchema } from "./types/camp.schema";
 export type { CampTableColumn } from "./types/camp-table.types";
 
 // Data

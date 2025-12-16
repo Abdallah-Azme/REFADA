@@ -10,7 +10,8 @@ type ActionHandlers = {
 };
 
 export const createPendingDelegatesColumns = (
-  handlers: ActionHandlers
+  handlers: ActionHandlers,
+  t: any
 ): ColumnDef<PendingUser>[] => [
   {
     accessorKey: "name",
@@ -20,7 +21,7 @@ export const createPendingDelegatesColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          الاسم
+          {t("table.name")}
           <ArrowUpDown className="ms-2 h-4 w-4" />
         </Button>
       );
@@ -38,7 +39,7 @@ export const createPendingDelegatesColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          الدور
+          {t("table.role")}
           <ArrowUpDown className="ms-2 h-4 w-4" />
         </Button>
       );
@@ -49,9 +50,9 @@ export const createPendingDelegatesColumns = (
         <div className="text-center">
           <Badge variant="outline">
             {role === "delegate"
-              ? "مندوب"
+              ? t("table.roles.delegate")
               : role === "contributor"
-              ? "مساهم"
+              ? t("table.roles.contributor")
               : role}
           </Badge>
         </div>
@@ -67,7 +68,7 @@ export const createPendingDelegatesColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          البريد الإلكتروني
+          {t("table.email")}
           <ArrowUpDown className="ms-2 h-4 w-4" />
         </Button>
       );
@@ -77,13 +78,17 @@ export const createPendingDelegatesColumns = (
 
   {
     accessorKey: "phone",
-    header: () => <div className="text-center font-semibold">رقم الهاتف</div>,
+    header: () => (
+      <div className="text-center font-semibold">{t("table.phone")}</div>
+    ),
     cell: ({ row }) => <div className="text-center">{row.original.phone}</div>,
   },
 
   {
     accessorKey: "campName",
-    header: () => <div className="text-center font-semibold">اسم المخيم</div>,
+    header: () => (
+      <div className="text-center font-semibold">{t("table.camp_name")}</div>
+    ),
     cell: ({ row }) => (
       <div className="text-center">{row.original.campName || "-"}</div>
     ),
@@ -91,7 +96,9 @@ export const createPendingDelegatesColumns = (
 
   {
     accessorKey: "idNumber",
-    header: () => <div className="text-center font-semibold">رقم الهوية</div>,
+    header: () => (
+      <div className="text-center font-semibold">{t("table.id_number")}</div>
+    ),
     cell: ({ row }) => (
       <div className="text-center">{row.original.idNumber}</div>
     ),
@@ -99,7 +106,11 @@ export const createPendingDelegatesColumns = (
 
   {
     accessorKey: "licenseNumber",
-    header: () => <div className="text-center font-semibold">رقم الترخيص</div>,
+    header: () => (
+      <div className="text-center font-semibold">
+        {t("table.license_number")}
+      </div>
+    ),
     cell: ({ row }) => (
       <div className="text-center">{row.original.licenseNumber || "-"}</div>
     ),
@@ -113,7 +124,7 @@ export const createPendingDelegatesColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          الحالة
+          {t("table.status")}
           <ArrowUpDown className="ms-2 h-4 w-4" />
         </Button>
       );
@@ -133,10 +144,10 @@ export const createPendingDelegatesColumns = (
             }
           >
             {status === "approved"
-              ? "مقبول"
+              ? t("table.status_labels.approved")
               : status === "pending"
-              ? "قيد الانتظار"
-              : "مرفوض"}
+              ? t("table.status_labels.pending")
+              : t("table.status_labels.rejected")}
           </Badge>
         </div>
       );
@@ -151,7 +162,7 @@ export const createPendingDelegatesColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          تاريخ التسجيل
+          {t("table.created_at")}
           <ArrowUpDown className="ms-2 h-4 w-4" />
         </Button>
       );
@@ -166,7 +177,9 @@ export const createPendingDelegatesColumns = (
 
   {
     id: "actions",
-    header: () => <div className="text-center font-semibold">الإجراءات</div>,
+    header: () => (
+      <div className="text-center font-semibold">{t("table.actions")}</div>
+    ),
     cell: ({ row }) => {
       const user = row.original;
       const isPending = user.status === "pending";
@@ -180,20 +193,20 @@ export const createPendingDelegatesColumns = (
             size="sm"
             className="h-8 gap-1 bg-green-50 text-green-600 hover:bg-green-100 hover:text-green-700"
             onClick={() => handlers.onApprove(user)}
-            title="قبول"
+            title={t("table.actions_labels.approve")}
           >
             <Check className="h-4 w-4" />
-            قبول
+            {t("table.actions_labels.approve")}
           </Button>
           <Button
             variant="ghost"
             size="sm"
             className="h-8 gap-1 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
             onClick={() => handlers.onReject(user)}
-            title="رفض"
+            title={t("table.actions_labels.reject")}
           >
             <X className="h-4 w-4" />
-            رفض
+            {t("table.actions_labels.reject")}
           </Button>
         </div>
       );

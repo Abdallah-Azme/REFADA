@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
   Table,
   TableBody,
@@ -35,6 +36,7 @@ import { CampFormDialog } from "@/features/camps/components/camp-form-dialog";
 import { Dialog } from "@/components/ui/dialog";
 
 export default function AdminPendingUsersTable() {
+  const t = useTranslations();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -125,10 +127,13 @@ export default function AdminPendingUsersTable() {
 
   const table = useReactTable<PendingUser>({
     data,
-    columns: createPendingDelegatesColumns({
-      onApprove: handleApprove,
-      onReject: handleReject,
-    }),
+    columns: createPendingDelegatesColumns(
+      {
+        onApprove: handleApprove,
+        onReject: handleReject,
+      },
+      t
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -203,10 +208,13 @@ export default function AdminPendingUsersTable() {
               <TableRow>
                 <TableCell
                   colSpan={
-                    createPendingDelegatesColumns({
-                      onApprove: handleApprove,
-                      onReject: handleReject,
-                    }).length
+                    createPendingDelegatesColumns(
+                      {
+                        onApprove: handleApprove,
+                        onReject: handleReject,
+                      },
+                      t
+                    ).length
                   }
                   className="h-24 text-center"
                 >

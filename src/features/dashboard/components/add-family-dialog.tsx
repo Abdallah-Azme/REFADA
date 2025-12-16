@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import React, { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -44,6 +46,7 @@ import { useCreateFamily } from "@/features/families/hooks/use-create-family";
 import { useCamps } from "@/features/camps";
 
 export default function AddFamilyDialog() {
+  const t = useTranslations("families");
   const [file, setFile] = useState<File | null>(null);
   const [open, setOpen] = useState(false);
   const { mutate: createFamily, isPending } = useCreateFamily();
@@ -51,11 +54,6 @@ export default function AddFamilyDialog() {
   // Load camps for the select
   const { data: campsData } = useCamps();
   const camps = campsData?.data || [];
-
-  // NOTE: Marital status options are hardcoded for now or should be fetched?
-  // Based on Postman `marital_status_id=2`, I will ideally need a hook for this.
-  // For now I'll use a hardcoded helper or just hardcode IDs in SelectItems if known.
-  // Or better, fetch them. But for speed as per "do it", let's assume standard options.
 
   const form = useForm<z.infer<typeof familySchema>>({
     resolver: zodResolver(familySchema),
@@ -77,8 +75,6 @@ export default function AddFamilyDialog() {
   const onError = (errors: any) => console.log("❌ FORM ERRORS:", errors);
 
   const onSubmit = (values: z.infer<typeof familySchema>) => {
-    // values already match FamilyFormValues structure (camelCase)
-    // pass file if exists
     const payload = {
       ...values,
       file: file,
@@ -98,7 +94,7 @@ export default function AddFamilyDialog() {
       {/* TRIGGER BUTTON */}
       <DialogTrigger asChild>
         <Button className="bg-[#1F423B] text-white px-6 py-2 rounded-xl flex items-center gap-2 text-sm font-medium h-11">
-          إضافة عائلة <PlusCircle className="w-4 h-4" />
+          {t("add_family")} <PlusCircle className="w-4 h-4" />
         </Button>
       </DialogTrigger>
 
@@ -108,7 +104,7 @@ export default function AddFamilyDialog() {
         <div className="flex justify-between items-center px-6 py-4 border-b">
           <DialogTitle className="text-xl font-semibold flex gap-1 items-center">
             <Users className="mx-1 text-primary" />
-            إضافة عائلة
+            {t("add_family")}
           </DialogTitle>
         </div>
 
@@ -130,7 +126,7 @@ export default function AddFamilyDialog() {
                       <FormControl>
                         <Input
                           className="bg-white"
-                          placeholder="اسم العائلة"
+                          placeholder={t("family_name")}
                           {...field}
                         />
                       </FormControl>
@@ -148,7 +144,7 @@ export default function AddFamilyDialog() {
                       <FormControl>
                         <Input
                           className="bg-white"
-                          placeholder="رقم الهوية"
+                          placeholder={t("national_id")}
                           {...field}
                         />
                       </FormControl>
@@ -168,7 +164,7 @@ export default function AddFamilyDialog() {
                         <Input
                           type="text"
                           className="bg-white"
-                          placeholder="تاريخ الميلاد (YYYY-MM-DD)"
+                          placeholder={t("dob_placeholder")}
                           {...field}
                           value={field.value || ""}
                         />
@@ -187,7 +183,7 @@ export default function AddFamilyDialog() {
                       <FormControl>
                         <Input
                           className="bg-white"
-                          placeholder="رقم الهاتف"
+                          placeholder={t("phone")}
                           {...field}
                         />
                       </FormControl>
@@ -205,7 +201,7 @@ export default function AddFamilyDialog() {
                       <FormControl>
                         <Input
                           className="bg-white"
-                          placeholder="رقم الهاتف الثانوي"
+                          placeholder={t("backup_phone")}
                           {...field}
                           value={field.value || ""}
                         />
@@ -228,15 +224,22 @@ export default function AddFamilyDialog() {
                         >
                           <SelectTrigger className="w-full bg-white">
                             {field.value
-                              ? `الحالة: ${field.value}`
-                              : "الحالة الاجتماعية"}
+                              ? `${t("status_prefix")} ${field.value}`
+                              : t("marital_status")}
                           </SelectTrigger>
                           <SelectContent>
-                            {/* Mocking IDs based on typical DBs, or user can fix if they have lookup */}
-                            <SelectItem value="1">أعزب/عزباء</SelectItem>
-                            <SelectItem value="2">متزوج/متزوجة</SelectItem>
-                            <SelectItem value="3">مطلق/مطلقة</SelectItem>
-                            <SelectItem value="4">أرمل/أرملة</SelectItem>
+                            <SelectItem value="1">
+                              {t("status_single")}
+                            </SelectItem>
+                            <SelectItem value="2">
+                              {t("status_married")}
+                            </SelectItem>
+                            <SelectItem value="3">
+                              {t("status_divorced")}
+                            </SelectItem>
+                            <SelectItem value="4">
+                              {t("status_widowed")}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -260,8 +263,8 @@ export default function AddFamilyDialog() {
                             {field.value
                               ? camps.find(
                                   (c) => c.id.toString() === field.value
-                                )?.name || "المخيم"
-                              : "المخيم"}
+                                )?.name || t("camp_placeholder")
+                              : t("camp_placeholder")}
                           </SelectTrigger>
                           <SelectContent>
                             {camps.map((camp) => (
@@ -290,7 +293,7 @@ export default function AddFamilyDialog() {
                         <Input
                           type="number"
                           className="bg-white"
-                          placeholder="عدد الأفراد"
+                          placeholder={t("members_count")}
                           {...field}
                           onChange={(e) =>
                             field.onChange(parseInt(e.target.value))
@@ -315,7 +318,7 @@ export default function AddFamilyDialog() {
                       <FormControl>
                         <Input
                           className="bg-white"
-                          placeholder="رقم الخيمة"
+                          placeholder={t("tent_number")}
                           {...field}
                           value={field.value || ""}
                         />
@@ -334,7 +337,7 @@ export default function AddFamilyDialog() {
                       <FormControl>
                         <Input
                           className="bg-white"
-                          placeholder="الموقع"
+                          placeholder={t("location")}
                           {...field}
                           value={field.value || ""}
                         />
@@ -353,7 +356,7 @@ export default function AddFamilyDialog() {
                       <FormControl>
                         <Textarea
                           className="bg-white"
-                          placeholder="ملاحظات..."
+                          placeholder={t("notes")}
                           {...field}
                           value={field.value || ""}
                         />
@@ -366,9 +369,7 @@ export default function AddFamilyDialog() {
 
               {/* FILE UPLOAD */}
               <div className="bg-[#F4F4F4] p-4 rounded-xl flex flex-col items-start gap-3">
-                <p className="text-sm font-medium ml-4">
-                  ملفات مرفقة (صورة، تقرير)
-                </p>
+                <p className="text-sm font-medium ml-4">{t("attachments")}</p>
                 <div className="flex items-center gap-3 w-full">
                   {!file ? (
                     <Input
@@ -405,7 +406,7 @@ export default function AddFamilyDialog() {
                   className="w-full sm:w-auto bg-primary min-w-[172px] text-white px-8 rounded-xl"
                 >
                   <CirclePlus className="mr-2 h-4 w-4" />
-                  {isPending ? "جاري الإضافة..." : "إضافة عائلة"}
+                  {isPending ? t("adding") : t("add_family")}
                 </Button>
 
                 <DialogClose asChild>
@@ -413,7 +414,7 @@ export default function AddFamilyDialog() {
                     type="button"
                     className="w-full sm:w-auto bg-secondary min-w-[172px] text-black px-8 rounded-xl"
                   >
-                    إلغاء
+                    {t("cancel")}
                   </Button>
                 </DialogClose>
               </div>

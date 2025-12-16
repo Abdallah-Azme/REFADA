@@ -37,7 +37,7 @@ const formSchema = z.object({
   name: z.string().min(2, { message: "nameRequired" }),
   phone: z.string().min(8, { message: "phoneRequired" }),
   email: z.string().email({ message: "invalidEmail" }),
-  category: z.string().min(1, { message: "categoryRequired" }),
+  // category: z.string().min(1, { message: "categoryRequired" }),
   subject: z.string().min(2, { message: "subjectRequired" }),
   message: z.string().min(5, { message: "messageRequired" }),
 });
@@ -53,7 +53,7 @@ export default function ContactSection() {
       name: "",
       phone: "",
       email: "",
-      category: "",
+      // category: "",
       subject: "",
       message: "",
     },
@@ -171,25 +171,25 @@ export default function ContactSection() {
                 </div>
 
                 {/* Email + Category */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            className="h-[50px] bg-[#EEEADD]"
-                            placeholder={t("emailPlaceholder")}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          className="h-[50px] bg-[#EEEADD]"
+                          placeholder={t("emailPlaceholder")}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <FormField
+                {/* <FormField
                     control={form.control}
                     name="category"
                     render={({ field }) => (
@@ -220,8 +220,8 @@ export default function ContactSection() {
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
-                </div>
+                  /> */}
+                {/* </div> */}
 
                 {/* Subject */}
                 <FormField

@@ -10,43 +10,45 @@ export const loginSchema = z.object({
 });
 
 // Registration schema with conditional validation
-export const registerSchema = z
-  .object({
-    name: z.string().min(1, "الاسم مطلوب"),
-    email: z.string().email("البريد الإلكتروني غير صحيح"),
-    password: z.string().min(8, "كلمة المرور يجب أن تكون 8 أحرف على الأقل"),
-    password_confirmation: z.string(),
-    id_number: z.string().min(1, "رقم الهوية مطلوب"),
-    phone: z.string().min(1, "رقم الهاتف مطلوب"),
-    backup_phone: z.string().optional(),
-    role: z.enum(["delegate", "contributor"], {
-      required_error: "يرجى اختيار نوع الحساب",
-    }),
-    // Optional fields for delegate
-    admin_position: z.string().optional(),
-    license_number: z.string().optional(),
-    accept_terms: z.boolean().refine((val) => val === true, {
-      message: "يجب الموافقة على الشروط والأحكام",
-    }),
-    camp_name: z.string().optional(),
-  })
-  .refine((data) => data.password === data.password_confirmation, {
-    message: "كلمات المرور غير متطابقة",
-    path: ["password_confirmation"],
-  })
-  .refine(
-    (data) => {
-      // If role is delegate, admin_position and license_number are required
-      if (data.role === "delegate") {
-        return !!data.camp_name;
+// Registration schema with conditional validation
+export const createRegisterSchema = (t: (key: string) => string) =>
+  z
+    .object({
+      name: z.string().min(1, t("validation.name_required")),
+      email: z.string().email(t("validation.invalid_email")),
+      password: z.string().min(8, t("validation.password_min_length_8")),
+      password_confirmation: z.string(),
+      id_number: z.string().min(1, t("validation.id_required")),
+      phone: z.string().min(1, t("validation.phone_required")),
+      backup_phone: z.string().optional(),
+      role: z.enum(["delegate", "contributor"], {
+        required_error: t("validation.select_role"),
+      }),
+      // Optional fields for delegate
+      admin_position: z.string().optional(),
+      license_number: z.string().optional(),
+      accept_terms: z.boolean().refine((val) => val === true, {
+        message: t("validation.terms_required"),
+      }),
+      camp_name: z.string().optional(),
+    })
+    .refine((data) => data.password === data.password_confirmation, {
+      message: t("validation.password_mismatch"),
+      path: ["password_confirmation"],
+    })
+    .refine(
+      (data) => {
+        // If role is delegate, admin_position and license_number are required
+        if (data.role === "delegate") {
+          return !!data.camp_name;
+        }
+        return true;
+      },
+      {
+        message: t("validation.camp_name_required"),
+        path: ["camp_name"],
       }
-      return true;
-    },
-    {
-      message: "اسم المخيم مطلوب للمندوب",
-      path: ["camp_name"],
-    }
-  );
+    );
 
 export const forgotPasswordSchema = z.object({
   email: z.string().email("البريد الإلكتروني غير صحيح"),
@@ -73,7 +75,9 @@ export const resetPasswordSchema = z
 // ============================================
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
-export type RegisterFormValues = z.infer<typeof registerSchema>;
+export type RegisterFormValues = z.infer<
+  ReturnType<typeof createRegisterSchema>
+>;
 export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 export type VerifyResetCodeFormValues = z.infer<typeof verifyResetCodeSchema>;
 export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;

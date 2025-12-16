@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -41,6 +43,7 @@ export function CampFormDialog({
   onCancel,
   role = "representative",
 }: CampFormDialogProps) {
+  const t = useTranslations("camps");
   const { form } = useCampForm(initialData);
   const { data: governorates } = useGovernorates();
 
@@ -52,7 +55,7 @@ export function CampFormDialog({
     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
-          {initialData ? "تعديل الإيواء" : "إضافة إيواء جديد"}
+          {initialData ? t("edit_camp") : t("add_camp")}
         </DialogTitle>
       </DialogHeader>
       <Form {...form}>
@@ -65,13 +68,13 @@ export function CampFormDialog({
             name="camp_img"
             render={({ field: { value, onChange, ...fieldProps } }) => (
               <FormItem>
-                <FormLabel>صورة المخيم</FormLabel>
+                <FormLabel>{t("camp_img")}</FormLabel>
                 <FormControl>
                   <ImageUpload
                     value={value}
                     onChange={(file) => onChange(file)}
                     onRemove={() => onChange(undefined)}
-                    placeholder="اضغط لرفع صورة"
+                    placeholder={t("upload_placeholder")}
                   />
                 </FormControl>
                 <FormMessage />
@@ -84,9 +87,9 @@ export function CampFormDialog({
               name="name_ar"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>الاسم (بالعربية)</FormLabel>
+                  <FormLabel>{t("camp_name_ar")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="أدخل الاسم بالعربية" {...field} />
+                    <Input placeholder={t("name_ar_placeholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -97,9 +100,9 @@ export function CampFormDialog({
               name="name_en"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>الاسم (باللغة الإنجليزية)</FormLabel>
+                  <FormLabel>{t("camp_name_en")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter name in English" {...field} />
+                    <Input placeholder={t("name_en_placeholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -112,14 +115,14 @@ export function CampFormDialog({
             name="governorate_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>المحافظة</FormLabel>
+                <FormLabel>{t("governorate")}</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="اختر المحافظة" />
+                      <SelectValue placeholder={t("select_governorate")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -140,9 +143,9 @@ export function CampFormDialog({
             name="location"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>الموقع</FormLabel>
+                <FormLabel>{t("location")}</FormLabel>
                 <FormControl>
-                  <Input placeholder="أدخل موقع الإيواء" {...field} />
+                  <Input placeholder={t("location_placeholder")} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -155,10 +158,10 @@ export function CampFormDialog({
               name="description_ar"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>الوصف (بالعربية)</FormLabel>
+                  <FormLabel>{t("description_ar")}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="أدخل الوصف بالعربية"
+                      placeholder={t("desc_ar_placeholder")}
                       className="min-h-[100px]"
                       {...field}
                     />
@@ -172,10 +175,10 @@ export function CampFormDialog({
               name="description_en"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>الوصف (باللغة الإنجليزية)</FormLabel>
+                  <FormLabel>{t("description_en")}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Enter description in English"
+                      placeholder={t("desc_en_placeholder")}
                       className="min-h-[100px]"
                       {...field}
                     />
@@ -194,7 +197,7 @@ export function CampFormDialog({
                   name="capacity"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>السعة الكلية</FormLabel>
+                      <FormLabel>{t("capacity")}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -215,7 +218,7 @@ export function CampFormDialog({
                   name="currentOccupancy"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>الإشغال الحالي</FormLabel>
+                      <FormLabel>{t("current_occupancy")}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -238,7 +241,7 @@ export function CampFormDialog({
                   name="coordinates.lat"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>خط العرض (Latitude)</FormLabel>
+                      <FormLabel>{t("latitude")}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -260,7 +263,7 @@ export function CampFormDialog({
                   name="coordinates.lng"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>خط الطول (Longitude)</FormLabel>
+                      <FormLabel>{t("longitude")}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -282,9 +285,9 @@ export function CampFormDialog({
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={onCancel}>
-              إلغاء
+              {t("cancel")}
             </Button>
-            <Button type="submit">حفظ</Button>
+            <Button type="submit">{t("save")}</Button>
           </div>
         </form>
       </Form>

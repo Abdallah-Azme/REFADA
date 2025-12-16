@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
   Table,
   TableBody,
@@ -28,6 +29,7 @@ import { PendingUser } from "@/features/representatives/types/pending-users.sche
 import { Loader2 } from "lucide-react";
 
 export default function AdminRepresentativesTable() {
+  const t = useTranslations();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -49,10 +51,13 @@ export default function AdminRepresentativesTable() {
 
   const table = useReactTable<PendingUser>({
     data,
-    columns: createPendingDelegatesColumns({
-      onApprove: () => {}, // No-op, actions hidden for approved users
-      onReject: () => {}, // No-op
-    }),
+    columns: createPendingDelegatesColumns(
+      {
+        onApprove: () => {}, // No-op, actions hidden for approved users
+        onReject: () => {}, // No-op
+      },
+      t
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -127,10 +132,13 @@ export default function AdminRepresentativesTable() {
               <TableRow>
                 <TableCell
                   colSpan={
-                    createPendingDelegatesColumns({
-                      onApprove: () => {},
-                      onReject: () => {},
-                    }).length
+                    createPendingDelegatesColumns(
+                      {
+                        onApprove: () => {},
+                        onReject: () => {},
+                      },
+                      t
+                    ).length
                   }
                   className="h-24 text-center"
                 >

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -41,14 +42,17 @@ import {
 import { useCamps } from "@/features/camps";
 
 // Schema matching the API requirements
-const projectFormSchema = z.object({
-  name: z.string().min(1, "اسم المشروع مطلوب"),
-  type: z.string().min(1, "النوع مطلوب"),
-  beneficiary_count: z.string().min(1, "عدد المستفيدين مطلوب"),
-  college: z.string().min(1, "الكلية مطلوبة"),
-  notes: z.string().optional(),
-  camp_id: z.string().min(1, "المخيم مطلوب"),
-});
+const createProjectFormSchema = (t: any) =>
+  z.object({
+    name: z.string().min(1, t("validation.name_required")),
+    type: z.string().min(1, t("validation.type_required")),
+    beneficiary_count: z
+      .string()
+      .min(1, t("validation.beneficiary_count_required")),
+    college: z.string().min(1, t("validation.college_required")),
+    notes: z.string().optional(),
+    camp_id: z.string().min(1, t("validation.camp_required")),
+  });
 
 interface ProjectFormDialogProps {
   project?: Project;
@@ -63,6 +67,7 @@ export default function ProjectFormDialog({
   onOpenChange: setControlledOpen,
   trigger,
 }: ProjectFormDialogProps) {
+  const t = useTranslations("projects");
   const [file, setFile] = useState<File | null>(null);
   const [internalOpen, setInternalOpen] = useState(false);
 
@@ -76,6 +81,7 @@ export default function ProjectFormDialog({
   const camps = campsData?.data || [];
 
   const isEdit = !!project;
+  const projectFormSchema = createProjectFormSchema(t);
 
   const form = useForm<z.infer<typeof projectFormSchema>>({
     resolver: zodResolver(projectFormSchema),
@@ -164,7 +170,7 @@ export default function ProjectFormDialog({
           trigger
         ) : (
           <Button className="bg-[#1F423B] text-white px-6 py-5! rounded-xl flex items-center gap-2">
-            إضافة مشروع <PlusCircle className="w-4 h-4" />
+            {t("add_project")} <PlusCircle className="w-4 h-4" />
           </Button>
         )}
       </DialogTrigger>
@@ -173,7 +179,7 @@ export default function ProjectFormDialog({
         <div className="flex justify-between items-center px-6 py-4 border-b">
           <DialogTitle className="font-bold text-[#1E1E1E] text-lg flex items-center gap-2">
             <SquareKanban className="text-primary" />
-            {isEdit ? "تعديل مشروع" : "إضافة مشروع"}
+            {isEdit ? t("edit_project") : t("add_project")}
           </DialogTitle>
         </div>
 
@@ -189,7 +195,7 @@ export default function ProjectFormDialog({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl className="bg-white">
-                        <Input placeholder="اسم المشروع" {...field} />
+                        <Input placeholder={t("project_name")} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -208,12 +214,18 @@ export default function ProjectFormDialog({
                           defaultValue={field.value}
                         >
                           <SelectTrigger className="w-full bg-white">
-                            {field.value || "النوع"}
+                            {field.value || t("type")}
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="male">ذكور</SelectItem>
-                            <SelectItem value="female">إناث</SelectItem>
-                            <SelectItem value="bebficia">مستفيدين</SelectItem>
+                            <SelectItem value="male">
+                              {t("type_male")}
+                            </SelectItem>
+                            <SelectItem value="female">
+                              {t("type_female")}
+                            </SelectItem>
+                            <SelectItem value="bebficia">
+                              {t("type_beneficiary")}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -231,7 +243,7 @@ export default function ProjectFormDialog({
                       <FormControl className="bg-white">
                         <Input
                           type="number"
-                          placeholder="عدد المستفيدين"
+                          placeholder={t("beneficiary_count")}
                           {...field}
                         />
                       </FormControl>
@@ -247,7 +259,11 @@ export default function ProjectFormDialog({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl className="bg-white">
-                        <Input type="number" placeholder="الكلية" {...field} />
+                        <Input
+                          type="number"
+                          placeholder={t("college")}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -269,8 +285,8 @@ export default function ProjectFormDialog({
                             {field.value
                               ? camps.find(
                                   (c) => c.id.toString() === field.value
-                                )?.name || "اختر المخيم"
-                              : "اختر المخيم"}
+                                )?.name || t("select_camp")
+                              : t("select_camp")}
                           </SelectTrigger>
                           <SelectContent>
                             {camps.map((camp) => (
@@ -326,7 +342,7 @@ export default function ProjectFormDialog({
                         className="size-6 transition-all object-cover"
                       />
                       <span className="text-xs text-gray-600 px-4 whitespace-nowrap">
-                        {isEdit ? "تغيير الصورة" : "إضافة صورة"}
+                        {isEdit ? t("change_image") : t("add_image")}
                       </span>
                     </div>
 
@@ -337,7 +353,7 @@ export default function ProjectFormDialog({
                       type="button"
                       className="h-full px-6 rounded-none text-gray-700 bg-[#f7f7f7] font-medium"
                     >
-                      تحميل
+                      {t("upload")}
                     </Button>
                   </div>
 
@@ -367,7 +383,7 @@ export default function ProjectFormDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormControl className="bg-white">
-                      <Textarea placeholder="ملاحظات (اختياري)..." {...field} />
+                      <Textarea placeholder={t("notes")} {...field} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -383,12 +399,12 @@ export default function ProjectFormDialog({
                   {isLoading ? (
                     <>
                       <Loader2 className="h-4 w-4 ml-2 animate-spin" />
-                      {isEdit ? "جاري التحديث..." : "جاري الإضافة..."}
+                      {isEdit ? t("updating") : t("adding")}
                     </>
                   ) : isEdit ? (
-                    "تحديث المشروع"
+                    t("update_btn")
                   ) : (
-                    "إضافة المشروع"
+                    t("add_btn")
                   )}
                 </Button>
 
@@ -397,7 +413,7 @@ export default function ProjectFormDialog({
                     type="button"
                     className="bg-secondary text-black min-w-[160px]"
                   >
-                    إلغاء
+                    {t("cancel")}
                   </Button>
                 </DialogClose>
               </div>

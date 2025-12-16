@@ -16,7 +16,7 @@ export type {
 
 export {
   loginSchema,
-  registerSchema,
+  createRegisterSchema,
   forgotPasswordSchema,
   verifyResetCodeSchema,
   resetPasswordSchema,

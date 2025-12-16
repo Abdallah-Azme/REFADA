@@ -4,16 +4,15 @@ import ImageDecorations from "@/components/image-decorations";
 import CampsMapSection from "@/components/pages/home/camps-map-section";
 import { Breadcrumb } from "@/components/shared/breadcrumb";
 import ImageFallback from "@/components/shared/image-fallback";
-import { Button } from "@/components/ui/button";
 import ProjectsSection from "@/features/campaign/components/projects-section";
 import CampDetailsSection from "@/features/camps/components/camp-details-section";
-import { cn } from "@/lib/utils";
 import CampStats from "@/features/camps/components/camp-stats";
+import { useCampDetails } from "@/features/camps/hooks/use-camps";
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Info, SquareKanban } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useCampDetails } from "@/features/camps/hooks/use-camps";
 
 export default function Page() {
   const t = useTranslations();
@@ -21,6 +20,7 @@ export default function Page() {
   const campSlug = params?.campId as string;
   const { data: campData, isLoading } = useCampDetails(campSlug || null);
 
+  console.log({ campData });
   const camp = campData?.data;
   const projects = camp?.projects || [];
 
@@ -41,7 +41,7 @@ export default function Page() {
         <Breadcrumb
           items={[
             { name: t("home"), href: "/" },
-            { name: t("camps"), href: "/camps" },
+            { name: t("camps_nav"), href: "/camps" },
             { name: camp?.name || t("gablyaCamp"), href: "#" },
           ]}
         />
@@ -71,7 +71,7 @@ export default function Page() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 items-stretch">
           <CampDetailsSection description={camp?.description} />
 
-          {position && <CampsMapSection secondary camps={camp ? [camp] : []} />}
+          {<CampsMapSection secondary camps={camp ? [camp] : []} />}
 
           <CampStats
             familyCount={camp?.familyCount || 0}

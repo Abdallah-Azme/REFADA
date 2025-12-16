@@ -14,6 +14,8 @@ import { campsApi } from "@/features/camps/api/camp.api";
 import { partnerApi } from "@/features/partners/api/partner.api";
 import { testimonialApi } from "@/features/testimonials/api/testimonial.api";
 import { HomePageData } from "@/features/home-control/types/hero.schema";
+import AddFamilyDialog from "@/src/features/dashboard/components/add-family-dialog";
+import { FamilyFormDialog } from "@/src/features/families/components/family-form-dialog";
 
 async function getHomePageData(): Promise<HomePageData> {
   try {

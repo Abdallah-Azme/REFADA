@@ -1,37 +1,38 @@
 import { z } from "zod";
 
-export const campSchema = z
-  .object({
-    name_ar: z.string().min(1, "الاسم بالعربية مطلوب"),
-    name_en: z.string().min(1, "الاسم بالإنجليزية مطلوب"),
-    location: z.string().min(1, "الموقع مطلوب"),
-    description_ar: z.string().optional(),
-    description_en: z.string().optional(),
-    capacity: z.number().min(0, "السعة يجب أن تكون 0 أو أكبر").default(0),
-    currentOccupancy: z.number().min(0).default(0),
-    coordinates: z.object({
-      lat: z.number().default(0),
-      lng: z.number().default(0),
-    }),
-    governorate_id: z.string().min(1, "المحافظة مطلوبة"), // Using string for select value usually, or coerce number
-    camp_img: z
-      .any()
-      .refine(
-        (val) =>
-          !val ||
-          val instanceof File ||
-          typeof val === "string" ||
-          val === undefined,
-        "صورة المخيم يجب أن تكون ملف أو رابط صحيح"
-      )
-      .optional(),
-  })
-  .refine((data) => data.currentOccupancy <= data.capacity, {
-    message: "الإشغال الحالي لا يمكن أن يكون أكبر من السعة الكلية",
-    path: ["currentOccupancy"],
-  });
+export const createCampSchema = (t: any) =>
+  z
+    .object({
+      name_ar: z.string().min(1, t("validation.name_ar_required")),
+      name_en: z.string().min(1, t("validation.name_en_required")),
+      location: z.string().min(1, t("validation.location_required")),
+      description_ar: z.string().optional(),
+      description_en: z.string().optional(),
+      capacity: z.number().min(0, t("validation.capacity_min")).default(0),
+      currentOccupancy: z.number().min(0).default(0),
+      coordinates: z.object({
+        lat: z.number().default(0),
+        lng: z.number().default(0),
+      }),
+      governorate_id: z.string().min(1, t("validation.governorate_required")),
+      camp_img: z
+        .any()
+        .refine(
+          (val) =>
+            !val ||
+            val instanceof File ||
+            typeof val === "string" ||
+            val === undefined,
+          t("validation.camp_img_invalid")
+        )
+        .optional(),
+    })
+    .refine((data) => data.currentOccupancy <= data.capacity, {
+      message: t("validation.occupancy_error"),
+      path: ["currentOccupancy"],
+    });
 
-export type CampFormValues = z.infer<typeof campSchema>;
+export type CampFormValues = z.infer<ReturnType<typeof createCampSchema>>;
 
 export interface Project {
   id: number;
