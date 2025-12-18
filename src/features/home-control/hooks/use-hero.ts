@@ -33,3 +33,18 @@ export function useUpdateHero() {
     },
   });
 }
+
+export function useDeleteSlide() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (slideId: number) => heroApi.deleteSlide(slideId),
+    onSuccess: (response) => {
+      toast.success(response.message || "تم حذف الشريحة بنجاح");
+      queryClient.invalidateQueries({ queryKey: ["home-hero"] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "حدث خطأ أثناء حذف الشريحة");
+    },
+  });
+}

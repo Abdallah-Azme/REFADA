@@ -152,16 +152,32 @@ export async function resetPasswordApi(
 
 /**
  * Refresh Token API
+ * Note: This uses a raw fetch (not apiRequest) because we may be calling this
+ * when the access token is expired, so we can't rely on the Authorization header.
  */
 export async function refreshTokenApi(
-  data: RefreshTokenRequest
+  refreshToken: string
 ): Promise<RefreshTokenResponse> {
-  const formData = toFormData(data);
+  const formData = new FormData();
+  formData.append("refresh_token", refreshToken);
 
-  return apiRequest<RefreshTokenResponse>("/auth/refresh-token", {
+  const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
     method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Accept-Language": "ar",
+    },
     body: formData,
+    credentials: "include",
   });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw data as ApiErrorResponse;
+  }
+
+  return data as RefreshTokenResponse;
 }
 
 /**

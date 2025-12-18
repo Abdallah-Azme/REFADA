@@ -1,9 +1,20 @@
 import { useProfile } from "@/features/auth/hooks/use-profile";
+import { useLogout } from "@/features/auth/hooks/use-logout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+} from "@/shared/ui/dropdown-menu";
+import { LogOut, User } from "lucide-react";
 
 export default function UserAvatar() {
   const { data: profile, isLoading } = useProfile();
+  const logout = useLogout();
 
   if (isLoading) {
     return (
@@ -17,15 +28,39 @@ export default function UserAvatar() {
   const user = profile?.data;
   const initial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
 
+  const handleLogout = () => {
+    logout.mutate();
+  };
+
   return (
-    <div className="flex items-center gap-2 cursor-pointer">
-      <Avatar>
-        <AvatarImage src={user?.profileImageUrl || ""} alt={user?.name} />
-        <AvatarFallback>{initial}</AvatarFallback>
-      </Avatar>
-      <span className="text-gray-800 font-medium text-sm hidden 2xl:block">
-        {user?.name || "المستخدم"}
-      </span>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <div className="flex items-center gap-2 cursor-pointer">
+          <Avatar>
+            <AvatarImage src={user?.profileImageUrl || ""} alt={user?.name} />
+            <AvatarFallback>{initial}</AvatarFallback>
+          </Avatar>
+          <span className="text-gray-800 font-medium text-sm hidden 2xl:block">
+            {user?.name || "المستخدم"}
+          </span>
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-48">
+        <DropdownMenuLabel className="flex items-center gap-2">
+          <User className="size-4" />
+          {user?.name || "المستخدم"}
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          variant="destructive"
+          onClick={handleLogout}
+          disabled={logout.isPending}
+          className="cursor-pointer"
+        >
+          <LogOut className="size-4" />
+          {logout.isPending ? "جاري الخروج..." : "تسجيل الخروج"}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

@@ -13,11 +13,20 @@ export function middleware(request: NextRequest) {
     const userRole = request.cookies.get("user_role")?.value;
 
     // A. Unauthenticated check
+    // If no access token, check for refresh token
+    // If refresh token exists, allow access - client-side will handle refresh
     if (!token) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/signin";
-      url.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(url);
+      const refreshToken = request.cookies.get("refresh_token")?.value;
+
+      if (!refreshToken) {
+        // No access token AND no refresh token - redirect to signin
+        const url = request.nextUrl.clone();
+        url.pathname = "/signin";
+        url.searchParams.set("redirect", pathname);
+        return NextResponse.redirect(url);
+      }
+      // Has refresh token - allow through, client will refresh
+      // Note: Role checks below may fail without userRole, but client will handle
     }
 
     // B. Role-based protection

@@ -98,6 +98,28 @@ export const authService = {
     return labels[role];
   },
 
+  // Token expiry tracking
+  storeTokenExpiry(expiresIn: number): void {
+    if (typeof window !== "undefined") {
+      const expiryTime = Date.now() + expiresIn * 1000;
+      localStorage.setItem("token_expiry", expiryTime.toString());
+    }
+  },
+
+  getTokenExpiry(): number | null {
+    if (typeof window !== "undefined") {
+      const expiry = localStorage.getItem("token_expiry");
+      return expiry ? parseInt(expiry, 10) : null;
+    }
+    return null;
+  },
+
+  isTokenExpiringSoon(thresholdSeconds: number = 300): boolean {
+    const expiry = this.getTokenExpiry();
+    if (!expiry) return true; // No expiry stored, assume expired
+    return Date.now() >= expiry - thresholdSeconds * 1000;
+  },
+
   // Logout
   logout(): void {
     this.removeToken();
@@ -106,6 +128,7 @@ export const authService = {
     if (typeof window !== "undefined") {
       localStorage.removeItem("reset_email");
       localStorage.removeItem("reset_token");
+      localStorage.removeItem("token_expiry");
     }
   },
 

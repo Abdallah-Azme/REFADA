@@ -33,7 +33,7 @@ export default function MainHeader({ settings }: MainHeaderProps) {
   const navItems = [
     { label: t("home"), href: "/" },
     { label: t("about"), href: "/aboutus" },
-    { label: t("camps"), href: "/camps" },
+    { label: t("camps_nav"), href: "/camps" },
     { label: t("feedback"), href: "/suggestions" },
     { label: t("stats"), href: "/stats" },
     { label: t("contact"), href: "/contactus" },

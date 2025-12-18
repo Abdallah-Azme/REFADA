@@ -194,8 +194,14 @@ export interface ResetPasswordResponse {
 
 export interface RefreshTokenResponse {
   success: boolean;
+  message: string;
   data: {
-    tokens: AuthTokens;
+    user: User;
+    accessToken: string;
+    refreshToken: string;
+    tokenType: "Bearer";
+    accessExpiresIn: number;
+    refreshExpiresIn: number;
   };
 }
 

@@ -20,7 +20,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/shared/ui/card";
-import { useHero, useUpdateHero } from "../hooks/use-hero";
+import { useHero, useUpdateHero, useDeleteSlide } from "../hooks/use-hero";
 import { heroSchema, HeroFormValues, HeroSlide } from "../types/hero.schema";
 import { useEffect, useState } from "react";
 import {
@@ -31,15 +31,37 @@ import {
   Edit,
   ArrowLeft,
   ArrowRight,
+  Trash2,
 } from "lucide-react";
 import MainHeader from "@/shared/components/main-header";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/shared/ui/alert-dialog";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 
 export default function HeroSettingsPage() {
   const { data: heroData, isLoading, error } = useHero();
   const updateMutation = useUpdateHero();
+  const deleteMutation = useDeleteSlide();
   const [selectedSlide, setSelectedSlide] = useState<HeroSlide | null>(null);
+  const [slideToDelete, setSlideToDelete] = useState<HeroSlide | null>(null);
+
+  const handleDeleteSlide = (slideId: number) => {
+    deleteMutation.mutate(slideId, {
+      onSuccess: () => {
+        setSlideToDelete(null);
+      },
+    });
+  };
 
   const form = useForm<HeroFormValues>({
     resolver: zodResolver(heroSchema),
@@ -181,14 +203,51 @@ export default function HeroSettingsPage() {
                     {slide.heroDescription?.ar || "بدون وصف"}
                   </p>
                 </div>
-                <Button
-                  onClick={() => setSelectedSlide(slide)}
-                  className="w-full"
-                  variant="outline"
-                >
-                  <Edit className="w-4 h-4 ml-2" />
-                  تعديل الشريحة
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => setSelectedSlide(slide)}
+                    className="flex-1"
+                    variant="outline"
+                  >
+                    <Edit className="w-4 h-4 ml-2" />
+                    تعديل
+                  </Button>
+                  <AlertDialog
+                    open={slideToDelete?.id === slide.id}
+                    onOpenChange={(open) => !open && setSlideToDelete(null)}
+                  >
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600"
+                        onClick={() => setSlideToDelete(slide)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          هل أنت متأكد من حذف هذه الشريحة؟ لا يمكن التراجع عن
+                          هذا الإجراء.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter className="gap-2">
+                        <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() =>
+                            slide.id && handleDeleteSlide(slide.id)
+                          }
+                          className="bg-red-500 hover:bg-red-600"
+                          disabled={deleteMutation.isPending}
+                        >
+                          {deleteMutation.isPending ? "جاري الحذف..." : "حذف"}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </CardContent>
             </Card>
           ))}

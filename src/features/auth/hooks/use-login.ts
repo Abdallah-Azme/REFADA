@@ -21,9 +21,10 @@ export function useLogin() {
         refreshExpiresIn: response.data.refreshExpiresIn,
       };
 
-      // Store tokens and user data
+      // Store tokens, user data, and token expiry
       authService.storeTokens(tokens);
       authService.storeUser(response.data.user);
+      authService.storeTokenExpiry(response.data.accessExpiresIn);
 
       // Show success message
       toast.success(response.message || "تم تسجيل الدخول بنجاح");

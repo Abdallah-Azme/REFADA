@@ -190,4 +190,15 @@ export const heroApi = {
       body: formData,
     });
   },
+
+  deleteSlide: async (
+    slideId: number
+  ): Promise<{ success: boolean; message: string }> => {
+    return apiRequest<{ success: boolean; message: string }>(
+      `/homepage/slides/${slideId}`,
+      {
+        method: "DELETE",
+      }
+    );
+  },
 };
