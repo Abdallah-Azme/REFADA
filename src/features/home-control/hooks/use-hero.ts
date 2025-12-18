@@ -48,3 +48,23 @@ export function useDeleteSlide() {
     },
   });
 }
+
+export function useUpdateAboutSection() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: {
+      title_ar: string;
+      title_en: string;
+      description_ar: string;
+      description_en: string;
+    }) => heroApi.updateAboutSection(data),
+    onSuccess: (response) => {
+      toast.success(response.message || "تم تحديث قسم من نحن بنجاح");
+      queryClient.invalidateQueries({ queryKey: ["home-hero"] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "حدث خطأ أثناء تحديث قسم من نحن");
+    },
+  });
+}

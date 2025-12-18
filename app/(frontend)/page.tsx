@@ -79,9 +79,13 @@ export default async function Home() {
           familiesCount={homePageData.familiesCount || 0}
           contributorsCount={homePageData.contributorsCount || 0}
           campsCount={homePageData.campsCount || 0}
+          ageGroupsCount={homePageData.ageGroupsCount}
         />
       </div>
-      <AboutSection />
+      <AboutSection
+        title={homePageData.title?.ar}
+        description={homePageData.description?.ar}
+      />
       <div className="-mt-20 z-10">
         <PolicySection />
         <PartnersSection partners={partners} />

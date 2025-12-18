@@ -155,7 +155,17 @@ export default function DashboardSidebar() {
     {
       label: "من نحن",
       icon: Users,
-      href: "/dashboard/admin/home-control/about",
+      href: "#",
+      children: [
+        {
+          label: "صفحة من نحن",
+          href: "/dashboard/admin/home-control/about",
+        },
+        {
+          label: "قسم من نحن (الرئيسية)",
+          href: "/dashboard/admin/home-control/about-section",
+        },
+      ],
     },
     // {
     //   label: "السياسات",

@@ -511,7 +511,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "11|zi4ccPY3p8Q772kmcWdRdKJbxWjBS5Dzg81D7Qcpdf7bb585",
+									"value": "112|fLWyfaz8sMxQnj7TRQ6Fyiv93IkRBChd7UO6B8w452b8503f",
 									"type": "string"
 								}
 							]
@@ -1191,7 +1191,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "101|KRzyLBQOAKKVVK8QvoAkn1FB8BNP9JqJNT4NzAfZ6c7545b9",
+									"value": "112|fLWyfaz8sMxQnj7TRQ6Fyiv93IkRBChd7UO6B8w452b8503f",
 									"type": "string"
 								}
 							]
@@ -2871,6 +2871,44 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "listProjects",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/list-projects",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"list-projects"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -3491,7 +3529,8 @@
 								{
 									"key": "favicon",
 									"type": "file",
-									"src": "postman-cloud:///1f0cae64-0098-4560-bdb5-0b2d8bc656c2"
+									"src": "postman-cloud:///1f0cae64-0098-4560-bdb5-0b2d8bc656c2",
+									"disabled": true
 								},
 								{
 									"key": "phone",
@@ -3657,8 +3696,9 @@
 							"formdata": [
 								{
 									"key": "slides[0][id]",
-									"value": "1",
-									"type": "text"
+									"value": "2",
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "slides[0][hero_title][en]",
@@ -3699,12 +3739,84 @@
 								{
 									"key": "slides[0][hero_image]",
 									"type": "file",
-									"src": "postman-cloud:///1f0cbc52-5713-4f60-b85c-393668a9208c"
+									"src": "postman-cloud:///1f0cbc52-5713-4f60-b85c-393668a9208c",
+									"disabled": true
 								},
 								{
 									"key": "slides[0][small_hero_image]",
 									"type": "file",
-									"src": "postman-cloud:///1f0cae64-0098-4560-bdb5-0b2d8bc656c2"
+									"src": "postman-cloud:///1f0cae64-0098-4560-bdb5-0b2d8bc656c2",
+									"disabled": true
+								},
+								{
+									"key": "title[ar]",
+									"value": "من نحن ؟",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "title[en]",
+									"value": "Who are we?",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description[en]",
+									"value": "We are a team striving to mend human hearts. We work from the heart of suffering, amidst the rubble, tears, and hope. We extend a helping hand and plant seeds of goodness in every corner of Palestine.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description[ar]",
+									"value": "نحن فريق يسعى لجبر الخواطر الإنسانية، نعمل من قلب المعاناة وسط الركام وأوات الدموع والأمل، نمد يد العون ونزرع بذور الخير في كل أروقة فلسطين.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "sections[0][id]",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "sections[0][title][en]",
+									"value": "section1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "sections[0][title][ar]",
+									"value": "section1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "sections[0][description][ar]",
+									"value": "section 1 descrption",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "sections[0][description][en]",
+									"value": "section 1 descrption",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "sections[0][image]",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/property.jpg",
+									"disabled": true
+								},
+								{
+									"key": "complaint_image",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg"
+								},
+								{
+									"key": "contact_image",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg"
 								}
 							]
 						},
@@ -3716,6 +3828,131 @@
 							"path": [
 								"homepage",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createSlide",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "hero_title[en]",
+									"value": "With your donation, you can alleviate the suffering of the people of Gaza and spread hope in the hearts of those in need of support and resilience 💚",
+									"type": "text"
+								},
+								{
+									"key": "hero_title[ar]",
+									"value": "بتبرعك تقدر تخفف معاناة أهل غزةوتنشر الأمل في قلوب محتاجة للدعم والصمود 💚",
+									"type": "text"
+								},
+								{
+									"key": "hero_description[en]",
+									"value": "We work on developing important projects that serve the community and contribute to building a better future. Through our partnerships with global organizations, we provide innovative and effective solutions.",
+									"type": "text"
+								},
+								{
+									"key": "hero_description[ar]",
+									"value": "نحن نعمل على تطوير مشاريع مهمة تخدم المجتمع وتساهم في بناء مستقبل أفضل. من خلال شراكاتنا مع منظمات عالمية، نقدم حلولاً مبتكرة وفعالة.",
+									"type": "text"
+								},
+								{
+									"key": "hero_subtitle[en]",
+									"value": "Our goal is to support those in need and nurture hope.",
+									"type": "text"
+								},
+								{
+									"key": "hero_subtitle[ar]",
+									"value": "هدفنا دعم المحتاجين وتنمية الأمل.",
+									"type": "text"
+								},
+								{
+									"key": "hero_image",
+									"type": "file",
+									"src": "postman-cloud:///1f0cbc52-5713-4f60-b85c-393668a9208c"
+								},
+								{
+									"key": "small_hero_image",
+									"type": "file",
+									"src": "postman-cloud:///1f0cae73-1b05-4060-aff0-ad2f7c92ec12"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/homepage/slides",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"homepage",
+								"slides"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteSlide",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/homepage/slides/:slide",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"homepage",
+								"slides",
+								":slide"
+							],
+							"variable": [
+								{
+									"key": "slide",
+									"value": "10"
+								}
 							]
 						}
 					},
@@ -4466,7 +4703,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "1|DxR8e19WSZxQbUtLvE10ntsfL98ddl7qUsNCFdky34eab5a9",
+									"value": "108|PzqFfVsaT0zP4t9KdQ4TOLT4nixoCyVg1IaNZT0l6ea85311",
 									"type": "string"
 								}
 							]
@@ -4708,7 +4945,18 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": "postman-cloud:///1f0cbc52-5713-4f60-b85c-393668a9208c"
+									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg",
+									"disabled": true
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/project1.pdf"
+								},
+								{
+									"key": "second_image",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg"
 								}
 							]
 						},

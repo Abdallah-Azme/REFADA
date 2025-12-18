@@ -32,10 +32,33 @@ export interface HeroSlide {
   smallHeroImage: string | null;
 }
 
+export interface AgeGroupsCount {
+  newborns: number;
+  infants: number;
+  veryEarlyChildhood: number;
+  toddlers: number;
+  earlyChildhood: number;
+  children: number;
+  adolescents: number;
+  youth: number;
+  youngAdults: number;
+  middleAgeAdults: number;
+  lateMiddleAge: number;
+  seniors: number;
+}
+
+export interface LocalizedText {
+  ar: string;
+  en: string;
+}
+
 export interface HomePageData {
   slides: HeroSlide[];
   campsCount: number;
   contributorsCount: number;
   projectsCount: number;
   familiesCount: number;
+  ageGroupsCount?: AgeGroupsCount;
+  title?: LocalizedText;
+  description?: LocalizedText;
 }

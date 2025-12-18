@@ -201,4 +201,22 @@ export const heroApi = {
       }
     );
   },
+
+  updateAboutSection: async (data: {
+    title_ar: string;
+    title_en: string;
+    description_ar: string;
+    description_en: string;
+  }): Promise<HeroResponse> => {
+    const formData = new FormData();
+    formData.append("title[ar]", data.title_ar);
+    formData.append("title[en]", data.title_en);
+    formData.append("description[ar]", data.description_ar);
+    formData.append("description[en]", data.description_en);
+
+    return apiRequest<HeroResponse>("/homepage/", {
+      method: "POST",
+      body: formData,
+    });
+  },
 };

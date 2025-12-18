@@ -5,7 +5,15 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function AboutSection() {
+interface AboutSectionProps {
+  title?: string;
+  description?: string;
+}
+
+export default function AboutSection({
+  title = "من نحن ؟",
+  description = "نحن فريق يسعى لجبر الخواطر الإنسانية، نعمل من قلب المعاناة وسط الركام وأوات الدموع والأمل، نمد يد العون ونزرع بذور الخير في كل أروقة فلسطين.",
+}: AboutSectionProps) {
   return (
     <section className="relative overflow-hidden min-h-[500px]">
       {/* Background image */}
@@ -25,7 +33,7 @@ export default function AboutSection() {
           viewport={{ once: true }}
           className="text-3xl md:text-4xl font-bold mb-6"
         >
-          من نحن ؟
+          {title}
         </motion.h2>
 
         <motion.p
@@ -34,8 +42,7 @@ export default function AboutSection() {
           transition={{ delay: 0.1 }}
           className="max-w-3xl mx-auto leading-loose text-lg mb-10"
         >
-          نحن فريق يسعى لجبر الخواطر الإنسانية، نعمل من قلب المعاناة وسط الركام
-          وأوات الدموع والأمل، نمد يد العون ونزرع بذور الخير في كل أروقة فلسطين.
+          {description}
         </motion.p>
 
         <motion.div
