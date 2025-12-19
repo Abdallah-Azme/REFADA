@@ -73,14 +73,35 @@ export const settingsApi = {
 
     // Files
     if (data.siteLogo instanceof File) {
+      console.log(
+        "Appending siteLogo file:",
+        data.siteLogo.name,
+        data.siteLogo.size
+      );
       formData.append("site_logo", data.siteLogo);
+    } else {
+      console.log("siteLogo is not a File:", data.siteLogo);
     }
+
     if (data.favicon instanceof File) {
+      console.log(
+        "Appending favicon file:",
+        data.favicon.name,
+        data.favicon.size
+      );
       formData.append("favicon", data.favicon);
+    } else {
+      console.log("favicon is not a File:", data.favicon);
     }
 
     // Add _method for Laravel PUT/PATCH
     formData.append("_method", "POST");
+
+    // Log FormData entries
+    console.log("FormData entries:");
+    for (const [key, value] of formData.entries()) {
+      console.log(`  ${key}:`, value);
+    }
 
     const response = await fetch(`${API_BASE_URL}/settings`, {
       method: "POST",
@@ -97,6 +118,7 @@ export const settingsApi = {
     });
 
     const resData = await response.json();
+    console.log("Settings API response:", response.status, resData);
 
     if (!response.ok) {
       throw { ...resData, status: response.status };

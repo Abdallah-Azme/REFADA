@@ -14,10 +14,18 @@ export function useUpdateWebsiteSettings() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: WebsiteSettingsFormValues) => settingsApi.update(data),
+    mutationFn: (data: WebsiteSettingsFormValues) => {
+      console.log("Updating settings with data:", data);
+      return settingsApi.update(data);
+    },
     onSuccess: (response) => {
+      console.log("Settings update success:", response);
       toast.success(response.message || "تم تحديث الإعدادات بنجاح");
       queryClient.invalidateQueries({ queryKey: ["website-settings"] });
+    },
+    onError: (error: any) => {
+      console.error("Settings update error:", error);
+      toast.error(error?.message || "حدث خطأ أثناء تحديث الإعدادات");
     },
   });
 }
