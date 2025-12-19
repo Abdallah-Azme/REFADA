@@ -4,9 +4,10 @@ import { Breadcrumb } from "@/components/shared/breadcrumb";
 import ImageFallback from "@/components/shared/image-fallback";
 import { PageSection } from "@/components/shared/page-section";
 import { useHero } from "@/features/home-control/hooks/use-hero";
-import { Scale } from "lucide-react";
+import { Scale, Download } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
+import { Button } from "@/shared/ui/button";
 
 export default function Page() {
   const t = useTranslations();
@@ -16,7 +17,7 @@ export default function Page() {
   const section = heroData?.data?.sections?.[3];
   const title = section?.title?.ar || "حقوق الملكية";
   const description = section?.description?.ar || "";
-  const image = section?.image;
+  const document = section?.image; // Using image field as document URL
 
   return (
     <motion.div
@@ -71,42 +72,46 @@ export default function Page() {
         />
       </motion.div>
 
-      {/* Content Section */}
-      <div className="flex flex-col sm:flex-row gap-7">
+      {/* Download Document Button - Aligned to the end */}
+      {document && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="flex-1"
+          transition={{ delay: 0.25, duration: 0.5 }}
+          className="flex justify-end"
         >
-          <PageSection
-            description={
-              isLoading ? (
-                <div className="space-y-4">
-                  <div className="h-4 bg-gray-200 rounded animate-pulse" />
-                  <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6" />
-                  <div className="h-4 bg-gray-200 rounded animate-pulse w-4/6" />
-                </div>
-              ) : (
-                <div
-                  className="leading-10 whitespace-pre-line [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
-                  dangerouslySetInnerHTML={{ __html: description }}
-                />
-              )
-            }
-          />
+          <a href={document} target="_blank" rel="noopener noreferrer" download>
+            <Button className="gap-2" size="lg">
+              <Download className="h-5 w-5" />
+              تحميل المستند
+            </Button>
+          </a>
         </motion.div>
-        {image && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="flex-1 relative hidden sm:block min-h-[300px]"
-          >
-            <ImageFallback src={image} fill alt={title} />
-          </motion.div>
-        )}
-      </div>
+      )}
+
+      {/* Content Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.6 }}
+      >
+        <PageSection
+          description={
+            isLoading ? (
+              <div className="space-y-4">
+                <div className="h-4 bg-gray-200 rounded animate-pulse" />
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6" />
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-4/6" />
+              </div>
+            ) : (
+              <div
+                className="leading-10 whitespace-pre-line [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
+                dangerouslySetInnerHTML={{ __html: description }}
+              />
+            )
+          }
+        />
+      </motion.div>
     </motion.div>
   );
 }

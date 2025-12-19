@@ -166,11 +166,13 @@ export default function PolicyPage({
             </Button>
           </div>
 
-          {/* Image Section */}
+          {/* Document Section */}
           <Card className="border-none shadow-sm">
             <CardHeader>
-              <CardTitle>صورة القسم</CardTitle>
-              <CardDescription>صورة مصاحبة للقسم (اختياري)</CardDescription>
+              <CardTitle>مستند القسم</CardTitle>
+              <CardDescription>
+                مستند PDF أو ملف للتحميل (اختياري)
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <FormField
@@ -179,14 +181,33 @@ export default function PolicyPage({
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <ImageUpload
-                        value={field.value}
-                        onChange={field.onChange}
-                        disabled={updateMutation.isPending}
-                        imageClassName="w-full h-auto aspect-video object-cover"
-                        className="w-full max-w-[300px]"
-                        placeholder="رفع صورة"
-                      />
+                      <div className="space-y-4">
+                        <Input
+                          type="file"
+                          accept=".pdf,.doc,.docx,.txt"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              field.onChange(file);
+                            }
+                          }}
+                          disabled={updateMutation.isPending}
+                          className="bg-gray-50/50"
+                        />
+                        {typeof field.value === "string" && field.value && (
+                          <div className="flex items-center gap-2 p-3 bg-gray-100 rounded-lg">
+                            <FileText className="h-5 w-5 text-primary" />
+                            <a
+                              href={field.value}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm text-primary hover:underline"
+                            >
+                              عرض المستند الحالي
+                            </a>
+                          </div>
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

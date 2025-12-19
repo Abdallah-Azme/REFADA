@@ -1,11 +1,13 @@
 import { DynamicPageComponent } from "@/features/pages";
 
 // Map titles for known page types to display in header before data loads
-// Note: mission, vision, goals are now managed in the About section
 const PAGE_TITLES: Record<string, string> = {
   terms: "شروط الاستخدام",
   privacy: "سياسة الخصوصية",
   transparency: "الشفافية",
+  mission: "رسالتنا",
+  vision: "رؤيتنا",
+  goals: "أهدافنا",
 };
 
 export default async function Page({

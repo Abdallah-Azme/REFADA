@@ -111,38 +111,39 @@ export function PageEditFormDialog({
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-6"
           >
-            {/* Image Upload */}
+            {/* Document Upload */}
             <FormField
               control={form.control}
               name="image"
               render={({ field: { value, onChange, ...field } }) => (
                 <FormItem>
-                  <FormLabel>صورة الصفحة</FormLabel>
+                  <FormLabel>مستند الصفحة</FormLabel>
                   <FormControl>
                     <div className="flex flex-col gap-4">
-                      <div className="relative h-48 w-full rounded-lg overflow-hidden border-2 border-dashed bg-gray-50 flex items-center justify-center shrink-0">
-                        {imagePreview ? (
-                          <Image
-                            src={imagePreview}
-                            alt="Preview"
-                            fill
-                            className="object-cover"
-                          />
-                        ) : (
-                          <div className="flex flex-col items-center gap-2 text-gray-400">
-                            <ImageIcon className="h-10 w-10" />
-                            <span className="text-sm">معاينة الصورة</span>
-                          </div>
-                        )}
-                      </div>
+                      {imagePreview && (
+                        <div className="flex items-center gap-2 p-3 bg-gray-100 rounded-lg">
+                          <FileText className="h-5 w-5 text-primary" />
+                          <a
+                            href={imagePreview}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-primary hover:underline"
+                          >
+                            عرض المستند الحالي
+                          </a>
+                        </div>
+                      )}
                       <div className="flex-1">
                         <Input
                           type="file"
-                          accept="image/*"
+                          accept=".pdf,.doc,.docx,.txt"
                           onChange={handleImageChange}
                           {...field}
                           className="cursor-pointer"
                         />
+                        <p className="text-xs text-gray-500 mt-2">
+                          يمكنك رفع ملفات: PDF, DOC, DOCX, TXT
+                        </p>
                       </div>
                     </div>
                   </FormControl>

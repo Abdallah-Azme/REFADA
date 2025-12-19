@@ -83,28 +83,30 @@ export default function DynamicPageComponent({
           </Card>
         </div>
 
-        {/* Sidebar / Image */}
+        {/* Sidebar / Document */}
         <div className="space-y-6">
           <Card className="bg-white border-none shadow-sm overflow-hidden">
-            <div className="relative w-full aspect-video bg-gray-100">
+            <CardContent className="p-6">
+              <h3 className="font-semibold text-gray-900 mb-2">مستند الصفحة</h3>
+              <p className="text-sm text-gray-500 mb-4">
+                ملف PDF أو مستند مرفق بهذه الصفحة
+              </p>
               {pageData.image ? (
-                <Image
-                  src={pageData.image}
-                  alt={pageData.title}
-                  fill
-                  className="object-cover"
-                />
+                <a
+                  href={pageData.image}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  <FileText className="h-5 w-5" />
+                  تحميل المستند
+                </a>
               ) : (
-                <div className="flex items-center justify-center h-full text-gray-400">
+                <div className="flex items-center justify-center p-6 bg-gray-100 rounded-lg text-gray-400">
                   <FileText className="h-12 w-12" />
                 </div>
               )}
-            </div>
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-gray-900 mb-2">صورة الصفحة</h3>
-              <p className="text-sm text-gray-500">
-                هذه الصورة تظهر في الجزء العلوي من الصفحة أو كصورة بارزة.
-              </p>
             </CardContent>
           </Card>
         </div>
