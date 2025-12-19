@@ -76,9 +76,10 @@ export default function DynamicPageComponent({
                 </Button>
               </div>
 
-              <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap">
-                {pageData.description}
-              </div>
+              <div
+                className="prose prose-lg max-w-none text-gray-700 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: pageData.description }}
+              />
             </CardContent>
           </Card>
         </div>

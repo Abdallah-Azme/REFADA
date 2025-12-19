@@ -24,8 +24,10 @@ import {
   PageUpdateFormValues,
   PageData,
 } from "../types/page.schema";
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Loader2, Upload, FileText, ImageIcon } from "lucide-react";
+
+const RichTextEditor = lazy(() => import("@/components/rich-text-editor"));
 import Image from "next/image";
 
 interface PageEditFormDialogProps {
@@ -196,11 +198,17 @@ export function PageEditFormDialog({
                   <FormItem>
                     <FormLabel>الوصف (بالعربية)</FormLabel>
                     <FormControl>
-                      <Textarea
-                        placeholder="الوصف بالعربية..."
-                        className="resize-none h-40"
-                        {...field}
-                      />
+                      <Suspense
+                        fallback={
+                          <div className="h-40 w-full animate-pulse bg-gray-100 rounded-md" />
+                        }
+                      >
+                        <RichTextEditor
+                          content={field.value}
+                          onChange={field.onChange}
+                          placeholder="الوصف بالعربية..."
+                        />
+                      </Suspense>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -214,11 +222,17 @@ export function PageEditFormDialog({
                   <FormItem>
                     <FormLabel>الوصف (بالإنجليزي)</FormLabel>
                     <FormControl>
-                      <Textarea
-                        placeholder="English Description..."
-                        className="resize-none h-40 direction-ltr"
-                        {...field}
-                      />
+                      <Suspense
+                        fallback={
+                          <div className="h-40 w-full animate-pulse bg-gray-100 rounded-md" />
+                        }
+                      >
+                        <RichTextEditor
+                          content={field.value}
+                          onChange={field.onChange}
+                          placeholder="English Description..."
+                        />
+                      </Suspense>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

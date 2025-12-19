@@ -21,13 +21,16 @@ import {
   CardTitle,
   CardDescription,
 } from "@/shared/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import {
   useHero,
   useUpdateSection,
   useCreateSection,
 } from "@/features/home-control/hooks/use-hero";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { Loader2, Save, FileText } from "lucide-react";
+
+const RichTextEditor = lazy(() => import("@/components/rich-text-editor"));
 import MainHeader from "@/shared/components/main-header";
 import { ImageUpload } from "@/components/ui/image-upload";
 
@@ -218,26 +221,29 @@ export default function PolicyPage({
 
           {/* Content Section */}
           <Card className="border-none shadow-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-primary" />
-                {pageTitle}
-              </CardTitle>
-              <CardDescription>تعديل عنوان ومحتوى الصفحة</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <div className="space-y-1">
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-primary" />
+                  {pageTitle}
+                </CardTitle>
+                <CardDescription>تعديل عنوان ومحتوى الصفحة</CardDescription>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Arabic Fields */}
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-900 border-b pb-2 text-right">
-                    العربية
-                  </h3>
+            <CardContent>
+              <Tabs defaultValue="ar" className="w-full">
+                <TabsList className="mb-6">
+                  <TabsTrigger value="ar">العربية</TabsTrigger>
+                  <TabsTrigger value="en">English</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="ar" className="space-y-6">
                   <FormField
                     control={form.control}
                     name="title_ar"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>العنوان</FormLabel>
+                        <FormLabel>العنوان (بالعربية)</FormLabel>
                         <FormControl>
                           <Input
                             {...field}
@@ -255,36 +261,34 @@ export default function PolicyPage({
                     name="description_ar"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>المحتوى</FormLabel>
+                        <FormLabel>المحتوى (بالعربية)</FormLabel>
                         <FormControl>
-                          <Textarea
-                            {...field}
-                            className="min-h-[200px] bg-gray-50/50 resize-none"
-                            placeholder="أدخل المحتوى بالعربية..."
-                            dir="rtl"
-                          />
+                          <Suspense
+                            fallback={
+                              <div className="h-40 w-full animate-pulse bg-gray-100 rounded-md" />
+                            }
+                          >
+                            <RichTextEditor
+                              content={field.value}
+                              onChange={field.onChange}
+                              placeholder="أدخل المحتوى بالعربية..."
+                            />
+                          </Suspense>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                </div>
+                </TabsContent>
 
-                {/* English Fields */}
-                <div className="space-y-4">
-                  <h3
-                    className="font-semibold text-gray-900 border-b pb-2 text-left"
-                    dir="ltr"
-                  >
-                    English
-                  </h3>
+                <TabsContent value="en" className="space-y-6">
                   <FormField
                     control={form.control}
                     name="title_en"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-left w-full block" dir="ltr">
-                          Title
+                          Title (English)
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -304,22 +308,27 @@ export default function PolicyPage({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-left w-full block" dir="ltr">
-                          Content
+                          Content (English)
                         </FormLabel>
                         <FormControl>
-                          <Textarea
-                            {...field}
-                            className="min-h-[200px] bg-gray-50/50 resize-none"
-                            placeholder="Enter content in English..."
-                            dir="ltr"
-                          />
+                          <Suspense
+                            fallback={
+                              <div className="h-40 w-full animate-pulse bg-gray-100 rounded-md" />
+                            }
+                          >
+                            <RichTextEditor
+                              content={field.value}
+                              onChange={field.onChange}
+                              placeholder="Enter content in English..."
+                            />
+                          </Suspense>
                         </FormControl>
                         <FormMessage className="text-left" dir="ltr" />
                       </FormItem>
                     )}
                   />
-                </div>
-              </div>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </form>

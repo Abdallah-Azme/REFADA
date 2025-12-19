@@ -114,10 +114,14 @@ export default function MissionVisionGoals() {
               {isLoading ? (
                 <LoadingSkeleton />
               ) : (
-                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
-                  {mission?.description ||
-                    "نحافظ على سرية بيانات المتبرعين والمستفيدين، ونستخدمها فقط لخدمة العمل الإنساني وفق أعلى معايير الأمان."}
-                </p>
+                <div
+                  className="text-gray-600 leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      mission?.description ||
+                      "نحافظ على سرية بيانات المتبرعين والمستفيدين، ونستخدمها فقط لخدمة العمل الإنساني وفق أعلى معايير الأمان.",
+                  }}
+                />
               )}
             </CardContent>
           </Card>
@@ -136,10 +140,14 @@ export default function MissionVisionGoals() {
               {isLoading ? (
                 <LoadingSkeleton />
               ) : (
-                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
-                  {vision?.description ||
-                    "نطمح لعلاقة مميزة مع المتبرعين والمتطوعين بما يضمن الثقة والمسؤولية المشتركة في تحقيق أهدافنا الإنسانية."}
-                </p>
+                <div
+                  className="text-gray-600 leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      vision?.description ||
+                      "نطمح لعلاقة مميزة مع المتبرعين والمتطوعين بما يضمن الثقة والمسؤولية المشتركة في تحقيق أهدافنا الإنسانية.",
+                  }}
+                />
               )}
             </CardContent>
           </Card>
@@ -158,10 +166,14 @@ export default function MissionVisionGoals() {
               {isLoading ? (
                 <LoadingSkeleton />
               ) : (
-                <p className="text-gray-600 leading-relaxed whitespace-pre-line">
-                  {goals?.description ||
-                    "نسعى لتحقيق أهداف واضحة تشمل دعم الأسر المحتاجة، تنفيذ مشاريع مستدامة، وبناء شراكات مجتمعية فاعلة."}
-                </p>
+                <div
+                  className="text-gray-600 leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      goals?.description ||
+                      "نسعى لتحقيق أهداف واضحة تشمل دعم الأسر المحتاجة، تنفيذ مشاريع مستدامة، وبناء شراكات مجتمعية فاعلة.",
+                  }}
+                />
               )}
             </CardContent>
           </Card>

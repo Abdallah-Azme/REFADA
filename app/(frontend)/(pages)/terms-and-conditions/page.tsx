@@ -104,7 +104,7 @@ export default function Page() {
               </div>
             ) : (
               <div
-                className="leading-10 whitespace-pre-line [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
+                className="leading-10 [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
                 dangerouslySetInnerHTML={{ __html: description }}
               />
             )

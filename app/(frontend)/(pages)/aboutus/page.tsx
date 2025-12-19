@@ -85,12 +85,27 @@ export default function Page() {
             className="absolute top-0 left-1/4 w-16 h-[78px]"
           />
         </motion.div>
-        <div className="flex flex-col sm:flex-row gap-7">
+        <div className="flex flex-col gap-10">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="relative w-full h-[300px] sm:h-[450px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/50"
+          >
+            <ImageFallback
+              src={mainImage}
+              fill
+              className="object-cover"
+              alt={title}
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent pointer-events-none" />
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="flex-1"
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className="bg-white/50 backdrop-blur-sm p-6 sm:p-10 rounded-3xl shadow-xl border border-white/20"
           >
             <PageSection
               description={
@@ -102,20 +117,12 @@ export default function Page() {
                   </div>
                 ) : (
                   <div
-                    className="leading-10 whitespace-pre-line [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
+                    className="leading-10 text-lg text-gray-700 [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
                     dangerouslySetInnerHTML={{ __html: description }}
                   />
                 )
               }
             />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="flex-1 relative hidden sm:block min-h-[300px]"
-          >
-            <ImageFallback src={mainImage} fill alt={title} />
           </motion.div>
         </div>
       </motion.div>

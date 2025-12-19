@@ -135,14 +135,13 @@ export default function PolicySection({
                     {card.title}
                   </h3>
                   {card.desc && (
-                    <p
+                    <div
                       className={cn(
                         "max-w-[300px] leading-relaxed line-clamp-3",
                         secondary ? "text-[#494949]" : "text-white"
                       )}
-                    >
-                      {card.desc}
-                    </p>
+                      dangerouslySetInnerHTML={{ __html: card.desc }}
+                    />
                   )}
                 </div>
                 <button className="text-secondary w-fit sm:mx-auto font-semibold hover:underline mt-auto pt-2">
