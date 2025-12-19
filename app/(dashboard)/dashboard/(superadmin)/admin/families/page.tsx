@@ -11,7 +11,7 @@ import {
   useFamilies,
   useDeleteFamily,
 } from "@/features/families";
-import { FamilyFormDialog } from "@/features/families/components/family-form-dialog";
+import EditFamilyDialog from "@/features/families/components/edit-family-dialog";
 import FamilyDetailsDialog from "@/features/families/components/family-details-dialog";
 import { DeleteConfirmDialog } from "@/features/marital-status";
 import AddFamilyDialog from "@/src/features/dashboard/components/add-family-dialog";
@@ -104,10 +104,10 @@ export default function AdminFamiliesPage() {
       </div>
 
       {/* Dialogs */}
-      <FamilyFormDialog
+      <EditFamilyDialog
         open={formOpen}
         onOpenChange={setFormOpen}
-        initialData={editingFamily}
+        family={editingFamily}
       />
 
       <FamilyDetailsDialog
