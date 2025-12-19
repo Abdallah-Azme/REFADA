@@ -1,5 +1,18 @@
 import { z } from "zod";
 
+// Member schema for individual family members
+export const familyMemberSchema = z.object({
+  name: z.string().min(1, "اسم الفرد مطلوب"),
+  nationalId: z.string().min(1, "رقم الهوية مطلوب"),
+  gender: z.enum(["male", "female"], {
+    required_error: "النوع مطلوب",
+  }),
+  dob: z.string().min(1, "تاريخ الميلاد مطلوب"),
+  relationshipId: z.string().min(1, "صلة القرابة مطلوبة"),
+});
+
+export type FamilyMemberFormValues = z.infer<typeof familyMemberSchema>;
+
 export const familySchema = z.object({
   familyName: z.string().min(1, "اسم العائلة مطلوب"),
   nationalId: z.string().min(8, "قم بإدخال رقم الهوية"),
@@ -13,6 +26,7 @@ export const familySchema = z.object({
   campId: z.string().min(1, "المعسكر مطلوب"),
   maritalStatusId: z.string().min(1, "الحالة الاجتماعية مطلوبة"),
   file: z.any().optional(), // For file upload
+  members: z.array(familyMemberSchema).optional(), // Dynamic members array
 });
 
 export type FamilyFormValues = z.infer<typeof familySchema>;
@@ -37,7 +51,17 @@ export interface Family {
   // Detail fields
   femalesCount?: number;
   malesCount?: number;
-  members?: any[];
+  members?: FamilyMember[];
+}
+
+export interface FamilyMember {
+  id: number;
+  name: string;
+  nationalId: string;
+  gender: "male" | "female";
+  dob: string;
+  relationship?: string;
+  medicalCondition?: string;
 }
 
 export interface FamiliesResponse {

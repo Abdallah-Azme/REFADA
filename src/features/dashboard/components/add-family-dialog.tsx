@@ -2,9 +2,9 @@
 
 import { useTranslations } from "next-intl";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -33,6 +33,8 @@ import {
   PlusCircle,
   Users,
   X,
+  Trash2,
+  UserPlus,
 } from "lucide-react";
 
 import {
@@ -43,17 +45,31 @@ import {
 } from "@/components/ui/select";
 import { familySchema } from "@/features/families/types/family.schema";
 import { useCreateFamily } from "@/features/families/hooks/use-create-family";
+import { useCreateFamilyMember } from "@/features/families/hooks/use-create-family-member";
 import { useCamps } from "@/features/camps";
+import { toast } from "sonner";
+import { DatePicker } from "@/components/ui/date-picker";
+import { useRelationships } from "@/features/families/hooks/use-relationships";
+import { useMaritalStatuses } from "@/features/families/hooks/use-marital-statuses";
 
 export default function AddFamilyDialog() {
   const t = useTranslations("families");
   const [file, setFile] = useState<File | null>(null);
   const [open, setOpen] = useState(false);
-  const { mutate: createFamily, isPending } = useCreateFamily();
+  const { mutateAsync: createFamily, isPending } = useCreateFamily();
+  const { mutateAsync: createFamilyMember } = useCreateFamilyMember();
 
   // Load camps for the select
   const { data: campsData } = useCamps();
   const camps = campsData?.data || [];
+
+  // Load relationships for the select
+  const { data: relationshipsData } = useRelationships();
+  const relationships = relationshipsData?.data || [];
+
+  // Load marital statuses for the select
+  const { data: maritalStatusesData } = useMaritalStatuses();
+  const maritalStatuses = maritalStatusesData?.data || [];
 
   const form = useForm<z.infer<typeof familySchema>>({
     resolver: zodResolver(familySchema),
@@ -63,30 +79,122 @@ export default function AddFamilyDialog() {
       dob: undefined,
       phone: "",
       backupPhone: undefined,
-      totalMembers: undefined, // Default to 1
+      totalMembers: 1,
       tentNumber: undefined,
       location: undefined,
       notes: undefined,
       campId: undefined,
       maritalStatusId: undefined,
+      members: [],
     },
   });
 
+  const { fields, append, remove, replace } = useFieldArray({
+    control: form.control,
+    name: "members",
+  });
+
+  // Watch totalMembers to auto-generate rows
+  const totalMembers = useWatch({
+    control: form.control,
+    name: "totalMembers",
+  });
+
+  // Auto-generate member rows when totalMembers changes
+  const prevTotalMembersRef = React.useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    // Skip initial render
+    if (prevTotalMembersRef.current === undefined) {
+      prevTotalMembersRef.current = totalMembers;
+      return;
+    }
+
+    if (
+      totalMembers &&
+      totalMembers > 0 &&
+      totalMembers !== prevTotalMembersRef.current
+    ) {
+      prevTotalMembersRef.current = totalMembers;
+      const currentCount = fields.length;
+      const targetCount = totalMembers;
+
+      if (targetCount > currentCount) {
+        // Add more rows
+        const newMembers = Array(targetCount - currentCount)
+          .fill(null)
+          .map(() => ({
+            name: "",
+            nationalId: "",
+            gender: "male" as const,
+            dob: "",
+            relationshipId: "",
+          }));
+        newMembers.forEach((member) => append(member));
+      } else if (targetCount < currentCount) {
+        // Remove excess rows from the end
+        for (let i = currentCount - 1; i >= targetCount; i--) {
+          remove(i);
+        }
+      }
+    }
+  }, [totalMembers]);
+
   const onError = (errors: any) => console.log("❌ FORM ERRORS:", errors);
 
-  const onSubmit = (values: z.infer<typeof familySchema>) => {
-    const payload = {
-      ...values,
-      file: file,
-    };
+  const onSubmit = async (values: z.infer<typeof familySchema>) => {
+    try {
+      // First, create the family
+      const familyPayload = {
+        ...values,
+        file: file,
+      };
 
-    createFamily(payload, {
-      onSuccess: () => {
-        setOpen(false);
-        form.reset();
-        setFile(null);
-      },
+      const familyResult = await createFamily(familyPayload);
+
+      // If family creation succeeded and we have members, create them
+      if (familyResult && values.members && values.members.length > 0) {
+        // Extract family ID from the response
+        const familyId = (familyResult as any).data?.id;
+
+        if (familyId) {
+          // Create each member sequentially
+          for (const member of values.members) {
+            if (member.name && member.nationalId) {
+              await createFamilyMember({
+                familyId,
+                data: {
+                  name: member.name,
+                  nationalId: member.nationalId,
+                  gender: member.gender,
+                  dob: member.dob,
+                  relationshipId: member.relationshipId,
+                },
+              });
+            }
+          }
+          toast.success("تم إضافة العائلة والأفراد بنجاح");
+        }
+      }
+
+      setOpen(false);
+      form.reset();
+      setFile(null);
+    } catch (error: any) {
+      console.error("Error creating family:", error);
+    }
+  };
+
+  const addMember = () => {
+    append({
+      name: "",
+      nationalId: "",
+      gender: "male",
+      dob: "",
+      relationshipId: "",
     });
+    // Update totalMembers to match
+    form.setValue("totalMembers", fields.length + 1);
   };
 
   return (
@@ -117,7 +225,7 @@ export default function AddFamilyDialog() {
             >
               {/* MAIN GRID */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 bg-[#F4F4F4] gap-4 p-4 rounded-xl">
-                {/* اسم العائلة */}
+                {/* الاسم الرباعي */}
                 <FormField
                   control={form.control}
                   name="familyName"
@@ -126,7 +234,7 @@ export default function AddFamilyDialog() {
                       <FormControl>
                         <Input
                           className="bg-white"
-                          placeholder={t("family_name")}
+                          placeholder="الاسم الرباعي"
                           {...field}
                         />
                       </FormControl>
@@ -154,19 +262,17 @@ export default function AddFamilyDialog() {
                 />
 
                 {/* تاريخ الميلاد */}
-                {/* Simplified Date Input for now as calendar component had undefined issues in reading */}
                 <FormField
                   control={form.control}
                   name="dob"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input
-                          type="text"
-                          className="bg-white"
-                          placeholder={t("dob_placeholder")}
-                          {...field}
+                        <DatePicker
                           value={field.value || ""}
+                          onChange={field.onChange}
+                          placeholder="تاريخ الميلاد"
+                          className="bg-white"
                         />
                       </FormControl>
                       <FormMessage />
@@ -224,22 +330,20 @@ export default function AddFamilyDialog() {
                         >
                           <SelectTrigger className="w-full bg-white">
                             {field.value
-                              ? `${t("status_prefix")} ${field.value}`
+                              ? maritalStatuses.find(
+                                  (s) => s.id.toString() === field.value
+                                )?.name || t("marital_status")
                               : t("marital_status")}
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="1">
-                              {t("status_single")}
-                            </SelectItem>
-                            <SelectItem value="2">
-                              {t("status_married")}
-                            </SelectItem>
-                            <SelectItem value="3">
-                              {t("status_divorced")}
-                            </SelectItem>
-                            <SelectItem value="4">
-                              {t("status_widowed")}
-                            </SelectItem>
+                            {maritalStatuses.map((status) => (
+                              <SelectItem
+                                key={status.id}
+                                value={status.id.toString()}
+                              >
+                                {status.name}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -292,11 +396,12 @@ export default function AddFamilyDialog() {
                       <FormControl>
                         <Input
                           type="number"
+                          min="1"
                           className="bg-white"
                           placeholder={t("members_count")}
                           {...field}
                           onChange={(e) =>
-                            field.onChange(parseInt(e.target.value))
+                            field.onChange(parseInt(e.target.value) || 1)
                           }
                           value={field.value || ""}
                         />
@@ -305,6 +410,166 @@ export default function AddFamilyDialog() {
                     </FormItem>
                   )}
                 />
+              </div>
+
+              {/* FAMILY MEMBERS SECTION */}
+              <div className="bg-[#F4F4F4] p-4 rounded-xl space-y-4">
+                <div className="flex justify-between items-center">
+                  <p className="text-sm font-medium">أفراد العائلة</p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addMember}
+                    className="bg-primary text-white hover:bg-primary/90"
+                  >
+                    <UserPlus className="w-4 h-4 ml-2" />
+                    إضافة فرد
+                  </Button>
+                </div>
+
+                {/* Member Rows */}
+                {fields.length > 0 && (
+                  <div className="space-y-3">
+                    {fields.map((field, index) => (
+                      <div
+                        key={field.id}
+                        className="grid grid-cols-1 sm:grid-cols-6 gap-3 items-start bg-white p-3 rounded-lg"
+                      >
+                        {/* الاسم */}
+                        <FormField
+                          control={form.control}
+                          name={`members.${index}.name`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input placeholder="الاسم" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* رقم الهوية */}
+                        <FormField
+                          control={form.control}
+                          name={`members.${index}.nationalId`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input placeholder="رقم الهوية" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* النوع */}
+                        <FormField
+                          control={form.control}
+                          name={`members.${index}.gender`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                >
+                                  <SelectTrigger className="w-full">
+                                    {field.value === "male"
+                                      ? "ذكر"
+                                      : field.value === "female"
+                                      ? "أنثى"
+                                      : "النوع"}
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="male">ذكر</SelectItem>
+                                    <SelectItem value="female">أنثى</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* صلة القرابة */}
+                        <FormField
+                          control={form.control}
+                          name={`members.${index}.relationshipId`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                >
+                                  <SelectTrigger className="w-full">
+                                    {field.value
+                                      ? relationships.find(
+                                          (r) => r.id.toString() === field.value
+                                        )?.name || "صلة القرابة"
+                                      : "صلة القرابة"}
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {relationships.map((rel) => (
+                                      <SelectItem
+                                        key={rel.id}
+                                        value={rel.id.toString()}
+                                      >
+                                        {rel.name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* تاريخ الميلاد */}
+                        <FormField
+                          control={form.control}
+                          name={`members.${index}.dob`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <DatePicker
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  placeholder="تاريخ الميلاد"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* Delete Button */}
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            remove(index);
+                            form.setValue("totalMembers", fields.length - 1);
+                          }}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 self-center"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {fields.length === 0 && (
+                  <p className="text-sm text-gray-500 text-center py-4">
+                    قم بإدخال عدد الأفراد أو اضغط على "إضافة فرد" لإضافة أفراد
+                    العائلة
+                  </p>
+                )}
               </div>
 
               {/* LOCATION */}

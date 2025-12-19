@@ -137,7 +137,9 @@ export function FamilyTable({ data, columns }: FamilyTableProps) {
       </div>
 
       {/* Pagination Controls */}
-      <PaginationControls table={table} />
+      <div className="flex justify-center mt-4">
+        <PaginationControls table={table} />
+      </div>
     </div>
   );
 }

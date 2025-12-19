@@ -80,7 +80,6 @@ export default function AdminFamiliesPage() {
           إضافة عائلة جديدة
         </Button> */}
 
-        <FamilyFormDialog />
         <AddFamilyDialog />
       </div>
 

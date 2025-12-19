@@ -119,3 +119,68 @@ export async function deleteFamilyApi(
     method: "DELETE",
   });
 }
+
+export interface CreateFamilyMemberPayload {
+  name: string;
+  nationalId: string;
+  gender: "male" | "female";
+  dob: string;
+  relationshipId: string;
+}
+
+export async function createFamilyMemberApi(
+  familyId: number,
+  data: CreateFamilyMemberPayload
+): Promise<{ success: boolean; message: string; data?: any }> {
+  const formData = new FormData();
+  formData.append("name", data.name);
+  formData.append("national_id", data.nationalId);
+  formData.append("gender", data.gender);
+  formData.append("dob", data.dob);
+  formData.append("relationship_id", data.relationshipId);
+
+  return apiRequest(`/families/${familyId}/members`, {
+    method: "POST",
+    body: formData,
+  });
+}
+
+// Relationships API
+export interface Relationship {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RelationshipsResponse {
+  success: boolean;
+  message: string;
+  data: Relationship[];
+}
+
+export async function getRelationshipsApi(): Promise<RelationshipsResponse> {
+  return apiRequest<RelationshipsResponse>("/relationships", {
+    method: "GET",
+  });
+}
+
+// Marital Statuses API
+export interface MaritalStatus {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MaritalStatusesResponse {
+  success: boolean;
+  message: string;
+  data: MaritalStatus[];
+}
+
+export async function getMaritalStatusesApi(): Promise<MaritalStatusesResponse> {
+  return apiRequest<MaritalStatusesResponse>("/marital-statuses", {
+    method: "GET",
+  });
+}
