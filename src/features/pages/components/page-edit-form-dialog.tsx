@@ -46,6 +46,7 @@ export function PageEditFormDialog({
   isPending,
 }: PageEditFormDialogProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
 
   const form = useForm<PageUpdateFormValues>({
     resolver: zodResolver(pageUpdateSchema),
@@ -55,6 +56,7 @@ export function PageEditFormDialog({
       description_ar: "",
       description_en: "",
       image: undefined,
+      file: undefined,
     },
   });
 
@@ -77,10 +79,15 @@ export function PageEditFormDialog({
         description_ar: descAr,
         description_en: descEn,
         image: undefined,
+        file: undefined,
       });
 
       if (pageData.image) {
         setImagePreview(pageData.image);
+      }
+
+      if (pageData.file) {
+        setFilePreview(pageData.file);
       }
     }
   }, [pageData, open, form]);
@@ -94,6 +101,14 @@ export function PageEditFormDialog({
         setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      form.setValue("file", file);
+      setFilePreview(file.name);
     }
   };
 
@@ -119,27 +134,74 @@ export function PageEditFormDialog({
               name="image"
               render={({ field: { value, onChange, ...field } }) => (
                 <FormItem>
-                  <FormLabel>مستند الصفحة</FormLabel>
+                  <FormLabel>صورة الصفحة</FormLabel>
                   <FormControl>
                     <div className="flex flex-col gap-4">
                       {imagePreview && (
                         <div className="flex items-center gap-2 p-3 bg-gray-100 rounded-lg">
-                          <FileText className="h-5 w-5 text-primary" />
+                          <ImageIcon className="h-5 w-5 text-primary" />
                           <a
                             href={imagePreview}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-sm text-primary hover:underline"
                           >
-                            عرض المستند الحالي
+                            عرض الصورة الحالية
                           </a>
                         </div>
                       )}
                       <div className="flex-1">
                         <Input
                           type="file"
-                          accept=".pdf,.doc,.docx,.txt"
+                          accept="image/*"
                           onChange={handleImageChange}
+                          {...field}
+                          className="cursor-pointer"
+                        />
+                        <p className="text-xs text-gray-500 mt-2">
+                          يمكنك رفع صور: JPG, PNG, GIF, WEBP
+                        </p>
+                      </div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* File Upload */}
+            <FormField
+              control={form.control}
+              name="file"
+              render={({ field: { value, onChange, ...field } }) => (
+                <FormItem>
+                  <FormLabel>ملف الصفحة</FormLabel>
+                  <FormControl>
+                    <div className="flex flex-col gap-4">
+                      {filePreview && (
+                        <div className="flex items-center gap-2 p-3 bg-gray-100 rounded-lg">
+                          <FileText className="h-5 w-5 text-primary" />
+                          {filePreview.startsWith("http") ? (
+                            <a
+                              href={filePreview}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm text-primary hover:underline"
+                            >
+                              عرض الملف الحالي
+                            </a>
+                          ) : (
+                            <span className="text-sm text-gray-700">
+                              {filePreview}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <Input
+                          type="file"
+                          accept=".pdf,.doc,.docx,.txt"
+                          onChange={handleFileChange}
                           {...field}
                           className="cursor-pointer"
                         />

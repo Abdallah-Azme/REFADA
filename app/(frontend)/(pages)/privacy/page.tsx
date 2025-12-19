@@ -16,7 +16,6 @@ export default function Page() {
   // Get data from API or fallback to translations
   const title = pageData?.data?.title || t("privacy");
   const description = pageData?.data?.description || "";
-  const document = pageData?.data?.image; // Using image field as document URL
 
   return (
     <motion.div
@@ -39,15 +38,32 @@ export default function Page() {
         />
       </motion.div>
 
-      {/* Title */}
+      {/* Title with Download Button */}
       <motion.div
-        className="flex items-center gap-2"
+        className="flex items-center justify-between"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
       >
-        <BookKey className="text-[#4A8279]" />
-        <h1 className="text-xl font-bold text-[#1E1E1E]">{title}</h1>
+        <div className="flex items-center gap-2">
+          <BookKey className="text-[#4A8279]" />
+          <h1 className="text-xl font-bold text-[#1E1E1E]">{title}</h1>
+        </div>
+
+        {/* Download Document Button - Aligned with Title */}
+        {pageData?.data?.file && (
+          <a
+            href={pageData.data.file}
+            target="_blank"
+            rel="noopener noreferrer"
+            download
+          >
+            <Button className="gap-2" variant="outline">
+              <Download className="h-5 w-5" />
+              تحميل المستند
+            </Button>
+          </a>
+        )}
       </motion.div>
 
       {/* Decorative images (fade-in softly) */}
@@ -70,23 +86,6 @@ export default function Page() {
           className="absolute top-0 left-1/4 w-16 h-[78px]"
         />
       </motion.div>
-
-      {/* Download Document Button - Aligned to the end */}
-      {document && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25, duration: 0.5 }}
-          className="flex justify-end"
-        >
-          <a href={document} target="_blank" rel="noopener noreferrer" download>
-            <Button className="gap-2" size="lg">
-              <Download className="h-5 w-5" />
-              تحميل المستند
-            </Button>
-          </a>
-        </motion.div>
-      )}
 
       {/* Content Section */}
       <motion.div

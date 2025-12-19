@@ -75,6 +75,10 @@ export const pagesApi = {
       formData.append("image", data.image);
     }
 
+    if (data.file instanceof File) {
+      formData.append("file", data.file);
+    }
+
     return apiRequest<PageResponse>(`/pages/${pageType}`, {
       method: "POST",
       body: formData,

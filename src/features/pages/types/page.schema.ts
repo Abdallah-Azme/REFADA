@@ -6,6 +6,7 @@ export const pageUpdateSchema = z.object({
   description_ar: z.string().min(10, "الوصف (بالعربية) مطلوب"),
   description_en: z.string().min(10, "الوصف (بالإنجليزي) مطلوب"),
   image: z.any().optional(), // File or string URL
+  file: z.any().optional(), // File or string URL for document upload
 });
 
 export type PageUpdateFormValues = z.infer<typeof pageUpdateSchema>;
@@ -15,6 +16,7 @@ export interface PageData {
   title: string;
   description: string;
   image: string;
+  file?: string; // Document file URL
   isActive: boolean | null;
   // If API returns translations in a specific details endpoint
   title_ar?: string;
