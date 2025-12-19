@@ -1,15 +1,31 @@
 import { z } from "zod";
 
 // Member schema for individual family members
-export const familyMemberSchema = z.object({
-  name: z.string().min(1, "اسم الفرد مطلوب"),
-  nationalId: z.string().min(1, "رقم الهوية مطلوب"),
-  gender: z.enum(["male", "female"], {
-    required_error: "النوع مطلوب",
-  }),
-  dob: z.string().min(1, "تاريخ الميلاد مطلوب"),
-  relationshipId: z.string().min(1, "صلة القرابة مطلوبة"),
-});
+export const familyMemberSchema = z
+  .object({
+    name: z.string().min(1, "اسم الفرد مطلوب"),
+    nationalId: z.string().min(1, "رقم الهوية مطلوب"),
+    gender: z.enum(["male", "female"], {
+      required_error: "النوع مطلوب",
+    }),
+    dob: z.string().min(1, "تاريخ الميلاد مطلوب"),
+    relationshipId: z.string().min(1, "صلة القرابة مطلوبة"),
+    medicalConditionId: z.string().optional(), // Optional - 'none' means healthy
+    medicalConditionFile: z.any().optional(), // Optional file for medical condition
+  })
+  .refine(
+    (data) => {
+      // If medical condition is selected (not 'none' and has a value), file is required
+      if (data.medicalConditionId && data.medicalConditionId !== "none") {
+        return data.medicalConditionFile instanceof File;
+      }
+      return true;
+    },
+    {
+      message: "الملف مطلوب عند اختيار حالة مرضية",
+      path: ["medicalConditionFile"],
+    }
+  );
 
 export type FamilyMemberFormValues = z.infer<typeof familyMemberSchema>;
 
@@ -25,7 +41,8 @@ export const familySchema = z.object({
   notes: z.string().optional(),
   campId: z.string().min(1, "المعسكر مطلوب"),
   maritalStatusId: z.string().min(1, "الحالة الاجتماعية مطلوبة"),
-  file: z.any().optional(), // For file upload
+  medicalConditionId: z.string().optional(), // Medical condition for the head of family
+  file: z.any().optional(), // For file upload (required if medical condition is set)
   members: z.array(familyMemberSchema).optional(), // Dynamic members array
 });
 

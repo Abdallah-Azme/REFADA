@@ -51,6 +51,7 @@ import { toast } from "sonner";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useRelationships } from "@/features/families/hooks/use-relationships";
 import { useMaritalStatuses } from "@/features/families/hooks/use-marital-statuses";
+import { useMedicalConditions } from "@/features/families/hooks/use-medical-conditions";
 
 export default function AddFamilyDialog() {
   const t = useTranslations("families");
@@ -71,6 +72,10 @@ export default function AddFamilyDialog() {
   const { data: maritalStatusesData } = useMaritalStatuses();
   const maritalStatuses = maritalStatusesData?.data || [];
 
+  // Load medical conditions for the select
+  const { data: medicalConditionsData } = useMedicalConditions();
+  const medicalConditions = medicalConditionsData?.data || [];
+
   const form = useForm<z.infer<typeof familySchema>>({
     resolver: zodResolver(familySchema),
     defaultValues: {
@@ -85,6 +90,7 @@ export default function AddFamilyDialog() {
       notes: undefined,
       campId: undefined,
       maritalStatusId: undefined,
+      medicalConditionId: "none",
       members: [],
     },
   });
@@ -129,6 +135,7 @@ export default function AddFamilyDialog() {
             gender: "male" as const,
             dob: "",
             relationshipId: "",
+            medicalConditionId: "none",
           }));
         newMembers.forEach((member) => append(member));
       } else if (targetCount < currentCount) {
@@ -169,6 +176,8 @@ export default function AddFamilyDialog() {
                   gender: member.gender,
                   dob: member.dob,
                   relationshipId: member.relationshipId,
+                  medicalConditionId: member.medicalConditionId,
+                  medicalConditionFile: member.medicalConditionFile,
                 },
               });
             }
@@ -192,6 +201,7 @@ export default function AddFamilyDialog() {
       gender: "male",
       dob: "",
       relationshipId: "",
+      medicalConditionId: "none",
     });
     // Update totalMembers to match
     form.setValue("totalMembers", fields.length + 1);
@@ -410,7 +420,82 @@ export default function AddFamilyDialog() {
                     </FormItem>
                   )}
                 />
+
+                {/* الحالة الصحية للرئيس العائلة */}
+                <FormField
+                  control={form.control}
+                  name="medicalConditionId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value || "none"}
+                        >
+                          <SelectTrigger className="w-full bg-white">
+                            {field.value && field.value !== "none"
+                              ? medicalConditions.find(
+                                  (m) => m.id.toString() === field.value
+                                )?.name || "الحالة الصحية"
+                              : "سليم"}
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">سليم</SelectItem>
+                            {medicalConditions.map((condition) => (
+                              <SelectItem
+                                key={condition.id}
+                                value={condition.id.toString()}
+                              >
+                                {condition.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
+
+              {/* FILE UPLOAD - Only shown when medical condition is selected */}
+              {form.watch("medicalConditionId") &&
+                form.watch("medicalConditionId") !== "none" && (
+                  <div className="bg-[#F4F4F4] p-4 rounded-xl flex flex-col items-start gap-3">
+                    <p className="text-sm font-medium ml-4">
+                      ملف الحالة الصحية *
+                    </p>
+                    <div className="flex items-center gap-3 w-full">
+                      {!file ? (
+                        <Input
+                          type="file"
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) setFile(f);
+                          }}
+                          className="bg-white w-full sm:w-auto"
+                        />
+                      ) : (
+                        <div className="flex items-center bg-white border gap-2 rounded-xl px-4 py-2 shadow-sm">
+                          <span className="ml-2 bg-green-500 text-white rounded-xl p-1">
+                            <FileSpreadsheet className="w-4 h-4" />
+                          </span>
+                          <span className="text-xs text-gray-700">
+                            {file.name}
+                          </span>
+                          <button
+                            className="text-gray-500 hover:text-gray-700 mr-2"
+                            onClick={() => setFile(null)}
+                            type="button"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
 
               {/* FAMILY MEMBERS SECTION */}
               <div className="bg-[#F4F4F4] p-4 rounded-xl space-y-4">
@@ -434,7 +519,7 @@ export default function AddFamilyDialog() {
                     {fields.map((field, index) => (
                       <div
                         key={field.id}
-                        className="grid grid-cols-1 sm:grid-cols-6 gap-3 items-start bg-white p-3 rounded-lg"
+                        className="grid grid-cols-1 sm:grid-cols-7 gap-3 items-start bg-white p-3 rounded-lg"
                       >
                         {/* الاسم */}
                         <FormField
@@ -546,6 +631,78 @@ export default function AddFamilyDialog() {
                           )}
                         />
 
+                        {/* الحالة الصحية */}
+                        <FormField
+                          control={form.control}
+                          name={`members.${index}.medicalConditionId`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value || "none"}
+                                >
+                                  <SelectTrigger className="w-full">
+                                    {field.value && field.value !== "none"
+                                      ? medicalConditions.find(
+                                          (m) => m.id.toString() === field.value
+                                        )?.name || "الحالة الصحية"
+                                      : "سليم"}
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="none">سليم</SelectItem>
+                                    {medicalConditions.map((condition) => (
+                                      <SelectItem
+                                        key={condition.id}
+                                        value={condition.id.toString()}
+                                      >
+                                        {condition.name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* ملف الحالة الصحية - يظهر فقط إذا تم اختيار حالة مرضية */}
+                        {form.watch(`members.${index}.medicalConditionId`) &&
+                          form.watch(`members.${index}.medicalConditionId`) !==
+                            "none" && (
+                            <FormField
+                              control={form.control}
+                              name={`members.${index}.medicalConditionFile`}
+                              render={({
+                                field: { onChange, value, ...field },
+                              }) => (
+                                <FormItem className="sm:col-span-7 mt-2">
+                                  <FormControl>
+                                    <div className="flex items-center gap-2">
+                                      <Input
+                                        type="file"
+                                        accept=".pdf,.jpg,.jpeg,.png"
+                                        onChange={(e) => {
+                                          const file = e.target.files?.[0];
+                                          if (file) onChange(file);
+                                        }}
+                                        className="bg-gray-50"
+                                        {...field}
+                                      />
+                                      {value && (
+                                        <span className="text-xs text-gray-500">
+                                          {(value as File).name}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          )}
+
                         {/* Delete Button */}
                         <Button
                           type="button"
@@ -630,37 +787,6 @@ export default function AddFamilyDialog() {
                     </FormItem>
                   )}
                 />
-              </div>
-
-              {/* FILE UPLOAD */}
-              <div className="bg-[#F4F4F4] p-4 rounded-xl flex flex-col items-start gap-3">
-                <p className="text-sm font-medium ml-4">{t("attachments")}</p>
-                <div className="flex items-center gap-3 w-full">
-                  {!file ? (
-                    <Input
-                      type="file"
-                      onChange={(e) => {
-                        const f = e.target.files?.[0];
-                        if (f) setFile(f);
-                      }}
-                      className="bg-white w-full sm:w-auto"
-                    />
-                  ) : (
-                    <div className="flex items-center bg-white border gap-2 rounded-xl px-4 py-2 shadow-sm">
-                      <span className="ml-2 bg-green-500 text-white rounded-xl p-1">
-                        <FileSpreadsheet className="w-4 h-4" />
-                      </span>
-                      <span className="text-xs text-gray-700">{file.name}</span>
-                      <button
-                        className="text-gray-500 hover:text-gray-700 mr-2"
-                        onClick={() => setFile(null)}
-                        type="button"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
-                </div>
               </div>
 
               {/* FOOTER BUTTONS */}

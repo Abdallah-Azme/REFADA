@@ -76,6 +76,10 @@ export async function createFamilyApi(
   if (data.notes) formData.append("notes", data.notes);
   formData.append("camp_id", data.campId);
   formData.append("marital_status_id", data.maritalStatusId);
+  // Medical condition for head of family
+  if (data.medicalConditionId && data.medicalConditionId !== "none") {
+    formData.append("medical_condition_id", data.medicalConditionId);
+  }
   if (data.file) formData.append("file", data.file); // Handle file upload
 
   return apiRequest("/families", {
@@ -126,6 +130,8 @@ export interface CreateFamilyMemberPayload {
   gender: "male" | "female";
   dob: string;
   relationshipId: string;
+  medicalConditionId?: string; // Optional - only sent if not 'none'
+  medicalConditionFile?: File; // Optional file for medical condition
 }
 
 export async function createFamilyMemberApi(
@@ -138,6 +144,14 @@ export async function createFamilyMemberApi(
   formData.append("gender", data.gender);
   formData.append("dob", data.dob);
   formData.append("relationship_id", data.relationshipId);
+  // Only append medical_condition_id if it's not 'none' and has a value
+  if (data.medicalConditionId && data.medicalConditionId !== "none") {
+    formData.append("medical_condition_id", data.medicalConditionId);
+    // Append file if provided
+    if (data.medicalConditionFile) {
+      formData.append("file", data.medicalConditionFile);
+    }
+  }
 
   return apiRequest(`/families/${familyId}/members`, {
     method: "POST",
@@ -181,6 +195,26 @@ export interface MaritalStatusesResponse {
 
 export async function getMaritalStatusesApi(): Promise<MaritalStatusesResponse> {
   return apiRequest<MaritalStatusesResponse>("/marital-statuses", {
+    method: "GET",
+  });
+}
+
+// Medical Conditions API
+export interface MedicalCondition {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MedicalConditionsResponse {
+  success: boolean;
+  message: string;
+  data: MedicalCondition[];
+}
+
+export async function getMedicalConditionsApi(): Promise<MedicalConditionsResponse> {
+  return apiRequest<MedicalConditionsResponse>("/medical-conditions", {
     method: "GET",
   });
 }
