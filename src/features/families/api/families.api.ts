@@ -218,3 +218,69 @@ export async function getMedicalConditionsApi(): Promise<MedicalConditionsRespon
     method: "GET",
   });
 }
+
+// Family Members Response Types
+export interface FamilyMemberResponse {
+  id: number;
+  name: string;
+  gender: "male" | "female";
+  dob: string;
+  nationalId: string;
+  relationship: string;
+  medicalCondition: string | null;
+  file: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FamilyMembersResponse {
+  success: boolean;
+  message: string;
+  data: FamilyMemberResponse[];
+}
+
+// Get Family Members API
+export async function getFamilyMembersApi(
+  familyId: number
+): Promise<FamilyMembersResponse> {
+  return apiRequest<FamilyMembersResponse>(`/families/${familyId}/members`, {
+    method: "GET",
+  });
+}
+
+// Update Family Member API
+export async function updateFamilyMemberApi(
+  familyId: number,
+  memberId: number,
+  data: CreateFamilyMemberPayload
+): Promise<{ success: boolean; message: string; data?: any }> {
+  const formData = new FormData();
+  formData.append("name", data.name);
+  formData.append("national_id", data.nationalId);
+  formData.append("gender", data.gender);
+  formData.append("dob", data.dob);
+  formData.append("relationship_id", data.relationshipId);
+  // Only append medical_condition_id if it's not 'none' and has a value
+  if (data.medicalConditionId && data.medicalConditionId !== "none") {
+    formData.append("medical_condition_id", data.medicalConditionId);
+    // Append file if provided
+    if (data.medicalConditionFile) {
+      formData.append("file", data.medicalConditionFile);
+    }
+  }
+
+  return apiRequest(`/families/${familyId}/members/${memberId}`, {
+    method: "POST",
+    body: formData,
+  });
+}
+
+// Delete Family Member API
+export async function deleteFamilyMemberApi(
+  familyId: number,
+  memberId: number
+): Promise<{ success: boolean; message: string }> {
+  return apiRequest(`/families/${familyId}/members/${memberId}`, {
+    method: "DELETE",
+  });
+}
