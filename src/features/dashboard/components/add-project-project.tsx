@@ -49,7 +49,7 @@ const createProjectFormSchema = (t: any) =>
     beneficiary_count: z
       .string()
       .min(1, t("validation.beneficiary_count_required")),
-    college: z.string().min(1, t("validation.college_required")),
+    college: z.string().optional(),
     notes: z.string().optional(),
     camp_id: z.string().min(1, t("validation.camp_required")),
   });
@@ -131,7 +131,7 @@ export default function ProjectFormDialog({
     formData.append("name", values.name);
     formData.append("type", values.type);
     formData.append("beneficiary_count", values.beneficiary_count);
-    formData.append("college", values.college);
+    formData.append("college", values.beneficiary_count);
     formData.append("camp_id", values.camp_id);
     if (values.notes) {
       formData.append("notes", values.notes);
@@ -185,9 +185,14 @@ export default function ProjectFormDialog({
 
         <div className="px-6 py-5 max-h-[75vh] overflow-y-auto bg-[#f4f4f4] rounded-xl">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form
+              onSubmit={form.handleSubmit(onSubmit, (errors) =>
+                console.error("Form validation errors:", errors)
+              )}
+              className="space-y-6"
+            >
               {/* TOP GRID */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-xl">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl">
                 {/* اسم المشروع */}
                 <FormField
                   control={form.control}
@@ -207,27 +212,9 @@ export default function ProjectFormDialog({
                   control={form.control}
                   name="type"
                   render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="w-full bg-white">
-                            {field.value || t("type")}
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="male">
-                              {t("type_male")}
-                            </SelectItem>
-                            <SelectItem value="female">
-                              {t("type_female")}
-                            </SelectItem>
-                            <SelectItem value="bebficia">
-                              {t("type_beneficiary")}
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
+                    <FormItem>
+                      <FormControl className="bg-white">
+                        <Input placeholder={t("type")} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -244,24 +231,6 @@ export default function ProjectFormDialog({
                         <Input
                           type="number"
                           placeholder={t("beneficiary_count")}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* الكلية */}
-                <FormField
-                  control={form.control}
-                  name="college"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl className="bg-white">
-                        <Input
-                          type="number"
-                          placeholder={t("college")}
                           {...field}
                         />
                       </FormControl>

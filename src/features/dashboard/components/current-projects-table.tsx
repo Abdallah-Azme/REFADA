@@ -20,7 +20,7 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   createColumns,
   Project, // This now refers to the API type we updated in steps 535
@@ -35,7 +35,19 @@ import {
 import { Loader2 } from "lucide-react";
 import { DeleteConfirmDialog } from "@/features/marital-status/components/delete-confirm-dialog";
 
-export default function CurrentProjectsTable() {
+interface Filters {
+  search?: string;
+  status?: string;
+  type?: string;
+}
+
+interface CurrentProjectsTableProps {
+  filters?: Filters;
+}
+
+export default function CurrentProjectsTable({
+  filters,
+}: CurrentProjectsTableProps) {
   const { data: projectsData, isLoading } = useProjects();
   const deleteProject = useDeleteProject();
 
@@ -61,7 +73,34 @@ export default function CurrentProjectsTable() {
     undefined
   );
 
-  const data = projectsData?.data || [];
+  const rawData = projectsData?.data || [];
+
+  // Apply filters
+  const data = useMemo(() => {
+    let filtered = rawData;
+
+    // Filter by search (name)
+    if (filters?.search) {
+      const searchLower = filters.search.toLowerCase();
+      filtered = filtered.filter((project) =>
+        project.name.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Filter by type
+    if (filters?.type && filters.type !== "all") {
+      filtered = filtered.filter((project) => project.type === filters.type);
+    }
+
+    // Filter by status
+    if (filters?.status && filters.status !== "all") {
+      filtered = filtered.filter(
+        (project) => project.status === filters.status
+      );
+    }
+
+    return filtered;
+  }, [rawData, filters]);
 
   const handleEdit = (project: Project): void => {
     setProjectToEdit(project);

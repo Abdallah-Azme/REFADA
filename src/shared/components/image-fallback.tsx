@@ -12,7 +12,7 @@ interface ImageFallbackProps extends Omit<ImageProps, "src" | "alt"> {
 export default function ImageFallback({
   src,
   alt = "image",
-  fallbackSrc = "/fallback.jpg",
+  fallbackSrc = "/placeholder.jpg",
   ...props
 }: ImageFallbackProps) {
   const [imgSrc, setImgSrc] = useState(src || fallbackSrc);
