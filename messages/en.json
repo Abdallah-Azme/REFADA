@@ -306,5 +306,10 @@
     "status_approved": "Approved",
     "status_pending": "Pending",
     "status_rejected": "Rejected"
+  },
+  "testimonials": {
+    "title": "User Testimonials",
+    "description": "We are proud of everyone who shared the journey with us and contributed to achieving humanitarian impact. Here are some words we cherish that encourage us to continue giving.",
+    "slide_aria": "Slide {index}"
   }
 }
