@@ -103,7 +103,7 @@ export const settingsApi = {
       console.log(`  ${key}:`, value);
     }
 
-    const response = await fetch(`${API_BASE_URL}/settings`, {
+    const response = await fetch(`${API_BASE_URL}/settings/1`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${
