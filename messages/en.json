@@ -223,6 +223,7 @@
     "current_occupancy": "Current Occupancy",
     "latitude": "Latitude",
     "longitude": "Longitude",
+    "location_on_map": "Location on Map",
     "save": "Save",
     "cancel": "Cancel",
     "validation": {

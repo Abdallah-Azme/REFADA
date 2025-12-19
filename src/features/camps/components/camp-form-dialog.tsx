@@ -29,6 +29,7 @@ import { useCampForm } from "../hooks/use-camp-form";
 import { Camp, CampFormValues } from "../types/camp.schema";
 import { useGovernorates } from "@/features/dashboard/hooks/use-governorates";
 import { ImageUpload } from "@/components/ui/image-upload";
+import LocationPickerMap from "./location-picker-map";
 
 interface CampFormDialogProps {
   initialData: Camp | null;
@@ -235,49 +236,18 @@ export function CampFormDialog({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="coordinates.lat"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("latitude")}</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          step="0.000001"
-                          placeholder="31.5"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(parseFloat(e.target.value) || 0)
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="coordinates.lng"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("longitude")}</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          step="0.000001"
-                          placeholder="34.45"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(parseFloat(e.target.value) || 0)
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+              <div className="space-y-2">
+                <FormLabel>{t("location_on_map")}</FormLabel>
+                <LocationPickerMap
+                  value={{
+                    lat: form.watch("coordinates.lat") || 31.4,
+                    lng: form.watch("coordinates.lng") || 34.4,
+                  }}
+                  onChange={(coords) => {
+                    form.setValue("coordinates.lat", coords.lat);
+                    form.setValue("coordinates.lng", coords.lng);
+                  }}
+                  height="250px"
                 />
               </div>
             </>

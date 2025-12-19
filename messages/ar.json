@@ -224,6 +224,7 @@
     "current_occupancy": "الإشغال الحالي",
     "latitude": "خط العرض (Latitude)",
     "longitude": "خط الطول (Longitude)",
+    "location_on_map": "الموقع على الخريطة",
     "save": "حفظ",
     "cancel": "إلغاء",
     "validation": {
