@@ -117,3 +117,19 @@ export function useCreateSection() {
     },
   });
 }
+
+export function useUpdatePageImages() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { complaintImage?: File; contactImage?: File }) =>
+      heroApi.updatePageImages(data),
+    onSuccess: (response) => {
+      toast.success(response.message || "تم تحديث الصور بنجاح");
+      queryClient.invalidateQueries({ queryKey: ["home-hero"] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "حدث خطأ أثناء تحديث الصور");
+    },
+  });
+}

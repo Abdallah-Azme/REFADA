@@ -32,6 +32,7 @@ import { cn } from "@/lib/utils";
 import { useCreateComplaint } from "@/features/complaints";
 import { useCamps } from "@/features/camps";
 import { toast } from "sonner";
+import { useHero } from "@/features/home-control/hooks/use-hero";
 
 // 🧩 Validation schema
 const formSchema = z.object({
@@ -48,8 +49,11 @@ export default function ContactSection() {
   const { isRTL } = useDirection();
   const { data: campsData, isLoading: campsLoading } = useCamps();
   const { mutate: createComplaint, isPending } = useCreateComplaint();
+  const { data: heroData } = useHero();
 
   const camps = campsData?.data || [];
+  const complaintImage =
+    heroData?.data?.complaintImage || "/pages/pages/meeting.webp";
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -313,7 +317,7 @@ export default function ContactSection() {
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
           >
             <ImageFallback
-              src="/pages/pages/meeting.webp"
+              src={complaintImage}
               alt={t("altImage")}
               className="object-contain"
               fill

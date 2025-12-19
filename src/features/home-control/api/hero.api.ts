@@ -309,4 +309,24 @@ export const heroApi = {
       body: formData,
     });
   },
+
+  updatePageImages: async (data: {
+    complaintImage?: File;
+    contactImage?: File;
+  }): Promise<HeroResponse> => {
+    const formData = new FormData();
+
+    if (data.complaintImage) {
+      formData.append("complaint_image", data.complaintImage);
+    }
+
+    if (data.contactImage) {
+      formData.append("contact_image", data.contactImage);
+    }
+
+    return apiRequest<HeroResponse>("/homepage/", {
+      method: "POST",
+      body: formData,
+    });
+  },
 };

@@ -32,6 +32,7 @@ import {
   Users2,
   MessageSquareWarning,
   FileText,
+  ImageIcon,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -223,6 +224,11 @@ export default function DashboardSidebar() {
       label: "آراء المستفيدين",
       icon: Users,
       href: "/dashboard/admin/home-control/testimonials",
+    },
+    {
+      label: "صور الصفحات",
+      icon: ImageIcon,
+      href: "/dashboard/admin/home-control/page-images",
     },
     {
       label: "الصفحات",

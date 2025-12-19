@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 import { useDirection } from "@/hooks/use-direction";
 import { useCreateContactMessage } from "@/features/messages";
 import { toast } from "sonner";
+import { useHero } from "@/features/home-control/hooks/use-hero";
 
 // 🧩 Validation schema
 const formSchema = z.object({
@@ -46,6 +47,10 @@ export default function ContactSection() {
   const t = useTranslations();
   const { isRTL } = useDirection();
   const { mutate: createMessage, isPending } = useCreateContactMessage();
+  const { data: heroData } = useHero();
+
+  const contactImage =
+    heroData?.data?.contactImage || "/pages/pages/carrying-peace.webp";
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -301,7 +306,7 @@ export default function ContactSection() {
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
           >
             <ImageFallback
-              src="/pages/pages/carrying-peace.webp"
+              src={contactImage}
               alt={t("altImage")}
               className="object-contain"
               fill

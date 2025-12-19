@@ -69,4 +69,6 @@ export interface HomePageData {
   title?: LocalizedText;
   description?: LocalizedText;
   sections?: Section[];
+  complaintImage?: string | null;
+  contactImage?: string | null;
 }
