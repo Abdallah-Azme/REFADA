@@ -52,6 +52,13 @@ export interface LocalizedText {
   en: string;
 }
 
+export interface Section {
+  id: number;
+  title: LocalizedText;
+  description: LocalizedText;
+  image?: string | null;
+}
+
 export interface HomePageData {
   slides: HeroSlide[];
   campsCount: number;
@@ -61,4 +68,5 @@ export interface HomePageData {
   ageGroupsCount?: AgeGroupsCount;
   title?: LocalizedText;
   description?: LocalizedText;
+  sections?: Section[];
 }

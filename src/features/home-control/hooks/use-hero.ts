@@ -68,3 +68,52 @@ export function useUpdateAboutSection() {
     },
   });
 }
+
+export function useUpdateSection() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: {
+      sectionIndex: number;
+      allSections: Array<{
+        id: number;
+        title: { ar: string; en: string };
+        description: { ar: string; en: string };
+        image?: string | null;
+      }>;
+      title_ar: string;
+      title_en: string;
+      description_ar: string;
+      description_en: string;
+      image?: File;
+    }) => heroApi.updateSection(data),
+    onSuccess: (response) => {
+      toast.success(response.message || "تم تحديث القسم بنجاح");
+      queryClient.invalidateQueries({ queryKey: ["home-hero"] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "حدث خطأ أثناء تحديث القسم");
+    },
+  });
+}
+
+export function useCreateSection() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: {
+      title_ar: string;
+      title_en: string;
+      description_ar: string;
+      description_en: string;
+      image?: File;
+    }) => heroApi.createSection(data),
+    onSuccess: (response) => {
+      toast.success(response.message || "تم إنشاء القسم بنجاح");
+      queryClient.invalidateQueries({ queryKey: ["home-hero"] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "حدث خطأ أثناء إنشاء القسم");
+    },
+  });
+}

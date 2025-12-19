@@ -167,6 +167,38 @@ export default function DashboardSidebar() {
         },
       ],
     },
+    {
+      label: "السياسات",
+      icon: FileText,
+      href: "#",
+      children: [
+        {
+          label: "الشفافية",
+          href: "/dashboard/admin/home-control/policies/transparency",
+        },
+        {
+          label: "شروط الاستخدام",
+          href: "/dashboard/admin/home-control/policies/terms",
+        },
+        {
+          label: "الخصوصية",
+          href: "/dashboard/admin/home-control/policies/privacy",
+        },
+        {
+          label: "حقوق الملكية",
+          href: "/dashboard/admin/home-control/policies/intellectual-property",
+        },
+        {
+          label: "حدود دور المنصة",
+          href: "/dashboard/admin/home-control/policies/platform-limits",
+        },
+        {
+          label: "حماية الفئات الهشة",
+          href: "/dashboard/admin/home-control/policies/vulnerable-protection",
+        },
+      ],
+    },
+
     // {
     //   label: "السياسات",
     //   icon: FolderOpen,

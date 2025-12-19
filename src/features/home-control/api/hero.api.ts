@@ -219,4 +219,94 @@ export const heroApi = {
       body: formData,
     });
   },
+
+  updateSection: async (data: {
+    sectionIndex: number;
+    allSections: Array<{
+      id: number;
+      title: { ar: string; en: string };
+      description: { ar: string; en: string };
+      image?: string | null;
+    }>;
+    title_ar: string;
+    title_en: string;
+    description_ar: string;
+    description_en: string;
+    image?: File;
+  }): Promise<HeroResponse> => {
+    const formData = new FormData();
+
+    // Only send sections that actually exist in the database (have IDs)
+    data.allSections.forEach((existingSection, idx) => {
+      if (!existingSection?.id) return; // Skip sections without IDs
+
+      const isTarget = idx === data.sectionIndex;
+
+      formData.append(`sections[${idx}][id]`, existingSection.id.toString());
+
+      if (isTarget) {
+        // Use the new values for the target section being edited
+        formData.append(`sections[${idx}][title][ar]`, data.title_ar);
+        formData.append(`sections[${idx}][title][en]`, data.title_en);
+        formData.append(
+          `sections[${idx}][description][ar]`,
+          data.description_ar
+        );
+        formData.append(
+          `sections[${idx}][description][en]`,
+          data.description_en
+        );
+
+        if (data.image) {
+          formData.append(`sections[${idx}][image]`, data.image);
+        }
+      } else {
+        // Keep existing values for other sections
+        formData.append(
+          `sections[${idx}][title][ar]`,
+          existingSection.title?.ar || ""
+        );
+        formData.append(
+          `sections[${idx}][title][en]`,
+          existingSection.title?.en || ""
+        );
+        formData.append(
+          `sections[${idx}][description][ar]`,
+          existingSection.description?.ar || ""
+        );
+        formData.append(
+          `sections[${idx}][description][en]`,
+          existingSection.description?.en || ""
+        );
+      }
+    });
+
+    return apiRequest<HeroResponse>("/homepage/", {
+      method: "POST",
+      body: formData,
+    });
+  },
+
+  createSection: async (data: {
+    title_ar: string;
+    title_en: string;
+    description_ar: string;
+    description_en: string;
+    image?: File;
+  }): Promise<HeroResponse> => {
+    const formData = new FormData();
+    formData.append("title[ar]", data.title_ar);
+    formData.append("title[en]", data.title_en);
+    formData.append("description[ar]", data.description_ar);
+    formData.append("description[en]", data.description_en);
+
+    if (data.image) {
+      formData.append("image", data.image);
+    }
+
+    return apiRequest<HeroResponse>("/homepage/sections", {
+      method: "POST",
+      body: formData,
+    });
+  },
 };
