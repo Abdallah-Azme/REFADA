@@ -69,9 +69,13 @@ export default function Page() {
         {/* Decorative images (fade-in softly) */}
         <ImageDecorations />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 items-stretch">
-          <CampDetailsSection description={camp?.description} />
+          <div className="min-h-[300px]">
+            <CampDetailsSection description={camp?.description} />
+          </div>
 
-          {<CampsMapSection secondary camps={camp ? [camp] : []} />}
+          <div className="min-h-[300px]">
+            <CampsMapSection secondary camps={camp ? [camp] : []} />
+          </div>
 
           <CampStats
             familyCount={camp?.familyCount || 0}

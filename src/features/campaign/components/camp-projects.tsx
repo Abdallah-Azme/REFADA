@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useGovernorates } from "@/features/dashboard/hooks/use-governorates";
 import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 
 export default function CampProjects({
   camps = [],
@@ -25,6 +26,7 @@ export default function CampProjects({
   camps?: Camp[];
   dashboard?: boolean;
 }) {
+  const t = useTranslations("camp_projects");
   const form = useForm({
     defaultValues: {
       region: "",
@@ -34,7 +36,8 @@ export default function CampProjects({
     },
   });
 
-  const { data: governoratesData, isLoading: isLoadingGovernorates } = useGovernorates();
+  const { data: governoratesData, isLoading: isLoadingGovernorates } =
+    useGovernorates();
   const watchedValues = form.watch();
 
   // Get unique governorates from camps and API
@@ -75,16 +78,19 @@ export default function CampProjects({
     if (watchedValues.region) {
       filtered = filtered.filter((camp) => {
         if (!camp.governorate) return false;
-        const governorateName = typeof camp.governorate === "string" 
-          ? camp.governorate 
-          : camp.governorate.name;
+        const governorateName =
+          typeof camp.governorate === "string"
+            ? camp.governorate
+            : camp.governorate.name;
         return governorateName === watchedValues.region;
       });
     }
 
     // Filter by camp name (shelterName)
     if (watchedValues.shelterName) {
-      filtered = filtered.filter((camp) => camp.name === watchedValues.shelterName);
+      filtered = filtered.filter(
+        (camp) => camp.name === watchedValues.shelterName
+      );
     }
 
     // Filter by camp title (if needed - this might need to be based on project types or other criteria)
@@ -116,7 +122,7 @@ export default function CampProjects({
         transition={{ delay: 0.2, duration: 0.5 }}
       >
         <Tent className="text-[#4A8279]" />
-        <h1 className="text-xl font-bold text-[#1E1E1E]">الإيواءات</h1>
+        <h1 className="text-xl font-bold text-[#1E1E1E]">{t("title")}</h1>
       </motion.div>
 
       {/* Form Section */}
@@ -127,7 +133,7 @@ export default function CampProjects({
           dir="rtl"
         >
           <p className="text-gray-700 font-medium whitespace-nowrap px-2">
-            بحث حسب
+            {t("search_by")}
           </p>
 
           {/* Governorate */}
@@ -139,23 +145,26 @@ export default function CampProjects({
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 focus:ring-0">
-                      <SelectValue placeholder="المحافظة" />
+                      <SelectValue placeholder={t("governorate")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     {isLoadingGovernorates ? (
                       <SelectItem value="loading" disabled>
-                        جاري التحميل...
+                        {t("loading")}
                       </SelectItem>
                     ) : governorates.length > 0 ? (
                       governorates.map((governorate) => (
-                        <SelectItem key={governorate.id || governorate.name} value={governorate.name}>
+                        <SelectItem
+                          key={governorate.id || governorate.name}
+                          value={governorate.name}
+                        >
                           {governorate.name}
                         </SelectItem>
                       ))
                     ) : (
                       <SelectItem value="no-data" disabled>
-                        لا توجد محافظات
+                        {t("no_governorates")}
                       </SelectItem>
                     )}
                   </SelectContent>
@@ -173,7 +182,7 @@ export default function CampProjects({
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 focus:ring-0">
-                      <SelectValue placeholder="اسم الإيواء" />
+                      <SelectValue placeholder={t("shelter_name")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -185,7 +194,7 @@ export default function CampProjects({
                       ))
                     ) : (
                       <SelectItem value="no-data" disabled>
-                        لا توجد إيواءات
+                        {t("no_shelters")}
                       </SelectItem>
                     )}
                   </SelectContent>
@@ -203,12 +212,14 @@ export default function CampProjects({
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 focus:ring-0">
-                      <SelectValue placeholder="عنوان الإيواء" />
+                      <SelectValue placeholder={t("shelter_title")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="الإعمار">الإعمار</SelectItem>
-                    <SelectItem value="الإغاثة">الإغاثة</SelectItem>
+                    <SelectItem value="reconstruction">
+                      {t("reconstruction")}
+                    </SelectItem>
+                    <SelectItem value="relief">{t("relief")}</SelectItem>
                   </SelectContent>
                 </Select>
               </FormItem>
@@ -222,18 +233,20 @@ export default function CampProjects({
             className="flex items-center gap-1 bg-[#CBBF8C] text-gray-800 hover:bg-[#b2a672] transition-colors h-10 px-4"
           >
             <Search className="w-4 h-4" />
-            بحث
+            {t("search")}
           </Button>
 
           {/* Clear Filters Button */}
-          {(watchedValues.region || watchedValues.shelterName || watchedValues.campTitle) && (
+          {(watchedValues.region ||
+            watchedValues.shelterName ||
+            watchedValues.campTitle) && (
             <Button
               type="button"
               onClick={handleClearFilters}
               variant="outline"
               className="flex items-center gap-1 h-10 px-4 border-gray-300"
             >
-              مسح
+              {t("clear")}
             </Button>
           )}
         </form>
@@ -246,7 +259,7 @@ export default function CampProjects({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
       >
-        ساهم بتبرعك في تغيير حياة محتاج، فبعطائك يُزرع الأمل ويستمر الأثر 🌱
+        {t("donation_message")}
       </motion.p>
 
       {/* Camps Grid */}
@@ -269,9 +282,11 @@ export default function CampProjects({
       ) : (
         <div className="text-center py-12 mt-8">
           <p className="text-gray-500 text-lg">
-            {watchedValues.region || watchedValues.shelterName || watchedValues.campTitle
-              ? "لا توجد نتائج مطابقة للبحث"
-              : "لا توجد إيواءات متاحة"}
+            {watchedValues.region ||
+            watchedValues.shelterName ||
+            watchedValues.campTitle
+              ? t("no_matching_results")
+              : t("no_camps_available")}
           </p>
         </div>
       )}

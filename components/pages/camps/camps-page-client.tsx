@@ -26,7 +26,7 @@ export default function CampsPageClient({ camps }: CampsPageClientProps) {
         <Breadcrumb
           items={[
             { name: t("home"), href: "/" },
-            { name: t("camps"), href: "#" },
+            { name: t("camps_nav"), href: "#" },
           ]}
         />
       </motion.div>

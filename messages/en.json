@@ -233,5 +233,22 @@
       "camp_img_invalid": "Shelter image must be a valid file or URL",
       "occupancy_error": "Current occupancy cannot exceed total capacity"
     }
+  },
+  "camp_projects": {
+    "title": "Shelters",
+    "search_by": "Search by",
+    "governorate": "Governorate",
+    "loading": "Loading...",
+    "no_governorates": "No governorates available",
+    "shelter_name": "Shelter Name",
+    "no_shelters": "No shelters available",
+    "shelter_title": "Shelter Title",
+    "reconstruction": "Reconstruction",
+    "relief": "Relief",
+    "search": "Search",
+    "clear": "Clear",
+    "donation_message": "Contribute with your donation to change the life of someone in need. With your giving, hope is planted and impact continues 🌱",
+    "no_matching_results": "No matching results found",
+    "no_camps_available": "No shelters available"
   }
 }
