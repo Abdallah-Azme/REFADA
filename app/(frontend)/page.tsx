@@ -87,7 +87,7 @@ export default async function Home() {
         description={homePageData.description?.ar}
       />
       <div className="-mt-20 z-10">
-        <PolicySection />
+        <PolicySection sections={homePageData.sections} />
         <PartnersSection partners={partners} />
       </div>
       <CampsSection camps={camps} />
