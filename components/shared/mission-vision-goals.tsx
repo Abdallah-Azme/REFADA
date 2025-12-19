@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ShieldCheck, Eye, Target } from "lucide-react";
 import { motion } from "framer-motion";
 import ImageFallback from "./image-fallback";
-import { usePages } from "@/features/pages/hooks/use-pages";
+import { usePages, useAboutUs } from "@/features/pages/hooks/use-pages";
 
 // Animation Variants
 const containerVariants = {
@@ -26,13 +26,19 @@ const cardVariants = {
 };
 
 export default function MissionVisionGoals() {
-  const { data: pagesData, isLoading } = usePages();
+  const { data: pagesData, isLoading: pagesLoading } = usePages();
+  const { data: aboutUsData, isLoading: aboutLoading } = useAboutUs();
+
+  const isLoading = pagesLoading || aboutLoading;
 
   // Get mission, vision, goals data from API
   const pages = pagesData?.data || [];
   const mission = pages.find((p) => p.pageType === "mission");
   const vision = pages.find((p) => p.pageType === "vision");
   const goals = pages.find((p) => p.pageType === "goals");
+
+  const sectionImage =
+    aboutUsData?.data?.second_image || "/pages/pages/hand-carrying-hope.webp";
 
   // Loading skeleton
   const LoadingSkeleton = () => (
@@ -76,7 +82,7 @@ export default function MissionVisionGoals() {
       >
         <div className="relative max-w-sm">
           <ImageFallback
-            src="/pages/pages/hand-carrying-hope.webp"
+            src={sectionImage}
             alt="hands holding ribbon"
             width={450}
             height={490}

@@ -10,18 +10,25 @@ import { motion } from "framer-motion";
 import { Info } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { useAboutUs } from "@/features/pages/hooks/use-pages";
+import { useHero } from "@/features/home-control/hooks/use-hero";
 
 export default function Page() {
   const t = useTranslations();
   const locale = useLocale();
   const { data: aboutUsData, isLoading } = useAboutUs();
+  const { data: homePageData } = useHero();
 
   // Get localized content
   const title =
     aboutUsData?.data?.title?.[locale as "ar" | "en"] || t("aboutus");
   const description =
     aboutUsData?.data?.description?.[locale as "ar" | "en"] || "";
-  const image = aboutUsData?.data?.image || "/pages/pages/shaking-hands.webp";
+
+  const mainImage =
+    aboutUsData?.data?.image || "/pages/pages/shaking-hands.webp";
+  const secondImage =
+    aboutUsData?.data?.second_image || "/pages/pages/shaking-hands.webp";
+  const sections = homePageData?.data?.sections || [];
 
   return (
     <section className="flex flex-col gap-8 sm:gap-12 container mx-auto px-4">
@@ -108,12 +115,12 @@ export default function Page() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="flex-1 relative hidden sm:block min-h-[300px]"
           >
-            <ImageFallback src={image} fill alt={title} />
+            <ImageFallback src={mainImage} fill alt={title} />
           </motion.div>
         </div>
       </motion.div>
 
-      <PolicySection secondary />
+      <PolicySection secondary sections={sections} />
       <MissionVisionGoals />
       <PartnersSection secondary />
     </section>

@@ -40,6 +40,8 @@ const aboutSchema = z.object({
   }),
   image: z.string().optional(),
   imageFile: z.any().optional(),
+  secondImage: z.string().optional(),
+  secondImageFile: z.any().optional(),
 });
 
 type AboutFormValues = z.infer<typeof aboutSchema>;
@@ -76,6 +78,7 @@ export default function AboutControlPage() {
       title: { ar: "", en: "" },
       description: { ar: "", en: "" },
       image: "",
+      secondImage: "",
     },
   });
 
@@ -90,7 +93,8 @@ export default function AboutControlPage() {
           ar: aboutData.data.description.ar,
           en: aboutData.data.description.en,
         },
-        image: aboutData.data.image,
+        image: aboutData.data.image || "",
+        secondImage: aboutData.data.second_image || "",
       });
     }
   }, [aboutData, form]);
@@ -104,6 +108,10 @@ export default function AboutControlPage() {
 
     if (data.imageFile) {
       formData.append("image", data.imageFile);
+    }
+
+    if (data.secondImageFile) {
+      formData.append("second_image", data.secondImageFile);
     }
 
     updateAbout(formData);
@@ -264,6 +272,48 @@ export default function AboutControlPage() {
                               const file = e.target.files?.[0];
                               if (file) {
                                 form.setValue("imageFile", file);
+                                // Optional: Update preview immediately
+                                const reader = new FileReader();
+                                reader.onload = (event) => {
+                                  field.onChange(
+                                    event.target?.result as string
+                                  );
+                                };
+                                reader.readAsDataURL(file);
+                              }
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="pt-4 border-t">
+                  <FormField
+                    control={form.control}
+                    name="secondImage"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>الصورة الثانية الحالية</FormLabel>
+                        {field.value && (
+                          <div className="mb-4">
+                            <img
+                              src={field.value}
+                              alt="Current Second"
+                              className="max-w-[200px] rounded-md border"
+                            />
+                          </div>
+                        )}
+                        <FormControl>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                form.setValue("secondImageFile", file);
                                 // Optional: Update preview immediately
                                 const reader = new FileReader();
                                 reader.onload = (event) => {

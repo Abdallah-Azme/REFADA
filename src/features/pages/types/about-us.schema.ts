@@ -10,7 +10,9 @@ export const aboutUsSchema = z.object({
     ar: z.string(),
     en: z.string(),
   }),
-  image: z.string(),
+  image: z.string().nullable().optional(),
+  second_image: z.string().nullable().optional(),
+  file: z.string().nullable().optional(),
 });
 
 export type AboutUsData = z.infer<typeof aboutUsSchema>;
