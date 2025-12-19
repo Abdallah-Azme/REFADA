@@ -1,4 +1,8 @@
 import { PendingUser } from "../types/pending-users.schema";
+import {
+  CreateRepresentativeFormValues,
+  CreateRepresentativeResponse,
+} from "../types/create-representative.schema";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
@@ -49,4 +53,40 @@ export async function getRepresentativesApi(): Promise<RepresentativesResponse> 
       method: "GET",
     }
   );
+}
+
+export async function createRepresentativeApi(
+  data: CreateRepresentativeFormValues
+): Promise<CreateRepresentativeResponse> {
+  const formData = new FormData();
+  formData.append("name", data.name);
+  formData.append("email", data.email);
+  formData.append("phone", data.phone);
+  formData.append("id_number", data.id_number);
+  formData.append("role", "delegate");
+  formData.append("password", data.password);
+  formData.append("password_confirmation", data.password_confirmation);
+  if (data.backup_phone) formData.append("backup_phone", data.backup_phone);
+  if (data.admin_position)
+    formData.append("admin_position", data.admin_position);
+  formData.append("license_number", data.license_number);
+  formData.append("camp_id", data.camp_id);
+
+  return apiRequest<CreateRepresentativeResponse>("/admin/users", {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export interface DeleteRepresentativeResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function deleteRepresentativeApi(
+  id: number
+): Promise<DeleteRepresentativeResponse> {
+  return apiRequest<DeleteRepresentativeResponse>(`/admin/users/${id}`, {
+    method: "DELETE",
+  });
 }

@@ -21,12 +21,14 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import React from "react";
+import React, { useState } from "react";
 import { createPendingDelegatesColumns } from "../table-cols/admin-representatives-cols";
 import PaginationControls from "./pagination-controls";
 import { useRepresentatives } from "@/features/representatives/hooks/use-representatives";
+import { useDeleteRepresentative } from "@/features/representatives/hooks/use-delete-representative";
 import { PendingUser } from "@/features/representatives/types/pending-users.schema";
 import { Loader2 } from "lucide-react";
+import { DeleteConfirmDialog } from "@/features/marital-status";
 
 export default function AdminRepresentativesTable() {
   const t = useTranslations();
@@ -41,13 +43,34 @@ export default function AdminRepresentativesTable() {
     pageSize: 10,
   });
 
+  // Delete state
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deletingUser, setDeletingUser] = useState<PendingUser | null>(null);
+
   // Fetch all delegates
   const { data: response, isLoading, error } = useRepresentatives();
+  const deleteMutation = useDeleteRepresentative();
 
   // Filter only approved delegates for this view
   const data = React.useMemo(() => {
     return response?.data?.filter((user) => user.status === "approved") || [];
   }, [response]);
+
+  const handleDelete = (user: PendingUser) => {
+    setDeletingUser(user);
+    setDeleteOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deletingUser) {
+      deleteMutation.mutate(deletingUser.id, {
+        onSuccess: () => {
+          setDeleteOpen(false);
+          setDeletingUser(null);
+        },
+      });
+    }
+  };
 
   const table = useReactTable<PendingUser>({
     data,
@@ -55,6 +78,7 @@ export default function AdminRepresentativesTable() {
       {
         onApprove: () => {}, // No-op, actions hidden for approved users
         onReject: () => {}, // No-op
+        onDelete: handleDelete,
       },
       t
     ),
@@ -78,7 +102,7 @@ export default function AdminRepresentativesTable() {
     return (
       <div className="rounded-lg bg-white p-8 flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="mr-2">جاري التحميل...</span>
+        <span className="mr-2">{t("representatives.loading")}</span>
       </div>
     );
   }
@@ -86,73 +110,88 @@ export default function AdminRepresentativesTable() {
   if (error) {
     return (
       <div className="rounded-lg bg-white p-8 text-center text-red-600">
-        حدث خطأ أثناء تحميل البيانات
+        {t("representatives.error_loading")}
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg bg-white">
-      <div className="w-full overflow-x-auto">
-        <Table className="min-w-[960px]">
-          <TableHeader className="bg-gray-50">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+    <>
+      <div className="rounded-lg bg-white">
+        <div className="w-full overflow-x-auto">
+          <Table className="min-w-[960px]">
+            <TableHeader className="bg-gray-50">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={
-                    createPendingDelegatesColumns(
-                      {
-                        onApprove: () => {},
-                        onReject: () => {},
-                      },
-                      t
-                    ).length
-                  }
-                  className="h-24 text-center"
-                >
-                  لا يوجد مندوبين معتمدين.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={
+                      createPendingDelegatesColumns(
+                        {
+                          onApprove: () => {},
+                          onReject: () => {},
+                          onDelete: () => {},
+                        },
+                        t
+                      ).length
+                    }
+                    className="h-24 text-center"
+                  >
+                    {t("representatives.no_representatives")}
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+
+        <div className="flex items-center justify-center px-2 py-4">
+          <PaginationControls table={table} />
+        </div>
       </div>
 
-      <div className="flex items-center justify-center px-2 py-4">
-        <PaginationControls table={table} />
-      </div>
-    </div>
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        onConfirm={handleConfirmDelete}
+        title={t("representatives.delete_title")}
+        description={t("representatives.delete_description", {
+          name: deletingUser?.name || "",
+        })}
+        isPending={deleteMutation.isPending}
+      />
+    </>
   );
 }

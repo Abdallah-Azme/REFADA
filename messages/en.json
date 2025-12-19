@@ -198,7 +198,8 @@
     },
     "actions_labels": {
       "approve": "Approve",
-      "reject": "Reject"
+      "reject": "Reject",
+      "delete": "Delete"
     }
   },
   "camps": {
@@ -250,5 +251,60 @@
     "donation_message": "Contribute with your donation to change the life of someone in need. With your giving, hope is planted and impact continues 🌱",
     "no_matching_results": "No matching results found",
     "no_camps_available": "No shelters available"
+  },
+  "representatives": {
+    "page_title": "Manage Representatives",
+    "list_title": "Representatives List",
+    "add_representative": "Add Representative",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "national_id": "National ID",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "backup_phone": "Backup Phone",
+    "license_number": "License Number",
+    "camp": "Camp",
+    "adding": "Adding...",
+    "success_add": "Representative added successfully",
+    "error_add": "Error adding representative",
+    "no_representatives": "No approved representatives",
+    "loading": "Loading...",
+    "error_loading": "Error loading data",
+    "delete_title": "Delete Representative",
+    "delete_description": "Are you sure you want to delete the representative \"{name}\"? This action cannot be undone."
+  },
+  "contributors": {
+    "page_title": "Manage Contributors",
+    "list_title": "Contributors List",
+    "add_contributor": "Add Contributor",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "national_id": "National ID",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "backup_phone": "Backup Phone",
+    "license_number": "License Number",
+    "adding": "Adding...",
+    "success_add": "Contributor added successfully",
+    "error_add": "Error adding contributor",
+    "no_contributors": "No approved contributors",
+    "loading": "Loading...",
+    "error_loading": "Error loading data",
+    "delete": "Delete",
+    "delete_title": "Delete Contributor",
+    "delete_description": "Are you sure you want to delete the contributor \"{name}\"? This action cannot be undone.",
+    "table_name": "Name",
+    "table_email": "Email",
+    "table_phone": "Phone",
+    "table_id_number": "National ID",
+    "table_license_number": "License Number",
+    "table_status": "Status",
+    "table_created_at": "Registration Date",
+    "table_actions": "Actions",
+    "status_approved": "Approved",
+    "status_pending": "Pending",
+    "status_rejected": "Rejected"
   }
 }

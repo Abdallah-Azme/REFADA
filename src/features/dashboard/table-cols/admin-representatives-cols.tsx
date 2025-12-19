@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Check, X } from "lucide-react";
+import { ArrowUpDown, Check, X, Trash2 } from "lucide-react";
 import { PendingUser } from "@/features/representatives/types/pending-users.schema";
 
 type ActionHandlers = {
   onApprove: (user: PendingUser) => void;
   onReject: (user: PendingUser) => void;
+  onDelete?: (user: PendingUser) => void;
 };
 
 export const createPendingDelegatesColumns = (
@@ -183,33 +184,53 @@ export const createPendingDelegatesColumns = (
     cell: ({ row }) => {
       const user = row.original;
       const isPending = user.status === "pending";
+      const isApproved = user.status === "approved";
 
-      if (!isPending) return null;
+      if (isPending) {
+        return (
+          <div className="flex items-center justify-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 gap-1 bg-green-50 text-green-600 hover:bg-green-100 hover:text-green-700"
+              onClick={() => handlers.onApprove(user)}
+              title={t("table.actions_labels.approve")}
+            >
+              <Check className="h-4 w-4" />
+              {t("table.actions_labels.approve")}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 gap-1 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
+              onClick={() => handlers.onReject(user)}
+              title={t("table.actions_labels.reject")}
+            >
+              <X className="h-4 w-4" />
+              {t("table.actions_labels.reject")}
+            </Button>
+          </div>
+        );
+      }
 
-      return (
-        <div className="flex items-center justify-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 gap-1 bg-green-50 text-green-600 hover:bg-green-100 hover:text-green-700"
-            onClick={() => handlers.onApprove(user)}
-            title={t("table.actions_labels.approve")}
-          >
-            <Check className="h-4 w-4" />
-            {t("table.actions_labels.approve")}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 gap-1 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
-            onClick={() => handlers.onReject(user)}
-            title={t("table.actions_labels.reject")}
-          >
-            <X className="h-4 w-4" />
-            {t("table.actions_labels.reject")}
-          </Button>
-        </div>
-      );
+      if (isApproved && handlers.onDelete) {
+        return (
+          <div className="flex items-center justify-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 gap-1 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
+              onClick={() => handlers.onDelete!(user)}
+              title={t("table.actions_labels.delete")}
+            >
+              <Trash2 className="h-4 w-4" />
+              {t("table.actions_labels.delete")}
+            </Button>
+          </div>
+        );
+      }
+
+      return null;
     },
     enableSorting: false,
     enableHiding: false,

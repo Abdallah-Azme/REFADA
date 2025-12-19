@@ -1,15 +1,33 @@
+"use client";
+
+import { Users } from "lucide-react";
+import MainHeader from "@/src/shared/components/main-header";
 import AdminContributorsTable from "@/features/dashboard/components/admin-contributors-table";
-import { Button } from "@/components/ui/button";
+import AddContributorDialog from "@/src/features/contributors/components/add-contributor-dialog";
+import { useTranslations } from "next-intl";
 
 export default function AdminContributorsPage() {
+  const t = useTranslations("contributors");
+
   return (
-    <section className="p-7 flex flex-col gap-4">
+    <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">إدارة المساهمين</h1>
-        <Button>إضافة مساهم جديد</Button>
+        <MainHeader header={t("page_title")}>
+          <Users className="text-primary" />
+        </MainHeader>
+
+        <AddContributorDialog />
       </div>
 
-      <AdminContributorsTable />
-    </section>
+      {/* Content */}
+      <div className="w-full bg-white rounded-xl p-6">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">
+          {t("list_title")}
+        </h3>
+
+        <AdminContributorsTable />
+      </div>
+    </div>
   );
 }

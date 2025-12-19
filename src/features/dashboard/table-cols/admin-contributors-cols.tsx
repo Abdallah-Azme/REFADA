@@ -241,124 +241,178 @@ export const createAdminContributorColumns = (
 
 import { PendingUser } from "@/features/representatives/types/pending-users.schema";
 
-export const createApprovedContributorsColumns =
-  (): ColumnDef<PendingUser>[] => [
-    {
-      accessorKey: "name",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            الاسم
-            <ArrowUpDown className="ms-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => (
-        <div className="text-right font-medium">{row.original.name}</div>
-      ),
-    },
+type ApprovedContributorsActionHandlers = {
+  onDelete?: (user: PendingUser) => void;
+};
 
-    {
-      accessorKey: "email",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            البريد الإلكتروني
-            <ArrowUpDown className="ms-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => <div className="text-right">{row.original.email}</div>,
+export const createApprovedContributorsColumns = (
+  handlers?: ApprovedContributorsActionHandlers,
+  t?: any
+): ColumnDef<PendingUser>[] => [
+  {
+    accessorKey: "name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {t ? t("contributors.table_name") : "الاسم"}
+          <ArrowUpDown className="ms-2 h-4 w-4" />
+        </Button>
+      );
     },
+    cell: ({ row }) => (
+      <div className="text-right font-medium">{row.original.name}</div>
+    ),
+  },
 
-    {
-      accessorKey: "phone",
-      header: () => <div className="text-center font-semibold">رقم الهاتف</div>,
-      cell: ({ row }) => (
-        <div className="text-center">{row.original.phone}</div>
-      ),
+  {
+    accessorKey: "email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {t ? t("contributors.table_email") : "البريد الإلكتروني"}
+          <ArrowUpDown className="ms-2 h-4 w-4" />
+        </Button>
+      );
     },
+    cell: ({ row }) => <div className="text-right">{row.original.email}</div>,
+  },
 
-    {
-      accessorKey: "idNumber",
-      header: () => <div className="text-center font-semibold">رقم الهوية</div>,
-      cell: ({ row }) => (
-        <div className="text-center">{row.original.idNumber}</div>
-      ),
+  {
+    accessorKey: "phone",
+    header: () => (
+      <div className="text-center font-semibold">
+        {t ? t("contributors.table_phone") : "رقم الهاتف"}
+      </div>
+    ),
+    cell: ({ row }) => <div className="text-center">{row.original.phone}</div>,
+  },
+
+  {
+    accessorKey: "idNumber",
+    header: () => (
+      <div className="text-center font-semibold">
+        {t ? t("contributors.table_id_number") : "رقم الهوية"}
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="text-center">{row.original.idNumber}</div>
+    ),
+  },
+
+  {
+    accessorKey: "licenseNumber",
+    header: () => (
+      <div className="text-center font-semibold">
+        {t ? t("contributors.table_license_number") : "رقم الترخيص"}
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="text-center">{row.original.licenseNumber || "-"}</div>
+    ),
+  },
+
+  {
+    accessorKey: "status",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {t ? t("contributors.table_status") : "الحالة"}
+          <ArrowUpDown className="ms-2 h-4 w-4" />
+        </Button>
+      );
     },
-
-    {
-      accessorKey: "licenseNumber",
-      header: () => (
-        <div className="text-center font-semibold">رقم الترخيص</div>
-      ),
-      cell: ({ row }) => (
-        <div className="text-center">{row.original.licenseNumber || "-"}</div>
-      ),
-    },
-
-    {
-      accessorKey: "status",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            الحالة
-            <ArrowUpDown className="ms-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        const status = row.original.status;
-        return (
-          <div className="flex justify-center">
-            <Badge
-              variant={status === "approved" ? "default" : "secondary"}
-              className={
-                status === "approved"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : status === "pending"
-                  ? "bg-yellow-500 hover:bg-yellow-600"
-                  : "bg-red-500 hover:bg-red-600"
-              }
-            >
-              {status === "approved"
-                ? "مقبول"
+    cell: ({ row }) => {
+      const status = row.original.status;
+      return (
+        <div className="flex justify-center">
+          <Badge
+            variant={status === "approved" ? "default" : "secondary"}
+            className={
+              status === "approved"
+                ? "bg-green-500 hover:bg-green-600"
                 : status === "pending"
-                ? "قيد الانتظار"
-                : "مرفوض"}
-            </Badge>
+                ? "bg-yellow-500 hover:bg-yellow-600"
+                : "bg-red-500 hover:bg-red-600"
+            }
+          >
+            {status === "approved"
+              ? t
+                ? t("contributors.status_approved")
+                : "مقبول"
+              : status === "pending"
+              ? t
+                ? t("contributors.status_pending")
+                : "قيد الانتظار"
+              : t
+              ? t("contributors.status_rejected")
+              : "مرفوض"}
+          </Badge>
+        </div>
+      );
+    },
+  },
+
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {t ? t("contributors.table_created_at") : "تاريخ التسجيل"}
+          <ArrowUpDown className="ms-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const date = new Date(row.original.createdAt);
+      return (
+        <div className="text-center">{date.toLocaleDateString("ar-EG")}</div>
+      );
+    },
+  },
+
+  {
+    id: "actions",
+    header: () => (
+      <div className="text-center font-semibold">
+        {t ? t("contributors.table_actions") : "الإجراءات"}
+      </div>
+    ),
+    cell: ({ row }) => {
+      const user = row.original;
+      const isApproved = user.status === "approved";
+
+      if (isApproved && handlers?.onDelete) {
+        return (
+          <div className="flex items-center justify-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 gap-1 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
+              onClick={() => handlers.onDelete!(user)}
+              title={t ? t("contributors.delete") : "حذف"}
+            >
+              <Trash2 className="h-4 w-4" />
+              {t ? t("contributors.delete") : "حذف"}
+            </Button>
           </div>
         );
-      },
-    },
+      }
 
-    {
-      accessorKey: "createdAt",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            تاريخ التسجيل
-            <ArrowUpDown className="ms-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        const date = new Date(row.original.createdAt);
-        return (
-          <div className="text-center">{date.toLocaleDateString("ar-EG")}</div>
-        );
-      },
+      return null;
     },
-  ];
+    enableSorting: false,
+    enableHiding: false,
+  },
+];

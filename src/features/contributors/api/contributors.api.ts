@@ -1,4 +1,9 @@
 import { PendingUser } from "@/features/representatives/types/pending-users.schema";
+import {
+  CreateContributorFormValues,
+  CreateContributorResponse,
+  DeleteContributorResponse,
+} from "../types/create-contributor.schema";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
@@ -49,4 +54,33 @@ export async function getContributorsApi(): Promise<ContributorsResponse> {
       method: "GET",
     }
   );
+}
+
+export async function createContributorApi(
+  data: CreateContributorFormValues
+): Promise<CreateContributorResponse> {
+  const formData = new FormData();
+  formData.append("name", data.name);
+  formData.append("email", data.email);
+  formData.append("phone", data.phone);
+  formData.append("id_number", data.id_number);
+  formData.append("role", "contributor");
+  formData.append("password", data.password);
+  formData.append("password_confirmation", data.password_confirmation);
+  if (data.backup_phone) formData.append("backup_phone", data.backup_phone);
+  if (data.license_number)
+    formData.append("license_number", data.license_number);
+
+  return apiRequest<CreateContributorResponse>("/admin/users", {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export async function deleteContributorApi(
+  id: number
+): Promise<DeleteContributorResponse> {
+  return apiRequest<DeleteContributorResponse>(`/admin/users/${id}`, {
+    method: "DELETE",
+  });
 }
