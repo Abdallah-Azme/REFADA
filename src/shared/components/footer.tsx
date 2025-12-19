@@ -10,9 +10,20 @@ import {
   Twitter,
 } from "lucide-react";
 import Link from "next/link";
-import Logo from "../logo";
+import { useWebsiteSettings } from "@/features/home-control/hooks/use-website-settings";
+import Logo from "@/components/logo";
 
 export default function Footer() {
+  const { data: settingsResponse } = useWebsiteSettings();
+  const settings = settingsResponse?.data;
+
+  const socialLinks = [
+    { Icon: Instagram, label: "Instagram", href: settings?.instagram },
+    { Icon: Twitter, label: "Twitter", href: settings?.twitter },
+    { Icon: Facebook, label: "Facebook", href: settings?.facebook },
+    { Icon: Linkedin, label: "LinkedIn", href: settings?.linkedin },
+  ];
+
   return (
     <footer className="bg-[#10201C] text-white pt-10 pb-4  ">
       <div className="container px-4 mx-auto">
@@ -130,25 +141,22 @@ export default function Footer() {
           <div className="flex flex-col items-center md:items-start gap-2 text-sm text-gray-300">
             <div className="flex items-center gap-2">
               <Phone size={16} />
-              <span>+972-22-333-4444</span>
+              <span dir="ltr">{settings?.phone || "+972-22-333-4444"}</span>
             </div>
             <div className="flex items-center gap-2">
               <Mail size={16} />
-              <span>info@hemtna.com</span>
+              <span>{settings?.email || "info@refad.org"}</span>
             </div>
           </div>
 
           {/* Social Icons */}
           <div className="flex items-center gap-4">
-            {[
-              { Icon: Instagram, label: "Instagram", href: "#" },
-              { Icon: Twitter, label: "Twitter", href: "#" },
-              { Icon: Facebook, label: "Facebook", href: "#" },
-              { Icon: Linkedin, label: "LinkedIn", href: "#" },
-            ].map(({ Icon, label, href }) => (
+            {socialLinks.map(({ Icon, label, href }) => (
               <motion.a
                 key={label}
-                href={href}
+                href={href || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.95 }}
                 className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition cursor-pointer"
