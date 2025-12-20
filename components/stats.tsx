@@ -111,7 +111,7 @@ export default function Stats({
         </div>
       </div>
 
-      {/* Age Groups Stats */}
+      {/* Age Groups Stats - 3D Cube Flip */}
       {ageGroupsCount && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -120,7 +120,7 @@ export default function Stats({
           transition={{ duration: 0.6 }}
           className="bg-white rounded-3xl shadow-md p-6 md:p-8"
         >
-          <div className="text-center mb-6">
+          <div className="text-center mb-8">
             <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-2">
               التوزيع العمري للمستفيدين
             </h3>
@@ -129,27 +129,97 @@ export default function Stats({
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
             {(
               Object.entries(ageGroupsCount) as [keyof AgeGroupsCount, number][]
             ).map(([key, value], i) => (
               <motion.div
                 key={key}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl hover:bg-[#C2B693]/10 transition-colors"
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="flex justify-center"
               >
-                <p className="text-xl md:text-2xl font-bold text-[#BDAE8F]">
-                  <Counter value={value} suffix="" />
-                </p>
-                <p className="text-xs md:text-sm text-gray-600 text-center font-medium">
-                  {ageGroupLabels[key]}
-                </p>
+                <div
+                  className="cube-container group cursor-pointer"
+                  style={{
+                    perspective: "600px",
+                    width: "120px",
+                    height: "100px",
+                  }}
+                >
+                  <div
+                    className="cube"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      position: "relative",
+                      transformStyle: "preserve-3d",
+                      transition: "transform 0.6s ease-in-out",
+                    }}
+                  >
+                    {/* Front Face - Number */}
+                    <div
+                      className="cube-face front"
+                      style={{
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background:
+                          "linear-gradient(135deg, #f8f6f3 0%, #efe9df 100%)",
+                        borderRadius: "16px",
+                        boxShadow: "0 4px 15px rgba(189, 174, 143, 0.2)",
+                        border: "2px solid #C2B693",
+                        backfaceVisibility: "hidden",
+                        transform: "translateZ(50px)",
+                      }}
+                    >
+                      <p className="text-2xl md:text-3xl font-bold text-[#BDAE8F]">
+                        <Counter value={value} suffix="" />
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">فرد</p>
+                    </div>
+
+                    {/* Top Face - Label (shown on hover) */}
+                    <div
+                      className="cube-face top"
+                      style={{
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background:
+                          "linear-gradient(135deg, #C2B693 0%, #a89970 100%)",
+                        borderRadius: "16px",
+                        boxShadow: "0 4px 15px rgba(189, 174, 143, 0.3)",
+                        backfaceVisibility: "hidden",
+                        transform: "rotateX(90deg) translateZ(50px)",
+                        padding: "8px",
+                      }}
+                    >
+                      <p className="text-sm md:text-base text-white text-center font-bold leading-tight">
+                        {ageGroupLabels[key]}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
+
+          {/* CSS for hover flip */}
+          <style jsx>{`
+            .cube-container:hover .cube {
+              transform: rotateX(-90deg);
+            }
+          `}</style>
         </motion.div>
       )}
     </section>

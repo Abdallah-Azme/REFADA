@@ -22,7 +22,7 @@ import {
   Redo,
   Link as LinkIcon,
 } from "lucide-react";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 interface RichTextEditorProps {
   content?: string;
@@ -63,6 +63,17 @@ export default function RichTextEditor({
       onChange?.(editor.getHTML());
     },
   });
+
+  // Sync content prop with editor when it changes externally (e.g., from form.reset())
+  useEffect(() => {
+    if (editor && content !== undefined) {
+      // Only update if the content is different from the current editor content
+      const currentContent = editor.getHTML();
+      if (content !== currentContent) {
+        editor.commands.setContent(content);
+      }
+    }
+  }, [editor, content]);
 
   const setLink = useCallback(() => {
     if (!editor) return;

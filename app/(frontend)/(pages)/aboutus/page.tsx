@@ -85,12 +85,12 @@ export default function Page() {
             className="absolute top-0 left-1/4 w-16 h-[78px]"
           />
         </motion.div>
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col lg:flex-row-reverse gap-10 items-start">
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="relative w-full h-[300px] sm:h-[450px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/50"
+            className="relative w-full lg:w-[400px] h-[300px] sm:h-[350px] shrink-0 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/50"
           >
             <ImageFallback
               src={mainImage}
@@ -105,7 +105,7 @@ export default function Page() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="bg-white/50 backdrop-blur-sm p-6 sm:p-10 rounded-3xl shadow-xl border border-white/20"
+            className="flex-1 bg-white/50 backdrop-blur-sm  rounded-3xl "
           >
             <PageSection
               description={
