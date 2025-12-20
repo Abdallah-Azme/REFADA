@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const testimonialSchema = z.object({
-  user_name: z.string().min(2, "اسم المستخدم مطلوب"),
-  user_image: z.any().optional(), // File or string URL
+  userName: z.string().min(2, "اسم المستخدم مطلوب"),
+  userImage: z.any().optional(), // File or string URL
   opinion_ar: z.string().min(5, "الرأي (بالعربية) مطلوب"),
   opinion_en: z.string().min(5, "الرأي (بالنجليزي) مطلوب"),
   order: z
@@ -16,8 +16,8 @@ export type TestimonialFormValues = z.infer<typeof testimonialSchema>;
 
 export interface Testimonial {
   id: number;
-  user_name: string;
-  user_image: string;
+  userName: string;
+  userImage: string;
   opinion: string; // Depending on API, might be localized string or object.
   // Based on other features, it seems backend filters by Accept-Language.
   // But for admin editing, we need both.
@@ -38,10 +38,10 @@ export interface Testimonial {
   // But here we explicitly see `opinion[ar]` and `opinion[en]` in POST.
 
   // Let's assume the response structure for listing:
-  // id, user_name, user_image, opinion (localized), order, ...
+  // id, userName, userImage, opinion (localized), order, ...
   order: number;
-  created_at?: string;
-  updated_at?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // Extended interface for editing if API returns full objects

@@ -305,12 +305,14 @@ export default function ContactSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
           >
-            <ImageFallback
-              src={contactImage}
-              alt={t("altImage")}
-              className="object-contain"
-              fill
-            />
+            <div className="w-full h-full relative rounded-2xl overflow-hidden">
+              <ImageFallback
+                src={contactImage}
+                alt={t("altImage")}
+                className="object-cover"
+                fill
+              />
+            </div>
           </motion.div>
         </div>
       </div>

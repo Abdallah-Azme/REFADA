@@ -54,10 +54,10 @@ export function TestimonialViewDialog({
               </h3>
               <div className="flex items-center gap-6">
                 <div className="relative h-24 w-24 rounded-full border-4 border-white shadow-md overflow-hidden shrink-0">
-                  {testimonial.user_image ? (
+                  {testimonial.userImage ? (
                     <Image
-                      src={testimonial.user_image}
-                      alt={testimonial.user_name}
+                      src={testimonial.userImage}
+                      alt={testimonial.userName}
                       fill
                       className="object-cover"
                     />
@@ -72,7 +72,7 @@ export function TestimonialViewDialog({
                   <div>
                     <p className="text-sm text-gray-500">الاسم</p>
                     <p className="text-xl font-bold text-gray-900">
-                      {testimonial.user_name}
+                      {testimonial.userName}
                     </p>
                   </div>
                   {testimonial.order && (
@@ -105,7 +105,7 @@ export function TestimonialViewDialog({
           </Card>
 
           {/* Date Footer */}
-          {testimonial.created_at && (
+          {testimonial.createdAt && (
             <div className="flex items-center justify-between pt-4 border-t">
               <div className="flex items-center gap-3">
                 <div className="bg-primary/10 p-2 rounded-lg">
@@ -114,7 +114,7 @@ export function TestimonialViewDialog({
                 <div>
                   <p className="text-xs text-gray-500">تاريخ الإضافة</p>
                   <p className="text-sm font-semibold text-gray-900">
-                    {formatDate(testimonial.created_at)}
+                    {formatDate(testimonial.createdAt)}
                   </p>
                 </div>
               </div>

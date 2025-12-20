@@ -2,7 +2,15 @@
 import ImageFallback from "@/components/shared/image-fallback";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { Shield, FileText, Lock, Scale, Globe, Users } from "lucide-react";
+import {
+  Shield,
+  FileText,
+  Lock,
+  Scale,
+  Globe,
+  Users,
+  ArrowLeft,
+} from "lucide-react";
 import Link from "next/link";
 
 interface Section {
@@ -137,15 +145,18 @@ export default function PolicySection({
                   {card.desc && (
                     <div
                       className={cn(
-                        "max-w-[300px] leading-relaxed line-clamp-3",
+                        "max-w-[300px] leading-relaxed",
                         secondary ? "text-[#494949]" : "text-white"
                       )}
                       dangerouslySetInnerHTML={{ __html: card.desc }}
                     />
                   )}
                 </div>
-                <button className="text-secondary w-fit sm:mx-auto font-semibold hover:underline mt-auto pt-2">
-                  <Link href={card.href}>المزيد</Link>
+                <button className="text-secondary w-fit sm:mx-auto font-semibold hover:underline mt-auto pt-2 group">
+                  <Link href={card.href} className="flex items-center gap-1">
+                    المزيد
+                    <ArrowLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" />
+                  </Link>
                 </button>
               </motion.div>
             );

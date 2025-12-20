@@ -48,11 +48,11 @@ export function TestimonialFormDialog({
   const form = useForm<TestimonialFormValues>({
     resolver: zodResolver(testimonialSchema),
     defaultValues: {
-      user_name: "",
+      userName: "",
       opinion_ar: "",
       opinion_en: "",
       order: 0,
-      user_image: undefined,
+      userImage: undefined,
     },
   });
 
@@ -75,22 +75,22 @@ export function TestimonialFormDialog({
       const opinionEn = (initialData as any).opinion_en || ""; // Might be missing
 
       form.reset({
-        user_name: initialData.user_name,
+        userName: initialData.userName,
         opinion_ar: opinionAr,
         opinion_en: opinionEn,
         order: initialData.order || 0,
       });
 
-      if (initialData.user_image) {
-        setImagePreview(initialData.user_image);
+      if (initialData.userImage) {
+        setImagePreview(initialData.userImage);
       }
     } else {
       form.reset({
-        user_name: "",
+        userName: "",
         opinion_ar: "",
         opinion_en: "",
         order: 0,
-        user_image: undefined,
+        userImage: undefined,
       });
       setImagePreview(null);
     }
@@ -99,7 +99,7 @@ export function TestimonialFormDialog({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      form.setValue("user_image", file);
+      form.setValue("userImage", file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -133,7 +133,7 @@ export function TestimonialFormDialog({
             <div className="space-y-4">
               <FormField
                 control={form.control}
-                name="user_name"
+                name="userName"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>اسم المستخدم</FormLabel>
@@ -148,7 +148,7 @@ export function TestimonialFormDialog({
               {/* Image Upload */}
               <FormField
                 control={form.control}
-                name="user_image"
+                name="userImage"
                 render={({ field: { value, onChange, ...field } }) => (
                   <FormItem>
                     <FormLabel>صورة المستخدم</FormLabel>

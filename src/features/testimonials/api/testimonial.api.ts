@@ -67,9 +67,9 @@ export const testimonialApi = {
 
   create: async (data: TestimonialFormValues): Promise<TestimonialResponse> => {
     const formData = new FormData();
-    formData.append("user_name", data.user_name);
-    if (data.user_image instanceof File) {
-      formData.append("user_image", data.user_image);
+    formData.append("user_name", data.userName);
+    if (data.userImage instanceof File) {
+      formData.append("user_image", data.userImage);
     }
     formData.append("opinion[ar]", data.opinion_ar);
     formData.append("opinion[en]", data.opinion_en);
@@ -88,9 +88,9 @@ export const testimonialApi = {
     data: TestimonialFormValues
   ): Promise<TestimonialResponse> => {
     const formData = new FormData();
-    formData.append("user_name", data.user_name);
-    if (data.user_image instanceof File) {
-      formData.append("user_image", data.user_image);
+    formData.append("user_name", data.userName);
+    if (data.userImage instanceof File) {
+      formData.append("user_image", data.userImage);
     }
     formData.append("opinion[ar]", data.opinion_ar);
     formData.append("opinion[en]", data.opinion_en);

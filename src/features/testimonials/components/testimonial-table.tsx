@@ -64,10 +64,10 @@ export function TestimonialTable<TData, TValue>({
         <Input
           placeholder="البحث بالاسم..."
           value={
-            (table.getColumn("user_name")?.getFilterValue() as string) ?? ""
+            (table.getColumn("userName")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("user_name")?.setFilterValue(event.target.value)
+            table.getColumn("userName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

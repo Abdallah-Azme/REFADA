@@ -17,10 +17,10 @@ export const createTestimonialColumns = (
     cell: ({ row }) => <div className="font-medium">{row.getValue("id")}</div>,
   },
   {
-    accessorKey: "user_image",
+    accessorKey: "userImage",
     header: "الصورة",
     cell: ({ row }) => {
-      const image = row.getValue("user_image") as string;
+      const image = row.getValue("userImage") as string;
       return (
         <div className="h-10 w-10 relative overflow-hidden rounded-full border">
           {image ? (
@@ -45,10 +45,10 @@ export const createTestimonialColumns = (
     },
   },
   {
-    accessorKey: "user_name",
+    accessorKey: "userName",
     header: "الاسم",
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("user_name")}</div>
+      <div className="font-medium">{row.getValue("userName")}</div>
     ),
   },
   {
