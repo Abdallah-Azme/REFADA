@@ -11,12 +11,19 @@ import React, {
 import { useRouter, usePathname } from "next/navigation";
 import { authService } from "@/features/auth";
 import { refreshTokenApi } from "@/features/auth/api";
-import { User } from "@/features/auth/types/auth.schema";
+import { User, AuthTokens } from "@/features/auth/types/auth.schema";
+
+interface LoginData {
+  user: User;
+  tokens: AuthTokens;
+  accessExpiresIn: number;
+}
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  login: (data: LoginData) => void;
   logout: () => void;
   refreshAuthTokens: () => Promise<boolean>;
 }
@@ -148,6 +155,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, [refreshAuthTokens, checkAndRefreshToken]);
 
+  // Login function - stores auth data and updates React state
+  const login = useCallback(
+    (data: LoginData) => {
+      // Store tokens, user data, and token expiry
+      authService.storeTokens(data.tokens);
+      authService.storeUser(data.user);
+      authService.storeTokenExpiry(data.accessExpiresIn);
+
+      // Update React state
+      setUser(data.user);
+
+      // Set up interval to check token expiry
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current);
+      }
+      refreshIntervalRef.current = setInterval(
+        checkAndRefreshToken,
+        CHECK_INTERVAL_MS
+      );
+    },
+    [checkAndRefreshToken]
+  );
+
   const logout = () => {
     // Clear the refresh interval
     if (refreshIntervalRef.current) {
@@ -164,6 +194,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         isAuthenticated: !!user,
         isLoading,
+        login,
         logout,
         refreshAuthTokens,
       }}

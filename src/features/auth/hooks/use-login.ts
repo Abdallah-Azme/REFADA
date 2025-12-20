@@ -2,12 +2,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { loginApi } from "../api";
-import { authService } from "../services/auth.service";
+import { useAuth } from "../context/auth-context";
 import { LoginRequest, ApiErrorResponse } from "../types/auth.schema";
 
 export function useLogin() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { login: contextLogin } = useAuth();
 
   return useMutation({
     mutationFn: (credentials: LoginRequest) => loginApi(credentials),
@@ -21,10 +22,12 @@ export function useLogin() {
         refreshExpiresIn: response.data.refreshExpiresIn,
       };
 
-      // Store tokens, user data, and token expiry
-      authService.storeTokens(tokens);
-      authService.storeUser(response.data.user);
-      authService.storeTokenExpiry(response.data.accessExpiresIn);
+      // Use context login to store auth data AND update React state
+      contextLogin({
+        user: response.data.user,
+        tokens,
+        accessExpiresIn: response.data.accessExpiresIn,
+      });
 
       // Show success message
       toast.success(response.message || "تم تسجيل الدخول بنجاح");

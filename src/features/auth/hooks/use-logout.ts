@@ -2,18 +2,19 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { logoutApi } from "../api";
-import { authService } from "../services/auth.service";
+import { useAuth } from "../context/auth-context";
 import { ApiErrorResponse } from "../types/auth.schema";
 
 export function useLogout() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { logout: contextLogout } = useAuth();
 
   return useMutation({
     mutationFn: () => logoutApi(),
     onSuccess: (response) => {
-      // Clear auth data
-      authService.logout();
+      // Clear auth data using context logout (this also calls authService.logout())
+      contextLogout();
 
       // Clear all queries
       queryClient.clear();
@@ -26,7 +27,7 @@ export function useLogout() {
     },
     onError: (error: ApiErrorResponse) => {
       // Even if API fails, clear local auth data
-      authService.logout();
+      contextLogout();
       queryClient.clear();
 
       toast.error(error.message || "حدث خطأ أثناء تسجيل الخروج");
