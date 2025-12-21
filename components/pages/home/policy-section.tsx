@@ -119,7 +119,7 @@ export default function PolicySection({
               {cards.map((card, i) => {
                 const IconComponent = card.icon;
                 return (
-                  <CarouselItem key={i} className="basis-1/2 pl-2">
+                  <CarouselItem key={i} className="basis-[80%] pl-2">
                     <motion.div
                       initial={{ opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
