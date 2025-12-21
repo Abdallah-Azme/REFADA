@@ -1,13 +1,17 @@
 import { DynamicPageComponent } from "@/features/pages";
 
 // Map titles for known page types to display in header before data loads
+// NOTE: Backend uses mission/vision/goals but these actually represent:
+// - mission → حقوق الملكية (Intellectual Property)
+// - vision → حدود دور المنصة (Platform Limits)
+// - goals → حماية الفئات الهشة (Vulnerable Protection)
 const PAGE_TITLES: Record<string, string> = {
   terms: "شروط الاستخدام",
   privacy: "سياسة الخصوصية",
   transparency: "الشفافية",
-  mission: "رسالتنا",
-  vision: "رؤيتنا",
-  goals: "أهدافنا",
+  mission: "حقوق الملكية",
+  vision: "حدود دور المنصة",
+  goals: "حماية الفئات الهشة",
 };
 
 export default async function Page({

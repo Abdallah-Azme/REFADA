@@ -249,11 +249,17 @@ export default function DashboardSidebar() {
           href: "/dashboard/admin/home-control/pages/transparency",
         },
         {
-          label: "رسالتنا",
+          label: "حقوق الملكية",
           href: "/dashboard/admin/home-control/pages/mission",
         },
-        { label: "رؤيتنا", href: "/dashboard/admin/home-control/pages/vision" },
-        { label: "أهدافنا", href: "/dashboard/admin/home-control/pages/goals" },
+        {
+          label: "حدود دور المنصة",
+          href: "/dashboard/admin/home-control/pages/vision",
+        },
+        {
+          label: "حماية الفئات الهشة",
+          href: "/dashboard/admin/home-control/pages/goals",
+        },
       ],
     },
     // {

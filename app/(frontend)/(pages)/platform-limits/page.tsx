@@ -3,7 +3,7 @@
 import { Breadcrumb } from "@/components/shared/breadcrumb";
 import ImageFallback from "@/components/shared/image-fallback";
 import { PageSection } from "@/components/shared/page-section";
-import { useHero } from "@/features/home-control/hooks/use-hero";
+import { usePage } from "@/features/pages/hooks/use-pages";
 import { Globe, Download } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
@@ -11,13 +11,12 @@ import { Button } from "@/shared/ui/button";
 
 export default function Page() {
   const t = useTranslations();
-  const { data: heroData, isLoading } = useHero();
+  // Using "vision" pageType from API (backend naming)
+  const { data: pageData, isLoading } = usePage("vision");
 
-  // Get section at index 4 (platform limits)
-  const section = heroData?.data?.sections?.[4];
-  const title = section?.title?.ar || "حدود دور المنصة";
-  const description = section?.description?.ar || "";
-  const document = section?.image; // Using image field as document URL
+  // Get data from API
+  const title = pageData?.data?.title || "حدود دور المنصة";
+  const description = pageData?.data?.description || "";
 
   return (
     <motion.div
@@ -40,15 +39,32 @@ export default function Page() {
         />
       </motion.div>
 
-      {/* Title */}
+      {/* Title with Download Button */}
       <motion.div
-        className="flex items-center gap-2"
+        className="flex items-center justify-between"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
       >
-        <Globe className="text-[#4A8279]" />
-        <h1 className="text-xl font-bold text-[#1E1E1E]">{title}</h1>
+        <div className="flex items-center gap-2">
+          <Globe className="text-[#4A8279]" />
+          <h1 className="text-xl font-bold text-[#1E1E1E]">{title}</h1>
+        </div>
+
+        {/* Download Document Button */}
+        {pageData?.data?.file && (
+          <a
+            href={pageData.data.file}
+            target="_blank"
+            rel="noopener noreferrer"
+            download
+          >
+            <Button className="gap-2" variant="outline">
+              <Download className="h-5 w-5" />
+              تحميل المستند
+            </Button>
+          </a>
+        )}
       </motion.div>
 
       {/* Decorative images */}
@@ -71,23 +87,6 @@ export default function Page() {
           className="absolute top-0 left-1/4 w-16 h-[78px]"
         />
       </motion.div>
-
-      {/* Download Document Button - Aligned to the end */}
-      {document && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25, duration: 0.5 }}
-          className="flex justify-end"
-        >
-          <a href={document} target="_blank" rel="noopener noreferrer" download>
-            <Button className="gap-2" size="lg">
-              <Download className="h-5 w-5" />
-              تحميل المستند
-            </Button>
-          </a>
-        </motion.div>
-      )}
 
       {/* Content Section */}
       <motion.div
