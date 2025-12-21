@@ -34,7 +34,7 @@ export const createFamilyColumns = (
   },
   {
     accessorKey: "camp",
-    header: "المعسكر",
+    header: "إيواء",
   },
   {
     accessorKey: "tentNumber",

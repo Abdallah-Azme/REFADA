@@ -23,9 +23,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/shared/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/src/shared/ui/select";
 import PaginationControls from "@/features/dashboard/components/pagination-controls";
 import { Search } from "lucide-react";
 import { Family } from "../types/family.schema";
+import { useCamps } from "@/features/camps";
 
 interface FamilyTableProps {
   data: Family[];
@@ -46,6 +54,10 @@ export function FamilyTable({ data, columns }: FamilyTableProps) {
     pageIndex: 0,
     pageSize: 10,
   });
+
+  // Fetch camps for the filter
+  const { data: campsResponse } = useCamps();
+  const camps = campsResponse?.data ?? [];
 
   const table = useReactTable({
     data,
@@ -70,7 +82,8 @@ export function FamilyTable({ data, columns }: FamilyTableProps) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4 bg-white p-4 rounded-t-lg border-b">
+      <div className="flex items-center gap-4 py-4 bg-white p-4 rounded-t-lg border-b">
+        {/* Search by family name */}
         <div className="relative w-full max-w-sm">
           <Search className="absolute right-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -83,6 +96,32 @@ export function FamilyTable({ data, columns }: FamilyTableProps) {
             }
             className="pr-8"
           />
+        </div>
+
+        {/* Filter by camp */}
+        <div className="w-full max-w-[200px]">
+          <Select
+            value={
+              (table.getColumn("camp")?.getFilterValue() as string) ?? "all"
+            }
+            onValueChange={(value) =>
+              table
+                .getColumn("camp")
+                ?.setFilterValue(value === "all" ? "" : value)
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="اختر الإيواء" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">كل الإيواءات</SelectItem>
+              {camps.map((camp) => (
+                <SelectItem key={camp.id} value={camp.name}>
+                  {camp.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <div className="rounded-md border bg-white">
