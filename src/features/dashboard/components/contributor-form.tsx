@@ -44,7 +44,6 @@ export default function ContributorForm() {
   });
 
   const onSubmit = (data: CampFormValues) => {
-    console.log("Form submitted:", data);
     setIsEditing(false);
     // Here you would typically make an API call to save the data
   };

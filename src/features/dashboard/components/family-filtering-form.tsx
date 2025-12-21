@@ -56,9 +56,7 @@ export default function FamilyFilteringForm({
     ageTo: z.date().optional(),
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  function onSubmit(values: z.infer<typeof formSchema>) {}
   return (
     <Form {...form}>
       <form

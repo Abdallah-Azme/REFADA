@@ -34,7 +34,6 @@ export default function PolicyControlPage() {
   });
 
   const onSubmit = (data: PolicyFormValues) => {
-    console.log("Saving policy:", data);
     // Here you would typically save to your backend
     alert("تم حفظ التغييرات بنجاح!");
   };

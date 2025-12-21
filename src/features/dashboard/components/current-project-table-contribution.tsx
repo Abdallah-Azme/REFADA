@@ -85,13 +85,11 @@ export default function CurrentProjectsTableContribution() {
     React.useState(false);
 
   const handleView = (project: Project): void => {
-    console.log("View:", project);
     setSelectedProject(project);
     setIsDialogOpen(true);
   };
 
   const handleContribute = (project: Project): void => {
-    console.log("Contribute:", project);
     setSelectedProject(project);
     setIsContributeDialogOpen(true);
     // If details dialog is open, we might want to close it or keep it open.
@@ -125,9 +123,7 @@ export default function CurrentProjectsTableContribution() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  function onSubmit(values: z.infer<typeof formSchema>) {}
 
   return (
     <div className="rounded-lg bg-white">

@@ -88,7 +88,6 @@ export default function AdminCampsPage() {
 
   const handleToggleStatus = (slug: string) => {
     // TODO: Implement toggle status API call
-    console.log("Toggle status for camp:", slug);
   };
 
   const handleViewCamp = (camp: Camp) => {

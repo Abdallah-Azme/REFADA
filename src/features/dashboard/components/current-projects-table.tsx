@@ -113,7 +113,6 @@ export default function CurrentProjectsTable({
   };
 
   const handleUpdate = (project: Project): void => {
-    console.log("Update status handler - Approve logic?", project);
     // TODO: Wire up approveProjectApi if needed
   };
 

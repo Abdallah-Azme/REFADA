@@ -33,7 +33,6 @@ export default function ProjectsControlPage() {
   });
 
   const onSubmit = (data: ProjectsFormValues) => {
-    console.log("Saving projects section:", data);
     // Here you would typically save to your backend
     alert("تم حفظ التغييرات بنجاح!");
   };

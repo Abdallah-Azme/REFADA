@@ -47,8 +47,7 @@ export default function ContributorSettingsProfileTab() {
   });
 
   const onProfileSubmit = (data: ContributorProfileFormValues) => {
-    console.log("Submitted!", data);
-    setIsEditing(false);
+     setIsEditing(false);
   };
 
   return (

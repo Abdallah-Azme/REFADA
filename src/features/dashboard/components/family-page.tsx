@@ -52,9 +52,7 @@ export default function FamilyPage() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  function onSubmit(values: z.infer<typeof formSchema>) {}
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-100">
       {/* Header */}

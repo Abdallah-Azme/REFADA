@@ -55,7 +55,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return false;
       }
 
-      console.log("Refreshing access token...");
       const response = await refreshTokenApi(refreshToken);
 
       if (response.success && response.data) {
@@ -73,7 +72,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         authService.storeTokenExpiry(response.data.accessExpiresIn);
         setUser(response.data.user);
 
-        console.log("Access token refreshed successfully");
         isRefreshingRef.current = false;
         return true;
       }
@@ -95,7 +93,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!authService.getToken()) return;
 
     if (authService.isTokenExpiringSoon(REFRESH_THRESHOLD_SECONDS)) {
-      console.log("Token expiring soon, refreshing...");
       await refreshAuthTokens();
     }
   }, [refreshAuthTokens]);

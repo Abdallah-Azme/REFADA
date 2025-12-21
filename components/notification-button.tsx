@@ -21,8 +21,6 @@ export default function NotificationButton() {
 
     // Listen for foreground messages
     notificationService.onMessageListener().then((payload: any) => {
-      console.log("Received foreground message:", payload);
-
       toast(payload.notification?.title || "New Notification", {
         description: payload.notification?.body,
       });
@@ -38,7 +36,6 @@ export default function NotificationButton() {
       toast.success("Notifications enabled successfully!");
 
       // TODO: Send token to your backend to store it
-      console.log("FCM Token to save:", fcmToken);
     } else {
       toast.error("Failed to enable notifications");
     }

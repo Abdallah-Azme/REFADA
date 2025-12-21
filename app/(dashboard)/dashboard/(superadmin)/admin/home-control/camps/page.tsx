@@ -33,7 +33,6 @@ export default function CampsControlPage() {
   });
 
   const onSubmit = (data: CampsFormValues) => {
-    console.log("Saving camps section:", data);
     // Here you would typically save to your backend
     alert("تم حفظ التغييرات بنجاح!");
   };

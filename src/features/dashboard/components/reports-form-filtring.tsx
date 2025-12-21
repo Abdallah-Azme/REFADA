@@ -44,9 +44,7 @@ export default function ReportsFormFiltring({
   >;
   formSchema: any;
 }) {
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  function onSubmit(values: z.infer<typeof formSchema>) {}
   return (
     <Form {...form}>
       <form

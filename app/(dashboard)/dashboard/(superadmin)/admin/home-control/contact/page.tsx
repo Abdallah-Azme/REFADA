@@ -37,7 +37,6 @@ export default function ContactControlPage() {
   });
 
   const onSubmit = (data: ContactFormValues) => {
-    console.log("Saving contact info:", data);
     // Here you would typically save to your backend
     alert("تم حفظ التغييرات بنجاح!");
   };

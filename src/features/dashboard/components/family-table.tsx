@@ -89,19 +89,16 @@ export default function FamilyTable() {
   });
 
   const handleEdit = (project: Family): void => {
-    console.log("Edit:", project);
     alert(`تعديل: ${project.id}`);
   };
 
   const handleDelete = (project: Family): void => {
-    console.log("Delete:", project);
     if (confirm(`هل تريد حذف ${project.id}؟`)) {
       alert("تم الحذف");
     }
   };
 
   const handleUpdate = (project: Family): void => {
-    console.log("Approve:", project);
     alert(`تمت الموافقة على: ${project.id}`);
   };
 

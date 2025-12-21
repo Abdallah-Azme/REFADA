@@ -5,7 +5,6 @@ export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Debugging
-  // console.log("Middleware running for:", pathname);
 
   // 1. Check for protected routes (Dashboard)
   if (pathname.startsWith("/dashboard")) {

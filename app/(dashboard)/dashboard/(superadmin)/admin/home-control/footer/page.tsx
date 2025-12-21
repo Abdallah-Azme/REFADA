@@ -59,7 +59,6 @@ export default function FooterControlPage() {
   };
 
   const onSubmit = (data: FooterFormValues) => {
-    console.log("Saving footer:", data);
     // Here you would typically save to your backend
     alert("تم حفظ التغييرات بنجاح!");
   };

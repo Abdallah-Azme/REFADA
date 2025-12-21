@@ -19,8 +19,6 @@ export default function AdminGovernoratesPage() {
   const [selectedGovernorate, setSelectedGovernorate] =
     useState<Governorate | null>(null);
 
-  console.log({ selectedGovernorate });
-
   const createMutation = useCreateGovernorate();
   const updateMutation = useUpdateGovernorate();
 

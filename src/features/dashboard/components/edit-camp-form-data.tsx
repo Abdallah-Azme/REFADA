@@ -44,7 +44,6 @@ export default function EditCampFormData() {
   });
 
   const onSubmit = (data: CampFormValues) => {
-    console.log("Form submitted:", data);
     setIsEditing(false);
   };
 

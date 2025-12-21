@@ -39,8 +39,7 @@ export default function TestimonialsSection({
     api.on("select", () => setCurrent(api.selectedScrollSnap()));
   }, [api]);
 
-  console.log("testimonials", testimonials);
-  // Optionally hide if empty
+   // Optionally hide if empty
   if (testimonials.length === 0) return null;
 
   return (

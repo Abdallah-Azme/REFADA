@@ -88,13 +88,11 @@ export default function ContributionTable() {
     React.useState(false);
 
   const handleView = (project: Project): void => {
-    console.log("View:", project);
     setSelectedProject(project);
     setIsDialogOpen(true);
   };
 
   const handleContribute = (project: Project): void => {
-    console.log("Contribute:", project);
     setSelectedProject(project);
     setIsContributeDialogOpen(true);
     // Close details dialog if open to prevent stacking
@@ -127,9 +125,7 @@ export default function ContributionTable() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  function onSubmit(values: z.infer<typeof formSchema>) {}
 
   return (
     <div className="w-full p-6 bg-white rounded-lg min-h-screen bg" dir="rtl">

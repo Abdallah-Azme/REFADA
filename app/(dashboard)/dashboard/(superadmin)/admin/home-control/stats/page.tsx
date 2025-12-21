@@ -57,8 +57,7 @@ export default function StatsControlPage() {
   };
 
   const onSubmit = (data: StatsFormValues) => {
-    console.log("Saving stats:", data);
-    // Here you would typically save to your backend
+     // Here you would typically save to your backend
     alert("تم حفظ التغييرات بنجاح!");
   };
 

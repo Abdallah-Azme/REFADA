@@ -8,7 +8,6 @@ function findUrls(items, prefix = "") {
   items.forEach((item) => {
     if (item.request) {
       if (item.request.url && item.request.url.raw) {
-        console.log(`${item.request.method} ${item.request.url.raw}`);
       }
     }
     if (item.item) {

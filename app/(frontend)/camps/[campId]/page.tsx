@@ -20,7 +20,6 @@ export default function Page() {
   const campSlug = params?.campId as string;
   const { data: campData, isLoading } = useCampDetails(campSlug || null);
 
-  console.log({ campData });
   const camp = campData?.data;
   const projects = camp?.projects || [];
 
