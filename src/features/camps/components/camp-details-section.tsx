@@ -40,10 +40,11 @@ export default function campDetailsSection({
         className="h-full min-h-[300px]"
         description={
           <>
-            <p>{t("transparencyDescription")}</p>
-
             {/* Clamped Text */}
-            <p className="leading-10 line-clamp-6 text-gray-700">{fullText}</p>
+            <div
+              className="leading-10 line-clamp-6 text-gray-700 [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
+              dangerouslySetInnerHTML={{ __html: fullText }}
+            />
 
             {/* Show More Button */}
             <Dialog>
@@ -53,16 +54,17 @@ export default function campDetailsSection({
                 </Button>
               </DialogTrigger>
 
-              <DialogContent className="max-w-xl">
+              <DialogContent className="max-w-xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle className="text-right">
                     {t("transparencyTitle") || "تفاصيل المخيم"}
                   </DialogTitle>
                 </DialogHeader>
 
-                <div className="text-right leading-8 text-gray-700 whitespace-pre-line">
-                  {fullText}
-                </div>
+                <div
+                  className="text-right leading-8 text-gray-700 [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
+                  dangerouslySetInnerHTML={{ __html: fullText }}
+                />
               </DialogContent>
             </Dialog>
           </>

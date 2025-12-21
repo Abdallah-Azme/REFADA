@@ -1,10 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { lazy, Suspense } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+
+const RichTextEditor = lazy(() => import("@/components/rich-text-editor"));
 import {
   DialogContent,
   DialogHeader,
@@ -153,42 +155,52 @@ export function CampFormDialog({
             )}
           />
 
-          <div className="grid grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="description_ar"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("description_ar")}</FormLabel>
-                  <FormControl>
-                    <Textarea
+          <FormField
+            control={form.control}
+            name="description_ar"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("description_ar")}</FormLabel>
+                <FormControl>
+                  <Suspense
+                    fallback={
+                      <div className="h-40 w-full animate-pulse bg-gray-100 rounded-md" />
+                    }
+                  >
+                    <RichTextEditor
+                      content={field.value}
+                      onChange={field.onChange}
                       placeholder={t("desc_ar_placeholder")}
-                      className="min-h-[100px]"
-                      {...field}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description_en"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("description_en")}</FormLabel>
-                  <FormControl>
-                    <Textarea
+                  </Suspense>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description_en"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("description_en")}</FormLabel>
+                <FormControl>
+                  <Suspense
+                    fallback={
+                      <div className="h-40 w-full animate-pulse bg-gray-100 rounded-md" />
+                    }
+                  >
+                    <RichTextEditor
+                      content={field.value}
+                      onChange={field.onChange}
                       placeholder={t("desc_en_placeholder")}
-                      className="min-h-[100px]"
-                      {...field}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                  </Suspense>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           {role !== "admin" && (
             <>

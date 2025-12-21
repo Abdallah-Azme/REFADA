@@ -82,7 +82,10 @@ export function CampDetailsDialog({
             {camp.description && (
               <div>
                 <h4 className="font-semibold text-gray-700 mb-2">الوصف</h4>
-                <p className="text-gray-600">{camp.description}</p>
+                <div
+                  className="text-gray-600 leading-relaxed [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
+                  dangerouslySetInnerHTML={{ __html: camp.description }}
+                />
               </div>
             )}
 

@@ -90,7 +90,7 @@ export default function Page() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="relative w-full lg:w-[400px] h-[300px] sm:h-[350px] shrink-0 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/50"
+            className="relative w-full lg:w-1/2 h-[300px] sm:h-[350px] shrink-0 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/50"
           >
             <ImageFallback
               src={mainImage}
