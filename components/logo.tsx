@@ -30,9 +30,12 @@ export default function Logo({ className }: { className?: string }) {
         <ImageFallback
           src={logoSrc}
           alt="REFAD Gaza"
-          width={60}
-          height={49}
-          className={cn("w-[60px] h-[49px] select-none", className)}
+          width={100}
+          height={100}
+          className={cn(
+            "w-[100px] h-[100px] select-none object-contain",
+            className
+          )}
         />
       </Link>
     </motion.div>

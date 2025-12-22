@@ -44,8 +44,15 @@ export function useUpdateFamily() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: FamilyFormValues }) =>
-      updateFamilyApi(id, data),
+    mutationFn: ({
+      id,
+      data,
+      originalNationalId,
+    }: {
+      id: number;
+      data: FamilyFormValues;
+      originalNationalId?: string;
+    }) => updateFamilyApi(id, data, originalNationalId),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ["families"] });
       queryClient.invalidateQueries({ queryKey: ["family", id] });

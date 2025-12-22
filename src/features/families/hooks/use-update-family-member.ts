@@ -13,11 +13,13 @@ export const useUpdateFamilyMember = () => {
       familyId,
       memberId,
       data,
+      originalNationalId,
     }: {
       familyId: number;
       memberId: number;
       data: CreateFamilyMemberPayload;
-    }) => updateFamilyMemberApi(familyId, memberId, data),
+      originalNationalId?: string;
+    }) => updateFamilyMemberApi(familyId, memberId, data, originalNationalId),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["families"] });
       queryClient.invalidateQueries({

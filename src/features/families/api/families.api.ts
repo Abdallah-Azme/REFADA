@@ -90,11 +90,16 @@ export async function createFamilyApi(
 
 export async function updateFamilyApi(
   id: number,
-  data: FamilyFormValues
+  data: FamilyFormValues,
+  originalNationalId?: string
 ): Promise<{ success: boolean; message: string }> {
   const formData = new FormData();
   formData.append("family_name", data.familyName);
-  formData.append("national_id", data.nationalId);
+  // Only send national_id if it has changed from the original
+  // This avoids the backend unique validation issue when national_id hasn't changed
+  if (!originalNationalId || data.nationalId !== originalNationalId) {
+    formData.append("national_id", data.nationalId);
+  }
   formData.append("dob", data.dob);
   formData.append("phone", data.phone);
   if (data.backupPhone) formData.append("backup_phone", data.backupPhone);
@@ -252,11 +257,16 @@ export async function getFamilyMembersApi(
 export async function updateFamilyMemberApi(
   familyId: number,
   memberId: number,
-  data: CreateFamilyMemberPayload
+  data: CreateFamilyMemberPayload,
+  originalNationalId?: string
 ): Promise<{ success: boolean; message: string; data?: any }> {
   const formData = new FormData();
   formData.append("name", data.name);
-  formData.append("national_id", data.nationalId);
+  // Only send national_id if it has changed from the original
+  // This avoids the backend unique validation issue when national_id hasn't changed
+  if (!originalNationalId || data.nationalId !== originalNationalId) {
+    formData.append("national_id", data.nationalId);
+  }
   formData.append("gender", data.gender);
   formData.append("dob", data.dob);
   formData.append("relationship_id", data.relationshipId);

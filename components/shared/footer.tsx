@@ -13,12 +13,15 @@ import Link from "next/link";
 import Logo from "../logo";
 import { Settings } from "@/features/settings/types/settings.schema";
 import ImageFallback from "../shared/image-fallback";
+import { useTranslations } from "next-intl";
 
 interface FooterProps {
   settings?: Settings;
 }
 
 export default function Footer({ settings }: FooterProps) {
+  const t = useTranslations("footer");
+
   return (
     <footer className="bg-[#10201C] text-white pt-10 pb-4  ">
       <div className="container px-4 mx-auto">
@@ -32,14 +35,14 @@ export default function Footer({ settings }: FooterProps) {
         >
           {/* Column 1 - الرئيسية */}
           <div>
-            <h3 className="font-semibold mb-3 text-lg">الرئيسية</h3>
+            <h3 className="font-semibold mb-3 text-lg">{t("home_title")}</h3>
             <ul className="space-y-2 text-sm text-gray-300">
               <li>
                 <Link
                   href="/signin"
                   className="hover:text-white transition cursor-pointer"
                 >
-                  تسجيل الدخول
+                  {t("login")}
                 </Link>
               </li>
               <li>
@@ -47,7 +50,7 @@ export default function Footer({ settings }: FooterProps) {
                   href="/signup"
                   className="hover:text-white transition cursor-pointer"
                 >
-                  إنشاء حساب{" "}
+                  {t("create_account")}
                 </Link>
               </li>
             </ul>
@@ -55,14 +58,14 @@ export default function Footer({ settings }: FooterProps) {
 
           {/* Column 2 - من نحن */}
           <div>
-            <h3 className="font-semibold mb-3 text-lg">من نحن</h3>
+            <h3 className="font-semibold mb-3 text-lg">{t("about_title")}</h3>
             <ul className="space-y-2 text-sm text-gray-300">
               <li>
                 <Link
                   href="/aboutus"
                   className="hover:text-white transition cursor-pointer"
                 >
-                  من نحن
+                  {t("about_link")}
                 </Link>
               </li>
 
@@ -71,7 +74,7 @@ export default function Footer({ settings }: FooterProps) {
                   href="/privacy"
                   className="hover:text-white transition cursor-pointer"
                 >
-                  سياسة الخصوصية
+                  {t("privacy_link")}
                 </Link>
               </li>
             </ul>
@@ -79,14 +82,16 @@ export default function Footer({ settings }: FooterProps) {
 
           {/* Column 3 - المشاريع */}
           <div>
-            <h3 className="font-semibold mb-3 text-lg">المشاريع</h3>
+            <h3 className="font-semibold mb-3 text-lg">
+              {t("projects_title")}
+            </h3>
             <ul className="space-y-2 text-sm text-gray-300">
               <li>
                 <Link
                   href="/camps"
                   className="hover:text-white transition cursor-pointer"
                 >
-                  الإيواءات
+                  {t("camps_link")}
                 </Link>
               </li>
               <li>
@@ -94,7 +99,7 @@ export default function Footer({ settings }: FooterProps) {
                   href="/stats"
                   className="hover:text-white transition cursor-pointer"
                 >
-                  الإحصائيات
+                  {t("stats_link")}
                 </Link>
               </li>
             </ul>
@@ -102,14 +107,16 @@ export default function Footer({ settings }: FooterProps) {
 
           {/* Column 4 - الشكاوى والمقترحات */}
           <div>
-            <h3 className="font-semibold mb-3 text-lg">الشكاوى والمقترحات</h3>
+            <h3 className="font-semibold mb-3 text-lg">
+              {t("suggestions_title")}
+            </h3>
             <ul className="space-y-2 text-sm text-gray-300">
               <li>
                 <Link
                   href="/suggestions"
                   className="hover:text-white transition cursor-pointer"
                 >
-                  الشكاوى
+                  {t("complaints_link")}
                 </Link>
               </li>
               <li>
@@ -117,7 +124,7 @@ export default function Footer({ settings }: FooterProps) {
                   href="/transparency"
                   className="hover:text-white transition cursor-pointer"
                 >
-                  الشفافية
+                  {t("transparency_link")}
                 </Link>
               </li>
             </ul>
@@ -126,7 +133,7 @@ export default function Footer({ settings }: FooterProps) {
 
         {/* Contact + Social + Logo */}
         <motion.div
-          className="flex flex-col md:flex-row justify-between items-center gap-6 border-t border-gray-700 pt-6"
+          className="flex flex-col md:flex-row justify-between items-center gap-6 border-t border-gray-700 pt-2"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.7 }}
@@ -202,25 +209,13 @@ export default function Footer({ settings }: FooterProps) {
             ))}
           </div>
 
-          {/* Logo */}
-          {settings?.siteLogo ? (
-            <div className="relative w-32 h-12">
-              <ImageFallback
-                src={settings.siteLogo}
-                alt={settings.siteName?.ar || "Logo"}
-                fill
-                className="object-contain"
-              />
-            </div>
-          ) : (
-            <Logo />
-          )}
+          <Logo />
         </motion.div>
       </div>
 
       {/* Bottom Bar */}
       <div className="bg-[#203730] mt-6 py-3 text-center text-xs text-gray-400">
-        جميع الحقوق محفوظة لجمعية رفاد © {new Date().getFullYear()}
+        {t("copyright")} {new Date().getFullYear()}
       </div>
     </footer>
   );

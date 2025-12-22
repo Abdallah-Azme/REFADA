@@ -2,6 +2,7 @@
 import { motion, useInView, animate } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { AgeGroupsCount } from "@/features/home-control/types/hero.schema";
+import { useTranslations } from "next-intl";
 
 function Counter({ value = 1, suffix = "" }) {
   const [displayValue, setDisplayValue] = useState(0);
@@ -58,6 +59,7 @@ export default function Stats({
   campsCount = 0,
   ageGroupsCount,
 }: StatsProps) {
+  const t = useTranslations();
   const [flipCount, setFlipCount] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
@@ -136,9 +138,9 @@ export default function Stats({
           className="bg-[#C2B693] text-white flex items-center justify-center text-center md:text-right p-6 md:p-10 rounded-3xl md:rounded-l-none"
         >
           <p className="leading-relaxed text-sm md:text-base font-medium text-black">
-            هدفنا دعم المحتاجين وتنمية الأمل.
+            {t("stats_message_line1")}
             <br />
-            كن متطوعًا واصنع فرقًا حقيقيًا.
+            {t("stats_message_line2")}
           </p>
         </motion.div>
 

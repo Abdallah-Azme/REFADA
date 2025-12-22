@@ -104,16 +104,14 @@ export default function LocationPickerMap({
   );
 
   // Get map center - use value if valid, otherwise use Gaza center
+  const lat = Number(value?.lat || 0);
+  const lng = Number(value?.lng || 0);
   const mapCenter =
-    value.lat !== 0 || value.lng !== 0
-      ? [value.lat, value.lng]
-      : [GAZA_CENTER.lat, GAZA_CENTER.lng];
+    lat !== 0 || lng !== 0 ? [lat, lng] : [GAZA_CENTER.lat, GAZA_CENTER.lng];
 
   // Get marker position
   const markerPosition =
-    value.lat !== 0 || value.lng !== 0
-      ? [value.lat, value.lng]
-      : [GAZA_CENTER.lat, GAZA_CENTER.lng];
+    lat !== 0 || lng !== 0 ? [lat, lng] : [GAZA_CENTER.lat, GAZA_CENTER.lng];
 
   if (!isClient) {
     return (
@@ -168,7 +166,8 @@ export default function LocationPickerMap({
           اضغط على الخريطة أو اسحب الدبوس لتحديد الموقع
         </span>
         <span className="font-mono text-[10px]">
-          {value.lat.toFixed(6)}, {value.lng.toFixed(6)}
+          {Number(value?.lat || 0).toFixed(6)},{" "}
+          {Number(value?.lng || 0).toFixed(6)}
         </span>
       </div>
     </div>

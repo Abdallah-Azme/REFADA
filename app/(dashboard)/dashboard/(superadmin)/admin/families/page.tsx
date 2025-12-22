@@ -75,11 +75,6 @@ export default function AdminFamiliesPage() {
           <Users className="text-primary" />
         </MainHeader>
 
-        {/* <Button onClick={handleCreate}>
-          <Plus className="h-4 w-4 mr-2" />
-          إضافة عائلة جديدة
-        </Button> */}
-
         <AddFamilyDialog />
       </div>
 

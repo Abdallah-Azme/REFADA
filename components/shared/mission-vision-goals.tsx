@@ -5,6 +5,7 @@ import { ShieldCheck, Eye, Target } from "lucide-react";
 import { motion } from "framer-motion";
 import ImageFallback from "./image-fallback";
 import { usePages, useAboutUs } from "@/features/pages/hooks/use-pages";
+import { useLocale } from "next-intl";
 
 // Animation Variants
 const containerVariants = {
@@ -25,7 +26,19 @@ const cardVariants = {
   },
 };
 
+// Helper function to get localized value
+const getLocalizedValue = (
+  value: string | { ar?: string; en?: string } | undefined,
+  locale: string,
+  fallback: string = ""
+): string => {
+  if (!value) return fallback;
+  if (typeof value === "string") return value;
+  return value[locale as "ar" | "en"] || value.ar || value.en || fallback;
+};
+
 export default function MissionVisionGoals() {
+  const locale = useLocale();
   const { data: pagesData, isLoading: pagesLoading } = usePages();
   const { data: aboutUsData, isLoading: aboutLoading } = useAboutUs();
 
@@ -108,7 +121,7 @@ export default function MissionVisionGoals() {
               <div className="flex items-center gap-2">
                 <ShieldCheck className="text-primary" size={20} />
                 <h3 className="font-bold text-lg">
-                  {mission?.title || "رسالتنا"}
+                  {getLocalizedValue(mission?.title, locale, "رسالتنا")}
                 </h3>
               </div>
               {isLoading ? (
@@ -117,9 +130,11 @@ export default function MissionVisionGoals() {
                 <div
                   className="text-gray-600 leading-relaxed"
                   dangerouslySetInnerHTML={{
-                    __html:
-                      mission?.description ||
-                      "نحافظ على سرية بيانات المتبرعين والمستفيدين، ونستخدمها فقط لخدمة العمل الإنساني وفق أعلى معايير الأمان.",
+                    __html: getLocalizedValue(
+                      mission?.description,
+                      locale,
+                      "نحافظ على سرية بيانات المتبرعين والمستفيدين، ونستخدمها فقط لخدمة العمل الإنساني وفق أعلى معايير الأمان."
+                    ),
                   }}
                 />
               )}
@@ -134,7 +149,7 @@ export default function MissionVisionGoals() {
               <div className="flex items-center gap-2">
                 <Eye className="text-primary" size={20} />
                 <h3 className="font-bold text-lg">
-                  {vision?.title || "رؤيتنا"}
+                  {getLocalizedValue(vision?.title, locale, "رؤيتنا")}
                 </h3>
               </div>
               {isLoading ? (
@@ -143,9 +158,11 @@ export default function MissionVisionGoals() {
                 <div
                   className="text-gray-600 leading-relaxed"
                   dangerouslySetInnerHTML={{
-                    __html:
-                      vision?.description ||
-                      "نطمح لعلاقة مميزة مع المتبرعين والمتطوعين بما يضمن الثقة والمسؤولية المشتركة في تحقيق أهدافنا الإنسانية.",
+                    __html: getLocalizedValue(
+                      vision?.description,
+                      locale,
+                      "نطمح لعلاقة مميزة مع المتبرعين والمتطوعين بما يضمن الثقة والمسؤولية المشتركة في تحقيق أهدافنا الإنسانية."
+                    ),
                   }}
                 />
               )}
@@ -160,7 +177,7 @@ export default function MissionVisionGoals() {
               <div className="flex items-center gap-2">
                 <Target className="text-primary" size={20} />
                 <h3 className="font-bold text-lg">
-                  {goals?.title || "أهدافنا"}
+                  {getLocalizedValue(goals?.title, locale, "أهدافنا")}
                 </h3>
               </div>
               {isLoading ? (
@@ -169,9 +186,11 @@ export default function MissionVisionGoals() {
                 <div
                   className="text-gray-600 leading-relaxed"
                   dangerouslySetInnerHTML={{
-                    __html:
-                      goals?.description ||
-                      "نسعى لتحقيق أهداف واضحة تشمل دعم الأسر المحتاجة، تنفيذ مشاريع مستدامة، وبناء شراكات مجتمعية فاعلة.",
+                    __html: getLocalizedValue(
+                      goals?.description,
+                      locale,
+                      "نسعى لتحقيق أهداف واضحة تشمل دعم الأسر المحتاجة، تنفيذ مشاريع مستدامة، وبناء شراكات مجتمعية فاعلة."
+                    ),
                   }}
                 />
               )}

@@ -51,12 +51,14 @@ export default function ShelterProjectsSection({
 
       // Try accessing as object first (newer embla versions)
       let autoplayPlugin = (plugins as any)?.autoplay;
-      
+
       // If not found, try finding in array (older embla versions)
       if (!autoplayPlugin && Array.isArray(plugins)) {
-        autoplayPlugin = plugins.find((plugin: any) => plugin?.play || plugin?.stop);
+        autoplayPlugin = plugins.find(
+          (plugin: any) => plugin?.play || plugin?.stop
+        );
       }
-      
+
       if (autoplayPlugin && typeof autoplayPlugin.play === "function") {
         autoplayPlugin.play();
       }
@@ -123,7 +125,7 @@ export default function ShelterProjectsSection({
           المشاريع الحالية
         </h2>
         <p className="text-gray-600">
-          ساهم بتبرعك في تغيير حياة محتاج، ضحصات الأبرع للأمل ومستمر الأثر 🌿
+          الإيواءات الموثّقة تُمكّن من التخطيط الأفضل والاستجابة الأعدل.{" "}
         </p>
       </motion.div>
 

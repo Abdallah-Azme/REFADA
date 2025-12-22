@@ -40,7 +40,7 @@ export default function TopHeader({ settings }: TopHeaderProps) {
       variants={containerVariants}
       className="bg-primary text-white"
     >
-      <div className="py-4 px-4 flex items-center justify-between gap-2 sm:gap-6 container mx-auto">
+      <div className="py-2 px-4 flex items-center justify-between gap-2 sm:gap-6 container mx-auto">
         {/* Logo */}
         <motion.div variants={itemVariants}>
           <Logo />

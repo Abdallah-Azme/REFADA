@@ -95,21 +95,8 @@ export default function ContactSection() {
         className="container mx-auto px-4 pt-10"
       />
 
-      {/* 🧩 Title */}
-      <motion.div
-        className="flex items-center gap-2 container mx-auto px-4 py-2 mt-5"
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <MessageCirclePlus className="text-[#4A8279]" />
-        <h1 className="text-xl font-bold text-[#1E1E1E]">
-          {t("contactTitle")}
-        </h1>
-      </motion.div>
-
-      {/* 🧱 Main form container */}
-      <div className="w-full  mt-5 mb-10 py-12  relative overflow-hidden">
+      {/*  Main form container */}
+      <div className="w-full mb-10 py-6  relative overflow-hidden">
         {/* 🌾 Decorative images behind */}
         <div className="absolute inset-0 pointer-events-none z-0">
           <ImageFallback
@@ -127,7 +114,7 @@ export default function ContactSection() {
         </div>
 
         {/* 🧱 Foreground content (above decorations) */}
-        <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center container mx-auto px-4">
+        <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start container mx-auto px-4">
           {/* 📝 Form slides from top */}
           <motion.div
             className="flex-1"
@@ -136,6 +123,14 @@ export default function ContactSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
+            {/* 🧩 Title - moved inside the form column */}
+            <div className="flex items-center gap-2 mb-4">
+              <MessageCirclePlus className="text-[#4A8279]" />
+              <h1 className="text-xl font-bold text-[#1E1E1E]">
+                {t("contactTitle")}
+              </h1>
+            </div>
+
             <p className="mb-6 text-[#1E1E1E]">{t("contactDescription")}</p>
 
             <Form {...form}>
@@ -310,7 +305,7 @@ export default function ContactSection() {
 
           {/* 🖼 Illustration slides from bottom */}
           <motion.div
-            className="flex-1 relative hidden md:flex h-[346px]"
+            className="flex-1 relative hidden md:flex h-[450px]"
             initial={{ opacity: 0, y: 80 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

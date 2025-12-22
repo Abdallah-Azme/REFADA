@@ -56,12 +56,14 @@ export default function CampsSection({ camps = [] }: CampsSectionProps) {
 
       // Try accessing as object first (newer embla versions)
       let autoplayPlugin = (plugins as any)?.autoplay;
-      
+
       // If not found, try finding in array (older embla versions)
       if (!autoplayPlugin && Array.isArray(plugins)) {
-        autoplayPlugin = plugins.find((plugin: any) => plugin?.play || plugin?.stop);
+        autoplayPlugin = plugins.find(
+          (plugin: any) => plugin?.play || plugin?.stop
+        );
       }
-      
+
       if (autoplayPlugin && typeof autoplayPlugin.play === "function") {
         autoplayPlugin.play();
       }
@@ -100,7 +102,7 @@ export default function CampsSection({ camps = [] }: CampsSectionProps) {
       >
         <h2 className="text-2xl md:text-3xl font-bold mb-2">الإيواءات</h2>
         <p className="text-gray-600">
-          ساهم بتبرعك في تغيير حياة محتاج، فبمساعدتك تزرع الأمل وتستمر الأثر 🌿
+          الإيواءات الموثّقة تُمكّن من التخطيط الأفضل والاستجابة الأعدل.
         </p>
       </motion.div>
 

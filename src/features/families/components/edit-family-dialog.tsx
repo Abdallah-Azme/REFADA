@@ -60,6 +60,7 @@ interface MemberFormData {
   id?: number; // If present, it's an existing member
   name: string;
   nationalId: string;
+  originalNationalId?: string; // Track original national_id for existing members
   gender: "male" | "female";
   dob: string;
   relationshipId: string;
@@ -80,6 +81,9 @@ export default function EditFamilyDialog({
     index: number;
     id?: number;
   } | null>(null);
+  // Track original national_id values to avoid backend unique validation errors
+  const [originalFamilyNationalId, setOriginalFamilyNationalId] =
+    useState<string>("");
 
   const { mutateAsync: updateFamily, isPending } = useUpdateFamily();
   const { mutateAsync: createFamilyMember, isPending: isCreatingMember } =
@@ -138,6 +142,9 @@ export default function EditFamilyDialog({
         (m) => m.name === family.maritalStatus
       );
 
+      // Store the original national_id for the family
+      setOriginalFamilyNationalId(family.nationalId || "");
+
       form.reset({
         familyName: family.familyName || "",
         nationalId: family.nationalId || "",
@@ -176,6 +183,7 @@ export default function EditFamilyDialog({
           id: member.id, // Track existing member ID
           name: member.name,
           nationalId: member.nationalId,
+          originalNationalId: member.nationalId, // Store original for comparison
           gender: member.gender,
           dob: member.dob,
           relationshipId: foundRelationship
@@ -197,9 +205,21 @@ export default function EditFamilyDialog({
     name: "members",
   });
 
-  const onError = (errors: any) => console.log("❌ FORM ERRORS:", errors);
+  const onError = (errors: any) => {
+    console.log("❌ FORM ERRORS:", errors);
+    console.log("📋 Current form values:", form.getValues());
+    console.log("🔍 Form state:", {
+      isValid: form.formState.isValid,
+      isDirty: form.formState.isDirty,
+      isSubmitting: form.formState.isSubmitting,
+      errors: form.formState.errors,
+    });
+  };
 
   const onSubmit = async (values: z.infer<typeof familySchema>) => {
+    console.log("✅ Form submitted with values:", values);
+    console.log("👨‍👩‍👧 Family being edited:", family);
+    console.log("🆔 Original National ID:", originalFamilyNationalId);
     if (!family) return;
 
     try {
@@ -209,7 +229,11 @@ export default function EditFamilyDialog({
         file: file,
       };
 
-      await updateFamily({ id: family.id, data: familyPayload });
+      await updateFamily({
+        id: family.id,
+        data: familyPayload,
+        originalNationalId: originalFamilyNationalId,
+      });
 
       // 2. Delete members marked for deletion
       for (const memberId of membersToDelete) {
@@ -231,11 +255,12 @@ export default function EditFamilyDialog({
             };
 
             if (member.id) {
-              // Update existing member
+              // Update existing member - pass original national_id to avoid unique validation error
               await updateFamilyMember({
                 familyId: family.id,
                 memberId: member.id,
                 data: memberData,
+                originalNationalId: member.originalNationalId,
               });
             } else {
               // Create new member
