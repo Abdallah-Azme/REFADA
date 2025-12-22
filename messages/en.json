@@ -312,5 +312,20 @@
     "title": "User Testimonials",
     "description": "We are proud of everyone who shared the journey with us and contributed to achieving humanitarian impact. Here are some words we cherish that encourage us to continue giving.",
     "slide_aria": "Slide {index}"
+  },
+  "campDetails": {
+    "showMore": "Show More",
+    "title": "Camp Details",
+    "defaultDescription": "Jabalia Camp is the largest shelter for Palestinian refugees in Palestine, with 119,000 Palestinians living in an area of no more than 1.4 square kilometers, making it one of the most densely populated places in the world. Jabalia refugees are descendants of 38,000 Palestinians who were ethnically cleansed from Ashdod, Jaffa, Ramla, Lydda, and Beersheba during the 1948 Nakba. Jabalia Camp is the largest shelter for Palestinian refugees in Palestine, with 119,000 Palestinians living in an area of no more than 1.4 square kilometers, making it one of the most densely populated places in the world.",
+    "loading": "Loading...",
+    "bankAccount": "Bank Account",
+    "projectsTitle": "Projects implemented within the shelter",
+    "noProjects": "No projects available",
+    "noDescription": "Project description is not currently available",
+    "defaultLocation": "Gaza",
+    "defaultTag": "Relief project",
+    "goalLabel": "Goal",
+    "donorsLabel": "donors",
+    "collectedLabel": "Collected"
   }
 }

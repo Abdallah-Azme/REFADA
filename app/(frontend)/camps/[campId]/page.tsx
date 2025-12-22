@@ -16,6 +16,7 @@ import { useParams } from "next/navigation";
 
 export default function Page() {
   const t = useTranslations();
+  const tCamp = useTranslations("campDetails");
   const params = useParams();
   const campSlug = params?.campId as string;
   const { data: campData, isLoading } = useCampDetails(campSlug || null);
@@ -61,7 +62,7 @@ export default function Page() {
         >
           <Info className="text-[#4A8279]" />
           <h1 className="text-xl font-bold text-[#1E1E1E]">
-            {isLoading ? "جاري التحميل..." : camp?.name || t("gablyaCamp")}
+            {isLoading ? tCamp("loading") : camp?.name || t("gablyaCamp")}
           </h1>
         </motion.div>
 
@@ -101,9 +102,9 @@ export default function Page() {
             </div>
 
             {/* Content */}
-            <div className="flex-1 flex flex-col gap-1 text-right h-full justify-around">
+            <div className="flex-1 flex flex-col gap-1 text-start h-full justify-around">
               <h3 className="font-semibold text-[#1C3A34] leading-tight">
-                {camp?.name || "جاري التحميل..."}
+                {camp?.name || tCamp("loading")}
               </h3>
 
               {camp?.location && (
@@ -125,7 +126,7 @@ export default function Page() {
               {camp?.bankAccount && (
                 <p className="text-gray-600  flex items-center gap-1 leading-relaxed">
                   <span className="text-gray-400">🏦</span>
-                  الحساب البنكي: {camp.bankAccount}
+                  {tCamp("bankAccount")}: {camp.bankAccount}
                 </p>
               )}
             </div>
@@ -143,18 +144,10 @@ export default function Page() {
         >
           <SquareKanban className="text-[#4A8279]" />
           <h2 className="text-xl font-bold text-[#1E1E1E]">
-            المشاريع المقامة داخل الإيواء
+            {tCamp("projectsTitle")}
           </h2>
         </motion.div>
         <ProjectsSection projects={projects} campName={camp?.name || ""} />
-        {/* <div className="flex justify-center mt-12">
-          <Button
-            variant={"outline"}
-            className="px-12! py-6! border-2 rounded-full font-semibold text-primary border-primary transition-colors flex items-center gap-2"
-          >
-            المزيد
-          </Button>
-        </div> */}
       </div>
     </section>
   );

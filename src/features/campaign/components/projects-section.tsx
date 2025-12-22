@@ -1,20 +1,23 @@
 import React from "react";
 import { ProjectCard } from "./project-card";
 import { Project } from "@/features/camps/types/camp.schema";
+import { useTranslations } from "next-intl";
 
 interface ProjectsSectionProps {
   projects?: Project[];
   campName?: string;
 }
 
-export default function ProjectsSection({ 
+export default function ProjectsSection({
   projects = [],
-  campName = ""
+  campName = "",
 }: ProjectsSectionProps) {
+  const t = useTranslations("campDetails");
+
   if (!projects || projects.length === 0) {
     return (
       <div className="text-center py-12 text-gray-500">
-        <p>لا توجد مشاريع متاحة</p>
+        <p>{t("noProjects")}</p>
       </div>
     );
   }
@@ -32,9 +35,9 @@ export default function ProjectsSection({
               index={index}
               image={project.projectImage || "/placeholder.jpg"}
               title={project.name}
-              description={project.notes || "وصف المشروع غير متوفر حالياً"}
-              location={campName || "غزة"}
-              tag={project.type || "مشروع إغاثي"}
+              description={project.notes || t("noDescription")}
+              location={campName || t("defaultLocation")}
+              tag={project.type || t("defaultTag")}
               goal={goal}
               current={current}
               donors={project.beneficiaryCount || 0}

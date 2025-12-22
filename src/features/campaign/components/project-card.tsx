@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import ImageFallback from "@/components/shared/image-fallback";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface ProjectCardProps {
   index: number;
@@ -32,6 +33,8 @@ export function ProjectCard({
   percentage,
   camp,
 }: ProjectCardProps) {
+  const t = useTranslations("campDetails");
+
   // ✅ Format to 2 decimal places safely
   const formattedPercentage = Number(percentage.toFixed(2));
 
@@ -52,7 +55,7 @@ export function ProjectCard({
           height={221}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 inset-inline-end-3">
           <span className="bg-teal-500 text-white text-xs px-3 py-1 rounded-full">
             {tag}
           </span>
@@ -81,7 +84,9 @@ export function ProjectCard({
         <div className="mb-3">
           <div className="flex justify-between text-xs text-gray-600 mb-1">
             <span>{formattedPercentage}%</span>
-            <span>الهدف: {goal}</span>
+            <span>
+              {t("goalLabel")}: {goal}
+            </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
             <motion.div
@@ -108,10 +113,12 @@ export function ProjectCard({
         {/* Stats */}
         <div className="flex justify-between items-center text-sm">
           <div className="text-gray-500">
-            <span>{donors} متبرع</span>
+            <span>
+              {donors} {t("donorsLabel")}
+            </span>
           </div>
-          <div className="text-gray-700 text-right">
-            <span className="font-semibold">تم جمع:</span>{" "}
+          <div className="text-gray-700 text-end">
+            <span className="font-semibold">{t("collectedLabel")}:</span>{" "}
             <span className="text-teal-600 font-bold">{current}</span>
           </div>
         </div>

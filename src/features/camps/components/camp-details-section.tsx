@@ -20,14 +20,9 @@ interface CampDetailsSectionProps {
 export default function campDetailsSection({
   description,
 }: CampDetailsSectionProps = {}) {
-  const t = useTranslations();
+  const t = useTranslations("campDetails");
 
-  const fullText =
-    description ||
-    `
-يُعتبر إيواء جباليا أكبر إيواء للاجئين الفلسطينيين في فلسطين، حيث يعيش فيه 119,000 فلسطيني يتوزعون على مساحة لا تتجاوز 1.4 كيلومتر مربع، مما يجعله واحدًا من أكثر الأماكن اكتظاظاً بالسكان في العالم. ينحدر لاجئو جباليا من أحفاد 38,000 فلسطيني تم تطهيرهم عرقيًا من أسدود ويافا والرملة واللد وبئر السبع خلال نكبة عام 1948.
-يُعتبر إيواء جباليا أكبر إيواء للاجئين الفلسطينيين في فلسطين، حيث يعيش فيه 119,000 فلسطيني يتوزعون على مساحة لا تتجاوز 1.4 كيلومتر مربع، مما يجعله واحدًا من أكثر الأماكن اكتظاظاً بالسكان في العالم.
-  `;
+  const fullText = description || t("defaultDescription");
 
   return (
     <motion.div
@@ -42,7 +37,7 @@ export default function campDetailsSection({
           <>
             {/* Clamped Text */}
             <div
-              className="leading-10 line-clamp-6 text-gray-700 [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
+              className="leading-10 line-clamp-6 text-gray-700 text-start [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5"
               dangerouslySetInnerHTML={{ __html: fullText }}
             />
 
@@ -50,19 +45,17 @@ export default function campDetailsSection({
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="outline" className="mt-3 text-sm font-medium">
-                  عرض المزيد
+                  {t("showMore")}
                 </Button>
               </DialogTrigger>
 
               <DialogContent className="max-w-xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle className="text-right">
-                    {t("transparencyTitle") || "تفاصيل المخيم"}
-                  </DialogTitle>
+                  <DialogTitle className="text-start">{t("title")}</DialogTitle>
                 </DialogHeader>
 
                 <div
-                  className="text-right leading-8 text-gray-700 [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
+                  className="text-start leading-8 text-gray-700 [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5"
                   dangerouslySetInnerHTML={{ __html: fullText }}
                 />
               </DialogContent>
