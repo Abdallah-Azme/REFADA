@@ -62,16 +62,22 @@ export function PageEditFormDialog({
 
   useEffect(() => {
     if (pageData && open) {
-      // Assuming pageData contains current values.
-      // If API only returns localized, we fill what we have.
-      // Ideally we should have both languages.
-      // For now, I'll populate both fields with the same value if we don't have separate.
-      // But typically for "Update", we start with empty or current.
-      // If returning separate fields:
-      const titleAr = pageData.title_ar || pageData.title || "";
-      const titleEn = pageData.title_en || ""; // Might be missing
-      const descAr = pageData.description_ar || pageData.description || "";
-      const descEn = pageData.description_en || ""; // Might be missing
+      // Extract localized values from the new API structure
+      // where title and description are objects with ar/en properties
+      const titleAr =
+        typeof pageData.title === "object"
+          ? pageData.title?.ar || ""
+          : String(pageData.title || "");
+      const titleEn =
+        typeof pageData.title === "object" ? pageData.title?.en || "" : "";
+      const descAr =
+        typeof pageData.description === "object"
+          ? pageData.description?.ar || ""
+          : String(pageData.description || "");
+      const descEn =
+        typeof pageData.description === "object"
+          ? pageData.description?.en || ""
+          : "";
 
       form.reset({
         title_ar: titleAr,
@@ -120,7 +126,12 @@ export function PageEditFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>تعديل محتوى الصفحة: {pageData.title}</DialogTitle>
+          <DialogTitle>
+            تعديل محتوى الصفحة:{" "}
+            {typeof pageData.title === "object"
+              ? pageData.title?.ar
+              : pageData.title}
+          </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>

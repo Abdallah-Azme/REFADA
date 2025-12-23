@@ -372,7 +372,10 @@ export default function AboutControlPage() {
               <div
                 className="text-sm text-gray-600 line-clamp-3"
                 dangerouslySetInnerHTML={{
-                  __html: missionPage?.description || "لا يوجد محتوى",
+                  __html:
+                    typeof missionPage?.description === "object"
+                      ? missionPage?.description?.ar || "لا يوجد محتوى"
+                      : missionPage?.description || "لا يوجد محتوى",
                 }}
               />
             </CardContent>
@@ -402,7 +405,10 @@ export default function AboutControlPage() {
               <div
                 className="text-sm text-gray-600 line-clamp-3"
                 dangerouslySetInnerHTML={{
-                  __html: visionPage?.description || "لا يوجد محتوى",
+                  __html:
+                    typeof visionPage?.description === "object"
+                      ? visionPage?.description?.ar || "لا يوجد محتوى"
+                      : visionPage?.description || "لا يوجد محتوى",
                 }}
               />
             </CardContent>
@@ -432,7 +438,10 @@ export default function AboutControlPage() {
               <div
                 className="text-sm text-gray-600 line-clamp-3"
                 dangerouslySetInnerHTML={{
-                  __html: goalsPage?.description || "لا يوجد محتوى",
+                  __html:
+                    typeof goalsPage?.description === "object"
+                      ? goalsPage?.description?.ar || "لا يوجد محتوى"
+                      : goalsPage?.description || "لا يوجد محتوى",
                 }}
               />
             </CardContent>

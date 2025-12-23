@@ -1411,7 +1411,7 @@
 							},
 							{
 								"key": "Accept-Language",
-								"value": "en",
+								"value": "ar",
 								"type": "text"
 							}
 						],
@@ -1457,7 +1457,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "114|888H0a7ogmnv7HlMq7J5fpCy58ibMwNheIJ3tKAD5919d8e4",
+									"value": "129|yZbOcLjq7zERNJzRuLFOvvmkrG51LD6owwW8f5ZHcd9acc2c",
 									"type": "string"
 								}
 							]
@@ -1485,7 +1485,7 @@
 							"formdata": [
 								{
 									"key": "name[ar]",
-									"value": "معسكر الأمل",
+									"value": "شمال غزة",
 									"type": "text"
 								},
 								{
@@ -1596,7 +1596,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "14|R2T9ZTYFWMCm9TCicRvRnioFVQabOl6e3Wc5xgf70eaa16f7",
+									"value": "116|SJrXz3bHVSc3C6sqf4016eW9mB9gvmuTHrCTyf8Y221b323b",
 									"type": "string"
 								}
 							]
@@ -1625,7 +1625,8 @@
 								{
 									"key": "name[ar]",
 									"value": "معسكر السلام",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "name[en]",
@@ -1671,13 +1672,13 @@
 							]
 						},
 						"url": {
-							"raw": "{{url}}/camps/Irene-Durham",
+							"raw": "{{url}}/camps/معسكر-الأمل-2",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"camps",
-								"Irene-Durham"
+								"معسكر-الأمل-2"
 							]
 						}
 					},
@@ -1776,7 +1777,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "107|owwUMozxoRJ1QZOqqYH0ezO0OAACQUjgM2zLlkla16273eb6",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -1799,7 +1800,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "{{url}}/families?year_from=2021&year_to=2024",
+							"raw": "{{url}}/families",
 							"host": [
 								"{{url}}"
 							],
@@ -1831,14 +1832,6 @@
 									"key": "has_children",
 									"value": "1",
 									"disabled": true
-								},
-								{
-									"key": "year_from",
-									"value": "2021"
-								},
-								{
-									"key": "year_to",
-									"value": "2024"
 								}
 							]
 						}
@@ -1916,7 +1909,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "107|owwUMozxoRJ1QZOqqYH0ezO0OAACQUjgM2zLlkla16273eb6",
+									"value": "117|chSHiosrmEdWLwds3nORQBG25uEEsJwKYd5MKaJdd32aa277",
 									"type": "string"
 								}
 							]
@@ -1949,7 +1942,7 @@
 								},
 								{
 									"key": "national_id",
-									"value": "30206578967604",
+									"value": "3020657866666",
 									"type": "text"
 								},
 								{
@@ -1959,7 +1952,7 @@
 								},
 								{
 									"key": "phone",
-									"value": "201281927103",
+									"value": "201281222222222",
 									"type": "text"
 								},
 								{
@@ -1996,13 +1989,82 @@
 									"key": "camp_id",
 									"value": "1",
 									"description": "required only if admin if delegate added by default according to delegate camp",
-									"type": "text",
-									"disabled": true
+									"type": "text"
 								},
 								{
 									"key": "marital_status_id",
 									"value": "2",
 									"type": "text"
+								},
+								{
+									"key": "members[0][name]",
+									"value": "أحمد النجار",
+									"type": "text"
+								},
+								{
+									"key": "members[0][gender]",
+									"value": "male",
+									"type": "text"
+								},
+								{
+									"key": "members[0][dob]",
+									"value": "2005-03-20",
+									"type": "text"
+								},
+								{
+									"key": "members[0][national_id]",
+									"value": "12345678901234",
+									"type": "text"
+								},
+								{
+									"key": "members[0][relationship_id]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "members[0][medical_condition_id]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "members[0][file]",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/db.txt"
+								},
+								{
+									"key": "members[1][name]",
+									"value": "ليلى النجار",
+									"type": "text"
+								},
+								{
+									"key": "members[1][gender]",
+									"value": "female",
+									"type": "text"
+								},
+								{
+									"key": "members[1][dob]",
+									"value": "2008-07-15",
+									"type": "text"
+								},
+								{
+									"key": "members[1][national_id]",
+									"value": "12345678901238",
+									"type": "text"
+								},
+								{
+									"key": "members[1][relationship_id]",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "members[1][medical_condition_id]",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "members[1][file]",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/db.txt"
 								}
 							]
 						},
@@ -2026,7 +2088,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "81|5OOLFVjXePSco9llETIb8oydUbOFtx8DriHAxgw5127d9f55",
+									"value": "121|aTyGFVIvWtELRdWncJuRXP3uX52JrUx9Mt47kl3M9bd21e85",
 									"type": "string"
 								}
 							]
@@ -2054,63 +2116,53 @@
 							"formdata": [
 								{
 									"key": "family_name",
-									"value": "family ",
-									"type": "text",
-									"disabled": true
+									"value": "Family Updated",
+									"type": "text"
 								},
 								{
 									"key": "national_id",
-									"value": "30206578967654",
-									"type": "text",
-									"disabled": true
+									"value": "3020657866666",
+									"type": "text"
 								},
 								{
 									"key": "dob",
-									"value": "29-6-2002",
-									"type": "text",
-									"disabled": true
+									"value": "2002-06-29",
+									"type": "text"
 								},
 								{
 									"key": "phone",
-									"value": "201281927142",
-									"type": "text",
-									"disabled": true
+									"value": "201281222222222",
+									"type": "text"
 								},
 								{
 									"key": "backup_phone",
-									"value": "father@gmail.com",
-									"type": "text",
-									"disabled": true
+									"value": "2034578698",
+									"type": "text"
 								},
 								{
 									"key": "total_members",
-									"value": "50",
-									"type": "text",
-									"disabled": true
+									"value": "52",
+									"type": "text"
 								},
 								{
 									"key": "tent_number",
-									"value": "12",
-									"type": "text",
-									"disabled": true
+									"value": "15",
+									"type": "text"
 								},
 								{
 									"key": "location",
-									"value": "mansoura ",
-									"type": "text",
-									"disabled": true
+									"value": "mansoura updated",
+									"type": "text"
 								},
 								{
 									"key": "notes",
-									"value": "notes notes notes ",
-									"type": "text",
-									"disabled": true
+									"value": "updated notes",
+									"type": "text"
 								},
 								{
 									"key": "file",
 									"type": "file",
-									"src": "postman-cloud:///1f0c7eb4-6c98-47e0-a7c6-6b9e79d603e2",
-									"disabled": true
+									"src": "/C:/Users/Sony Vaio/Desktop/author notes.txt"
 								},
 								{
 									"key": "camp_id",
@@ -2120,19 +2172,145 @@
 								},
 								{
 									"key": "marital_status_id",
-									"value": "5",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][id]",
+									"value": "31",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][name]",
+									"value": "أحمد النجار",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][gender]",
+									"value": "male",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][dob]",
+									"value": "2005-03-20",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][national_id]",
+									"value": "1234567897",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][relationship_id]",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][medical_condition_id]",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][file]",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/author notes.txt",
+									"disabled": true
+								},
+								{
+									"key": "members[0][name]",
+									"value": "يوسف النجار",
 									"type": "text"
+								},
+								{
+									"key": "members[0][gender]",
+									"value": "male",
+									"type": "text"
+								},
+								{
+									"key": "members[0][dob]",
+									"value": "2012-05-10",
+									"type": "text"
+								},
+								{
+									"key": "members[0][national_id]",
+									"value": "12345678978999",
+									"type": "text"
+								},
+								{
+									"key": "members[0][relationship_id]",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "members[0][medical_condition_id]",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "members[0][file]",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/author notes.txt"
+								},
+								{
+									"key": "members[1][name]",
+									"value": "name",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][gender]",
+									"value": "female",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][dob]",
+									"value": "28-4-2012",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][national_id]",
+									"value": "123456789",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][relationship_id]",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][medical_condition_id]",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][file]",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/db.txt",
+									"disabled": true
 								}
 							]
 						},
 						"url": {
-							"raw": "{{url}}/families/3",
+							"raw": "{{url}}/families/8",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"families",
-								"3"
+								"8"
 							]
 						}
 					},
@@ -2185,7 +2363,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "107|owwUMozxoRJ1QZOqqYH0ezO0OAACQUjgM2zLlkla16273eb6",
+									"value": "132|ckL36KvsDqodRHUiejZ6c6i5JL4Km5CLThLMsfnbb64de2e0",
 									"type": "string"
 								}
 							]
@@ -2204,13 +2382,110 @@
 							}
 						],
 						"url": {
-							"raw": "{{url}}/families/6",
+							"raw": "{{url}}/families/17",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"families",
-								"6"
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete member",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "121|aTyGFVIvWtELRdWncJuRXP3uX52JrUx9Mt47kl3M9bd21e85",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/families/:family/members/:member",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families",
+								":family",
+								"members",
+								":member"
+							],
+							"variable": [
+								{
+									"key": "family",
+									"value": "8"
+								},
+								{
+									"key": "member",
+									"value": "32"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "statistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "132|ckL36KvsDqodRHUiejZ6c6i5JL4Km5CLThLMsfnbb64de2e0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/families/:family/statistics",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families",
+								":family",
+								"statistics"
+							],
+							"variable": [
+								{
+									"key": "family",
+									"value": "17"
+								}
 							]
 						}
 					},
@@ -2229,7 +2504,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "107|owwUMozxoRJ1QZOqqYH0ezO0OAACQUjgM2zLlkla16273eb6",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -2248,13 +2523,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{url}}/families/3/members",
+							"raw": "{{url}}/families/1/members",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"families",
-								"3",
+								"1",
 								"members"
 							]
 						}
@@ -2440,47 +2715,6 @@
 					"response": []
 				},
 				{
-					"name": "delete",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "82|zx4VPBnVOAEfw5a0SAgguurFtVnMoAPkEu6fUqJx0ea544d0",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Accept-Language",
-								"value": "ar",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{url}}/families/3/members/4",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"families",
-								"3",
-								"members",
-								"4"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "show",
 					"request": {
 						"auth": {
@@ -2507,13 +2741,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{url}}/families/3/members/4",
+							"raw": "{{url}}/families/16/members/4",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"families",
-								"3",
+								"16",
 								"members",
 								"4"
 							]
@@ -3719,15 +3953,13 @@
 							"formdata": [
 								{
 									"key": "slides[0][id]",
-									"value": "2",
-									"type": "text",
-									"disabled": true
+									"value": "6",
+									"type": "text"
 								},
 								{
 									"key": "slides[0][hero_title][en]",
 									"value": "With your donation, you can alleviate the suffering of the people of Gaza and spread hope in the hearts of those in need of support and resilience 💚",
-									"type": "text",
-									"disabled": true
+									"type": "text"
 								},
 								{
 									"key": "slides[0][hero_title][ar]",
@@ -3779,7 +4011,7 @@
 								},
 								{
 									"key": "title[en]",
-									"value": "Who are we?",
+									"value": "Who we are",
 									"type": "text",
 									"disabled": true
 								},
@@ -3804,26 +4036,22 @@
 								{
 									"key": "sections[0][title][en]",
 									"value": "section1",
-									"type": "text",
-									"disabled": true
+									"type": "text"
 								},
 								{
 									"key": "sections[0][title][ar]",
-									"value": "section1",
-									"type": "text",
-									"disabled": true
+									"value": "البوابة النشطة",
+									"type": "text"
 								},
 								{
 									"key": "sections[0][description][ar]",
 									"value": "section 1 descrption",
-									"type": "text",
-									"disabled": true
+									"type": "text"
 								},
 								{
 									"key": "sections[0][description][en]",
 									"value": "section 1 descrption",
-									"type": "text",
-									"disabled": true
+									"type": "text"
 								},
 								{
 									"key": "sections[0][image]",
@@ -3834,12 +4062,14 @@
 								{
 									"key": "complaint_image",
 									"type": "file",
-									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg"
+									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg",
+									"disabled": true
 								},
 								{
 									"key": "contact_image",
 									"type": "file",
-									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg"
+									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg",
+									"disabled": true
 								}
 							]
 						},
@@ -4115,13 +4345,13 @@
 							]
 						},
 						"url": {
-							"raw": "{{url}}/pages/goals",
+							"raw": "{{url}}/pages/vision",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"pages",
-								"goals"
+								"vision"
 							]
 						}
 					},
@@ -5022,9 +5252,8 @@
 								},
 								{
 									"key": "title[en]",
-									"value": "",
-									"type": "text",
-									"disabled": true
+									"value": "are we ",
+									"type": "text"
 								},
 								{
 									"key": "description[ar]",
@@ -5047,12 +5276,14 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Users/Sony Vaio/Desktop/project1.pdf"
+									"src": "/C:/Users/Sony Vaio/Desktop/project1.pdf",
+									"disabled": true
 								},
 								{
 									"key": "second_image",
 									"type": "file",
-									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg"
+									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg",
+									"disabled": true
 								}
 							]
 						},

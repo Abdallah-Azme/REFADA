@@ -1,8 +1,11 @@
+import { LocalizedText } from "./page.schema";
+
 export interface Page {
   pageType: string;
-  title: string;
-  description: string;
-  image: string;
+  title: LocalizedText;
+  description: LocalizedText;
+  image: string | null;
+  file: string | null;
   isActive: boolean | null;
 }
 

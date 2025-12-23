@@ -11,16 +11,17 @@ export const pageUpdateSchema = z.object({
 
 export type PageUpdateFormValues = z.infer<typeof pageUpdateSchema>;
 
+// Localized text object structure used by the API
+export interface LocalizedText {
+  ar: string;
+  en: string;
+}
+
 export interface PageData {
   pageType: string;
-  title: string;
-  description: string;
-  image: string;
-  file?: string; // Document file URL
+  title: LocalizedText;
+  description: LocalizedText;
+  image: string | null;
+  file: string | null; // Document file URL
   isActive: boolean | null;
-  // If API returns translations in a specific details endpoint
-  title_ar?: string;
-  title_en?: string;
-  description_ar?: string;
-  description_en?: string;
 }

@@ -12,10 +12,23 @@ import { Button } from "@/shared/ui/button";
 export default function Page() {
   const t = useTranslations();
   const { data: pageData, isLoading } = usePage("terms");
+  const locale = (
+    typeof window !== "undefined" ? document.documentElement.lang : "ar"
+  ) as "ar" | "en";
 
-  // Get data from API or fallback to translations
-  const title = pageData?.data?.title || t("termsAndConditions");
-  const description = pageData?.data?.description || "";
+  // Get data from API - handle both string and localized object formats
+  const titleData = pageData?.data?.title;
+  const descData = pageData?.data?.description;
+
+  const title =
+    typeof titleData === "object" && titleData
+      ? titleData[locale] || titleData.ar || t("termsAndConditions")
+      : titleData || t("termsAndConditions");
+
+  const description =
+    typeof descData === "object" && descData
+      ? descData[locale] || descData.ar || ""
+      : descData || "";
 
   return (
     <motion.div
@@ -87,29 +100,57 @@ export default function Page() {
         />
       </motion.div>
 
-      {/* Content Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.6 }}
+      {/* Content Section with optional Image */}
+      <div
+        className={`flex flex-col ${
+          pageData?.data?.image ? "lg:flex-row-reverse" : ""
+        } gap-10 items-start`}
       >
-        <PageSection
-          description={
-            isLoading ? (
-              <div className="space-y-4">
-                <div className="h-4 bg-gray-200 rounded animate-pulse" />
-                <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6" />
-                <div className="h-4 bg-gray-200 rounded animate-pulse w-4/6" />
-              </div>
-            ) : (
-              <div
-                className="leading-10 [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
-                dangerouslySetInnerHTML={{ __html: description }}
-              />
-            )
-          }
-        />
-      </motion.div>
+        {/* Image Section - only show if image exists */}
+        {pageData?.data?.image && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="relative w-full lg:w-1/2 h-[300px] sm:h-[350px] shrink-0 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/50"
+          >
+            <ImageFallback
+              src={pageData.data.image}
+              fill
+              className="object-cover"
+              alt={typeof title === "string" ? title : ""}
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent pointer-events-none" />
+          </motion.div>
+        )}
+
+        {/* Content Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className={`${
+            pageData?.data?.image ? "flex-1" : "w-full"
+          } bg-white/50 backdrop-blur-sm rounded-3xl`}
+        >
+          <PageSection
+            description={
+              isLoading ? (
+                <div className="space-y-4">
+                  <div className="h-4 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6" />
+                  <div className="h-4 bg-gray-200 rounded animate-pulse w-4/6" />
+                </div>
+              ) : (
+                <div
+                  className="leading-10 text-lg text-gray-700 [&_ul]:list-disc [&_ul]:pr-5 [&_ol]:list-decimal [&_ol]:pr-5"
+                  dangerouslySetInnerHTML={{ __html: description }}
+                />
+              )
+            }
+          />
+        </motion.div>
+      </div>
     </motion.div>
   );
 }

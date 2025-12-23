@@ -64,13 +64,14 @@ export default function DynamicPageComponent({
       </MainHeader>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           <Card className="bg-white border-none shadow-sm">
             <CardContent className="p-8">
               <div className="flex items-center justify-between mb-6 border-b pb-4">
                 <h2 className="text-2xl font-bold text-gray-900">
-                  {pageData.title}
+                  {typeof pageData.title === "object"
+                    ? pageData.title?.ar
+                    : pageData.title}
                 </h2>
                 <Button onClick={() => setEditDialogOpen(true)}>
                   <Edit className="h-4 w-4 ml-2" />
@@ -80,7 +81,12 @@ export default function DynamicPageComponent({
 
               <div
                 className="prose prose-lg max-w-none text-gray-700 leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: pageData.description }}
+                dangerouslySetInnerHTML={{
+                  __html:
+                    typeof pageData.description === "object"
+                      ? pageData.description?.ar || ""
+                      : pageData.description || "",
+                }}
               />
             </CardContent>
           </Card>
