@@ -12,7 +12,9 @@ export const campService = {
 
     // Extract governorate_id - it could be in different formats
     let governorateId = "";
-    if (camp.governorate) {
+    if (camp.governorate_id) {
+      governorateId = camp.governorate_id.toString();
+    } else if (camp.governorate) {
       if (typeof camp.governorate === "object" && "id" in camp.governorate) {
         governorateId = camp.governorate.id.toString();
       } else if (typeof camp.governorate === "string") {
@@ -20,12 +22,34 @@ export const campService = {
       }
     }
 
+    // Extract localized name
+    let nameAr = "";
+    let nameEn = "";
+    if (typeof camp.name === "object" && camp.name) {
+      nameAr = camp.name.ar || "";
+      nameEn = camp.name.en || "";
+    } else if (typeof camp.name === "string") {
+      nameAr = camp.name; // Fallback: use the name as Arabic
+      nameEn = camp.name; // Also use as English fallback to pass validation
+    }
+
+    // Extract localized description
+    let descAr = "";
+    let descEn = "";
+    if (typeof camp.description === "object" && camp.description) {
+      descAr = camp.description.ar || "";
+      descEn = camp.description.en || "";
+    } else if (typeof camp.description === "string") {
+      descAr = camp.description;
+      descEn = "";
+    }
+
     return {
-      name_ar: camp.name || "", // Mapping existing name to AR
-      name_en: "", // No EN name in current Camp interface
+      name_ar: nameAr,
+      name_en: nameEn,
       location: camp.location || "",
-      description_ar: camp.description || "",
-      description_en: "",
+      description_ar: descAr,
+      description_en: descEn,
       capacity: camp.capacity || 0,
       currentOccupancy: camp.currentOccupancy || 0,
       coordinates: {
@@ -33,7 +57,7 @@ export const campService = {
         lng: camp.longitude || 0,
       },
       governorate_id: governorateId,
-      camp_img: camp.campImg || undefined, // Use existing image URL or undefined
+      camp_img: camp.campImg || undefined,
     };
   },
 

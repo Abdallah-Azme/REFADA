@@ -359,5 +359,15 @@
     "goalLabel": "الهدف",
     "donorsLabel": "متبرع",
     "collectedLabel": "تم جمع"
+  },
+  "adminCamps": {
+    "pageTitle": "إدارة الإيواءات",
+    "addNewCamp": "إضافة إيواء جديد",
+    "campsList": "قائمة الإيواءات",
+    "loadingData": "جاري تحميل البيانات...",
+    "errorLoadingData": "حدث خطأ أثناء تحميل البيانات",
+    "processingRequest": "جاري معالجة الطلب...",
+    "deleteCamp": "حذف الإيواء",
+    "deleteConfirmation": "هل أنت متأكد من حذف هذا الإيواء؟ هذا الإجراء لا يمكن التراجع عنه."
   }
 }

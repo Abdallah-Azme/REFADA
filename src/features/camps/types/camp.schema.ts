@@ -10,10 +10,13 @@ export const createCampSchema = (t: any) =>
       description_en: z.string().optional(),
       capacity: z.number().min(0, t("validation.capacity_min")).default(0),
       currentOccupancy: z.number().min(0).default(0),
-      coordinates: z.object({
-        lat: z.number().default(0),
-        lng: z.number().default(0),
-      }),
+      coordinates: z
+        .object({
+          lat: z.coerce.number().default(0),
+          lng: z.coerce.number().default(0),
+        })
+        .optional()
+        .default({ lat: 0, lng: 0 }),
       governorate_id: z.string().min(1, t("validation.governorate_required")),
       camp_img: z
         .any()
@@ -53,10 +56,11 @@ export interface Project {
 
 export interface Camp {
   id: number;
-  name: string;
-  description?: string;
+  name: string | { ar?: string; en?: string };
+  description?: string | { ar?: string; en?: string };
   slug?: string;
   governorate?: string | { id: number; name: string } | null;
+  governorate_id?: number | string;
   familyCount?: number;
   childrenCount?: number;
   elderlyCount?: number;
