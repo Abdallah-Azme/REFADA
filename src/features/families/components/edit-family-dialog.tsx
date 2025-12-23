@@ -122,6 +122,7 @@ export default function EditFamilyDialog({
       dob: undefined,
       phone: "",
       backupPhone: undefined,
+      gender: "male",
       totalMembers: 1,
       tentNumber: undefined,
       location: undefined,
@@ -151,6 +152,7 @@ export default function EditFamilyDialog({
         dob: family.dob || "",
         phone: family.phone || "",
         backupPhone: family.backupPhone || "",
+        gender: "male", // Default to male for head of family when editing
         totalMembers: family.totalMembers || 1,
         tentNumber: family.tentNumber || "",
         location: family.location || "",
@@ -166,10 +168,27 @@ export default function EditFamilyDialog({
     }
   }, [family, open, camps, maritalStatuses, form]);
 
+  const { fields, append, remove, replace } = useFieldArray({
+    control: form.control,
+    name: "members",
+  });
+
   // Populate existing members when membersData loads
   useEffect(() => {
     if (membersData?.data && relationships.length > 0 && open) {
-      const existingMembers = membersData.data.map((member) => {
+      console.log("🔍 Members data from API:", membersData.data);
+      console.log("🔢 Number of members:", membersData.data.length);
+
+      // Filter out head of family (relationship "أب" or id 1) since they're already in the main form
+      const nonHeadMembers = membersData.data.filter((member) => {
+        const foundRelationship = relationships.find(
+          (r) => r.name === member.relationship
+        );
+        // Skip if this is the head of family (relationship_id = 1)
+        return foundRelationship?.id !== 1;
+      });
+
+      const existingMembers = nonHeadMembers.map((member) => {
         // Find relationship ID by matching name
         const foundRelationship = relationships.find(
           (r) => r.name === member.relationship
@@ -195,15 +214,12 @@ export default function EditFamilyDialog({
         };
       });
 
-      form.setValue("members", existingMembers as any);
+      console.log("📋 Mapped members (excluding head):", existingMembers);
+      // Use replace from useFieldArray for proper synchronization
+      replace(existingMembers as any);
       form.setValue("totalMembers", existingMembers.length);
     }
-  }, [membersData, relationships, medicalConditions, open, form]);
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "members",
-  });
+  }, [membersData, relationships, medicalConditions, open, replace, form]);
 
   const onError = (errors: any) => {
     console.log("❌ FORM ERRORS:", errors);
@@ -437,6 +453,35 @@ export default function EditFamilyDialog({
                   )}
                 />
 
+                {/* النوع (رب الأسرة) */}
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <SelectTrigger className="w-full bg-white">
+                            {field.value === "male"
+                              ? "ذكر"
+                              : field.value === "female"
+                              ? "أنثى"
+                              : "النوع"}
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="male">ذكر</SelectItem>
+                            <SelectItem value="female">أنثى</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 {/* الحالة الاجتماعية */}
                 <FormField
                   control={form.control}
@@ -485,20 +530,33 @@ export default function EditFamilyDialog({
                         >
                           <SelectTrigger className="w-full bg-white">
                             {field.value
-                              ? camps.find(
-                                  (c) => c.id.toString() === field.value
-                                )?.name || t("camp")
+                              ? (() => {
+                                  const camp = camps.find(
+                                    (c) => c.id.toString() === field.value
+                                  );
+                                  if (!camp) return t("camp");
+                                  const name = camp.name;
+                                  return typeof name === "string"
+                                    ? name
+                                    : name?.ar || name?.en || t("camp");
+                                })()
                               : t("camp")}
                           </SelectTrigger>
                           <SelectContent>
-                            {camps.map((camp) => (
-                              <SelectItem
-                                key={camp.id}
-                                value={camp.id.toString()}
-                              >
-                                {camp.name}
-                              </SelectItem>
-                            ))}
+                            {camps.map((camp) => {
+                              const displayName =
+                                typeof camp.name === "string"
+                                  ? camp.name
+                                  : camp.name?.ar || camp.name?.en || "";
+                              return (
+                                <SelectItem
+                                  key={camp.id}
+                                  value={camp.id.toString()}
+                                >
+                                  {displayName}
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
                       </FormControl>

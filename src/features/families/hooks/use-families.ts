@@ -78,3 +78,14 @@ export function useDeleteFamily() {
     },
   });
 }
+
+export function useFamilyStatistics(familyId: number | null) {
+  return useQuery({
+    queryKey: ["familyStatistics", familyId],
+    queryFn: async () => {
+      const { getFamilyStatisticsApi } = await import("../api/families.api");
+      return getFamilyStatisticsApi(familyId!);
+    },
+    enabled: !!familyId,
+  });
+}

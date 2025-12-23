@@ -45,7 +45,6 @@ import {
 } from "@/components/ui/select";
 import { familySchema } from "@/features/families/types/family.schema";
 import { useCreateFamily } from "@/features/families/hooks/use-create-family";
-import { useCreateFamilyMember } from "@/features/families/hooks/use-create-family-member";
 import { useCamps } from "@/features/camps";
 import { toast } from "sonner";
 import { DatePicker } from "@/components/ui/date-picker";
@@ -58,7 +57,6 @@ export default function AddFamilyDialog() {
   const [file, setFile] = useState<File | null>(null);
   const [open, setOpen] = useState(false);
   const { mutateAsync: createFamily, isPending } = useCreateFamily();
-  const { mutateAsync: createFamilyMember } = useCreateFamilyMember();
 
   // Load camps for the select
   const { data: campsData } = useCamps();
@@ -84,6 +82,7 @@ export default function AddFamilyDialog() {
       dob: undefined,
       phone: "",
       backupPhone: undefined,
+      gender: "male", // Default to male for head of family
       totalMembers: 1,
       tentNumber: undefined,
       location: undefined,
@@ -123,7 +122,8 @@ export default function AddFamilyDialog() {
     ) {
       prevTotalMembersRef.current = totalMembers;
       const currentCount = fields.length;
-      const targetCount = totalMembers;
+      // targetCount is totalMembers - 1 because the head of family is already counted in totalMembers
+      const targetCount = Math.max(0, totalMembers - 1);
 
       if (targetCount > currentCount) {
         // Add more rows
@@ -151,40 +151,15 @@ export default function AddFamilyDialog() {
 
   const onSubmit = async (values: z.infer<typeof familySchema>) => {
     try {
-      // First, create the family
+      // Create the family with members in a single request
+      // The API now accepts members[] array alongside family data
       const familyPayload = {
         ...values,
         file: file,
+        // members are already in values from the form
       };
 
-      const familyResult = await createFamily(familyPayload);
-
-      // If family creation succeeded and we have members, create them
-      if (familyResult && values.members && values.members.length > 0) {
-        // Extract family ID from the response
-        const familyId = (familyResult as any).data?.id;
-
-        if (familyId) {
-          // Create each member sequentially
-          for (const member of values.members) {
-            if (member.name && member.nationalId) {
-              await createFamilyMember({
-                familyId,
-                data: {
-                  name: member.name,
-                  nationalId: member.nationalId,
-                  gender: member.gender,
-                  dob: member.dob,
-                  relationshipId: member.relationshipId,
-                  medicalConditionId: member.medicalConditionId,
-                  medicalConditionFile: member.medicalConditionFile,
-                },
-              });
-            }
-          }
-          toast.success("تم إضافة العائلة والأفراد بنجاح");
-        }
-      }
+      await createFamily(familyPayload);
 
       setOpen(false);
       form.reset();
@@ -203,8 +178,8 @@ export default function AddFamilyDialog() {
       relationshipId: "",
       medicalConditionId: "none",
     });
-    // Update totalMembers to match
-    form.setValue("totalMembers", fields.length + 1);
+    // Update totalMembers to match: current members + new member + head of family
+    form.setValue("totalMembers", fields.length + 2);
   };
 
   return (
@@ -327,6 +302,35 @@ export default function AddFamilyDialog() {
                   )}
                 />
 
+                {/* النوع (رب الأسرة) */}
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className="w-full bg-white">
+                            {field.value === "male"
+                              ? "ذكر"
+                              : field.value === "female"
+                              ? "أنثى"
+                              : "النوع"}
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="male">ذكر</SelectItem>
+                            <SelectItem value="female">أنثى</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 {/* الحالة الاجتماعية */}
                 <FormField
                   control={form.control}
@@ -375,20 +379,35 @@ export default function AddFamilyDialog() {
                         >
                           <SelectTrigger className="w-full bg-white">
                             {field.value
-                              ? camps.find(
-                                  (c) => c.id.toString() === field.value
-                                )?.name || t("camp_placeholder")
+                              ? (() => {
+                                  const camp = camps.find(
+                                    (c) => c.id.toString() === field.value
+                                  );
+                                  if (!camp) return t("camp_placeholder");
+                                  const name = camp.name;
+                                  return typeof name === "string"
+                                    ? name
+                                    : name?.ar ||
+                                        name?.en ||
+                                        t("camp_placeholder");
+                                })()
                               : t("camp_placeholder")}
                           </SelectTrigger>
                           <SelectContent>
-                            {camps.map((camp) => (
-                              <SelectItem
-                                key={camp.id}
-                                value={camp.id.toString()}
-                              >
-                                {camp.name}
-                              </SelectItem>
-                            ))}
+                            {camps.map((camp) => {
+                              const displayName =
+                                typeof camp.name === "string"
+                                  ? camp.name
+                                  : camp.name?.ar || camp.name?.en || "";
+                              return (
+                                <SelectItem
+                                  key={camp.id}
+                                  value={camp.id.toString()}
+                                >
+                                  {displayName}
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -710,7 +729,8 @@ export default function AddFamilyDialog() {
                           size="icon"
                           onClick={() => {
                             remove(index);
-                            form.setValue("totalMembers", fields.length - 1);
+                            // After removing, totalMembers = remaining members + head of family
+                            form.setValue("totalMembers", fields.length);
                           }}
                           className="text-red-500 hover:text-red-700 hover:bg-red-50 self-center"
                         >

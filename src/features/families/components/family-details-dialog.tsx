@@ -8,6 +8,7 @@ import {
 } from "@/src/shared/ui/dialog"; // Assuming shared UI path
 import { Family } from "../types/family.schema";
 import { useFamily } from "../hooks/use-families";
+import { useFamilyStatistics } from "../hooks/use-families";
 import {
   Loader2,
   Users,
@@ -38,6 +39,11 @@ export default function FamilyDetailsDialog({
   const { data: response, isLoading } = useFamily(initialFamily?.id || null);
   const family = response?.data || initialFamily;
 
+  // Fetch statistics for male/female counts
+  const { data: statisticsResponse, isLoading: isLoadingStats } =
+    useFamilyStatistics(initialFamily?.id || null);
+  const statistics = statisticsResponse?.data;
+
   if (!family) return null;
 
   return (
@@ -66,19 +72,22 @@ export default function FamilyDetailsDialog({
                   {t("members_count_label")}
                 </span>
                 <span className="text-xl font-bold text-blue-700">
-                  {family.totalMembers}
+                  {statistics?.totalMembers ?? family.totalMembers}
                 </span>
-                {family.malesCount !== undefined &&
-                  family.femalesCount !== undefined && (
-                    <div className="text-xs text-gray-400 mt-1 flex gap-2">
-                      <span>
-                        {t("male")}: {family.malesCount}
-                      </span>
-                      <span>
-                        {t("female")}: {family.femalesCount}
-                      </span>
-                    </div>
-                  )}
+                {isLoadingStats ? (
+                  <div className="text-xs text-gray-400 mt-1">
+                    <Loader2 className="h-3 w-3 animate-spin inline" />
+                  </div>
+                ) : statistics ? (
+                  <div className="text-xs text-gray-400 mt-1 flex gap-2">
+                    <span>
+                      {t("male")}: {statistics.malesCount}
+                    </span>
+                    <span>
+                      {t("female")}: {statistics.femalesCount}
+                    </span>
+                  </div>
+                ) : null}
               </div>
 
               <div className="bg-green-50 p-4 rounded-xl flex flex-col items-center justify-center text-center">

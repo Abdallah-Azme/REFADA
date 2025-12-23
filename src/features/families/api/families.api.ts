@@ -82,6 +82,52 @@ export async function createFamilyApi(
   }
   if (data.file) formData.append("file", data.file); // Handle file upload
 
+  // Add head of family as members[0]
+  formData.append("members[0][name]", data.familyName);
+  formData.append("members[0][gender]", data.gender);
+  formData.append("members[0][dob]", data.dob);
+  formData.append("members[0][national_id]", data.nationalId);
+  formData.append("members[0][relationship_id]", "1"); // Head of family relationship
+  if (data.medicalConditionId && data.medicalConditionId !== "none") {
+    formData.append(
+      "members[0][medical_condition_id]",
+      data.medicalConditionId
+    );
+    if (data.file) {
+      formData.append("members[0][file]", data.file);
+    }
+  }
+
+  // Append other members starting at index 1
+  if (data.members && data.members.length > 0) {
+    data.members.forEach((member, index) => {
+      const memberIndex = index + 1; // Offset by 1 since head is at 0
+      formData.append(`members[${memberIndex}][name]`, member.name);
+      formData.append(`members[${memberIndex}][gender]`, member.gender);
+      formData.append(`members[${memberIndex}][dob]`, member.dob);
+      formData.append(
+        `members[${memberIndex}][national_id]`,
+        member.nationalId
+      );
+      formData.append(
+        `members[${memberIndex}][relationship_id]`,
+        member.relationshipId
+      );
+      if (member.medicalConditionId && member.medicalConditionId !== "none") {
+        formData.append(
+          `members[${memberIndex}][medical_condition_id]`,
+          member.medicalConditionId
+        );
+        if (member.medicalConditionFile) {
+          formData.append(
+            `members[${memberIndex}][file]`,
+            member.medicalConditionFile
+          );
+        }
+      }
+    });
+  }
+
   return apiRequest("/families", {
     method: "POST",
     body: formData,
@@ -115,6 +161,7 @@ export async function updateFamilyApi(
   }
 
   // Uses POST for update per Postman collection ("edit" request)
+  // Note: Members are handled separately via the edit-family-dialog's member update logic
   return apiRequest(`/families/${id}`, {
     method: "POST",
     body: formData,
@@ -293,4 +340,30 @@ export async function deleteFamilyMemberApi(
   return apiRequest(`/families/${familyId}/members/${memberId}`, {
     method: "DELETE",
   });
+}
+
+// Family Statistics API
+export interface FamilyStatistics {
+  familyId: number;
+  familyName: string;
+  totalMembers: number;
+  malesCount: number;
+  femalesCount: number;
+}
+
+export interface FamilyStatisticsResponse {
+  success: boolean;
+  message: string;
+  data: FamilyStatistics;
+}
+
+export async function getFamilyStatisticsApi(
+  familyId: number
+): Promise<FamilyStatisticsResponse> {
+  return apiRequest<FamilyStatisticsResponse>(
+    `/families/${familyId}/statistics`,
+    {
+      method: "GET",
+    }
+  );
 }
