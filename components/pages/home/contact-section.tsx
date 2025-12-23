@@ -85,7 +85,7 @@ export default function ContactSection() {
         >
           <div className="w-full absolute inset-0">
             <ImageFallback
-              src="/pages/home/refad-org.webp"
+              src="/refad.png"
               alt="Refad Logo"
               fill
               className=" object-cover"
