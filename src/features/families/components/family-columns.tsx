@@ -14,7 +14,8 @@ import {
 export const createFamilyColumns = (
   onView: (family: Family) => void,
   onEdit: (family: Family) => void,
-  onDelete: (family: Family) => void
+  onDelete: (family: Family) => void,
+  options?: { hideDelete?: boolean }
 ): ColumnDef<Family>[] => [
   {
     accessorKey: "familyName",
@@ -66,13 +67,15 @@ export const createFamilyColumns = (
               <Pencil className="mr-2 h-4 w-4" />
               تعديل
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => onDelete(family)}
-              className="text-red-600 focus:text-red-600"
-            >
-              <Trash className="mr-2 h-4 w-4" />
-              حذف
-            </DropdownMenuItem>
+            {!options?.hideDelete && (
+              <DropdownMenuItem
+                onClick={() => onDelete(family)}
+                className="text-red-600 focus:text-red-600"
+              >
+                <Trash className="mr-2 h-4 w-4" />
+                حذف
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );

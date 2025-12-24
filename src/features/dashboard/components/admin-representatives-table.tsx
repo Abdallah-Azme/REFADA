@@ -47,13 +47,13 @@ export default function AdminRepresentativesTable() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletingUser, setDeletingUser] = useState<PendingUser | null>(null);
 
-  // Fetch all delegates
+  // Fetch all delegates - API already filters by role=delegate
   const { data: response, isLoading, error } = useRepresentatives();
   const deleteMutation = useDeleteRepresentative();
 
-  // Filter only approved delegates for this view
+  // Use all data from the response (already filtered by role=delegate in the API)
   const data = React.useMemo(() => {
-    return response?.data?.filter((user) => user.status === "approved") || [];
+    return response?.data || [];
   }, [response]);
 
   const handleDelete = (user: PendingUser) => {

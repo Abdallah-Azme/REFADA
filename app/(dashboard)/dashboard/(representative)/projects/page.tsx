@@ -18,7 +18,7 @@ export default function Page() {
           <AddProjectDialog />
         </div>
       </div>
-      <ProjectsTable main />
+      <ProjectsTable main hideApproveDelete />
     </section>
   );
 }

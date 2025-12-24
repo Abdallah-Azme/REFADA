@@ -40,6 +40,7 @@ import {
   Project,
 } from "@/features/projects";
 import { useCamps } from "@/features/camps";
+import { useProfile } from "@/features/profile";
 
 // Schema matching the API requirements
 const createProjectFormSchema = (t: any) =>
@@ -78,7 +79,12 @@ export default function ProjectFormDialog({
   const createProject = useCreateProject();
   const updateProject = useUpdateProject();
   const { data: campsData } = useCamps();
+  const { data: profileData } = useProfile();
   const camps = campsData?.data || [];
+
+  // Get user's camp from profile
+  const userCamp = profileData?.data?.camp;
+  const isDelegate = profileData?.data?.role === "delegate";
 
   const isEdit = !!project;
   const projectFormSchema = createProjectFormSchema(t);
@@ -113,18 +119,20 @@ export default function ProjectFormDialog({
         setFile(null); // Reset file on edit open unless we want to show existing?
         // Note: API doesn't return file object, just URL string project.projectImage
       } else {
+        // For delegates, auto-populate their camp
+        const campId = isDelegate && userCamp ? userCamp.id.toString() : "";
         form.reset({
           name: "",
           type: "",
           beneficiary_count: "",
           college: "",
           notes: "",
-          camp_id: "",
+          camp_id: campId,
         });
         setFile(null);
       }
     }
-  }, [open, project, camps, form]);
+  }, [open, project, camps, form, isDelegate, userCamp]);
 
   const onSubmit = (values: z.infer<typeof projectFormSchema>) => {
     const formData = new FormData();
@@ -246,28 +254,38 @@ export default function ProjectFormDialog({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="w-full bg-white">
-                            {field.value
-                              ? camps.find(
-                                  (c) => c.id.toString() === field.value
-                                )?.name || t("select_camp")
-                              : t("select_camp")}
-                          </SelectTrigger>
-                          <SelectContent>
-                            {camps.map((camp) => (
-                              <SelectItem
-                                key={camp.id}
-                                value={camp.id.toString()}
-                              >
-                                {camp.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        {isDelegate && userCamp ? (
+                          // Show read-only camp name for delegates
+                          <Input
+                            value={userCamp.name}
+                            disabled
+                            className="bg-gray-100 cursor-not-allowed"
+                          />
+                        ) : (
+                          // Show dropdown for admins
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-full bg-white">
+                              {field.value
+                                ? camps.find(
+                                    (c) => c.id.toString() === field.value
+                                  )?.name || t("select_camp")
+                                : t("select_camp")}
+                            </SelectTrigger>
+                            <SelectContent>
+                              {camps.map((camp) => (
+                                <SelectItem
+                                  key={camp.id}
+                                  value={camp.id.toString()}
+                                >
+                                  {camp.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
                       </FormControl>
                       <FormMessage />
                     </FormItem>

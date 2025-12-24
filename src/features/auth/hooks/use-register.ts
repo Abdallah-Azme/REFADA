@@ -14,10 +14,10 @@ export function useRegister() {
       // Show success message
       toast.success(response.message || "تم إنشاء الحساب بنجاح");
 
-      // If tokens are provided, auto-login
-      if (response.data.accessToken) {
+      // If tokens are provided, auto-login (only when data exists and has accessToken)
+      if (response.data?.accessToken) {
         const tokens = {
-          accessToken: response.data.accessToken!,
+          accessToken: response.data.accessToken,
           refreshToken: response.data.refreshToken!,
           tokenType: response.data.tokenType || "Bearer",
           accessExpiresIn: response.data.accessExpiresIn,
@@ -39,8 +39,10 @@ export function useRegister() {
           router.push("/dashboard");
         }
       } else {
-        // Redirect to login if email verification is required
-        toast.info("يرجى تسجيل الدخول باستخدام بيانات الاعتماد الخاصة بك");
+        // Account created but pending admin approval
+        toast.info(
+          "تم إنشاء حسابك بنجاح! يرجى انتظار موافقة المسؤول قبل تسجيل الدخول."
+        );
         router.push("/signin");
       }
     },

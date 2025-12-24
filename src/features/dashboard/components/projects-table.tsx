@@ -20,7 +20,13 @@ const formSchema = z.object({
 
 export type ProjectFilters = z.infer<typeof formSchema>;
 
-export default function ProjectsTable({ main = false }: { main?: boolean }) {
+export default function ProjectsTable({
+  main = false,
+  hideApproveDelete = false,
+}: {
+  main?: boolean;
+  hideApproveDelete?: boolean;
+}) {
   const { data: projectsData } = useProjects();
   const projects = projectsData?.data || [];
 
@@ -73,7 +79,10 @@ export default function ProjectsTable({ main = false }: { main?: boolean }) {
       </div>
       {/* FORM */}
       {/* Table - no height constraints */}
-      <CurrentProjectsTable filters={filters} />
+      <CurrentProjectsTable
+        filters={filters}
+        hideApproveDelete={hideApproveDelete}
+      />
     </div>
   );
 }

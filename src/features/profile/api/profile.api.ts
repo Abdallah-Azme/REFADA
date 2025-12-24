@@ -48,18 +48,19 @@ export const profileApi = {
     const token = await getAuthToken();
     const formDataToSend = new FormData();
 
-    // Append all fields to FormData with camelCase names
+    // Append all fields to FormData with snake_case names as expected by the API
     formDataToSend.append("name", formData.name);
     formDataToSend.append("email", formData.email);
 
-    if (formData.idNumber) formDataToSend.append("idNumber", formData.idNumber);
+    if (formData.idNumber)
+      formDataToSend.append("id_number", formData.idNumber);
     if (formData.phone) formDataToSend.append("phone", formData.phone);
     if (formData.backupPhone)
-      formDataToSend.append("backupPhone", formData.backupPhone);
+      formDataToSend.append("backup_phone", formData.backupPhone);
     if (formData.adminPosition)
-      formDataToSend.append("adminPosition", formData.adminPosition);
+      formDataToSend.append("admin_position", formData.adminPosition);
     if (formData.licenseNumber)
-      formDataToSend.append("licenseNumber", formData.licenseNumber);
+      formDataToSend.append("license_number", formData.licenseNumber);
 
     // Handle file upload
     if (formData.profile_image instanceof File) {

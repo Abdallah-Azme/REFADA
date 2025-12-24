@@ -47,12 +47,9 @@ export interface RepresentativesResponse {
 }
 
 export async function getRepresentativesApi(): Promise<RepresentativesResponse> {
-  return apiRequest<RepresentativesResponse>(
-    `/admin/users?role=delegate&status=approved`,
-    {
-      method: "GET",
-    }
-  );
+  return apiRequest<RepresentativesResponse>(`/admin/users?role=delegate`, {
+    method: "GET",
+  });
 }
 
 export async function createRepresentativeApi(

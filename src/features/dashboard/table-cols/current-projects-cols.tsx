@@ -15,6 +15,7 @@ type ActionHandlers = {
   onEdit: (project: Project) => void;
   onDelete: (project: Project) => void;
   onUpdate: (project: Project) => void;
+  hideApproveDelete?: boolean;
 };
 
 export const createColumns = (
@@ -220,9 +221,26 @@ export const createColumns = (
   // ========================================
   {
     id: "update",
-    header: () => <div className="text-center font-semibold">تحديث</div>,
+    header: () =>
+      handlers.hideApproveDelete ? null : (
+        <div className="text-center font-semibold">تحديث</div>
+      ),
     cell: ({ row }) => {
+      if (handlers.hideApproveDelete) return null;
       const project = row.original;
+      const isPending =
+        project.status === "pending" || project.status === "في الانتظار";
+
+      // Show accepted indicator if project is not pending
+      if (!isPending) {
+        return (
+          <div className="flex items-center justify-center">
+            <span className="px-3 py-1 rounded-md text-xs font-medium bg-green-100 text-green-700">
+              تم القبول
+            </span>
+          </div>
+        );
+      }
 
       return (
         <div className="flex items-center justify-center">
@@ -266,8 +284,12 @@ export const createColumns = (
 
   {
     id: "delete",
-    header: () => <div className="text-center font-semibold">حذف</div>,
+    header: () =>
+      handlers.hideApproveDelete ? null : (
+        <div className="text-center font-semibold">حذف</div>
+      ),
     cell: ({ row }) => {
+      if (handlers.hideApproveDelete) return null;
       const project = row.original;
 
       return (

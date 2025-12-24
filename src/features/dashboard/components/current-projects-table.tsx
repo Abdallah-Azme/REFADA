@@ -31,6 +31,7 @@ import ProjectFormDialog from "./add-project-project";
 import {
   useProjects,
   useDeleteProject,
+  useApproveProject,
 } from "@/features/projects/hooks/use-projects";
 import { Loader2 } from "lucide-react";
 import { DeleteConfirmDialog } from "@/features/marital-status/components/delete-confirm-dialog";
@@ -43,13 +44,16 @@ interface Filters {
 
 interface CurrentProjectsTableProps {
   filters?: Filters;
+  hideApproveDelete?: boolean;
 }
 
 export default function CurrentProjectsTable({
   filters,
+  hideApproveDelete,
 }: CurrentProjectsTableProps) {
   const { data: projectsData, isLoading } = useProjects();
   const deleteProject = useDeleteProject();
+  const approveProject = useApproveProject();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -112,8 +116,9 @@ export default function CurrentProjectsTable({
     setDeleteDialogOpen(true);
   };
 
+  // Approve project - sets status to 'in_progress'
   const handleUpdate = (project: Project): void => {
-    // TODO: Wire up approveProjectApi if needed
+    approveProject.mutate({ id: project.id, status: "in_progress" });
   };
 
   const confirmDelete = () => {
@@ -133,6 +138,7 @@ export default function CurrentProjectsTable({
       onEdit: handleEdit,
       onDelete: handleDelete,
       onUpdate: handleUpdate,
+      hideApproveDelete,
     }),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

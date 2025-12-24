@@ -171,7 +171,7 @@ export interface RegisterResponse {
     tokenType?: "Bearer";
     accessExpiresIn?: number;
     refreshExpiresIn?: number;
-  };
+  } | null;
 }
 
 export interface ForgotPasswordResponse {
