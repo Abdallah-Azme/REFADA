@@ -127,7 +127,7 @@ export default function Page() {
         </div>
       </motion.div>
 
-      <PolicySection secondary sections={sections} />
+      {/* <PolicySection secondary sections={sections} /> */}
       <MissionVisionGoals />
       <PartnersSection secondary />
     </section>

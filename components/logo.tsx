@@ -30,10 +30,10 @@ export default function Logo({ className }: { className?: string }) {
         <ImageFallback
           src={logoSrc}
           alt="REFAD Gaza"
-          width={100}
-          height={100}
+          width={120}
+          height={120}
           className={cn(
-            "w-[100px] h-[100px] select-none object-contain",
+            "w-[120px] h-[120px] select-none object-contain",
             className
           )}
         />

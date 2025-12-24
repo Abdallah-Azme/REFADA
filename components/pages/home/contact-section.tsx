@@ -88,7 +88,8 @@ export default function ContactSection() {
               src="/refad.png"
               alt="Refad Logo"
               fill
-              className=" object-cover"
+              quality={100}
+              className="object-cover"
             />
           </div>
         </motion.div>
