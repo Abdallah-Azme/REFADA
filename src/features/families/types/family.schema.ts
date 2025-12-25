@@ -5,7 +5,7 @@ export const familyMemberSchema = z
   .object({
     id: z.number().optional(), // If present, it's an existing member being edited
     name: z.string().min(1, "اسم الفرد مطلوب"),
-    nationalId: z.string().min(1, "رقم الهوية مطلوب"),
+    nationalId: z.string().length(9, "رقم الهوية يجب أن يكون 9 أرقام"),
     originalNationalId: z.string().optional(), // Track original national_id for existing members
     gender: z.enum(["male", "female"], {
       required_error: "النوع مطلوب",
@@ -39,7 +39,7 @@ export type FamilyMemberFormValues = z.infer<typeof familyMemberSchema>;
 
 export const familySchema = z.object({
   familyName: z.string().min(1, "اسم العائلة مطلوب"),
-  nationalId: z.string().min(8, "قم بإدخال رقم الهوية"),
+  nationalId: z.string().length(9, "رقم الهوية يجب أن يكون 9 أرقام"),
   dob: z.string().min(1, "تاريخ الميلاد مطلوب"),
   phone: z.string().min(1, "رقم الهاتف مطلوب"),
   backupPhone: z.string().optional(),

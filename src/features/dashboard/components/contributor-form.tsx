@@ -1,63 +1,107 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Image, ImageIcon, Pencil, Save, X } from "lucide-react";
-import { useState } from "react";
+import { Loader2, Pencil, Save, X } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import {
+  useProfile,
+  useUpdateProfile,
+  UpdateProfileFormValues,
+} from "@/features/profile";
 
-// Zod Schema
-const campSchema = z.object({
-  campName: z.string().min(1, "اسم الإيواء مطلوب"),
+// Zod Schema for contributor form
+const contributorFormSchema = z.object({
+  name: z.string().min(1, "اسم المساهم مطلوب"),
   email: z.string().email("البريد الإلكتروني غير صحيح"),
-  phoneNumber: z.string().min(10, "رقم الهاتف غير صحيح"),
-  whatsappNumber: z.string().min(10, "رقم الواتساب غير صحيح"),
-  representativeName: z.string().min(1, "اسم المندوب مطلوب"),
+  phone: z.string().min(10, "رقم الهاتف غير صحيح"),
+  backupPhone: z.string().optional(),
 });
 
-type CampFormValues = z.infer<typeof campSchema>;
-const initialData: CampFormValues = {
-  campName: "أحمد محمد عبد الله",
-  email: "ahmed123@gmail.com",
-  phoneNumber: "+972 000112233",
-  whatsappNumber: "+972 000112233",
-  representativeName: "أحمد محمد عبد الله",
-};
+type ContributorFormValues = z.infer<typeof contributorFormSchema>;
 
 export default function ContributorForm() {
   const [isEditing, setIsEditing] = useState(false);
+  const { data: profileData, isLoading } = useProfile();
+  const updateProfile = useUpdateProfile();
 
-  const form = useForm<CampFormValues>({
-    resolver: zodResolver(campSchema),
-    defaultValues: initialData,
+  const form = useForm<ContributorFormValues>({
+    resolver: zodResolver(contributorFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      backupPhone: "",
+    },
   });
 
-  const onSubmit = (data: CampFormValues) => {
-    setIsEditing(false);
-    // Here you would typically make an API call to save the data
+  // Update form when profile data is loaded
+  useEffect(() => {
+    if (profileData?.data) {
+      form.reset({
+        name: profileData.data.name || "",
+        email: profileData.data.email || "",
+        phone: profileData.data.phone || "",
+        backupPhone: profileData.data.backupPhone || "",
+      });
+    }
+  }, [profileData, form]);
+
+  const onSubmit = (data: ContributorFormValues) => {
+    const updateData: UpdateProfileFormValues = {
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      backupPhone: data.backupPhone,
+    };
+
+    updateProfile.mutate(updateData, {
+      onSuccess: () => {
+        setIsEditing(false);
+      },
+    });
   };
 
   const handleCancel = () => {
-    form.reset(initialData);
+    if (profileData?.data) {
+      form.reset({
+        name: profileData.data.name || "",
+        email: profileData.data.email || "",
+        phone: profileData.data.phone || "",
+        backupPhone: profileData.data.backupPhone || "",
+      });
+    }
     setIsEditing(false);
   };
-  return (
-    <div className="lg:w-1/2 px-8  ">
-      <div className="flex justify-between ">
-        <h3 className="text-lg font-semibold text-[#333333]  ">
+
+  if (isLoading) {
+    return (
+      <div className="lg:w-1/2 px-8">
+        <h3 className="text-lg font-semibold text-[#333333] mb-4">
           بيانات المساهم
         </h3>
+        <div className="flex items-center justify-center py-12 border border-gray-200 rounded-xl">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <span className="mr-3 text-gray-600">جاري تحميل البيانات...</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="lg:w-1/2 px-8">
+      <div className="flex justify-between">
+        <h3 className="text-lg font-semibold text-[#333333]">بيانات المساهم</h3>
 
         <div className="flex items-center justify-end mb-2">
           {!isEditing && (
@@ -76,37 +120,35 @@ export default function ContributorForm() {
 
       {!isEditing ? (
         // View Mode
-        <div className="flex gap-8 items-center border border-gray-200 p-4  rounded-xl ">
+        <div className="flex gap-8 items-center border border-gray-200 p-4 rounded-xl">
           <div className="w-full space-y-3 mt-6">
             <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
               <span className="text-sm text-gray-600">اسم المساهم:</span>
               <span className="text-base text-gray-900 font-medium">
-                {form.getValues("representativeName")}
+                {form.getValues("name") || "-"}
               </span>
             </div>
 
             <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
               <span className="text-sm text-gray-600">البريد الالكتروني:</span>
-
               <span className="text-base text-gray-900 font-medium">
-                {form.getValues("email")}
+                {form.getValues("email") || "-"}
               </span>
             </div>
 
             <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
               <span className="text-sm text-gray-600">رقم الجوال:</span>
-
               <span className="text-base text-gray-900 font-medium">
-                {form.getValues("phoneNumber")}
+                {form.getValues("phone") || "-"}
               </span>
             </div>
 
-            <div className="grid grid-cols-2 items-center gri justify-between border-gray-200 pb-3">
+            <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
               <span className="text-sm text-gray-600">
                 رقم الجوال الاحتياطي:
               </span>
               <span className="text-base text-gray-900 font-medium">
-                {form.getValues("whatsappNumber")}
+                {form.getValues("backupPhone") || "-"}
               </span>
             </div>
           </div>
@@ -119,6 +161,7 @@ export default function ContributorForm() {
               variant="outline"
               size="sm"
               onClick={handleCancel}
+              disabled={updateProfile.isPending}
               className="text-gray-600 hover:text-gray-900"
             >
               <X className="w-4 h-4 ml-2" />
@@ -128,10 +171,20 @@ export default function ContributorForm() {
             <Button
               size="sm"
               onClick={form.handleSubmit(onSubmit)}
+              disabled={updateProfile.isPending}
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >
-              <Save className="w-4 h-4 ml-2" />
-              حفظ
+              {updateProfile.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                  جاري الحفظ...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 ml-2" />
+                  حفظ
+                </>
+              )}
             </Button>
           </div>
 
@@ -141,17 +194,17 @@ export default function ContributorForm() {
               <form className="w-full space-y-3">
                 {/* Name */}
                 <div className="grid grid-cols-2 items-center pb-3 border-b border-gray-200">
-                  <label className="text-sm text-gray-600">اسم المندوب:</label>
+                  <label className="text-sm text-gray-600">اسم المساهم:</label>
                   <FormField
                     control={form.control}
-                    name="representativeName"
+                    name="name"
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormControl>
                           <Input
                             {...field}
                             className="text-right bg-white border-gray-300"
-                            placeholder="اسم المندوب"
+                            placeholder="اسم المساهم"
                           />
                         </FormControl>
                         <FormMessage />
@@ -189,7 +242,7 @@ export default function ContributorForm() {
                   <label className="text-sm text-gray-600">رقم الجوال:</label>
                   <FormField
                     control={form.control}
-                    name="phoneNumber"
+                    name="phone"
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormControl>
@@ -205,14 +258,14 @@ export default function ContributorForm() {
                   />
                 </div>
 
-                {/* WhatsApp */}
+                {/* Backup Phone */}
                 <div className="grid grid-cols-2 items-center pb-3 border-b border-gray-200">
                   <label className="text-sm text-gray-600">
                     رقم الجوال الاحتياطي:
                   </label>
                   <FormField
                     control={form.control}
-                    name="whatsappNumber"
+                    name="backupPhone"
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormControl>

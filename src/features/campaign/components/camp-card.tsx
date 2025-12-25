@@ -30,7 +30,7 @@ export function CampCard({
     <Link
       href={
         dashboard
-          ? `/dashboard/contributor/camps/${id}`
+          ? `/dashboard/contributor/camps/${slug || id}`
           : `/camps/${slug || title}`
       }
       key={id}

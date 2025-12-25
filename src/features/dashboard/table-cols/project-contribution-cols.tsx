@@ -1,17 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Check, Pencil, Trash2 } from "lucide-react";
-
-// ============================================================================
-// DUMMY DATA
-// In production, this would come from an API call
-// Simulating server data for demonstration purposes
-
 import { Progress } from "@/components/ui/progress";
 import { Eye, Heart } from "lucide-react";
 
+// ============================================================================
+// Project type matching API response
+// ============================================================================
+
 export type Project = {
+  id: number;
+  name: string;
+  type: string;
+  addedBy: string;
+  beneficiaryCount: number;
+  college: string;
+  status: string;
+  isApproved: boolean;
+  notes: string | null;
+  projectImage: string | null;
+  totalReceived: number;
+  totalRemaining: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Legacy type for backwards compatibility with old code if needed
+export type LegacyProject = {
   id: number;
   projectName: string;
   camp: string;
@@ -23,85 +38,7 @@ export type Project = {
   requests: string;
 };
 
-export const dummyData: Project[] = [
-  {
-    id: 1,
-    projectName: "مشروع 1200 علبة لبن",
-    camp: "أصداء",
-    indicator: 60,
-    total: 500,
-    received: 200,
-    remaining: 200,
-    beneficiaryFamilies: 33,
-    requests: "عدد 3 عائلات",
-  },
-  {
-    id: 2,
-    projectName: "مشروع 50 خيمة",
-    camp: "جباليا",
-    indicator: 40,
-    total: 30,
-    received: 33,
-    remaining: 33,
-    beneficiaryFamilies: 10,
-    requests: "عدد 3 عائلات",
-  },
-  {
-    id: 3,
-    projectName: "مشروع 130 علبة لبن",
-    camp: "أصداء",
-    indicator: 80,
-    total: 30,
-    received: 10,
-    remaining: 10,
-    beneficiaryFamilies: 2,
-    requests: "عدد 3 عائلات",
-  },
-  {
-    id: 4,
-    projectName: "مشروع 30 عبوة دقيق",
-    camp: "المحمدي",
-    indicator: 45,
-    total: 20,
-    received: 2,
-    remaining: 2,
-    beneficiaryFamilies: 2,
-    requests: "عدد 3 عائلات",
-  },
-  {
-    id: 5,
-    projectName: "مشروع 20 علبة لبن",
-    camp: "مصعب",
-    indicator: 70,
-    total: 10,
-    received: 2,
-    remaining: 2,
-    beneficiaryFamilies: 1200,
-    requests: "عدد 3 عائلات",
-  },
-  {
-    id: 6,
-    projectName: "مشروع 20 علبة لبن",
-    camp: "ابو سالم",
-    indicator: 20,
-    total: 1200,
-    received: 1200,
-    remaining: 1200,
-    beneficiaryFamilies: 1200,
-    requests: "عدد 3 عائلات",
-  },
-  {
-    id: 7,
-    projectName: "مشروع 20 علبة لبن",
-    camp: "العين",
-    indicator: 30,
-    total: 10,
-    received: 1200,
-    remaining: 1200,
-    beneficiaryFamilies: 1200,
-    requests: "عدد 3 عائلات",
-  },
-];
+export const dummyData: LegacyProject[] = [];
 
 type ActionHandlers = {
   onView: (project: Project) => void;
@@ -137,69 +74,107 @@ export const createColumnsForContributor = (
     enableHiding: false,
   },
   {
-    accessorKey: "projectName",
+    accessorKey: "name",
     header: "المشروع",
     cell: ({ row }) => (
       <div className="text-right">
-        <div className="font-bold text-gray-900">
-          {row.original.projectName}
+        <div className="font-bold text-gray-900">{row.original.name}</div>
+        <div className="text-xs text-gray-500">
+          {row.original.type === "product"
+            ? "منتج"
+            : row.original.type === "internal"
+            ? "داخلي"
+            : row.original.type}
         </div>
-        <div className="text-xs text-gray-500">{row.original.requests}</div>
       </div>
     ),
   },
   {
-    accessorKey: "camp",
-    header: "الإيواء",
+    accessorKey: "addedBy",
+    header: "أضيف بواسطة",
     cell: ({ row }) => (
-      <div className="text-center text-gray-600">{row.original.camp}</div>
+      <div className="text-center text-gray-600">{row.original.addedBy}</div>
     ),
   },
   {
-    accessorKey: "indicator",
-    header: "المؤشر",
+    accessorKey: "status",
+    header: "الحالة",
     cell: ({ row }) => {
-      const value = row.original.indicator;
-      let colorClass = "bg-primary";
-      if (value < 30) colorClass = "bg-orange-500";
-      else if (value < 60) colorClass = "bg-yellow-500";
-      else if (value < 80) colorClass = "bg-green-500";
-      else colorClass = "bg-red-500";
+      const status = row.original.status;
+      let statusText = status;
+      let colorClass = "bg-gray-100 text-gray-700";
+
+      if (status === "pending") {
+        statusText = "قيد الانتظار";
+        colorClass = "bg-yellow-100 text-yellow-700";
+      } else if (status === "approved" || row.original.isApproved) {
+        statusText = "موافق عليه";
+        colorClass = "bg-green-100 text-green-700";
+      } else if (status === "rejected") {
+        statusText = "مرفوض";
+        colorClass = "bg-red-100 text-red-700";
+      } else if (status === "completed") {
+        statusText = "مكتمل";
+        colorClass = "bg-blue-100 text-blue-700";
+      }
 
       return (
-        <div className="w-24 mx-auto">
-          <Progress value={value} className="h-2" indicatorColor={colorClass} />
+        <div className="flex justify-center">
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}
+          >
+            {statusText}
+          </span>
         </div>
       );
     },
   },
   {
-    accessorKey: "total",
-    header: "الاجمالي",
-    cell: ({ row }) => (
-      <div className="text-center text-gray-600">{row.original.total}</div>
-    ),
+    accessorKey: "indicator",
+    header: "المؤشر",
+    cell: ({ row }) => {
+      const total = row.original.beneficiaryCount || 1;
+      const received = row.original.totalReceived || 0;
+      const value = Math.round((received / total) * 100);
+
+      let colorClass = "bg-primary";
+      if (value < 30) colorClass = "bg-orange-500";
+      else if (value < 60) colorClass = "bg-yellow-500";
+      else if (value < 80) colorClass = "bg-green-500";
+      else colorClass = "bg-green-600";
+
+      return (
+        <div className="w-24 mx-auto">
+          <Progress value={value} className="h-2" indicatorColor={colorClass} />
+          <div className="text-xs text-center text-gray-500 mt-1">{value}%</div>
+        </div>
+      );
+    },
   },
   {
-    accessorKey: "received",
-    header: "تم تسليم",
-    cell: ({ row }) => (
-      <div className="text-center text-gray-600">{row.original.received}</div>
-    ),
-  },
-  {
-    accessorKey: "remaining",
-    header: "المتبقي",
-    cell: ({ row }) => (
-      <div className="text-center text-gray-600">{row.original.remaining}</div>
-    ),
-  },
-  {
-    accessorKey: "beneficiaryFamilies",
-    header: "العائلات المستفيدة",
+    accessorKey: "beneficiaryCount",
+    header: "المستفيدين",
     cell: ({ row }) => (
       <div className="text-center text-gray-600">
-        {row.original.beneficiaryFamilies}
+        {row.original.beneficiaryCount}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "totalReceived",
+    header: "تم استلام",
+    cell: ({ row }) => (
+      <div className="text-center text-gray-600">
+        {row.original.totalReceived}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "totalRemaining",
+    header: "المتبقي",
+    cell: ({ row }) => (
+      <div className="text-center text-gray-600">
+        {row.original.totalRemaining}
       </div>
     ),
   },

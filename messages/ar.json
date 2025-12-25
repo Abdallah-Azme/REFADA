@@ -137,7 +137,8 @@
       "password_mismatch": "كلمات المرور غير متطابقة",
       "camp_name_required": "اسم المخيم مطلوب للمندوب",
       "reset_code_length": "رمز التحقق يجب أن يكون 6 أرقام",
-      "reset_token_required": "رمز إعادة التعيين مطلوب"
+      "reset_token_required": "رمز إعادة التعيين مطلوب",
+      "id_must_be_9_digits": "رقم الهوية يجب أن يكون 9 أرقام"
     }
   },
   "families": {

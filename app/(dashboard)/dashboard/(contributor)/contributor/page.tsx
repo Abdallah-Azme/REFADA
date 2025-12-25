@@ -7,12 +7,6 @@ import StatsCards, { stats } from "@/features/dashboard/components/stats-cards";
 import { Tangent, Tent, User } from "lucide-react";
 import MainHeader from "@/features/dashboard/components/main-header";
 
-export const campStats = [
-  { label: "اسم  المساهم", value: "أحمد عبدالله" },
-  { label: "رقم التواصل", value: "0097200022113344" },
-  { label: "رقم الهوية", value: "123456789001234" },
-];
-
 export default function Page() {
   return (
     <main className="w-full flex flex-col  gap-6 p-8 bg-gray-50  ">

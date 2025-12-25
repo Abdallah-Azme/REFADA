@@ -1,4 +1,5 @@
 "use client";
+
 import CampsMapSection from "@/components/pages/home/camps-map-section";
 import ImageFallback from "@/components/shared/image-fallback";
 import CampDetailsSection from "@/features/camps/components/camp-details-section";
@@ -7,36 +8,85 @@ import MainHeader from "@/features/dashboard/components/main-header";
 import { cn } from "@/lib/utils";
 import CampStats from "@/src/features/camps/components/camp-stats";
 import { motion } from "framer-motion";
-import { Tent } from "lucide-react";
+import { Loader2, Tent } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
+import { useCampDetails } from "@/features/camps/hooks/use-camps";
+import { useLocale } from "next-intl";
+
+// Helper to extract text from localized field
+function getLocalizedText(
+  field: string | { ar?: string; en?: string } | undefined | null,
+  locale: string = "ar"
+): string {
+  if (!field) return "";
+  if (typeof field === "string") return field;
+  return (locale === "ar" ? field.ar : field.en) || field.ar || field.en || "";
+}
 
 export default function Page() {
   const t = useTranslations();
-  const campDetails = {
-    name: "إيواء جباليا",
-    location: "الإيواء الشمالي - غزة",
-    phone: "+972 22 222 2222",
-    image: "/pages/home/gaza-camp-1.webp",
-    position: [31.535, 34.495],
-  };
+  const tCamp = useTranslations("campDetails");
+  const locale = useLocale();
+  const params = useParams();
+  const campSlug = params?.campId as string;
+
+  const {
+    data: campData,
+    isLoading,
+    isError,
+  } = useCampDetails(campSlug || null);
+
+  const camp = campData?.data;
+  const projects = camp?.projects || [];
+
+  // Get localized camp name and description
+  const campName = getLocalizedText(camp?.name, locale);
+  const campDescription = getLocalizedText(camp?.description, locale);
+
+  if (isLoading) {
+    return (
+      <main className="w-full flex flex-col gap-6 p-8 bg-gray-50">
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <span className="mr-3 text-gray-600">
+            جاري تحميل بيانات الإيواء...
+          </span>
+        </div>
+      </main>
+    );
+  }
+
+  if (isError || !camp) {
+    return (
+      <main className="w-full flex flex-col gap-6 p-8 bg-gray-50">
+        <div className="text-center py-20">
+          <p className="text-red-500">حدث خطأ أثناء تحميل البيانات</p>
+        </div>
+      </main>
+    );
+  }
+
   return (
-    <main className="w-full flex flex-col  gap-6 p-8 bg-gray-50  ">
+    <main className="w-full flex flex-col gap-6 p-8 bg-gray-50">
       <div className="flex items-center justify-between mb-5">
-        <MainHeader header="إيواء اصداء">
+        <MainHeader header={campName || tCamp("title")}>
           <Tent />
         </MainHeader>
       </div>
 
       {/* Stats cards - left side */}
-      <div className="w-full  ">
-        {/* <CambDetailsCard /> */}
-
+      <div className="w-full">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 items-stretch">
-          <CampDetailsSection />
+          <CampDetailsSection description={campDescription || null} />
 
-          <CampsMapSection secondary />
+          <CampsMapSection secondary camps={camp ? [camp] : []} />
 
-          <CampStats />
+          <CampStats
+            familyCount={camp.familyCount || 0}
+            childrenCount={camp.childrenCount || 0}
+            projectsCount={projects.length}
+          />
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -49,8 +99,8 @@ export default function Page() {
             {/* Image */}
             <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
               <ImageFallback
-                src={campDetails.image}
-                alt={campDetails.name}
+                src={camp.campImg || "/pages/home/gaza-camp-1.webp"}
+                alt={campName || "Camp"}
                 fill
                 className="object-cover"
               />
@@ -59,28 +109,36 @@ export default function Page() {
             {/* Content */}
             <div className="flex-1 flex flex-col gap-1 text-right h-full justify-around">
               <h3 className="font-semibold text-[#1C3A34] leading-tight">
-                {campDetails.name}
+                {campName}
               </h3>
 
-              <p className="text-gray-600  flex items-center gap-1 leading-relaxed">
-                <span className="text-gray-400">📍</span>
-                شمال قطاع غزة - على بُعد نحو 4 كيلومترات
-              </p>
+              {camp.location && (
+                <p className="text-gray-600 flex items-center gap-1 leading-relaxed">
+                  <span className="text-gray-400">📍</span>
+                  {camp.location}
+                </p>
+              )}
 
-              <p className="text-gray-600  flex items-center gap-1 leading-relaxed">
-                <span className="text-gray-400">📞</span>
-                تواصل معنا: {campDetails.phone}
-              </p>
+              {camp.governorate && (
+                <p className="text-gray-600 flex items-center gap-1 leading-relaxed">
+                  <span className="text-gray-400">🏛️</span>
+                  {typeof camp.governorate === "string"
+                    ? camp.governorate
+                    : camp.governorate.name}
+                </p>
+              )}
 
-              <p className="text-gray-600  flex items-center gap-1 leading-relaxed">
-                <span className="text-gray-400">🏦</span>
-                الحساب البنكي: 10008890003444
-              </p>
+              {camp.bankAccount && (
+                <p className="text-gray-600 flex items-center gap-1 leading-relaxed">
+                  <span className="text-gray-400">🏦</span>
+                  {tCamp("bankAccount")}: {camp.bankAccount}
+                </p>
+              )}
             </div>
           </motion.div>
         </div>
       </div>
-      <CurrentProjectsTableContribution />
+      <CurrentProjectsTableContribution projects={projects} campId={camp.id} />
     </main>
   );
 }

@@ -136,7 +136,8 @@
       "password_mismatch": "Passwords do not match",
       "camp_name_required": "Shelter name is required for representatives",
       "reset_code_length": "Reset code must be 6 digits",
-      "reset_token_required": "Reset token is required"
+      "reset_token_required": "Reset token is required",
+      "id_must_be_9_digits": "ID Number must be exactly 9 digits"
     }
   },
   "families": {

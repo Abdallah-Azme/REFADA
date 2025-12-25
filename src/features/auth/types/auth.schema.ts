@@ -18,7 +18,7 @@ export const createRegisterSchema = (t: (key: string) => string) =>
       email: z.string().email(t("validation.invalid_email")),
       password: z.string().min(8, t("validation.password_min_length_8")),
       password_confirmation: z.string(),
-      id_number: z.string().min(1, t("validation.id_required")),
+      id_number: z.string().length(9, t("validation.id_must_be_9_digits")),
       phone: z.string().min(1, t("validation.phone_required")),
       backup_phone: z.string().optional(),
       role: z.enum(["delegate", "contributor"], {

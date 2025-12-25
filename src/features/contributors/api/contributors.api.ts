@@ -84,3 +84,171 @@ export async function deleteContributorApi(
     method: "DELETE",
   });
 }
+
+// ============================================================================
+// Camp Families API
+// ============================================================================
+
+export interface CampFamily {
+  id: number;
+  familyName: string;
+  nationalId: string;
+  dob: string;
+  phone: string;
+  backupPhone: string;
+  totalMembers: number;
+  fileUrl: string | null;
+  maritalStatus: string;
+  tentNumber: string;
+  location: string;
+  notes: string;
+  camp: string;
+  quantity: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CampFamiliesResponse {
+  success: boolean;
+  message: string;
+  data: CampFamily[];
+}
+
+export async function getCampFamiliesApi(
+  campId: number
+): Promise<CampFamiliesResponse> {
+  return apiRequest<CampFamiliesResponse>(
+    `/contributor/camps/families/${campId}`,
+    {
+      method: "GET",
+    }
+  );
+}
+
+// ============================================================================
+// Contribution API
+// ============================================================================
+
+export interface ContributeFormData {
+  projectId: number;
+  contributedQuantity: number;
+  notes?: string;
+  families?: number[];
+}
+
+export interface ContributeResponse {
+  success: boolean;
+  message: string;
+  data?: any;
+}
+
+export async function submitContributionApi(
+  data: ContributeFormData
+): Promise<ContributeResponse> {
+  const formData = new FormData();
+  formData.append("contributedQuantity", data.contributedQuantity.toString());
+
+  if (data.notes) {
+    formData.append("notes", data.notes);
+  }
+
+  if (data.families && data.families.length > 0) {
+    data.families.forEach((familyId) => {
+      formData.append("families[]", familyId.toString());
+    });
+  }
+
+  return apiRequest<ContributeResponse>(
+    `/contributor/projects/${data.projectId}/contribute`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+}
+
+// ============================================================================
+// Medical Conditions API
+// ============================================================================
+
+export interface MedicalCondition {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MedicalConditionsResponse {
+  success: boolean;
+  message: string;
+  data: MedicalCondition[];
+}
+
+export async function getMedicalConditionsApi(): Promise<MedicalConditionsResponse> {
+  return apiRequest<MedicalConditionsResponse>("/medical-conditions", {
+    method: "GET",
+  });
+}
+
+// ============================================================================
+// Contributor History API
+// ============================================================================
+
+export interface ContributorFamily {
+  id: number;
+  familyName: string;
+  nationalId: string;
+  dob: string;
+  phone: string;
+  backupPhone: string;
+  totalMembers: number;
+  fileUrl: string | null;
+  maritalStatus: string;
+  tentNumber: string;
+  location: string;
+  notes: string;
+  camp: string;
+  quantity: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContributionHistoryProject {
+  id: number;
+  name: string;
+  type: string;
+  addedBy: string;
+  beneficiaryCount: number;
+  college: string;
+  status: string;
+  isApproved: boolean;
+  notes: string | null;
+  projectImage: string;
+  totalReceived: number;
+  totalRemaining: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContributionHistoryItem {
+  id: number;
+  totalQuantity: number;
+  notes: string | null;
+  status: string;
+  project: ContributionHistoryProject;
+  contributorFamilies: ContributorFamily[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContributorHistoryResponse {
+  success: boolean;
+  message: string;
+  data: ContributionHistoryItem[];
+}
+
+export async function getContributorHistoryApi(): Promise<ContributorHistoryResponse> {
+  return apiRequest<ContributorHistoryResponse>("/contributor/history", {
+    method: "GET",
+  });
+}

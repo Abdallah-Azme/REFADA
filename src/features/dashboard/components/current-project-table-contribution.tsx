@@ -23,7 +23,6 @@ import {
 import React from "react";
 import {
   createColumnsForContributor,
-  dummyData,
   Project,
 } from "../table-cols/project-contribution-cols";
 import PaginationControls from "./pagination-controls";
@@ -53,7 +52,15 @@ const formSchema = z.object({
   family: z.string().optional(),
 });
 
-export default function CurrentProjectsTableContribution() {
+interface CurrentProjectsTableContributionProps {
+  projects?: Project[];
+  campId?: number;
+}
+
+export default function CurrentProjectsTableContribution({
+  projects = [],
+  campId,
+}: CurrentProjectsTableContributionProps) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -76,13 +83,32 @@ export default function CurrentProjectsTableContribution() {
     pageSize: 10,
   });
 
-  const [data] = React.useState<Project[]>(dummyData);
   const [selectedProject, setSelectedProject] = React.useState<Project | null>(
     null
   );
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [isContributeDialogOpen, setIsContributeDialogOpen] =
     React.useState(false);
+
+  // Filter projects based on search
+  const watchedName = form.watch("name");
+  const watchedStatus = form.watch("status");
+
+  const filteredProjects = React.useMemo(() => {
+    let filtered = [...projects];
+
+    if (watchedName) {
+      filtered = filtered.filter((p) =>
+        p.name.toLowerCase().includes(watchedName.toLowerCase())
+      );
+    }
+
+    if (watchedStatus) {
+      filtered = filtered.filter((p) => p.status === watchedStatus);
+    }
+
+    return filtered;
+  }, [projects, watchedName, watchedStatus]);
 
   const handleView = (project: Project): void => {
     setSelectedProject(project);
@@ -92,15 +118,11 @@ export default function CurrentProjectsTableContribution() {
   const handleContribute = (project: Project): void => {
     setSelectedProject(project);
     setIsContributeDialogOpen(true);
-    // If details dialog is open, we might want to close it or keep it open.
-    // Usually, opening a new dialog on top is fine, or we can close the details one.
-    // Let's keep details open if it was open, or close it.
-    // For now, let's close the details dialog to avoid stacking issues if not desired.
     setIsDialogOpen(false);
   };
 
   const table = useReactTable<Project>({
-    data,
+    data: filteredProjects,
     columns: createColumnsForContributor({
       onView: handleView,
       onContribute: handleContribute,
@@ -172,29 +194,6 @@ export default function CurrentProjectsTableContribution() {
                   </FormItem>
                 )}
               />
-              {/* العائلة */}
-              <FormField
-                control={form.control}
-                name="family"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                          <SelectValue placeholder="العائلة" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="family1">عائلة 1</SelectItem>
-                          <SelectItem value="family2">عائلة 2</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
 
               {/* حالة المشروع */}
               <FormField
@@ -211,33 +210,10 @@ export default function CurrentProjectsTableContribution() {
                           <SelectValue placeholder="حالة المشروع" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="active">نشط</SelectItem>
+                          <SelectItem value="pending">قيد الانتظار</SelectItem>
+                          <SelectItem value="approved">موافق عليه</SelectItem>
                           <SelectItem value="completed">مكتمل</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              {/* المشروع */}
-              <FormField
-                control={form.control}
-                name="project"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                          <SelectValue placeholder="المشروع" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">الكل</SelectItem>
-                          <SelectItem value="1">مشروع 1</SelectItem>
-                          <SelectItem value="2">مشروع 2</SelectItem>
+                          <SelectItem value="rejected">مرفوض</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -298,7 +274,9 @@ export default function CurrentProjectsTableContribution() {
                   }
                   className="h-24 text-center"
                 >
-                  لا توجد نتائج.
+                  {projects.length === 0
+                    ? "لا توجد مشاريع في هذا الإيواء"
+                    : "لا توجد نتائج."}
                 </TableCell>
               </TableRow>
             )}
@@ -322,6 +300,7 @@ export default function CurrentProjectsTableContribution() {
         isOpen={isContributeDialogOpen}
         onClose={() => setIsContributeDialogOpen(false)}
         project={selectedProject}
+        campId={campId}
       />
     </div>
   );
