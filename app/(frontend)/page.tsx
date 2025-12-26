@@ -70,6 +70,8 @@ export default async function Home() {
   const partners = await getPartners();
   const testimonials = await getTestimonials();
 
+  console.log({ homePageData: homePageData.sections });
+
   return (
     <main className="flex flex-col gap-6 mt-10">
       <Hero slides={slides} />
