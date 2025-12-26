@@ -26,9 +26,19 @@ import { createApprovedContributorsColumns } from "../table-cols/admin-contribut
 import PaginationControls from "./pagination-controls";
 import { useContributors } from "@/features/contributors/hooks/use-contributors";
 import { useDeleteContributor } from "@/features/contributors/hooks/use-delete-contributor";
+import { useChangeRepresentativePassword } from "@/features/representatives/hooks/use-approve-reject";
 import { PendingUser } from "@/features/representatives/types/pending-users.schema";
 import { Loader2 } from "lucide-react";
 import { DeleteConfirmDialog } from "@/features/marital-status";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function AdminContributorsTable() {
   const t = useTranslations();
@@ -47,13 +57,20 @@ export default function AdminContributorsTable() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletingUser, setDeletingUser] = useState<PendingUser | null>(null);
 
+  // Change Password state
+  const [passwordOpen, setPasswordOpen] = useState(false);
+  const [passwordUser, setPasswordUser] = useState<PendingUser | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   // Fetch contributors
   const { data: response, isLoading, error } = useContributors();
   const deleteMutation = useDeleteContributor();
+  const changePasswordMutation = useChangeRepresentativePassword();
 
-  // Filter only approved contributors (though API should handle this, safety check if API changes)
+  // Show all contributors (approved and rejected - but not pending, handled in pending-users page)
   const data = React.useMemo(() => {
-    return response?.data?.filter((user) => user.status === "approved") || [];
+    return response?.data?.filter((user) => user.status !== "pending") || [];
   }, [response]);
 
   const handleDelete = (user: PendingUser) => {
@@ -72,9 +89,45 @@ export default function AdminContributorsTable() {
     }
   };
 
+  const handleChangePassword = (user: PendingUser) => {
+    setPasswordUser(user);
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordOpen(true);
+  };
+
+  const handleConfirmChangePassword = () => {
+    if (passwordUser && newPassword && confirmPassword) {
+      if (newPassword !== confirmPassword) {
+        return;
+      }
+      changePasswordMutation.mutate(
+        {
+          userId: passwordUser.id,
+          password: newPassword,
+          passwordConfirmation: confirmPassword,
+        },
+        {
+          onSuccess: () => {
+            setPasswordOpen(false);
+            setPasswordUser(null);
+            setNewPassword("");
+            setConfirmPassword("");
+          },
+        }
+      );
+    }
+  };
+
   const table = useReactTable<PendingUser>({
     data,
-    columns: createApprovedContributorsColumns({ onDelete: handleDelete }, t),
+    columns: createApprovedContributorsColumns(
+      {
+        onDelete: handleDelete,
+        onChangePassword: handleChangePassword,
+      },
+      t
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -151,7 +204,7 @@ export default function AdminContributorsTable() {
                   <TableCell
                     colSpan={
                       createApprovedContributorsColumns(
-                        { onDelete: () => {} },
+                        { onDelete: () => {}, onChangePassword: () => {} },
                         t
                       ).length
                     }
@@ -181,6 +234,79 @@ export default function AdminContributorsTable() {
         })}
         isPending={deleteMutation.isPending}
       />
+
+      {/* Change Password Dialog */}
+      <Dialog open={passwordOpen} onOpenChange={setPasswordOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("contributors.change_password_title")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-gray-600">
+              {t("contributors.change_password_description", {
+                name: passwordUser?.name || "",
+              })}
+            </p>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                {t("contributors.new_password")}
+              </label>
+              <Input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder={t("contributors.new_password_placeholder")}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                {t("contributors.confirm_new_password")}
+              </label>
+              <Input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder={t("contributors.confirm_password_placeholder")}
+              />
+            </div>
+            {newPassword &&
+              confirmPassword &&
+              newPassword !== confirmPassword && (
+                <p className="text-sm text-red-500">
+                  {t("contributors.passwords_not_match")}
+                </p>
+              )}
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setPasswordOpen(false)}
+              disabled={changePasswordMutation.isPending}
+            >
+              {t("common.cancel")}
+            </Button>
+            <Button
+              onClick={handleConfirmChangePassword}
+              disabled={
+                !newPassword ||
+                !confirmPassword ||
+                newPassword !== confirmPassword ||
+                changePasswordMutation.isPending
+              }
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {changePasswordMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin ml-2" />
+                  {t("common.loading")}
+                </>
+              ) : (
+                t("contributors.save_password")
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

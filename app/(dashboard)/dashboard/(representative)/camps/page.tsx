@@ -124,7 +124,15 @@ export default function Page() {
         </div>
       </div>
 
-      <Analytics />
+      <Analytics
+        familyCount={familyCount}
+        projectCount={totalProjects}
+        contributionPercentage={
+          totalProjects > 0
+            ? Math.round((completedProjects / totalProjects) * 100)
+            : 0
+        }
+      />
     </div>
   );
 }

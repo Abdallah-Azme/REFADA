@@ -4,6 +4,7 @@ import { useProfile } from "@/features/profile";
 import CampsDetails from "./camps-details";
 import EditCampFormData from "./edit-camp-form-data";
 import { Loader2 } from "lucide-react";
+import { useRepresentativeCampFamilies } from "@/features/contributors/hooks/use-camp-families";
 
 export interface CampsStats {
   label: string;
@@ -11,17 +12,34 @@ export interface CampsStats {
 }
 
 export default function CampsData() {
-  const { data: profileData, isLoading } = useProfile();
+  const { data: profileData, isLoading: profileLoading } = useProfile();
+  const { data: familiesData, isLoading: familiesLoading } =
+    useRepresentativeCampFamilies();
+
+  const isLoading = profileLoading || familiesLoading;
 
   // Get camp data from user's profile
   const userCamp = profileData?.data?.camp;
 
-  // Build dynamic camp stats from profile data
+  // Get families from API
+  const families = familiesData?.data || [];
+
+  // Calculate dynamic stats from families data
+  const totalFamilies = families.length;
+  const totalMembers = families.reduce(
+    (sum, family) => sum + (family.totalMembers || 0),
+    0
+  );
+
+  // Build dynamic camp stats from API data
   const campStats: CampsStats[] = [
     { label: "اسم الإيواء", value: userCamp?.name || "غير محدد" },
-    { label: "عدد العائلات", value: `${userCamp?.familyCount || 0} عائلة` },
-    { label: "عدد الأطفال", value: `${userCamp?.childrenCount || 0} طفل` },
-    { label: "عدد كبار السن", value: `${userCamp?.elderlyCount || 0} شيخ` },
+    { label: "عدد العائلات", value: `${totalFamilies} عائلة` },
+    { label: "عدد الأفراد", value: `${totalMembers} فرد` },
+    {
+      label: "المخيم",
+      value: families[0]?.camp || userCamp?.name || "غير محدد",
+    },
   ];
 
   if (isLoading) {

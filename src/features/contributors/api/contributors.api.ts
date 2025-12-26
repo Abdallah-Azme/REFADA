@@ -125,6 +125,13 @@ export async function getCampFamiliesApi(
   );
 }
 
+// Get families for the authenticated representative's camp (no campId required)
+export async function getRepresentativeCampFamiliesApi(): Promise<CampFamiliesResponse> {
+  return apiRequest<CampFamiliesResponse>(`/contributor/camps/families`, {
+    method: "GET",
+  });
+}
+
 // ============================================================================
 // Contribution API
 // ============================================================================

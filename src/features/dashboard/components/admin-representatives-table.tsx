@@ -26,9 +26,31 @@ import { createPendingDelegatesColumns } from "../table-cols/admin-representativ
 import PaginationControls from "./pagination-controls";
 import { useRepresentatives } from "@/features/representatives/hooks/use-representatives";
 import { useDeleteRepresentative } from "@/features/representatives/hooks/use-delete-representative";
+import {
+  useApproveRepresentative,
+  useRejectRepresentative,
+  useChangeRepresentativePassword,
+} from "@/features/representatives/hooks/use-approve-reject";
+import { useCamps } from "@/features/camps";
 import { PendingUser } from "@/features/representatives/types/pending-users.schema";
 import { Loader2 } from "lucide-react";
 import { DeleteConfirmDialog } from "@/features/marital-status";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function AdminRepresentativesTable() {
   const t = useTranslations();
@@ -47,9 +69,31 @@ export default function AdminRepresentativesTable() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletingUser, setDeletingUser] = useState<PendingUser | null>(null);
 
+  // Approve state
+  const [approveOpen, setApproveOpen] = useState(false);
+  const [approvingUser, setApprovingUser] = useState<PendingUser | null>(null);
+  const [selectedCampId, setSelectedCampId] = useState<string>("");
+
+  // Reject state
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [rejectingUser, setRejectingUser] = useState<PendingUser | null>(null);
+
+  // Change Password state
+  const [passwordOpen, setPasswordOpen] = useState(false);
+  const [passwordUser, setPasswordUser] = useState<PendingUser | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   // Fetch all delegates - API already filters by role=delegate
   const { data: response, isLoading, error } = useRepresentatives();
   const deleteMutation = useDeleteRepresentative();
+  const approveMutation = useApproveRepresentative();
+  const rejectMutation = useRejectRepresentative();
+  const changePasswordMutation = useChangeRepresentativePassword();
+
+  // Fetch camps for selection
+  const { data: campsData } = useCamps();
+  const camps = campsData?.data || [];
 
   // Use all data from the response (already filtered by role=delegate in the API)
   const data = React.useMemo(() => {
@@ -72,13 +116,81 @@ export default function AdminRepresentativesTable() {
     }
   };
 
+  const handleApprove = (user: PendingUser) => {
+    setApprovingUser(user);
+    setSelectedCampId("");
+    setApproveOpen(true);
+  };
+
+  const handleConfirmApprove = () => {
+    if (approvingUser && selectedCampId) {
+      approveMutation.mutate(
+        { userId: approvingUser.id, campId: parseInt(selectedCampId) },
+        {
+          onSuccess: () => {
+            setApproveOpen(false);
+            setApprovingUser(null);
+            setSelectedCampId("");
+          },
+        }
+      );
+    }
+  };
+
+  const handleReject = (user: PendingUser) => {
+    setRejectingUser(user);
+    setRejectOpen(true);
+  };
+
+  const handleConfirmReject = () => {
+    if (rejectingUser) {
+      rejectMutation.mutate(rejectingUser.id, {
+        onSuccess: () => {
+          setRejectOpen(false);
+          setRejectingUser(null);
+        },
+      });
+    }
+  };
+
+  const handleChangePassword = (user: PendingUser) => {
+    setPasswordUser(user);
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordOpen(true);
+  };
+
+  const handleConfirmChangePassword = () => {
+    if (passwordUser && newPassword && confirmPassword) {
+      if (newPassword !== confirmPassword) {
+        return;
+      }
+      changePasswordMutation.mutate(
+        {
+          userId: passwordUser.id,
+          password: newPassword,
+          passwordConfirmation: confirmPassword,
+        },
+        {
+          onSuccess: () => {
+            setPasswordOpen(false);
+            setPasswordUser(null);
+            setNewPassword("");
+            setConfirmPassword("");
+          },
+        }
+      );
+    }
+  };
+
   const table = useReactTable<PendingUser>({
     data,
     columns: createPendingDelegatesColumns(
       {
-        onApprove: () => {}, // No-op, actions hidden for approved users
-        onReject: () => {}, // No-op
+        onApprove: handleApprove,
+        onReject: handleReject,
         onDelete: handleDelete,
+        onChangePassword: handleChangePassword,
       },
       t
     ),
@@ -192,6 +304,157 @@ export default function AdminRepresentativesTable() {
         })}
         isPending={deleteMutation.isPending}
       />
+
+      {/* Approve Dialog with Camp Selection */}
+      <Dialog open={approveOpen} onOpenChange={setApproveOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("representatives.approve_title")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-gray-600">
+              {t("representatives.approve_description", {
+                name: approvingUser?.name || "",
+              })}
+            </p>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                {t("representatives.select_camp")}
+              </label>
+              <Select value={selectedCampId} onValueChange={setSelectedCampId}>
+                <SelectTrigger>
+                  <SelectValue
+                    placeholder={t("representatives.select_camp_placeholder")}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {camps.map((camp) => {
+                    const campName =
+                      typeof camp.name === "string"
+                        ? camp.name
+                        : camp.name?.ar || camp.name?.en || "";
+                    return (
+                      <SelectItem key={camp.id} value={camp.id.toString()}>
+                        {campName}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setApproveOpen(false)}
+              disabled={approveMutation.isPending}
+            >
+              {t("common.cancel")}
+            </Button>
+            <Button
+              onClick={handleConfirmApprove}
+              disabled={!selectedCampId || approveMutation.isPending}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              {approveMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin ml-2" />
+                  {t("common.loading")}
+                </>
+              ) : (
+                t("representatives.approve")
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reject Confirmation Dialog */}
+      <DeleteConfirmDialog
+        open={rejectOpen}
+        onOpenChange={setRejectOpen}
+        onConfirm={handleConfirmReject}
+        title={t("representatives.reject_title")}
+        description={t("representatives.reject_description", {
+          name: rejectingUser?.name || "",
+        })}
+        isPending={rejectMutation.isPending}
+      />
+
+      {/* Change Password Dialog */}
+      <Dialog open={passwordOpen} onOpenChange={setPasswordOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {t("representatives.change_password_title")}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-gray-600">
+              {t("representatives.change_password_description", {
+                name: passwordUser?.name || "",
+              })}
+            </p>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                {t("representatives.new_password")}
+              </label>
+              <Input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder={t("representatives.new_password_placeholder")}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                {t("representatives.confirm_new_password")}
+              </label>
+              <Input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder={t("representatives.confirm_password_placeholder")}
+              />
+            </div>
+            {newPassword &&
+              confirmPassword &&
+              newPassword !== confirmPassword && (
+                <p className="text-sm text-red-500">
+                  {t("representatives.passwords_not_match")}
+                </p>
+              )}
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setPasswordOpen(false)}
+              disabled={changePasswordMutation.isPending}
+            >
+              {t("common.cancel")}
+            </Button>
+            <Button
+              onClick={handleConfirmChangePassword}
+              disabled={
+                !newPassword ||
+                !confirmPassword ||
+                newPassword !== confirmPassword ||
+                changePasswordMutation.isPending
+              }
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {changePasswordMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin ml-2" />
+                  {t("common.loading")}
+                </>
+              ) : (
+                t("representatives.save_password")
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

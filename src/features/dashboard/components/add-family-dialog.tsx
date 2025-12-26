@@ -51,6 +51,7 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { useRelationships } from "@/features/families/hooks/use-relationships";
 import { useMaritalStatuses } from "@/features/families/hooks/use-marital-statuses";
 import { useMedicalConditions } from "@/features/families/hooks/use-medical-conditions";
+import { useProfile } from "@/features/profile";
 
 export default function AddFamilyDialog() {
   const t = useTranslations("families");
@@ -74,6 +75,11 @@ export default function AddFamilyDialog() {
   const { data: medicalConditionsData } = useMedicalConditions();
   const medicalConditions = medicalConditionsData?.data || [];
 
+  // Get user's profile to auto-set camp for representatives
+  const { data: profileData } = useProfile();
+  const userCamp = profileData?.data?.camp;
+  const userRole = profileData?.data?.role;
+
   const form = useForm<z.infer<typeof familySchema>>({
     resolver: zodResolver(familySchema),
     defaultValues: {
@@ -93,6 +99,13 @@ export default function AddFamilyDialog() {
       members: [],
     },
   });
+
+  // Auto-set campId for representatives when profile loads
+  useEffect(() => {
+    if (userRole === "delegate" && userCamp?.id) {
+      form.setValue("campId", userCamp.id.toString());
+    }
+  }, [userCamp, userRole, form]);
 
   const { fields, append, remove, replace } = useFieldArray({
     control: form.control,
@@ -366,55 +379,57 @@ export default function AddFamilyDialog() {
                   )}
                 />
 
-                {/* المخيم */}
-                <FormField
-                  control={form.control}
-                  name="campId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="w-full bg-white">
-                            {field.value
-                              ? (() => {
-                                  const camp = camps.find(
-                                    (c) => c.id.toString() === field.value
-                                  );
-                                  if (!camp) return t("camp_placeholder");
-                                  const name = camp.name;
-                                  return typeof name === "string"
-                                    ? name
-                                    : name?.ar ||
-                                        name?.en ||
-                                        t("camp_placeholder");
-                                })()
-                              : t("camp_placeholder")}
-                          </SelectTrigger>
-                          <SelectContent>
-                            {camps.map((camp) => {
-                              const displayName =
-                                typeof camp.name === "string"
-                                  ? camp.name
-                                  : camp.name?.ar || camp.name?.en || "";
-                              return (
-                                <SelectItem
-                                  key={camp.id}
-                                  value={camp.id.toString()}
-                                >
-                                  {displayName}
-                                </SelectItem>
-                              );
-                            })}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* المخيم - Only show selector for admin, hidden for representative */}
+                {userRole !== "delegate" && (
+                  <FormField
+                    control={form.control}
+                    name="campId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-full bg-white">
+                              {field.value
+                                ? (() => {
+                                    const camp = camps.find(
+                                      (c) => c.id.toString() === field.value
+                                    );
+                                    if (!camp) return t("camp_placeholder");
+                                    const name = camp.name;
+                                    return typeof name === "string"
+                                      ? name
+                                      : name?.ar ||
+                                          name?.en ||
+                                          t("camp_placeholder");
+                                  })()
+                                : t("camp_placeholder")}
+                            </SelectTrigger>
+                            <SelectContent>
+                              {camps.map((camp) => {
+                                const displayName =
+                                  typeof camp.name === "string"
+                                    ? camp.name
+                                    : camp.name?.ar || camp.name?.en || "";
+                                return (
+                                  <SelectItem
+                                    key={camp.id}
+                                    value={camp.id.toString()}
+                                  >
+                                    {displayName}
+                                  </SelectItem>
+                                );
+                              })}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
                 {/* عدد الأفراد */}
                 <FormField

@@ -138,19 +138,56 @@ export const heroApi = {
           );
         }
 
-        // Files - only append if new file provided
+        // Files - append new file, or placeholder to "delete", or nothing to keep existing
+        // Helper to create a 1x1 transparent PNG placeholder
+        const createTransparentPlaceholder = (): File => {
+          // 1x1 transparent PNG as base64
+          const base64 =
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+          const binaryString = atob(base64);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          const blob = new Blob([bytes], { type: "image/png" });
+          return new File([blob], "placeholder.png", { type: "image/png" });
+        };
+
         if (formValues.hero_image instanceof File) {
           formData.append(
             `slides[${index}][hero_image]`,
             formValues.hero_image
           );
+        } else if (
+          formValues.hero_image === undefined ||
+          formValues.hero_image === null ||
+          formValues.hero_image === ""
+        ) {
+          // Image was removed - send transparent placeholder
+          formData.append(
+            `slides[${index}][hero_image]`,
+            createTransparentPlaceholder()
+          );
         }
+        // If hero_image is a URL string, don't append anything (keep existing)
+
         if (formValues.small_hero_image instanceof File) {
           formData.append(
             `slides[${index}][small_hero_image]`,
             formValues.small_hero_image
           );
+        } else if (
+          formValues.small_hero_image === undefined ||
+          formValues.small_hero_image === null ||
+          formValues.small_hero_image === ""
+        ) {
+          // Image was removed - send transparent placeholder
+          formData.append(
+            `slides[${index}][small_hero_image]`,
+            createTransparentPlaceholder()
+          );
         }
+        // If small_hero_image is a URL string, don't append anything (keep existing)
       } else {
         // --- Append data from EXISTING SLIDE (Keep as is) ---
         formData.append(

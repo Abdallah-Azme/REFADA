@@ -14,6 +14,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
+import {
   createRegisterSchema,
   useRegister,
   type RegisterFormValues,
@@ -23,6 +29,7 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useCamps } from "@/features/camps";
 
 export default function RegisterPage() {
   const t = useTranslations("auth");
@@ -31,6 +38,10 @@ export default function RegisterPage() {
   );
   const { mutate: register, isPending } = useRegister();
   const registerSchema = createRegisterSchema(t);
+
+  // Load camps for the select
+  const { data: campsData } = useCamps();
+  const camps = campsData?.data || [];
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -190,38 +201,35 @@ export default function RegisterPage() {
             {/* Delegate-specific fields */}
             {activeRole === "delegate" && (
               <>
-                {/* المنصب الإداري */}
+                {/* المخيم */}
                 <FormField
                   control={form.control}
                   name="camp_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input
-                          className="h-[50px] bg-[#EEEADD]"
-                          placeholder={t("camp_name")}
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
                           disabled={isPending}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* رقم الترخيص */}
-                <FormField
-                  control={form.control}
-                  name="license_number"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          className="h-[50px] bg-[#EEEADD]"
-                          placeholder={t("license_number")}
-                          disabled={isPending}
-                          {...field}
-                        />
+                        >
+                          <SelectTrigger className="h-[50px] bg-[#EEEADD]">
+                            {field.value || t("camp_name")}
+                          </SelectTrigger>
+                          <SelectContent>
+                            {camps.map((camp) => {
+                              const campName =
+                                typeof camp.name === "string"
+                                  ? camp.name
+                                  : camp.name?.ar || camp.name?.en || "";
+                              return (
+                                <SelectItem key={camp.id} value={campName}>
+                                  {campName}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Eye, Pencil, Trash2 } from "lucide-react";
+import { ArrowUpDown, Eye, Pencil, Trash2, KeyRound } from "lucide-react";
 
 export type AdminContributor = {
   id: number;
@@ -243,6 +243,7 @@ import { PendingUser } from "@/features/representatives/types/pending-users.sche
 
 type ApprovedContributorsActionHandlers = {
   onDelete?: (user: PendingUser) => void;
+  onChangePassword?: (user: PendingUser) => void;
 };
 
 export const createApprovedContributorsColumns = (
@@ -392,8 +393,43 @@ export const createApprovedContributorsColumns = (
     cell: ({ row }) => {
       const user = row.original;
       const isApproved = user.status === "approved";
+      const isRejected = user.status === "rejected";
 
-      if (isApproved && handlers?.onDelete) {
+      if (isApproved) {
+        return (
+          <div className="flex items-center justify-center gap-2">
+            {handlers?.onChangePassword && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700"
+                onClick={() => handlers.onChangePassword!(user)}
+                title={
+                  t
+                    ? t("table.actions_labels.change_password")
+                    : "تغيير كلمة المرور"
+                }
+              >
+                <KeyRound className="h-4 w-4" />
+              </Button>
+            )}
+            {handlers?.onDelete && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
+                onClick={() => handlers.onDelete!(user)}
+                title={t ? t("contributors.delete") : "حذف"}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        );
+      }
+
+      // Rejected users - show delete button
+      if (isRejected && handlers?.onDelete) {
         return (
           <div className="flex items-center justify-center gap-2">
             <Button
@@ -404,7 +440,6 @@ export const createApprovedContributorsColumns = (
               title={t ? t("contributors.delete") : "حذف"}
             >
               <Trash2 className="h-4 w-4" />
-              {t ? t("contributors.delete") : "حذف"}
             </Button>
           </div>
         );

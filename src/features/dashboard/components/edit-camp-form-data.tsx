@@ -7,13 +7,13 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useProfile, useUpdateProfile } from "@/features/profile";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Image, ImageIcon, Pencil, Save, X } from "lucide-react";
-import { useState } from "react";
+import { Image, ImageIcon, Pencil, Save, X, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -21,36 +21,80 @@ const campSchema = z.object({
   campName: z.string().min(1),
   email: z.string().email(),
   phoneNumber: z.string().min(10),
-  whatsappNumber: z.string().min(10),
+  whatsappNumber: z.string().optional(),
   representativeName: z.string().min(1),
 });
 
 type CampFormValues = z.infer<typeof campSchema>;
 
-const initialData: CampFormValues = {
-  campName: "أحمد محمد عبد الله",
-  email: "ahmed123@gmail.com",
-  phoneNumber: "+972 000112233",
-  whatsappNumber: "+972 000112233",
-  representativeName: "أحمد محمد عبد الله",
-};
-
 export default function EditCampFormData() {
   const [isEditing, setIsEditing] = useState(false);
+  const { data: profileData, isLoading } = useProfile();
+  const updateProfileMutation = useUpdateProfile();
+
+  const user = profileData?.data;
+  const userCamp = user?.camp;
 
   const form = useForm<CampFormValues>({
     resolver: zodResolver(campSchema),
-    defaultValues: initialData,
+    defaultValues: {
+      campName: "",
+      email: "",
+      phoneNumber: "",
+      whatsappNumber: "",
+      representativeName: "",
+    },
   });
 
+  // Update form when profile data loads
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        campName: userCamp?.name || "",
+        email: user.email || "",
+        phoneNumber: user.phone || "",
+        whatsappNumber: user.backupPhone || "",
+        representativeName: user.name || "",
+      });
+    }
+  }, [user, userCamp, form]);
+
   const onSubmit = (data: CampFormValues) => {
-    setIsEditing(false);
+    updateProfileMutation.mutate(
+      {
+        name: data.representativeName,
+        email: data.email,
+        phone: data.phoneNumber,
+        backupPhone: data.whatsappNumber,
+      },
+      {
+        onSuccess: () => {
+          setIsEditing(false);
+        },
+      }
+    );
   };
 
   const handleCancel = () => {
-    form.reset(initialData);
+    if (user) {
+      form.reset({
+        campName: userCamp?.name || "",
+        email: user.email || "",
+        phoneNumber: user.phone || "",
+        whatsappNumber: user.backupPhone || "",
+        representativeName: user.name || "",
+      });
+    }
     setIsEditing(false);
   };
+
+  if (isLoading) {
+    return (
+      <div className="lg:w-1/2 p-4 flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="lg:w-1/2 p-4">
@@ -77,6 +121,7 @@ export default function EditCampFormData() {
                 size="sm"
                 onClick={handleCancel}
                 className="text-gray-600 hover:text-gray-900"
+                disabled={updateProfileMutation.isPending}
               >
                 <X className="w-4 h-4 ml-2" />
                 إلغاء
@@ -86,8 +131,13 @@ export default function EditCampFormData() {
                 size="sm"
                 onClick={form.handleSubmit(onSubmit)}
                 className="bg-blue-600 hover:bg-blue-700 text-white"
+                disabled={updateProfileMutation.isPending}
               >
-                <Save className="w-4 h-4 ml-2" />
+                {updateProfileMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4 ml-2" />
+                )}
                 حفظ
               </Button>
             </div>
@@ -100,9 +150,12 @@ export default function EditCampFormData() {
         <div className="flex gap-8 items-center border border-gray-200 p-4 rounded-xl">
           <div>
             <Avatar className="w-24 h-24 mb-6 bg-[#C4A962]">
-              <AvatarImage src="" alt="Camp Representative" />
+              <AvatarImage
+                src={user?.profileImageUrl || ""}
+                alt="Camp Representative"
+              />
               <AvatarFallback className="bg-[#C4A962] text-white">
-                <Image className="w-10 h-10" />
+                {user?.name?.charAt(0) || <Image className="w-10 h-10" />}
               </AvatarFallback>
             </Avatar>
             <div className="text-center mb-2 text-sm text-gray-500">
@@ -114,21 +167,21 @@ export default function EditCampFormData() {
             <div className="grid grid-cols-2 items-center pb-3">
               <span className="text-sm text-gray-600">اسم المندوب:</span>
               <span className="text-base text-gray-900 font-medium">
-                {form.getValues("representativeName")}
+                {user?.name || "-"}
               </span>
             </div>
 
             <div className="grid grid-cols-2 items-center pb-3">
               <span className="text-sm text-gray-600">البريد الإلكتروني:</span>
               <span className="text-base text-gray-900 font-medium">
-                {form.getValues("email")}
+                {user?.email || "-"}
               </span>
             </div>
 
             <div className="grid grid-cols-2 items-center pb-3">
               <span className="text-sm text-gray-600">رقم الجوال:</span>
               <span className="text-base text-gray-900 font-medium">
-                {form.getValues("phoneNumber")}
+                {user?.phone || "-"}
               </span>
             </div>
 
@@ -137,7 +190,7 @@ export default function EditCampFormData() {
                 رقم الجوال الاحتياطي:
               </span>
               <span className="text-base text-gray-900 font-medium">
-                {form.getValues("whatsappNumber")}
+                {user?.backupPhone || "-"}
               </span>
             </div>
           </div>
@@ -149,7 +202,10 @@ export default function EditCampFormData() {
             {/* Avatar */}
             <div>
               <Avatar className="w-24 h-24 mb-4 bg-[#C4A962]">
-                <AvatarImage src="" alt="Camp Representative" />
+                <AvatarImage
+                  src={user?.profileImageUrl || ""}
+                  alt="Camp Representative"
+                />
                 <AvatarFallback className="bg-[#C4A962] text-white">
                   <ImageIcon className="w-10 h-10" />
                 </AvatarFallback>

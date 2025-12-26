@@ -12,6 +12,10 @@ export function useLogout() {
 
   return useMutation({
     mutationFn: () => logoutApi(),
+    onMutate: () => {
+      // Cancel all in-flight queries BEFORE logout to prevent unauthenticated errors
+      queryClient.cancelQueries();
+    },
     onSuccess: (response) => {
       // Clear auth data using context logout (this also calls authService.logout())
       contextLogout();
@@ -26,11 +30,15 @@ export function useLogout() {
       router.push("/signin");
     },
     onError: (error: ApiErrorResponse) => {
+      // Cancel queries to prevent further unauthenticated errors
+      queryClient.cancelQueries();
+
       // Even if API fails, clear local auth data
       contextLogout();
       queryClient.clear();
 
-      toast.error(error.message || "حدث خطأ أثناء تسجيل الخروج");
+      // Don't show error toast for logout failures - user is logging out anyway
+      // toast.error(error.message || "حدث خطأ أثناء تسجيل الخروج");
 
       // Still redirect to login
       router.push("/signin");

@@ -1,4 +1,8 @@
 {
+  "common": {
+    "cancel": "إلغاء",
+    "loading": "جاري التحميل..."
+  },
   "home": "الرئيسية",
   "about": "من نحن",
   "reports": "الإيبوءات",
@@ -232,7 +236,8 @@
     "actions_labels": {
       "approve": "قبول",
       "reject": "رفض",
-      "delete": "حذف"
+      "delete": "حذف",
+      "change_password": "تغيير كلمة المرور"
     }
   },
   "camps": {
@@ -306,7 +311,22 @@
     "loading": "جاري التحميل...",
     "error_loading": "حدث خطأ أثناء تحميل البيانات",
     "delete_title": "حذف المندوب",
-    "delete_description": "هل أنت متأكد من حذف المندوب \"{name}\"؟ هذا الإجراء لا يمكن التراجع عنه."
+    "delete_description": "هل أنت متأكد من حذف المندوب \"{name}\"؟ هذا الإجراء لا يمكن التراجع عنه.",
+    "approve_title": "قبول المندوب",
+    "approve_description": "سيتم قبول المندوب \"{name}\" وتفعيل حسابه.",
+    "approve": "قبول",
+    "select_camp": "اختر المخيم",
+    "select_camp_placeholder": "اختر المخيم...",
+    "reject_title": "رفض المندوب",
+    "reject_description": "هل أنت متأكد من رفض المندوب \"{name}\"؟",
+    "change_password_title": "تغيير كلمة المرور",
+    "change_password_description": "تغيير كلمة المرور للمندوب \"{name}\"",
+    "new_password": "كلمة المرور الجديدة",
+    "new_password_placeholder": "أدخل كلمة المرور الجديدة",
+    "confirm_new_password": "تأكيد كلمة المرور",
+    "confirm_password_placeholder": "أعد إدخال كلمة المرور",
+    "passwords_not_match": "كلمات المرور غير متطابقة",
+    "save_password": "حفظ كلمة المرور"
   },
   "contributors": {
     "page_title": "إدارة المساهمين",
@@ -339,7 +359,15 @@
     "table_actions": "الإجراءات",
     "status_approved": "مقبول",
     "status_pending": "قيد الانتظار",
-    "status_rejected": "مرفوض"
+    "status_rejected": "مرفوض",
+    "change_password_title": "تغيير كلمة المرور",
+    "change_password_description": "تغيير كلمة المرور للمساهم \"{name}\"",
+    "new_password": "كلمة المرور الجديدة",
+    "new_password_placeholder": "أدخل كلمة المرور الجديدة",
+    "confirm_new_password": "تأكيد كلمة المرور",
+    "confirm_password_placeholder": "أعد إدخال كلمة المرور",
+    "passwords_not_match": "كلمات المرور غير متطابقة",
+    "save_password": "حفظ كلمة المرور"
   },
   "testimonials": {
     "title": "آراء المستخدمين",
