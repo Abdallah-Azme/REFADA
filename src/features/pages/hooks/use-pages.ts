@@ -34,6 +34,8 @@ export function useUpdatePage() {
       toast.success(response.message || "تم تحديث الصفحة بنجاح");
       queryClient.invalidateQueries({ queryKey: ["page", variables.pageType] });
       queryClient.invalidateQueries({ queryKey: ["pages"] });
+      // Also invalidate about-us query since mission/vision/goals come from /about-us endpoint
+      queryClient.invalidateQueries({ queryKey: ["about-us"] });
     },
     onError: (error: any) => {
       toast.error(error.message || "حدث خطأ أثناء تحديث الصفحة");

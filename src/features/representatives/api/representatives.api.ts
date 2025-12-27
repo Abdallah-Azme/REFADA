@@ -129,8 +129,11 @@ export async function changeRepresentativePasswordApi(
   formData.append("password", password);
   formData.append("password_confirmation", passwordConfirmation);
 
-  return apiRequest<ChangePasswordResponse>(`/admin/users/${userId}/password`, {
-    method: "POST",
-    body: formData,
-  });
+  return apiRequest<ChangePasswordResponse>(
+    `/users/${userId}/change-password`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
 }

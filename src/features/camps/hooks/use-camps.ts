@@ -64,3 +64,10 @@ export function useCampStatistics() {
     queryFn: campsApi.getStatistics,
   });
 }
+
+export function useCampFamilyStatistics() {
+  return useQuery({
+    queryKey: ["camp-family-statistics"],
+    queryFn: campsApi.getFamilyStatistics,
+  });
+}

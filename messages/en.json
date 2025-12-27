@@ -231,7 +231,8 @@
     "actions_labels": {
       "approve": "Approve",
       "reject": "Reject",
-      "delete": "Delete"
+      "delete": "Delete",
+      "change_password": "Change Password"
     }
   },
   "camps": {
@@ -305,7 +306,22 @@
     "loading": "Loading...",
     "error_loading": "Error loading data",
     "delete_title": "Delete Representative",
-    "delete_description": "Are you sure you want to delete the representative \"{name}\"? This action cannot be undone."
+    "delete_description": "Are you sure you want to delete the representative \"{name}\"? This action cannot be undone.",
+    "approve_title": "Approve Representative",
+    "approve_description": "The representative \"{name}\" will be approved and their account will be activated.",
+    "approve": "Approve",
+    "select_camp": "Select Camp",
+    "select_camp_placeholder": "Select camp...",
+    "reject_title": "Reject Representative",
+    "reject_description": "Are you sure you want to reject the representative \"{name}\"?",
+    "change_password_title": "Change Password",
+    "change_password_description": "Change password for representative \"{name}\"",
+    "new_password": "New Password",
+    "new_password_placeholder": "Enter new password",
+    "confirm_new_password": "Confirm Password",
+    "confirm_password_placeholder": "Re-enter password",
+    "passwords_not_match": "Passwords do not match",
+    "save_password": "Save Password"
   },
   "contributors": {
     "page_title": "Manage Contributors",
@@ -338,7 +354,15 @@
     "table_actions": "Actions",
     "status_approved": "Approved",
     "status_pending": "Pending",
-    "status_rejected": "Rejected"
+    "status_rejected": "Rejected",
+    "change_password_title": "Change Password",
+    "change_password_description": "Change password for contributor \"{name}\"",
+    "new_password": "New Password",
+    "new_password_placeholder": "Enter new password",
+    "confirm_new_password": "Confirm Password",
+    "confirm_password_placeholder": "Re-enter password",
+    "passwords_not_match": "Passwords do not match",
+    "save_password": "Save Password"
   },
   "testimonials": {
     "title": "User Testimonials",

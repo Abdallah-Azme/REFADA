@@ -20,7 +20,7 @@ import {
   useAboutUs,
   useUpdateAboutUs,
 } from "@/features/pages/hooks/use-about-us";
-import { usePages, useUpdatePage } from "@/features/pages/hooks/use-pages";
+import { useUpdatePage } from "@/features/pages/hooks/use-pages";
 import { PageEditFormDialog } from "@/features/pages/components/page-edit-form-dialog";
 import {
   PageUpdateFormValues,
@@ -64,13 +64,27 @@ const SECTION_CONFIG = {
 
 export default function AboutControlPage() {
   const { data: aboutData, isLoading: aboutLoading } = useAboutUs();
-  const { mutate: updateAbout, isPending } = useUpdateAboutUs();
-  const { data: pagesData, isLoading: pagesLoading } = usePages();
   const updatePageMutation = useUpdatePage();
+  const { mutate: updateAbout, isPending } = useUpdateAboutUs();
 
   const [activeTab, setActiveTab] = useState("ar");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingPage, setEditingPage] = useState<PageData | null>(null);
+
+  // Get all page items from the array response
+  const pageItems = aboutData?.data || [];
+
+  // Find specific page items (cast to PageData for type compatibility)
+  const aboutUsPage = pageItems.find((p) => p.pageType === "about_us");
+  const missionPage = pageItems.find((p) => p.pageType === "mission") as
+    | PageData
+    | undefined;
+  const visionPage = pageItems.find((p) => p.pageType === "vision") as
+    | PageData
+    | undefined;
+  const goalsPage = pageItems.find((p) => p.pageType === "goals") as
+    | PageData
+    | undefined;
 
   const form = useForm<AboutFormValues>({
     resolver: zodResolver(aboutSchema),
@@ -83,21 +97,21 @@ export default function AboutControlPage() {
   });
 
   useEffect(() => {
-    if (aboutData?.data) {
+    if (aboutUsPage) {
       form.reset({
         title: {
-          ar: aboutData.data.title.ar,
-          en: aboutData.data.title.en,
+          ar: aboutUsPage.title?.ar || "",
+          en: aboutUsPage.title?.en || "",
         },
         description: {
-          ar: aboutData.data.description.ar,
-          en: aboutData.data.description.en,
+          ar: aboutUsPage.description?.ar || "",
+          en: aboutUsPage.description?.en || "",
         },
-        image: aboutData.data.image || "",
-        secondImage: aboutData.data.second_image || "",
+        image: aboutUsPage.image || "",
+        secondImage: aboutUsPage.second_image || "",
       });
     }
-  }, [aboutData, form]);
+  }, [aboutUsPage, form]);
 
   const onSubmit = (data: AboutFormValues) => {
     const formData = new FormData();
@@ -116,12 +130,6 @@ export default function AboutControlPage() {
 
     updateAbout(formData);
   };
-
-  // Get mission, vision, goals from pages data
-  const pages = pagesData?.data || [];
-  const missionPage = pages.find((p) => p.pageType === "mission");
-  const visionPage = pages.find((p) => p.pageType === "vision");
-  const goalsPage = pages.find((p) => p.pageType === "goals");
 
   const handleEditSection = (page: PageData | undefined) => {
     if (page) {
@@ -144,7 +152,7 @@ export default function AboutControlPage() {
     }
   };
 
-  if (aboutLoading || pagesLoading) {
+  if (aboutLoading) {
     return (
       <div className="p-6 flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />

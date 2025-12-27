@@ -1,4 +1,4 @@
-import { AboutUsData } from "../types/about-us.schema";
+import { AboutUsPageItem } from "../types/about-us.schema";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
@@ -6,7 +6,7 @@ const API_BASE_URL =
 type AboutUsResponse = {
   success: boolean;
   message: string;
-  data: AboutUsData;
+  data: AboutUsPageItem[];
 };
 
 export const aboutUsApi = {

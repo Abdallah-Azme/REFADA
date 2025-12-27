@@ -11,6 +11,7 @@ export {
   useUpdateCamp,
   useDeleteCamp,
   useCampDetails,
+  useCampFamilyStatistics,
 } from "./hooks/use-camps";
 
 // Types
@@ -19,6 +20,7 @@ export type {
   CampFormValues,
   CreateCampDto,
   Project,
+  CampFamilyStatistics,
 } from "./types/camp.schema";
 export { CampStatus, createCampSchema } from "./types/camp.schema";
 export type { CampTableColumn } from "./types/camp-table.types";

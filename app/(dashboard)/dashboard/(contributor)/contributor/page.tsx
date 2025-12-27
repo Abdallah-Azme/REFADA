@@ -3,7 +3,7 @@ import ContributionTable from "@/features/dashboard/components/contribution-tabl
 import ContributorForm from "@/features/dashboard/components/contributor-form";
 import EditCampFormData from "@/features/dashboard/components/edit-camp-form-data";
 import LatestActivities from "@/features/dashboard/components/latest-activities";
-import StatsCards, { stats } from "@/features/dashboard/components/stats-cards";
+import CampFamilyStats from "@/features/dashboard/components/camp-family-stats";
 import { Tangent, Tent, User } from "lucide-react";
 import MainHeader from "@/features/dashboard/components/main-header";
 
@@ -22,7 +22,7 @@ export default function Page() {
         {/* Left Section - Representative Info */}
         <LatestActivities className="w-full flex-1  " />
       </div>
-      <StatsCards stats={stats} />
+      <CampFamilyStats />
       <ContributionTable />
     </main>
   );

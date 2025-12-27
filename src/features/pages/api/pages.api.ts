@@ -79,7 +79,7 @@ export const pagesApi = {
       formData.append("file", data.file);
     }
 
-    return apiRequest<PageResponse>(`/pages/${pageType}`, {
+    return apiRequest<PageResponse>(`/about-us/${pageType}`, {
       method: "POST",
       body: formData,
     });

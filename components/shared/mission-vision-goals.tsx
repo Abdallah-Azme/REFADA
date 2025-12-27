@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ShieldCheck, Eye, Target } from "lucide-react";
 import { motion } from "framer-motion";
 import ImageFallback from "./image-fallback";
-import { usePages, useAboutUs } from "@/features/pages/hooks/use-pages";
+import { useAboutUs } from "@/features/pages/hooks/use-pages";
 import { useLocale } from "next-intl";
 
 // Animation Variants
@@ -39,19 +39,19 @@ const getLocalizedValue = (
 
 export default function MissionVisionGoals() {
   const locale = useLocale();
-  const { data: pagesData, isLoading: pagesLoading } = usePages();
-  const { data: aboutUsData, isLoading: aboutLoading } = useAboutUs();
+  const { data: aboutUsData, isLoading } = useAboutUs();
 
-  const isLoading = pagesLoading || aboutLoading;
+  // Get all page items from the array response
+  const pageItems = aboutUsData?.data || [];
 
-  // Get mission, vision, goals data from API
-  const pages = pagesData?.data || [];
-  const mission = pages.find((p) => p.pageType === "mission");
-  const vision = pages.find((p) => p.pageType === "vision");
-  const goals = pages.find((p) => p.pageType === "goals");
+  // Find mission, vision, goals data from the array
+  const mission = pageItems.find((p) => p.pageType === "mission");
+  const vision = pageItems.find((p) => p.pageType === "vision");
+  const goals = pageItems.find((p) => p.pageType === "goals");
+  const aboutUs = pageItems.find((p) => p.pageType === "about_us");
 
   const sectionImage =
-    aboutUsData?.data?.second_image || "/pages/pages/hand-carrying-hope.webp";
+    aboutUs?.second_image || "/pages/pages/hand-carrying-hope.webp";
 
   // Loading skeleton
   const LoadingSkeleton = () => (

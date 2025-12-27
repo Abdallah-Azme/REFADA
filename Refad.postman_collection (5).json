@@ -281,7 +281,7 @@
 										},
 										{
 											"key": "password",
-											"value": "12345678@Ta",
+											"value": "1234@Sara",
 											"type": "text"
 										}
 									]
@@ -1174,6 +1174,67 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "change user password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "186|AmUPMPeihoMlmY9jzJDfKq3UEBDDkYtGkaTY9QXcf6991919",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "password",
+									"value": "1234@Ssss",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "1234@Ssss",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/users/:user/change-password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								":user",
+								"change-password"
+							],
+							"variable": [
+								{
+									"key": "user",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1760,6 +1821,45 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "other statisc",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "128|JYjwj5ByO1WsurqreKFPzF6ouo2fF5sO5dXXny2e36ef3661",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/camp/family-statistics",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"camp",
+								"family-statistics"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1909,7 +2009,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "117|chSHiosrmEdWLwds3nORQBG25uEEsJwKYd5MKaJdd32aa277",
+									"value": "126|fMrvmvmNb9yOmZDdGmtQeIzuuxszDTsA7tq5YMx87a022cf1",
 									"type": "string"
 								}
 							]
@@ -1942,7 +2042,7 @@
 								},
 								{
 									"key": "national_id",
-									"value": "3020657866666",
+									"value": "302065786677777",
 									"type": "text"
 								},
 								{
@@ -1952,7 +2052,7 @@
 								},
 								{
 									"key": "phone",
-									"value": "201281222222222",
+									"value": "111111111111111111",
 									"type": "text"
 								},
 								{
@@ -2013,7 +2113,7 @@
 								},
 								{
 									"key": "members[0][national_id]",
-									"value": "12345678901234",
+									"value": "1234567890222222",
 									"type": "text"
 								},
 								{
@@ -2048,7 +2148,7 @@
 								},
 								{
 									"key": "members[1][national_id]",
-									"value": "12345678901238",
+									"value": "123456789019999",
 									"type": "text"
 								},
 								{
@@ -2058,13 +2158,18 @@
 								},
 								{
 									"key": "members[1][medical_condition_id]",
-									"value": "2",
+									"value": "7",
+									"type": "text"
+								},
+								{
+									"key": "members[1][other_medical_condition]",
+									"value": "ربو",
 									"type": "text"
 								},
 								{
 									"key": "members[1][file]",
-									"type": "file",
-									"src": "/C:/Users/Sony Vaio/Desktop/db.txt"
+									"value": "",
+									"type": "text"
 								}
 							]
 						},
@@ -2088,7 +2193,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "121|aTyGFVIvWtELRdWncJuRXP3uX52JrUx9Mt47kl3M9bd21e85",
+									"value": "126|fMrvmvmNb9yOmZDdGmtQeIzuuxszDTsA7tq5YMx87a022cf1",
 									"type": "string"
 								}
 							]
@@ -2117,52 +2222,62 @@
 								{
 									"key": "family_name",
 									"value": "Family Updated",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "national_id",
 									"value": "3020657866666",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "dob",
 									"value": "2002-06-29",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "phone",
 									"value": "201281222222222",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "backup_phone",
 									"value": "2034578698",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "total_members",
 									"value": "52",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "tent_number",
 									"value": "15",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "location",
 									"value": "mansoura updated",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "notes",
 									"value": "updated notes",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Users/Sony Vaio/Desktop/author notes.txt"
+									"src": "/C:/Users/Sony Vaio/Desktop/author notes.txt",
+									"disabled": true
 								},
 								{
 									"key": "camp_id",
@@ -2178,15 +2293,13 @@
 								},
 								{
 									"key": "members[0][id]",
-									"value": "31",
-									"type": "text",
-									"disabled": true
+									"value": "38",
+									"type": "text"
 								},
 								{
 									"key": "members[0][name]",
 									"value": "أحمد النجار",
-									"type": "text",
-									"disabled": true
+									"type": "text"
 								},
 								{
 									"key": "members[0][gender]",
@@ -2202,7 +2315,7 @@
 								},
 								{
 									"key": "members[0][national_id]",
-									"value": "1234567897",
+									"value": "1234567999999999999",
 									"type": "text",
 									"disabled": true
 								},
@@ -2227,37 +2340,44 @@
 								{
 									"key": "members[0][name]",
 									"value": "يوسف النجار",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "members[0][gender]",
 									"value": "male",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "members[0][dob]",
 									"value": "2012-05-10",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "members[0][national_id]",
 									"value": "12345678978999",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "members[0][relationship_id]",
 									"value": "3",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "members[0][medical_condition_id]",
 									"value": "3",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "members[0][file]",
 									"type": "file",
-									"src": "/C:/Users/Sony Vaio/Desktop/author notes.txt"
+									"src": "/C:/Users/Sony Vaio/Desktop/author notes.txt",
+									"disabled": true
 								},
 								{
 									"key": "members[1][name]",
@@ -2278,8 +2398,20 @@
 									"disabled": true
 								},
 								{
+									"key": "members[1][medical_condition_id]",
+									"value": "7",
+									"type": "text",
+									"disabled": true
+								},
+								{
 									"key": "members[1][national_id]",
-									"value": "123456789",
+									"value": "123456799999999999",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][other_medical_condition]",
+									"value": "ربو",
 									"type": "text",
 									"disabled": true
 								},
@@ -2290,27 +2422,27 @@
 									"disabled": true
 								},
 								{
-									"key": "members[1][medical_condition_id]",
-									"value": "1",
-									"type": "text",
-									"disabled": true
-								},
-								{
 									"key": "members[1][file]",
-									"type": "file",
-									"src": "/C:/Users/Sony Vaio/Desktop/db.txt",
+									"value": "",
+									"type": "text",
 									"disabled": true
 								}
 							]
 						},
 						"url": {
-							"raw": "{{url}}/families/8",
+							"raw": "{{url}}/families/:family",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"families",
-								"8"
+								":family"
+							],
+							"variable": [
+								{
+									"key": "family",
+									"value": "9"
+								}
 							]
 						}
 					},
@@ -2363,7 +2495,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "132|ckL36KvsDqodRHUiejZ6c6i5JL4Km5CLThLMsfnbb64de2e0",
+									"value": "126|fMrvmvmNb9yOmZDdGmtQeIzuuxszDTsA7tq5YMx87a022cf1",
 									"type": "string"
 								}
 							]
@@ -2382,13 +2514,19 @@
 							}
 						],
 						"url": {
-							"raw": "{{url}}/families/17",
+							"raw": "{{url}}/families/:family",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"families",
-								"17"
+								":family"
+							],
+							"variable": [
+								{
+									"key": "family",
+									"value": "9"
+								}
 							]
 						}
 					},
@@ -3463,7 +3601,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "85|kkWDFx2xVyqSlnSjJ22Xy2VX8YlX75cs1dq94VaIaf65feea",
+									"value": "127|z4CiyRyPLBYsmMvo7aAQVuhJCpfZMR3u6Iry2kvWded5ad8f",
 									"type": "string"
 								}
 							]
@@ -3482,7 +3620,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{url}}/contributor/camps/families/1",
+							"raw": "{{url}}/contributor/camps/families/1?has_medical_condition=1",
 							"host": [
 								"{{url}}"
 							],
@@ -3500,7 +3638,7 @@
 								},
 								{
 									"key": "total_members",
-									"value": null,
+									"value": "",
 									"disabled": true
 								},
 								{
@@ -3524,9 +3662,8 @@
 									"disabled": true
 								},
 								{
-									"key": "medical_condition",
-									"value": "ضغط دم مرتفع",
-									"disabled": true
+									"key": "has_medical_condition",
+									"value": "1"
 								}
 							]
 						}
@@ -5253,7 +5390,8 @@
 								{
 									"key": "title[en]",
 									"value": "are we ",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "description[ar]",
@@ -5270,8 +5408,7 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg",
-									"disabled": true
+									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg"
 								},
 								{
 									"key": "file",
@@ -5288,13 +5425,13 @@
 							]
 						},
 						"url": {
-							"raw": "{{url}}/about-us/",
+							"raw": "{{url}}/about-us/mission",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"about-us",
-								""
+								"mission"
 							]
 						}
 					},
@@ -5512,7 +5649,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "100|3uTGCJrSVHaG5Ed2y4zfG76kxOUw7TTahjWltCjT547178b7",
+									"value": "128|JYjwj5ByO1WsurqreKFPzF6ouo2fF5sO5dXXny2e36ef3661",
 									"type": "string"
 								}
 							]
@@ -5581,7 +5718,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "100|3uTGCJrSVHaG5Ed2y4zfG76kxOUw7TTahjWltCjT547178b7",
+									"value": "128|JYjwj5ByO1WsurqreKFPzF6ouo2fF5sO5dXXny2e36ef3661",
 									"type": "string"
 								}
 							]
@@ -6123,7 +6260,7 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "إعاقة جسدية",
+									"value": "أخرى",
 									"type": "text"
 								}
 							]

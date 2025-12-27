@@ -107,3 +107,22 @@ export interface CampStatisticsResponse {
     total: number;
   };
 }
+
+export interface CampFamilyStatistics {
+  id: number;
+  name: string;
+  familyCount: number;
+  projectCount: number;
+  memberCount: number;
+}
+
+export interface CampFamilyStatisticsResponse {
+  success: boolean;
+  message: string;
+  data: CampFamilyStatistics[];
+  pagination: {
+    current_page: number;
+    last_page: number;
+    total: number;
+  };
+}

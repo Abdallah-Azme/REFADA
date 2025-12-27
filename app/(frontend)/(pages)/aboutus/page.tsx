@@ -18,16 +18,19 @@ export default function Page() {
   const { data: aboutUsData, isLoading } = useAboutUs();
   const { data: homePageData } = useHero();
 
-  // Get localized content
-  const title =
-    aboutUsData?.data?.title?.[locale as "ar" | "en"] || t("aboutus");
-  const description =
-    aboutUsData?.data?.description?.[locale as "ar" | "en"] || "";
+  // Get all page items from the array response
+  const pageItems = aboutUsData?.data || [];
 
-  const mainImage =
-    aboutUsData?.data?.image || "/pages/pages/shaking-hands.webp";
+  // Find the about_us page item
+  const aboutUsPage = pageItems.find((item) => item.pageType === "about_us");
+
+  // Get localized content
+  const title = aboutUsPage?.title?.[locale as "ar" | "en"] || t("aboutus");
+  const description = aboutUsPage?.description?.[locale as "ar" | "en"] || "";
+
+  const mainImage = aboutUsPage?.image || "/pages/pages/shaking-hands.webp";
   const secondImage =
-    aboutUsData?.data?.second_image || "/pages/pages/shaking-hands.webp";
+    aboutUsPage?.second_image || "/pages/pages/shaking-hands.webp";
   const sections = homePageData?.data?.sections || [];
 
   return (

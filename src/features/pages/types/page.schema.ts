@@ -21,7 +21,8 @@ export interface PageData {
   pageType: string;
   title: LocalizedText;
   description: LocalizedText;
-  image: string | null;
-  file: string | null; // Document file URL
-  isActive: boolean | null;
+  image?: string | null;
+  second_image?: string | null;
+  file?: string | null;
+  isActive?: boolean | null;
 }
