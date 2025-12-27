@@ -19,8 +19,8 @@ import RichTextEditor from "@/components/rich-text-editor";
 import {
   useAboutUs,
   useUpdateAboutUs,
+  useUpdateAboutUsSection,
 } from "@/features/pages/hooks/use-about-us";
-import { useUpdatePage } from "@/features/pages/hooks/use-pages";
 import { PageEditFormDialog } from "@/features/pages/components/page-edit-form-dialog";
 import {
   PageUpdateFormValues,
@@ -64,7 +64,7 @@ const SECTION_CONFIG = {
 
 export default function AboutControlPage() {
   const { data: aboutData, isLoading: aboutLoading } = useAboutUs();
-  const updatePageMutation = useUpdatePage();
+  const updateSectionMutation = useUpdateAboutUsSection();
   const { mutate: updateAbout, isPending } = useUpdateAboutUs();
 
   const [activeTab, setActiveTab] = useState("ar");
@@ -140,7 +140,7 @@ export default function AboutControlPage() {
 
   const handleUpdateSection = (values: PageUpdateFormValues) => {
     if (editingPage) {
-      updatePageMutation.mutate(
+      updateSectionMutation.mutate(
         { pageType: editingPage.pageType, data: values },
         {
           onSuccess: () => {
@@ -467,7 +467,7 @@ export default function AboutControlPage() {
           }}
           pageData={editingPage}
           onSubmit={handleUpdateSection}
-          isPending={updatePageMutation.isPending}
+          isPending={updateSectionMutation.isPending}
         />
       )}
     </div>
