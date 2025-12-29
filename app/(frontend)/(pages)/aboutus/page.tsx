@@ -95,13 +95,19 @@ export default function Page() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="relative w-full lg:w-1/2 h-[300px] sm:h-[350px] shrink-0 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/50"
           >
-            <ImageFallback
-              src={mainImage}
-              fill
-              className="object-cover"
-              alt={title}
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent pointer-events-none" />
+            {isLoading ? (
+              <div className="w-full h-full bg-gray-200 animate-pulse" />
+            ) : (
+              <>
+                <ImageFallback
+                  src={mainImage}
+                  fill
+                  className="object-cover"
+                  alt={title}
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent pointer-events-none" />
+              </>
+            )}
           </motion.div>
 
           <motion.div
