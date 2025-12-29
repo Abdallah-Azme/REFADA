@@ -222,13 +222,13 @@ export default function RegisterPage() {
                             />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="initiator">
+                            <SelectItem value="مبادر">
                               {t("admin_position_initiator")}
                             </SelectItem>
-                            <SelectItem value="team">
+                            <SelectItem value="فريق">
                               {t("admin_position_team")}
                             </SelectItem>
-                            <SelectItem value="association">
+                            <SelectItem value="جمعية">
                               {t("admin_position_association")}
                             </SelectItem>
                           </SelectContent>
@@ -240,7 +240,7 @@ export default function RegisterPage() {
                 />
 
                 {/* رقم الترخيص - يظهر فقط عند اختيار جمعية */}
-                {watchedAdminPosition === "association" && (
+                {watchedAdminPosition === "جمعية" && (
                   <FormField
                     control={form.control}
                     name="license_number"
