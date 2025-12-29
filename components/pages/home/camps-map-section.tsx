@@ -8,6 +8,8 @@ import Image from "next/image";
 import { useState, useMemo, useEffect } from "react";
 import { Camp } from "@/features/camps/types/camp.schema";
 import dynamic from "next/dynamic";
+import { useTranslations, useLocale } from "next-intl";
+import Link from "next/link";
 
 // Dynamically import Leaflet components to prevent SSR issues with CSS
 const MapContainer = dynamic(
@@ -35,7 +37,17 @@ export default function CampsMapSection({
   dashboard?: boolean;
   camps?: Camp[];
 }) {
+  const t = useTranslations("campsMap");
+  const locale = useLocale();
   const [campIcon, setCampIcon] = useState<any>(undefined);
+
+  // Helper function to get localized name
+  const getLocalizedName = (name: string | { ar?: string; en?: string }) => {
+    if (typeof name === "string") return name;
+    return locale === "ar"
+      ? name.ar || name.en || ""
+      : name.en || name.ar || "";
+  };
 
   // Dynamically load Leaflet CSS via link tag and import Leaflet JS on client-side only
   useEffect(() => {
@@ -92,12 +104,9 @@ export default function CampsMapSection({
           viewport={{ once: true }}
         >
           <h2 className="text-2xl font-bold text-[#1C3A34] mb-2">
-            مواقع الإيواءات
+            {t("title")}
           </h2>
-          <p className="text-gray-600 text-sm">
-            من خلال الخريطة التفاعلية التالية يمكنك استعراض أماكن الإيواءات
-            المنتشرة في مختلف المناطق بغزة
-          </p>
+          <p className="text-gray-600 text-sm">{t("description")}</p>
         </motion.div>
       )}
 
@@ -134,20 +143,25 @@ export default function CampsMapSection({
               >
                 <Popup>
                   <div className="text-center">
-                    <h3 className="font-semibold text-[#1C3A34] mb-2 text-sm">
-                      {camp.name}
-                    </h3>
-                    <div className="relative w-40 h-24 mx-auto rounded-lg overflow-hidden">
-                      <ImageFallback
-                        src={camp.campImg}
-                        alt={camp.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
+                    <Link
+                      href={`/camps/${camp.slug || camp.id}`}
+                      className="hover:opacity-80 transition-opacity"
+                    >
+                      <h3 className="font-semibold text-[#1C3A34] mb-2 text-sm">
+                        {getLocalizedName(camp.name)}
+                      </h3>
+                      <div className="relative w-40 h-24 mx-auto rounded-lg overflow-hidden">
+                        <ImageFallback
+                          src={camp.campImg}
+                          alt={getLocalizedName(camp.name)}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    </Link>
                     <p className="text-gray-500 text-xs mt-2 flex items-center justify-center gap-1">
                       <MapPin size={12} />
-                      {camp.location || ""}
+                      {camp.location || t("gaza")}
                     </p>
                   </div>
                 </Popup>
@@ -177,10 +191,10 @@ export default function CampsMapSection({
             </div>
             <div className="flex-1 flex flex-col gap-1">
               <h3 className="font-semibold text-[#1C3A34] text-sm mb-1">
-                {selected.name}
+                {getLocalizedName(selected.name)}
               </h3>
               <p className="text-gray-500 text-xs flex items-center gap-1">
-                {selected.location || "غزة"}
+                {selected.location || t("gaza")}
               </p>
               {/* Phone is not in Camp schema provided in task, so removing/commenting out or using placeholder */}
               {/* <p className="text-gray-500 text-xs flex items-center gap-1 mt-1">
@@ -188,7 +202,7 @@ export default function CampsMapSection({
               </p> */}
               {selected.bankAccount && (
                 <p className="text-gray-500 text-xs flex items-center gap-1 mt-1">
-                  الحساب البنكي: {selected.bankAccount}
+                  {t("bankAccount")}: {selected.bankAccount}
                 </p>
               )}
             </div>
@@ -199,8 +213,7 @@ export default function CampsMapSection({
       {/* Footer Note */}
       {!secondary && (
         <p className="text-center text-gray-600 text-sm mt-8">
-          اضغط على أي موقع في الخريطة للاطلاع على تفاصيل الإيواء وعدد الأسر
-          والخدمات المتوفرة
+          {t("footerNote")}
         </p>
       )}
     </section>

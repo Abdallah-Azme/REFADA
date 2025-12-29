@@ -402,5 +402,24 @@
     "processingRequest": "Processing request...",
     "deleteCamp": "Delete Shelter",
     "deleteConfirmation": "Are you sure you want to delete this shelter? This action cannot be undone."
+  },
+  "profile": {
+    "representative": "Representative",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "add_image": "Add Image",
+    "representative_name": "Representative Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "backup_phone": "Backup Phone Number"
+  },
+  "campsMap": {
+    "title": "Shelter Locations",
+    "description": "Through the following interactive map, you can explore the shelters scattered across different areas in Gaza",
+    "footerNote": "Click on any location on the map to see shelter details, family counts, and available services",
+    "bankAccount": "Bank Account",
+    "gaza": "Gaza"
   }
 }

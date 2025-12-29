@@ -124,21 +124,30 @@ export default function ContributorForm() {
           <div className="w-full space-y-3 mt-6">
             <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
               <span className="text-sm text-gray-600">اسم المساهم:</span>
-              <span className="text-base text-gray-900 font-medium">
+              <span
+                className="text-base text-gray-900 font-medium truncate"
+                title={form.getValues("name") || "-"}
+              >
                 {form.getValues("name") || "-"}
               </span>
             </div>
 
             <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
               <span className="text-sm text-gray-600">البريد الالكتروني:</span>
-              <span className="text-base text-gray-900 font-medium">
+              <span
+                className="text-base text-gray-900 font-medium truncate"
+                title={form.getValues("email") || "-"}
+              >
                 {form.getValues("email") || "-"}
               </span>
             </div>
 
             <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
               <span className="text-sm text-gray-600">رقم الجوال:</span>
-              <span className="text-base text-gray-900 font-medium">
+              <span
+                className="text-base text-gray-900 font-medium truncate"
+                title={form.getValues("phone") || "-"}
+              >
                 {form.getValues("phone") || "-"}
               </span>
             </div>
@@ -147,7 +156,10 @@ export default function ContributorForm() {
               <span className="text-sm text-gray-600">
                 رقم الجوال الاحتياطي:
               </span>
-              <span className="text-base text-gray-900 font-medium">
+              <span
+                className="text-base text-gray-900 font-medium truncate"
+                title={form.getValues("backupPhone") || "-"}
+              >
                 {form.getValues("backupPhone") || "-"}
               </span>
             </div>

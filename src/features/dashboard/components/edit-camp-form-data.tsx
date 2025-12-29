@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useProfile, useUpdateProfile } from "@/features/profile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Image, ImageIcon, Pencil, Save, X, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -28,6 +29,7 @@ const campSchema = z.object({
 type CampFormValues = z.infer<typeof campSchema>;
 
 export default function EditCampFormData() {
+  const t = useTranslations("profile");
   const [isEditing, setIsEditing] = useState(false);
   const { data: profileData, isLoading } = useProfile();
   const updateProfileMutation = useUpdateProfile();
@@ -100,7 +102,9 @@ export default function EditCampFormData() {
     <div className="lg:w-1/2 p-4">
       {/* HEADER + FIXED BUTTON SLOT */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-gray-900">المندوب</h3>
+        <h3 className="text-lg font-bold text-gray-900">
+          {t("representative")}
+        </h3>
 
         {/* 🔥 FIXED WIDTH to prevent shifting */}
         <div className="flex items-center justify-end w-40">
@@ -112,7 +116,7 @@ export default function EditCampFormData() {
               className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
             >
               <Pencil className="w-4 h-4 ml-2" />
-              تعديل
+              {t("edit")}
             </Button>
           ) : (
             <div className="flex gap-2">
@@ -124,7 +128,7 @@ export default function EditCampFormData() {
                 disabled={updateProfileMutation.isPending}
               >
                 <X className="w-4 h-4 ml-2" />
-                إلغاء
+                {t("cancel")}
               </Button>
 
               <Button
@@ -138,7 +142,7 @@ export default function EditCampFormData() {
                 ) : (
                   <Save className="w-4 h-4 ml-2" />
                 )}
-                حفظ
+                {updateProfileMutation.isPending ? t("saving") : t("save")}
               </Button>
             </div>
           )}
@@ -159,37 +163,51 @@ export default function EditCampFormData() {
               </AvatarFallback>
             </Avatar>
             <div className="text-center mb-2 text-sm text-gray-500">
-              اضافة صورة
+              {t("add_image")}
             </div>
           </div>
 
           <div className="w-full space-y-1.5 mt-6">
             <div className="grid grid-cols-2 items-center pb-3">
-              <span className="text-sm text-gray-600">اسم المندوب:</span>
-              <span className="text-base text-gray-900 font-medium">
+              <span className="text-sm text-gray-600">
+                {t("representative_name")}:
+              </span>
+              <span
+                className="text-base text-gray-900 font-medium truncate"
+                title={user?.name || "-"}
+              >
                 {user?.name || "-"}
               </span>
             </div>
 
             <div className="grid grid-cols-2 items-center pb-3">
-              <span className="text-sm text-gray-600">البريد الإلكتروني:</span>
-              <span className="text-base text-gray-900 font-medium">
+              <span className="text-sm text-gray-600">{t("email")}:</span>
+              <span
+                className="text-base text-gray-900 font-medium truncate"
+                title={user?.email || "-"}
+              >
                 {user?.email || "-"}
               </span>
             </div>
 
             <div className="grid grid-cols-2 items-center pb-3">
-              <span className="text-sm text-gray-600">رقم الجوال:</span>
-              <span className="text-base text-gray-900 font-medium">
+              <span className="text-sm text-gray-600">{t("phone")}:</span>
+              <span
+                className="text-base text-gray-900 font-medium truncate"
+                title={user?.phone || "-"}
+              >
                 {user?.phone || "-"}
               </span>
             </div>
 
             <div className="grid grid-cols-2 items-center pb-3">
               <span className="text-sm text-gray-600">
-                رقم الجوال الاحتياطي:
+                {t("backup_phone")}:
               </span>
-              <span className="text-base text-gray-900 font-medium">
+              <span
+                className="text-base text-gray-900 font-medium truncate"
+                title={user?.backupPhone || "-"}
+              >
                 {user?.backupPhone || "-"}
               </span>
             </div>
@@ -211,7 +229,7 @@ export default function EditCampFormData() {
                 </AvatarFallback>
               </Avatar>
               <div className="text-center mb-2 text-sm text-gray-500">
-                اضافة صورة
+                {t("add_image")}
               </div>
             </div>
 
@@ -219,7 +237,9 @@ export default function EditCampFormData() {
             <Form {...form}>
               <form className="w-full space-y-1">
                 <div className="grid grid-cols-2 items-center pb-3 ">
-                  <label className="text-sm text-gray-600">اسم المندوب:</label>
+                  <label className="text-sm text-gray-600">
+                    {t("representative_name")}:
+                  </label>
                   <FormField
                     control={form.control}
                     name="representativeName"
@@ -238,9 +258,7 @@ export default function EditCampFormData() {
                 </div>
 
                 <div className="grid grid-cols-2 items-center pb-3 ">
-                  <label className="text-sm text-gray-600">
-                    البريد الإلكتروني:
-                  </label>
+                  <label className="text-sm text-gray-600">{t("email")}:</label>
                   <FormField
                     control={form.control}
                     name="email"
@@ -259,7 +277,7 @@ export default function EditCampFormData() {
                 </div>
 
                 <div className="grid grid-cols-2 items-center pb-3 ">
-                  <label className="text-sm text-gray-600">رقم الجوال:</label>
+                  <label className="text-sm text-gray-600">{t("phone")}:</label>
                   <FormField
                     control={form.control}
                     name="phoneNumber"
@@ -279,7 +297,7 @@ export default function EditCampFormData() {
 
                 <div className="grid grid-cols-2 items-center pb-3 ">
                   <label className="text-sm text-gray-600">
-                    رقم الجوال الاحتياطي:
+                    {t("backup_phone")}:
                   </label>
                   <FormField
                     control={form.control}
