@@ -75,6 +75,10 @@ export async function approveUserApi(
     formData.append("camp_id", data.camp_id.toString());
   }
 
+  if (data?.admin_position_id) {
+    formData.append("admin_position_id", data.admin_position_id.toString());
+  }
+
   return apiRequest<ApproveUserResponse>(`/users/${userId}/approve`, {
     method: "POST",
     body: formData,

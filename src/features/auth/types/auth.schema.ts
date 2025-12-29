@@ -24,13 +24,12 @@ export const createRegisterSchema = (t: (key: string) => string) =>
       role: z.enum(["delegate", "contributor"], {
         required_error: t("validation.select_role"),
       }),
-      // Optional fields for delegate
+      // Contributor-specific fields
       admin_position: z.string().optional(),
       license_number: z.string().optional(),
       accept_terms: z.boolean().refine((val) => val === true, {
         message: t("validation.terms_required"),
       }),
-      camp_name: z.string().optional(),
     })
     .refine((data) => data.password === data.password_confirmation, {
       message: t("validation.password_mismatch"),
@@ -38,15 +37,28 @@ export const createRegisterSchema = (t: (key: string) => string) =>
     })
     .refine(
       (data) => {
-        // If role is delegate, admin_position and license_number are required
-        if (data.role === "delegate") {
-          return !!data.camp_name;
+        // If role is contributor, admin_position is required
+        if (data.role === "contributor") {
+          return !!data.admin_position;
         }
         return true;
       },
       {
-        message: t("validation.camp_name_required"),
-        path: ["camp_name"],
+        message: t("validation.admin_position_required"),
+        path: ["admin_position"],
+      }
+    )
+    .refine(
+      (data) => {
+        // If admin_position is 'association', license_number is required
+        if (data.admin_position === "association") {
+          return !!data.license_number && data.license_number.length > 0;
+        }
+        return true;
+      },
+      {
+        message: t("validation.license_required_for_association"),
+        path: ["license_number"],
       }
     );
 
@@ -102,7 +114,6 @@ export interface RegisterRequest {
   role: "delegate" | "contributor";
   admin_position?: string; // Required for delegate
   license_number?: string; // Required for delegate
-  camp_name?: string; // Required for delegate
   accept_terms: boolean;
 }
 

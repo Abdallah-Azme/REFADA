@@ -100,7 +100,16 @@ export async function loginApi(
 export async function registerApi(
   data: RegisterRequest
 ): Promise<RegisterResponse> {
-  const formData = toFormData(data);
+  // Create a modified data object to handle admin_position_id for delegates
+  const modifiedData: Record<string, any> = { ...data };
+
+  // For delegates, send admin_position_id instead of admin_position
+  if (data.role === "delegate" && data.admin_position) {
+    modifiedData["admin_position_id"] = data.admin_position;
+    delete modifiedData["admin_position"];
+  }
+
+  const formData = toFormData(modifiedData);
 
   return apiRequest<RegisterResponse>("/auth/register", {
     method: "POST",

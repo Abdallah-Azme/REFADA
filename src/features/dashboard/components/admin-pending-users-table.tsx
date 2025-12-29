@@ -31,9 +31,23 @@ import {
 } from "@/features/representatives/hooks/use-pending-users";
 import { PendingUser } from "@/features/representatives/types/pending-users.schema";
 import { Loader2 } from "lucide-react";
-import { useCamps, useCreateCamp } from "@/features/camps/hooks/use-camps";
-import { CampFormDialog } from "@/features/camps/components/camp-form-dialog";
-import { Dialog } from "@/components/ui/dialog";
+import { useCamps } from "@/features/camps/hooks/use-camps";
+import { useAdminPositions } from "@/features/admin-position";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 export default function AdminPendingUsersTable() {
   const t = useTranslations();
@@ -57,13 +71,20 @@ export default function AdminPendingUsersTable() {
     return response?.data || [];
   }, [response]);
 
-  // Camp Management Logic
+  // Camp Assignment Logic
   const { data: campsResponse } = useCamps();
-  const createCampMutation = useCreateCamp();
+  const camps = campsResponse?.data || [];
+
+  // Admin Positions Logic
+  const { data: adminPositionsData } = useAdminPositions();
+  const adminPositions = adminPositionsData?.data || [];
+
   const [isCampDialogOpen, setIsCampDialogOpen] = React.useState(false);
   const [pendingUserToApprove, setPendingUserToApprove] =
     React.useState<PendingUser | null>(null);
-  const [initialCampData, setInitialCampData] = React.useState<any>(null);
+  const [selectedCampId, setSelectedCampId] = React.useState<string>("");
+  const [selectedAdminPositionId, setSelectedAdminPositionId] =
+    React.useState<string>("");
 
   const handleApprove = (user: PendingUser): void => {
     // Contributors don't need camp assignment
@@ -72,53 +93,27 @@ export default function AdminPendingUsersTable() {
       return;
     }
 
-    const campName = user.campName;
-
-    // If no camp name, approve without ID (handle potential backend error or assume valid)
-    if (!campName) {
-      approveUser({ userId: user.id });
-      return;
-    }
-
-    // Check if camp exists
-    const existingCamp = campsResponse?.data?.find(
-      (c: any) => c.name === campName
-    );
-
-    if (existingCamp) {
-      // Camp exists, approve with ID
-      approveUser({
-        userId: user.id,
-        data: { camp_id: existingCamp.id },
-      });
-    } else {
-      // Camp does not exist, open creation dialog
-      setPendingUserToApprove(user);
-
-      // Pre-fill only the name
-      setInitialCampData({
-        name: campName,
-      });
-
-      setIsCampDialogOpen(true);
-    }
+    // Delegates need camp and admin position assignment - open selection dialog
+    setPendingUserToApprove(user);
+    setSelectedCampId("");
+    setSelectedAdminPositionId("");
+    setIsCampDialogOpen(true);
   };
 
-  const handleCampSubmit = (data: any) => {
-    createCampMutation.mutate(data, {
-      onSuccess: (res: any) => {
-        if (pendingUserToApprove) {
-          // The new camp ID comes from the response
-          const newCampId = res.data.id;
-          approveUser({
-            userId: pendingUserToApprove.id,
-            data: { camp_id: newCampId },
-          });
-        }
-        setIsCampDialogOpen(false);
-        setPendingUserToApprove(null);
-      },
-    });
+  const handleConfirmApproval = () => {
+    if (pendingUserToApprove && selectedCampId && selectedAdminPositionId) {
+      approveUser({
+        userId: pendingUserToApprove.id,
+        data: {
+          camp_id: parseInt(selectedCampId),
+          admin_position_id: parseInt(selectedAdminPositionId),
+        },
+      });
+      setIsCampDialogOpen(false);
+      setPendingUserToApprove(null);
+      setSelectedCampId("");
+      setSelectedAdminPositionId("");
+    }
   };
 
   const handleReject = (user: PendingUser): void => {
@@ -230,14 +225,82 @@ export default function AdminPendingUsersTable() {
         <PaginationControls table={table} />
       </div>
 
-      {/* Camp Creation Dialog */}
+      {/* Camp and Admin Position Assignment Dialog for Delegates */}
       <Dialog open={isCampDialogOpen} onOpenChange={setIsCampDialogOpen}>
-        <CampFormDialog
-          initialData={initialCampData}
-          onSubmit={handleCampSubmit}
-          onCancel={() => setIsCampDialogOpen(false)}
-          role="admin"
-        />
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center">
+              تعيين المخيم والصفة الإدارية للمندوب
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <p className="text-sm text-gray-600 mb-4">
+              اختر المخيم والصفة الإدارية التي سيتم تعيين{" "}
+              <strong>{pendingUserToApprove?.name}</strong> إليها
+            </p>
+
+            {/* Camp Select */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">المخيم</label>
+              <Select value={selectedCampId} onValueChange={setSelectedCampId}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="اختر المخيم" />
+                </SelectTrigger>
+                <SelectContent>
+                  {camps.map((camp: any) => {
+                    const campName =
+                      typeof camp.name === "string"
+                        ? camp.name
+                        : camp.name?.ar || camp.name?.en || "";
+                    return (
+                      <SelectItem key={camp.id} value={camp.id.toString()}>
+                        {campName}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Admin Position Select */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">الصفة الإدارية</label>
+              <Select
+                value={selectedAdminPositionId}
+                onValueChange={setSelectedAdminPositionId}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="اختر الصفة الإدارية" />
+                </SelectTrigger>
+                <SelectContent>
+                  {adminPositions.map((position) => (
+                    <SelectItem
+                      key={position.id}
+                      value={position.id.toString()}
+                    >
+                      {position.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setIsCampDialogOpen(false)}
+            >
+              إلغاء
+            </Button>
+            <Button
+              onClick={handleConfirmApproval}
+              disabled={!selectedCampId || !selectedAdminPositionId}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              تأكيد وموافقة
+            </Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     </div>
   );

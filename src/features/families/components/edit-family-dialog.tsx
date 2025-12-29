@@ -20,14 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
-import {
-  FileSpreadsheet,
-  Users,
-  X,
-  Trash2,
-  UserPlus,
-  Loader2,
-} from "lucide-react";
+import { Users, Trash2, UserPlus, Loader2 } from "lucide-react";
 
 import {
   Select,
@@ -65,7 +58,6 @@ interface MemberFormData {
   dob: string;
   relationshipId: string;
   medicalConditionId?: string;
-  medicalConditionFile?: File;
 }
 
 export default function EditFamilyDialog({
@@ -74,7 +66,6 @@ export default function EditFamilyDialog({
   onOpenChange,
 }: EditFamilyDialogProps) {
   const t = useTranslations("families");
-  const [file, setFile] = useState<File | null>(null);
   const [membersToDelete, setMembersToDelete] = useState<number[]>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [memberToDelete, setMemberToDelete] = useState<{
@@ -84,6 +75,12 @@ export default function EditFamilyDialog({
   // Track original national_id values to avoid backend unique validation errors
   const [originalFamilyNationalId, setOriginalFamilyNationalId] =
     useState<string>("");
+  // Track "Other" medical condition selection for head of family
+  const [headOtherMedical, setHeadOtherMedical] = useState("");
+  // Track "Other" medical condition selection for each member (by index)
+  const [memberOtherMedicals, setMemberOtherMedicals] = useState<
+    Record<number, string>
+  >({});
 
   const { mutateAsync: updateFamily, isPending } = useUpdateFamily();
   const { mutateAsync: createFamilyMember, isPending: isCreatingMember } =
@@ -240,14 +237,9 @@ export default function EditFamilyDialog({
 
     try {
       // 1. Update the family basic info
-      const familyPayload = {
-        ...values,
-        file: file,
-      };
-
       await updateFamily({
         id: family.id,
-        data: familyPayload,
+        data: values,
         originalNationalId: originalFamilyNationalId,
       });
 
@@ -267,7 +259,13 @@ export default function EditFamilyDialog({
               dob: member.dob,
               relationshipId: member.relationshipId,
               medicalConditionId: member.medicalConditionId,
-              medicalConditionFile: member.medicalConditionFile,
+              medicalConditionText:
+                member.medicalConditionId === "other"
+                  ? (member as any).medicalConditionText ||
+                    memberOtherMedicals[
+                      (values.members as any[]).indexOf(member)
+                    ]
+                  : undefined,
             };
 
             if (member.id) {
@@ -292,8 +290,9 @@ export default function EditFamilyDialog({
       toast.success("تم تعديل بيانات العائلة بنجاح");
       onOpenChange(false);
       form.reset();
-      setFile(null);
       setMembersToDelete([]);
+      setHeadOtherMedical("");
+      setMemberOtherMedicals({});
     } catch (error: any) {
       console.error("Error updating family:", error);
       toast.error("حدث خطأ أثناء تعديل البيانات");
@@ -598,11 +597,18 @@ export default function EditFamilyDialog({
                     <FormItem>
                       <FormControl>
                         <Select
-                          onValueChange={field.onChange}
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            if (value !== "other") {
+                              setHeadOtherMedical("");
+                            }
+                          }}
                           value={field.value || "none"}
                         >
                           <SelectTrigger className="w-full bg-white">
-                            {field.value && field.value !== "none"
+                            {field.value === "other"
+                              ? "أخرى"
+                              : field.value && field.value !== "none"
                               ? medicalConditions.find(
                                   (m) => m.id.toString() === field.value
                                 )?.name || "الحالة الصحية"
@@ -618,6 +624,7 @@ export default function EditFamilyDialog({
                                 {condition.name}
                               </SelectItem>
                             ))}
+                            <SelectItem value="other">أخرى</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -625,46 +632,21 @@ export default function EditFamilyDialog({
                     </FormItem>
                   )}
                 />
-              </div>
 
-              {/* FILE UPLOAD - Only shown when medical condition is selected */}
-              {form.watch("medicalConditionId") &&
-                form.watch("medicalConditionId") !== "none" && (
-                  <div className="bg-[#F4F4F4] p-4 rounded-xl flex flex-col items-start gap-3">
-                    <p className="text-sm font-medium ml-4">
-                      ملف الحالة الصحية *
-                    </p>
-                    <div className="flex items-center gap-3 w-full">
-                      {!file ? (
-                        <Input
-                          type="file"
-                          accept=".pdf,.jpg,.jpeg,.png"
-                          onChange={(e) => {
-                            const f = e.target.files?.[0];
-                            if (f) setFile(f);
-                          }}
-                          className="bg-white w-full sm:w-auto"
-                        />
-                      ) : (
-                        <div className="flex items-center bg-white border gap-2 rounded-xl px-4 py-2 shadow-sm">
-                          <span className="ml-2 bg-green-500 text-white rounded-xl p-1">
-                            <FileSpreadsheet className="w-4 h-4" />
-                          </span>
-                          <span className="text-xs text-gray-700">
-                            {file.name}
-                          </span>
-                          <button
-                            className="text-gray-500 hover:text-gray-700 mr-2"
-                            onClick={() => setFile(null)}
-                            type="button"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                {/* Custom medical condition input for "Other" selection */}
+                {form.watch("medicalConditionId") === "other" && (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        className="bg-white"
+                        placeholder="أدخل الحالة الصحية"
+                        value={headOtherMedical}
+                        onChange={(e) => setHeadOtherMedical(e.target.value)}
+                      />
+                    </FormControl>
+                  </FormItem>
                 )}
+              </div>
 
               {/* LOCATION */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 bg-[#F4F4F4] p-4 rounded-xl gap-4">
@@ -885,11 +867,22 @@ export default function EditFamilyDialog({
                               <FormItem>
                                 <FormControl>
                                   <Select
-                                    onValueChange={field.onChange}
+                                    onValueChange={(value) => {
+                                      field.onChange(value);
+                                      if (value !== "other") {
+                                        setMemberOtherMedicals((prev) => {
+                                          const updated = { ...prev };
+                                          delete updated[index];
+                                          return updated;
+                                        });
+                                      }
+                                    }}
                                     value={field.value || "none"}
                                   >
                                     <SelectTrigger className="w-full">
-                                      {field.value && field.value !== "none"
+                                      {field.value === "other"
+                                        ? "أخرى"
+                                        : field.value && field.value !== "none"
                                         ? medicalConditions.find(
                                             (m) =>
                                               m.id.toString() === field.value
@@ -906,6 +899,9 @@ export default function EditFamilyDialog({
                                           {condition.name}
                                         </SelectItem>
                                       ))}
+                                      <SelectItem value="other">
+                                        أخرى
+                                      </SelectItem>
                                     </SelectContent>
                                   </Select>
                                 </FormControl>
@@ -913,6 +909,25 @@ export default function EditFamilyDialog({
                               </FormItem>
                             )}
                           />
+
+                          {/* Custom medical condition input for "Other" selection for members */}
+                          {form.watch(`members.${index}.medicalConditionId`) ===
+                            "other" && (
+                            <FormItem className="sm:col-span-7 mt-2">
+                              <FormControl>
+                                <Input
+                                  placeholder="أدخل الحالة الصحية"
+                                  value={memberOtherMedicals[index] || ""}
+                                  onChange={(e) =>
+                                    setMemberOtherMedicals((prev) => ({
+                                      ...prev,
+                                      [index]: e.target.value,
+                                    }))
+                                  }
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
 
                           {/* Delete Button */}
                           <Button

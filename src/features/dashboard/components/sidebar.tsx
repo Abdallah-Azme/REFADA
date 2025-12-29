@@ -139,6 +139,11 @@ export default function DashboardSidebar() {
       icon: Users2,
       href: "/dashboard/admin/relationship",
     },
+    {
+      label: "الصفات الإدارية",
+      icon: UserCog,
+      href: "/dashboard/admin/admin-positions",
+    },
   ];
 
   // HOME PAGE CONTROL MENU (Admin only)

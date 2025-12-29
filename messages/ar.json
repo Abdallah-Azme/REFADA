@@ -121,6 +121,12 @@
     "backup_phone": "رقم هاتف احتياطي (اختياري)",
     "camp_name": "اسم المخيم",
     "license_number": "رقم الترخيص",
+    "admin_position": "الصفة الإدارية",
+    "admin_position_placeholder": "اختر الصفة الإدارية",
+    "admin_position_initiator": "مبادر",
+    "admin_position_team": "فريق",
+    "admin_position_association": "جمعية",
+    "enter_license_number": "الرجاء إضافة رقم الترخيص",
     "password": "كلمة المرور",
     "confirm_password": "تأكيد كلمة المرور",
     "agree_to": "أوافق على",
@@ -142,7 +148,9 @@
       "camp_name_required": "اسم المخيم مطلوب للمندوب",
       "reset_code_length": "رمز التحقق يجب أن يكون 6 أرقام",
       "reset_token_required": "رمز إعادة التعيين مطلوب",
-      "id_must_be_9_digits": "رقم الهوية يجب أن يكون 9 أرقام"
+      "id_must_be_9_digits": "رقم الهوية يجب أن يكون 9 أرقام",
+      "admin_position_required": "الصفة الإدارية مطلوبة",
+      "license_required_for_association": "رقم الترخيص مطلوب للجمعيات"
     }
   },
   "families": {
@@ -304,6 +312,7 @@
     "backup_phone": "رقم الهاتف الاحتياطي",
     "license_number": "رقم الترخيص",
     "camp": "المخيم",
+    "admin_position": "الصفة الإدارية",
     "adding": "جاري الإضافة...",
     "success_add": "تم إضافة المندوب بنجاح",
     "error_add": "حدث خطأ أثناء إضافة المندوب",

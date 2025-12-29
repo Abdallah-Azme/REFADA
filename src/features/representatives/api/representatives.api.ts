@@ -65,7 +65,7 @@ export async function createRepresentativeApi(
   formData.append("password_confirmation", data.password_confirmation);
   if (data.backup_phone) formData.append("backup_phone", data.backup_phone);
   if (data.admin_position)
-    formData.append("admin_position", data.admin_position);
+    formData.append("admin_position_id", data.admin_position);
   if (data.license_number)
     formData.append("license_number", data.license_number);
   formData.append("camp_id", data.camp_id);

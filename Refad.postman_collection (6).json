@@ -41,7 +41,7 @@
 								},
 								{
 									"key": "email",
-									"value": "takwanassar1@gmail.com",
+									"value": "delegate@gmail.com",
 									"type": "text"
 								},
 								{
@@ -76,23 +76,13 @@
 									"type": "text"
 								},
 								{
-									"key": "admin_position",
-									"value": "foundation",
-									"type": "text"
-								},
-								{
-									"key": "license_number",
-									"value": "12345]",
+									"key": "admin_position_id",
+									"value": "2",
 									"type": "text"
 								},
 								{
 									"key": "accept_terms",
 									"value": "1",
-									"type": "text"
-								},
-								{
-									"key": "camp_name",
-									"value": "مخيم الأمل",
 									"type": "text"
 								}
 							]
@@ -177,6 +167,17 @@
 										{
 											"key": "accept_terms",
 											"value": "1",
+											"description": "'مبادر', 'فريق', 'جمعية'",
+											"type": "text"
+										},
+										{
+											"key": "admin_position",
+											"value": "جمعية",
+											"type": "text"
+										},
+										{
+											"key": "license_number",
+											"value": "",
 											"type": "text"
 										}
 									]
@@ -276,12 +277,12 @@
 									"formdata": [
 										{
 											"key": "email",
-											"value": "delegate@example.com",
+											"value": "delegate@gmail.com",
 											"type": "text"
 										},
 										{
 											"key": "password",
-											"value": "1234@Sara",
+											"value": "12345678@Ta",
 											"type": "text"
 										}
 									]
@@ -717,7 +718,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "74|3yW2s3dMj11DqcBAFrRgcHINXvhbVS9sjN8EWH0ye9b9cbea",
+									"value": "132|yOsDRj3g9EsBuWZrN1uVeXNAQTZnu2ASsAzOqdcD374ef166",
 									"type": "string"
 								}
 							]
@@ -767,7 +768,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "76|Ua1qNhyZDDMnLxCMmgnO3MJ2E6K9wPEZ6Puxlo4cb13deb60",
+									"value": "132|yOsDRj3g9EsBuWZrN1uVeXNAQTZnu2ASsAzOqdcD374ef166",
 									"type": "string"
 								}
 							]
@@ -801,14 +802,20 @@
 							]
 						},
 						"url": {
-							"raw": "{{url}}/users/12/approve",
+							"raw": "{{url}}/users/:user/approve",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"users",
-								"12",
+								":user",
 								"approve"
+							],
+							"variable": [
+								{
+									"key": "user",
+									"value": "18"
+								}
 							]
 						}
 					},
@@ -926,7 +933,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "2|wnCDCJfPWYir3UpOHpaq3KW5cgwmzQe3pqn3NKvg68346c4c",
+									"value": "135|o0XfU638fjHW3is3Tx47hCyeKnjy3ARpceNNEob576d7d31f",
 									"type": "string"
 								}
 							]
@@ -993,8 +1000,8 @@
 									"type": "text"
 								},
 								{
-									"key": "admin_position",
-									"value": "gamia",
+									"key": "admin_position_id",
+									"value": "2",
 									"type": "text"
 								},
 								{
@@ -1030,7 +1037,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "106|Zzed4wdINj9s57Sfz1hGREIMdpFs51EzfZSAEnex0bd143fe",
+									"value": "134|Q9cbV3hMyyC69tW69iytM8N48EvvGIn6dtIBR69234839f5b",
 									"type": "string"
 								}
 							]
@@ -2009,7 +2016,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "126|fMrvmvmNb9yOmZDdGmtQeIzuuxszDTsA7tq5YMx87a022cf1",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -2081,11 +2088,6 @@
 									"type": "text"
 								},
 								{
-									"key": "file",
-									"type": "file",
-									"src": "postman-cloud:///1f0c7e88-966e-4f50-8f1b-dcb8a24c3316"
-								},
-								{
 									"key": "camp_id",
 									"value": "1",
 									"description": "required only if admin if delegate added by default according to delegate camp",
@@ -2127,11 +2129,6 @@
 									"type": "text"
 								},
 								{
-									"key": "members[0][file]",
-									"type": "file",
-									"src": "/C:/Users/Sony Vaio/Desktop/db.txt"
-								},
-								{
 									"key": "members[1][name]",
 									"value": "ليلى النجار",
 									"type": "text"
@@ -2158,17 +2155,13 @@
 								},
 								{
 									"key": "members[1][medical_condition_id]",
-									"value": "7",
-									"type": "text"
-								},
-								{
-									"key": "members[1][other_medical_condition]",
-									"value": "ربو",
-									"type": "text"
-								},
-								{
-									"key": "members[1][file]",
 									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][medical_condition]",
+									"value": "مرهق جدًا",
 									"type": "text"
 								}
 							]
@@ -2193,7 +2186,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "126|fMrvmvmNb9yOmZDdGmtQeIzuuxszDTsA7tq5YMx87a022cf1",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -2274,12 +2267,6 @@
 									"disabled": true
 								},
 								{
-									"key": "file",
-									"type": "file",
-									"src": "/C:/Users/Sony Vaio/Desktop/author notes.txt",
-									"disabled": true
-								},
-								{
 									"key": "camp_id",
 									"value": "2",
 									"type": "text",
@@ -2293,7 +2280,7 @@
 								},
 								{
 									"key": "members[0][id]",
-									"value": "38",
+									"value": "44",
 									"type": "text"
 								},
 								{
@@ -2304,38 +2291,27 @@
 								{
 									"key": "members[0][gender]",
 									"value": "male",
-									"type": "text",
-									"disabled": true
+									"type": "text"
 								},
 								{
 									"key": "members[0][dob]",
 									"value": "2005-03-20",
-									"type": "text",
-									"disabled": true
+									"type": "text"
 								},
 								{
 									"key": "members[0][national_id]",
 									"value": "1234567999999999999",
-									"type": "text",
-									"disabled": true
+									"type": "text"
 								},
 								{
 									"key": "members[0][relationship_id]",
 									"value": "1",
-									"type": "text",
-									"disabled": true
+									"type": "text"
 								},
 								{
-									"key": "members[0][medical_condition_id]",
-									"value": "2",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "members[0][file]",
-									"type": "file",
-									"src": "/C:/Users/Sony Vaio/Desktop/author notes.txt",
-									"disabled": true
+									"key": "members[0][medical_condition]",
+									"value": "السكري النوع الأول",
+									"type": "text"
 								},
 								{
 									"key": "members[0][name]",
@@ -2374,12 +2350,6 @@
 									"disabled": true
 								},
 								{
-									"key": "members[0][file]",
-									"type": "file",
-									"src": "/C:/Users/Sony Vaio/Desktop/author notes.txt",
-									"disabled": true
-								},
-								{
 									"key": "members[1][name]",
 									"value": "name",
 									"type": "text",
@@ -2410,20 +2380,14 @@
 									"disabled": true
 								},
 								{
-									"key": "members[1][other_medical_condition]",
-									"value": "ربو",
+									"key": "members[1][medical_condition]",
+									"value": "قرحة المعدة",
 									"type": "text",
 									"disabled": true
 								},
 								{
 									"key": "members[1][relationship_id]",
 									"value": "2",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "members[1][file]",
-									"value": "",
 									"type": "text",
 									"disabled": true
 								}
@@ -2441,7 +2405,7 @@
 							"variable": [
 								{
 									"key": "family",
-									"value": "9"
+									"value": "11"
 								}
 							]
 						}
@@ -2495,7 +2459,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "126|fMrvmvmNb9yOmZDdGmtQeIzuuxszDTsA7tq5YMx87a022cf1",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -2525,7 +2489,7 @@
 							"variable": [
 								{
 									"key": "family",
-									"value": "9"
+									"value": "11"
 								}
 							]
 						}
@@ -3087,7 +3051,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "23|uFigk6xhokuRp51bsLqaIyMpc9VPYmbJlPAXhp2471dcc450",
+									"value": "193|nHLJn1cV6navpc1WbYfDqUPoUTwMkz76qwzVNgU76e8e7177",
 									"type": "string"
 								}
 							]
@@ -6260,7 +6224,7 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "أخرى",
+									"value": "قرحة المعدة",
 									"type": "text"
 								}
 							]
@@ -6368,13 +6332,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{url}}/medical-conditions/6",
+							"raw": "{{url}}/medical-conditions/7",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"medical-conditions",
-								"6"
+								"7"
 							]
 						}
 					},
@@ -6474,13 +6438,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{url}}/relationships/1",
+							"raw": "{{url}}/relationships/2",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"relationships",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -6560,6 +6524,185 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Admin Position",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/admin-positions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin-positions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "مشرف",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/admin-positions/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin-positions",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/admin-positions/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin-positions",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "منسق",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/admin-positions/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin-positions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/admin-positions/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin-positions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -6589,6 +6732,10 @@
 	"variable": [
 		{
 			"key": "url",
+			"value": ""
+		},
+		{
+			"key": "token",
 			"value": "",
 			"type": "default"
 		}

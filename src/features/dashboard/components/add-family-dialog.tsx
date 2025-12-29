@@ -27,15 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
-import {
-  CirclePlus,
-  FileSpreadsheet,
-  PlusCircle,
-  Users,
-  X,
-  Trash2,
-  UserPlus,
-} from "lucide-react";
+import { CirclePlus, PlusCircle, Users, Trash2, UserPlus } from "lucide-react";
 
 import {
   Select,
@@ -55,9 +47,15 @@ import { useProfile } from "@/features/profile";
 
 export default function AddFamilyDialog() {
   const t = useTranslations("families");
-  const [file, setFile] = useState<File | null>(null);
   const [open, setOpen] = useState(false);
   const { mutateAsync: createFamily, isPending } = useCreateFamily();
+
+  // Track "Other" medical condition selection for head of family
+  const [headOtherMedical, setHeadOtherMedical] = useState("");
+  // Track "Other" medical condition selection for each member (by index)
+  const [memberOtherMedicals, setMemberOtherMedicals] = useState<
+    Record<number, string>
+  >({});
 
   // Load camps for the select
   const { data: campsData } = useCamps();
@@ -164,19 +162,26 @@ export default function AddFamilyDialog() {
 
   const onSubmit = async (values: z.infer<typeof familySchema>) => {
     try {
-      // Create the family with members in a single request
-      // The API now accepts members[] array alongside family data
-      const familyPayload = {
+      // Inject custom medical condition text if "other" is selected
+      const payload = {
         ...values,
-        file: file,
-        // members are already in values from the form
+        medicalConditionText:
+          values.medicalConditionId === "other" ? headOtherMedical : undefined,
+        members: values.members?.map((member, index) => ({
+          ...member,
+          medicalConditionText:
+            member.medicalConditionId === "other"
+              ? memberOtherMedicals[index]
+              : undefined,
+        })),
       };
 
-      await createFamily(familyPayload);
+      await createFamily(payload);
 
       setOpen(false);
       form.reset();
-      setFile(null);
+      setHeadOtherMedical("");
+      setMemberOtherMedicals({});
     } catch (error: any) {
       console.error("Error creating family:", error);
     }
@@ -463,11 +468,18 @@ export default function AddFamilyDialog() {
                     <FormItem>
                       <FormControl>
                         <Select
-                          onValueChange={field.onChange}
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            if (value !== "other") {
+                              setHeadOtherMedical("");
+                            }
+                          }}
                           defaultValue={field.value || "none"}
                         >
                           <SelectTrigger className="w-full bg-white">
-                            {field.value && field.value !== "none"
+                            {field.value === "other"
+                              ? "أخرى"
+                              : field.value && field.value !== "none"
                               ? medicalConditions.find(
                                   (m) => m.id.toString() === field.value
                                 )?.name || "الحالة الصحية"
@@ -483,6 +495,7 @@ export default function AddFamilyDialog() {
                                 {condition.name}
                               </SelectItem>
                             ))}
+                            <SelectItem value="other">أخرى</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -490,46 +503,21 @@ export default function AddFamilyDialog() {
                     </FormItem>
                   )}
                 />
-              </div>
 
-              {/* FILE UPLOAD - Only shown when medical condition is selected */}
-              {form.watch("medicalConditionId") &&
-                form.watch("medicalConditionId") !== "none" && (
-                  <div className="bg-[#F4F4F4] p-4 rounded-xl flex flex-col items-start gap-3">
-                    <p className="text-sm font-medium ml-4">
-                      ملف الحالة الصحية *
-                    </p>
-                    <div className="flex items-center gap-3 w-full">
-                      {!file ? (
-                        <Input
-                          type="file"
-                          accept=".pdf,.jpg,.jpeg,.png"
-                          onChange={(e) => {
-                            const f = e.target.files?.[0];
-                            if (f) setFile(f);
-                          }}
-                          className="bg-white w-full sm:w-auto"
-                        />
-                      ) : (
-                        <div className="flex items-center bg-white border gap-2 rounded-xl px-4 py-2 shadow-sm">
-                          <span className="ml-2 bg-green-500 text-white rounded-xl p-1">
-                            <FileSpreadsheet className="w-4 h-4" />
-                          </span>
-                          <span className="text-xs text-gray-700">
-                            {file.name}
-                          </span>
-                          <button
-                            className="text-gray-500 hover:text-gray-700 mr-2"
-                            onClick={() => setFile(null)}
-                            type="button"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                {/* Custom medical condition input for "Other" selection */}
+                {form.watch("medicalConditionId") === "other" && (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        className="bg-white"
+                        placeholder="أدخل الحالة الصحية"
+                        value={headOtherMedical}
+                        onChange={(e) => setHeadOtherMedical(e.target.value)}
+                      />
+                    </FormControl>
+                  </FormItem>
                 )}
+              </div>
 
               {/* FAMILY MEMBERS SECTION */}
               <div className="bg-[#F4F4F4] p-4 rounded-xl space-y-4">
@@ -673,11 +661,22 @@ export default function AddFamilyDialog() {
                             <FormItem>
                               <FormControl>
                                 <Select
-                                  onValueChange={field.onChange}
+                                  onValueChange={(value) => {
+                                    field.onChange(value);
+                                    if (value !== "other") {
+                                      setMemberOtherMedicals((prev) => {
+                                        const updated = { ...prev };
+                                        delete updated[index];
+                                        return updated;
+                                      });
+                                    }
+                                  }}
                                   defaultValue={field.value || "none"}
                                 >
                                   <SelectTrigger className="w-full">
-                                    {field.value && field.value !== "none"
+                                    {field.value === "other"
+                                      ? "أخرى"
+                                      : field.value && field.value !== "none"
                                       ? medicalConditions.find(
                                           (m) => m.id.toString() === field.value
                                         )?.name || "الحالة الصحية"
@@ -693,6 +692,7 @@ export default function AddFamilyDialog() {
                                         {condition.name}
                                       </SelectItem>
                                     ))}
+                                    <SelectItem value="other">أخرى</SelectItem>
                                   </SelectContent>
                                 </Select>
                               </FormControl>
@@ -701,41 +701,24 @@ export default function AddFamilyDialog() {
                           )}
                         />
 
-                        {/* ملف الحالة الصحية - يظهر فقط إذا تم اختيار حالة مرضية */}
-                        {form.watch(`members.${index}.medicalConditionId`) &&
-                          form.watch(`members.${index}.medicalConditionId`) !==
-                            "none" && (
-                            <FormField
-                              control={form.control}
-                              name={`members.${index}.medicalConditionFile`}
-                              render={({
-                                field: { onChange, value, ...field },
-                              }) => (
-                                <FormItem className="sm:col-span-7 mt-2">
-                                  <FormControl>
-                                    <div className="flex items-center gap-2">
-                                      <Input
-                                        type="file"
-                                        accept=".pdf,.jpg,.jpeg,.png"
-                                        onChange={(e) => {
-                                          const file = e.target.files?.[0];
-                                          if (file) onChange(file);
-                                        }}
-                                        className="bg-gray-50"
-                                        {...field}
-                                      />
-                                      {value && (
-                                        <span className="text-xs text-gray-500">
-                                          {(value as File).name}
-                                        </span>
-                                      )}
-                                    </div>
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          )}
+                        {/* Custom medical condition input for "Other" selection for members */}
+                        {form.watch(`members.${index}.medicalConditionId`) ===
+                          "other" && (
+                          <FormItem className="sm:col-span-7 mt-2">
+                            <FormControl>
+                              <Input
+                                placeholder="أدخل الحالة الصحية"
+                                value={memberOtherMedicals[index] || ""}
+                                onChange={(e) =>
+                                  setMemberOtherMedicals((prev) => ({
+                                    ...prev,
+                                    [index]: e.target.value,
+                                  }))
+                                }
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
 
                         {/* Delete Button */}
                         <Button

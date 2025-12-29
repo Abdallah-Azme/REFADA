@@ -30,6 +30,7 @@ export interface PendingUsersResponse {
 
 export interface ApproveUserRequest {
   camp_id?: number; // Required for delegates
+  admin_position_id?: number; // Required for delegates
 }
 
 export interface ApproveUserResponse {
@@ -43,6 +44,7 @@ export interface ApproveUserResponse {
 
 export const approveUserSchema = z.object({
   camp_id: z.number().optional(),
+  admin_position_id: z.number().optional(),
 });
 
 export type ApproveUserFormValues = z.infer<typeof approveUserSchema>;

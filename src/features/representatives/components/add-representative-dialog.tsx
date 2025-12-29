@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import React, { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -36,9 +36,11 @@ import {
 import { createRepresentativeSchema } from "../types/create-representative.schema";
 import { useCreateRepresentative } from "../hooks/use-create-representative";
 import { useCamps } from "@/features/camps";
+import { useAdminPositions } from "@/features/admin-position";
 
 export default function AddRepresentativeDialog() {
   const t = useTranslations("representatives");
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -48,6 +50,20 @@ export default function AddRepresentativeDialog() {
   // Load camps for the select
   const { data: campsData } = useCamps();
   const camps = campsData?.data || [];
+
+  // Load admin positions for the select
+  const { data: adminPositionsData } = useAdminPositions();
+  const adminPositions = adminPositionsData?.data || [];
+
+  // Helper function to get camp name based on locale
+  const getCampName = (camp: {
+    name: string | { ar?: string; en?: string };
+  }) => {
+    if (typeof camp.name === "string") return camp.name;
+    return locale === "ar"
+      ? camp.name.ar || camp.name.en || ""
+      : camp.name.en || camp.name.ar || "";
+  };
 
   const form = useForm<z.infer<typeof createRepresentativeSchema>>({
     resolver: zodResolver(createRepresentativeSchema),
@@ -59,8 +75,8 @@ export default function AddRepresentativeDialog() {
       password: "",
       password_confirmation: "",
       backup_phone: "",
-      license_number: "",
       camp_id: "",
+      admin_position: "",
     },
   });
 
@@ -193,30 +209,12 @@ export default function AddRepresentativeDialog() {
                   )}
                 />
 
-                {/* رقم الترخيص */}
-                <FormField
-                  control={form.control}
-                  name="license_number"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          className="bg-white"
-                          placeholder={t("license_number")}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
                 {/* المخيم */}
                 <FormField
                   control={form.control}
                   name="camp_id"
                   render={({ field }) => (
-                    <FormItem className="sm:col-span-2">
+                    <FormItem>
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
@@ -224,9 +222,12 @@ export default function AddRepresentativeDialog() {
                         >
                           <SelectTrigger className="w-full bg-white">
                             {field.value
-                              ? camps.find(
-                                  (c) => c.id.toString() === field.value
-                                )?.name || t("camp")
+                              ? (() => {
+                                  const camp = camps.find(
+                                    (c) => c.id.toString() === field.value
+                                  );
+                                  return camp ? getCampName(camp) : t("camp");
+                                })()
                               : t("camp")}
                           </SelectTrigger>
                           <SelectContent>
@@ -235,7 +236,42 @@ export default function AddRepresentativeDialog() {
                                 key={camp.id}
                                 value={camp.id.toString()}
                               >
-                                {camp.name}
+                                {getCampName(camp)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* الصفة الإدارية */}
+                <FormField
+                  control={form.control}
+                  name="admin_position"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className="w-full bg-white">
+                            {field.value
+                              ? adminPositions.find(
+                                  (p) => p.id.toString() === field.value
+                                )?.name || t("admin_position")
+                              : t("admin_position")}
+                          </SelectTrigger>
+                          <SelectContent>
+                            {adminPositions.map((position) => (
+                              <SelectItem
+                                key={position.id}
+                                value={position.id.toString()}
+                              >
+                                {position.name}
                               </SelectItem>
                             ))}
                           </SelectContent>

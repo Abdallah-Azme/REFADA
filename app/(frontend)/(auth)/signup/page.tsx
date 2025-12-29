@@ -18,18 +18,19 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import {
   createRegisterSchema,
   useRegister,
   type RegisterFormValues,
 } from "@/features/auth";
+import { useAdminPositions } from "@/features/admin-position";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useCamps } from "@/features/camps";
 
 export default function RegisterPage() {
   const t = useTranslations("auth");
@@ -39,9 +40,9 @@ export default function RegisterPage() {
   const { mutate: register, isPending } = useRegister();
   const registerSchema = createRegisterSchema(t);
 
-  // Load camps for the select
-  const { data: campsData } = useCamps();
-  const camps = campsData?.data || [];
+  // Fetch admin positions for delegates
+  const { data: adminPositionsData } = useAdminPositions();
+  const adminPositions = adminPositionsData?.data || [];
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -54,9 +55,9 @@ export default function RegisterPage() {
       phone: "",
       backup_phone: "",
       role: "contributor",
+      admin_position: "",
       license_number: "",
       accept_terms: false,
-      camp_name: "",
     },
   });
 
@@ -67,12 +68,14 @@ export default function RegisterPage() {
   const handleRoleChange = (role: string) => {
     setActiveRole(role as "contributor" | "delegate");
     form.setValue("role", role as "contributor" | "delegate");
-
-    // Clear delegate-specific fields when switching to contributor
-    if (role === "contributor") {
-      form.setValue("camp_name", "");
+    // Clear contributor-specific fields when switching to delegate
+    if (role === "delegate") {
+      form.setValue("admin_position", "");
+      form.setValue("license_number", "");
     }
   };
+
+  const watchedAdminPosition = form.watch("admin_position");
 
   return (
     <div className="bg-white rounded-xl">
@@ -198,13 +201,13 @@ export default function RegisterPage() {
               )}
             />
 
-            {/* Delegate-specific fields */}
-            {activeRole === "delegate" && (
+            {/* Contributor-specific fields */}
+            {activeRole === "contributor" && (
               <>
-                {/* المخيم */}
+                {/* الصفة الإدارية للمساهم */}
                 <FormField
                   control={form.control}
-                  name="camp_name"
+                  name="admin_position"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
@@ -214,20 +217,80 @@ export default function RegisterPage() {
                           disabled={isPending}
                         >
                           <SelectTrigger className="h-[50px] bg-[#EEEADD]">
-                            {field.value || t("camp_name")}
+                            <SelectValue
+                              placeholder={t("admin_position_placeholder")}
+                            />
                           </SelectTrigger>
                           <SelectContent>
-                            {camps.map((camp) => {
-                              const campName =
-                                typeof camp.name === "string"
-                                  ? camp.name
-                                  : camp.name?.ar || camp.name?.en || "";
-                              return (
-                                <SelectItem key={camp.id} value={campName}>
-                                  {campName}
-                                </SelectItem>
-                              );
-                            })}
+                            <SelectItem value="initiator">
+                              {t("admin_position_initiator")}
+                            </SelectItem>
+                            <SelectItem value="team">
+                              {t("admin_position_team")}
+                            </SelectItem>
+                            <SelectItem value="association">
+                              {t("admin_position_association")}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* رقم الترخيص - يظهر فقط عند اختيار جمعية */}
+                {watchedAdminPosition === "association" && (
+                  <FormField
+                    control={form.control}
+                    name="license_number"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            className="h-[50px] bg-[#EEEADD]"
+                            placeholder={t("enter_license_number")}
+                            disabled={isPending}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+              </>
+            )}
+
+            {/* Delegate-specific fields */}
+            {activeRole === "delegate" && (
+              <>
+                {/* الصفة الإدارية للمندوب - من API */}
+                <FormField
+                  control={form.control}
+                  name="admin_position"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          disabled={isPending}
+                        >
+                          <SelectTrigger className="h-[50px] bg-[#EEEADD]">
+                            <SelectValue
+                              placeholder={t("admin_position_placeholder")}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {adminPositions.map((position) => (
+                              <SelectItem
+                                key={position.id}
+                                value={position.id.toString()}
+                              >
+                                {position.name}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </FormControl>

@@ -116,6 +116,12 @@
     "backup_phone": "Backup Phone (Optional)",
     "camp_name": "Shelter Name",
     "license_number": "License Number",
+    "admin_position": "Administrative Position",
+    "admin_position_placeholder": "Select Administrative Position",
+    "admin_position_initiator": "Initiator",
+    "admin_position_team": "Team",
+    "admin_position_association": "Association",
+    "enter_license_number": "Please enter the license number",
     "password": "Password",
     "confirm_password": "Confirm Password",
     "agree_to": "I agree to",
@@ -137,7 +143,9 @@
       "camp_name_required": "Shelter name is required for representatives",
       "reset_code_length": "Reset code must be 6 digits",
       "reset_token_required": "Reset token is required",
-      "id_must_be_9_digits": "ID Number must be exactly 9 digits"
+      "id_must_be_9_digits": "ID Number must be exactly 9 digits",
+      "admin_position_required": "Administrative position is required",
+      "license_required_for_association": "License number is required for associations"
     }
   },
   "families": {
@@ -299,6 +307,7 @@
     "backup_phone": "Backup Phone",
     "license_number": "License Number",
     "camp": "Camp",
+    "admin_position": "Admin Position",
     "adding": "Adding...",
     "success_add": "Representative added successfully",
     "error_add": "Error adding representative",

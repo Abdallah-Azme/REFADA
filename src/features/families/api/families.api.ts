@@ -76,11 +76,14 @@ export async function createFamilyApi(
   if (data.notes) formData.append("notes", data.notes);
   formData.append("camp_id", data.campId);
   formData.append("marital_status_id", data.maritalStatusId);
-  // Medical condition for head of family
+  // Medical condition for head of family - send text if 'other', otherwise send ID
   if (data.medicalConditionId && data.medicalConditionId !== "none") {
-    formData.append("medical_condition_id", data.medicalConditionId);
+    if (data.medicalConditionId === "other" && data.medicalConditionText) {
+      formData.append("medical_condition", data.medicalConditionText);
+    } else {
+      formData.append("medical_condition_id", data.medicalConditionId);
+    }
   }
-  if (data.file) formData.append("file", data.file); // Handle file upload
 
   // Add head of family as members[0]
   formData.append("members[0][name]", data.familyName);
@@ -89,12 +92,16 @@ export async function createFamilyApi(
   formData.append("members[0][national_id]", data.nationalId);
   formData.append("members[0][relationship_id]", "1"); // Head of family relationship
   if (data.medicalConditionId && data.medicalConditionId !== "none") {
-    formData.append(
-      "members[0][medical_condition_id]",
-      data.medicalConditionId
-    );
-    if (data.file) {
-      formData.append("members[0][file]", data.file);
+    if (data.medicalConditionId === "other" && data.medicalConditionText) {
+      formData.append(
+        "members[0][medical_condition]",
+        data.medicalConditionText
+      );
+    } else {
+      formData.append(
+        "members[0][medical_condition_id]",
+        data.medicalConditionId
+      );
     }
   }
 
@@ -114,14 +121,18 @@ export async function createFamilyApi(
         member.relationshipId
       );
       if (member.medicalConditionId && member.medicalConditionId !== "none") {
-        formData.append(
-          `members[${memberIndex}][medical_condition_id]`,
-          member.medicalConditionId
-        );
-        if (member.medicalConditionFile) {
+        if (
+          member.medicalConditionId === "other" &&
+          member.medicalConditionText
+        ) {
           formData.append(
-            `members[${memberIndex}][file]`,
-            member.medicalConditionFile
+            `members[${memberIndex}][medical_condition]`,
+            member.medicalConditionText
+          );
+        } else {
+          formData.append(
+            `members[${memberIndex}][medical_condition_id]`,
+            member.medicalConditionId
           );
         }
       }
@@ -156,10 +167,6 @@ export async function updateFamilyApi(
   formData.append("camp_id", data.campId);
   formData.append("marital_status_id", data.maritalStatusId);
 
-  if (data.file instanceof File) {
-    formData.append("file", data.file);
-  }
-
   // Uses POST for update per Postman collection ("edit" request)
   // Note: Members are handled separately via the edit-family-dialog's member update logic
   return apiRequest(`/families/${id}`, {
@@ -183,7 +190,7 @@ export interface CreateFamilyMemberPayload {
   dob: string;
   relationshipId: string;
   medicalConditionId?: string; // Optional - only sent if not 'none'
-  medicalConditionFile?: File; // Optional file for medical condition
+  medicalConditionText?: string; // Custom text when 'other' is selected
 }
 
 export async function createFamilyMemberApi(
@@ -196,12 +203,12 @@ export async function createFamilyMemberApi(
   formData.append("gender", data.gender);
   formData.append("dob", data.dob);
   formData.append("relationship_id", data.relationshipId);
-  // Only append medical_condition_id if it's not 'none' and has a value
+  // Send medical_condition text if 'other', otherwise send ID
   if (data.medicalConditionId && data.medicalConditionId !== "none") {
-    formData.append("medical_condition_id", data.medicalConditionId);
-    // Append file if provided
-    if (data.medicalConditionFile) {
-      formData.append("file", data.medicalConditionFile);
+    if (data.medicalConditionId === "other" && data.medicalConditionText) {
+      formData.append("medical_condition", data.medicalConditionText);
+    } else {
+      formData.append("medical_condition_id", data.medicalConditionId);
     }
   }
 
@@ -317,12 +324,12 @@ export async function updateFamilyMemberApi(
   formData.append("gender", data.gender);
   formData.append("dob", data.dob);
   formData.append("relationship_id", data.relationshipId);
-  // Only append medical_condition_id if it's not 'none' and has a value
+  // Send medical_condition text if 'other', otherwise send ID
   if (data.medicalConditionId && data.medicalConditionId !== "none") {
-    formData.append("medical_condition_id", data.medicalConditionId);
-    // Append file if provided
-    if (data.medicalConditionFile) {
-      formData.append("file", data.medicalConditionFile);
+    if (data.medicalConditionId === "other" && data.medicalConditionText) {
+      formData.append("medical_condition", data.medicalConditionText);
+    } else {
+      formData.append("medical_condition_id", data.medicalConditionId);
     }
   }
 
