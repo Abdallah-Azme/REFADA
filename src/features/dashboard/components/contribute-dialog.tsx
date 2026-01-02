@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, Send, ChevronDown, Check, Loader2 } from "lucide-react";
+import { Search, Send, ChevronDown, Check, Loader2, X } from "lucide-react";
 import { Project } from "../table-cols/project-contribution-cols";
 import { useState, useEffect } from "react";
 import {
@@ -73,8 +73,27 @@ export default function ContributeDialog({
 }: ContributeDialogProps) {
   const params = useParams();
 
+  // Age group filter options - matching the keys from AgeGroupsCount
+  const ageGroupOptions = [
+    { id: "newborns", name: "حديثي الولادة" },
+    { id: "infants", name: "الرضع" },
+    { id: "veryEarlyChildhood", name: "الطفولة المبكرة جداً" },
+    { id: "toddlers", name: "الأطفال الصغار" },
+    { id: "earlyChildhood", name: "الطفولة المبكرة" },
+    { id: "children", name: "الأطفال" },
+    { id: "adolescents", name: "المراهقين" },
+    { id: "youth", name: "الشباب" },
+    { id: "youngAdults", name: "البالغين الشباب" },
+    { id: "middleAgeAdults", name: "متوسطي العمر" },
+    { id: "lateMiddleAge", name: "أواخر متوسط العمر" },
+    { id: "seniors", name: "كبار السن" },
+  ];
+
   // Keep local state for data that is fetched (options)
-  const [selectedFilters, setSelectedFilters] = useState<number[]>([]);
+  const [selectedAgeFilters, setSelectedAgeFilters] = useState<string[]>([]);
+  const [selectedMedicalFilters, setSelectedMedicalFilters] = useState<
+    string[]
+  >([]);
   const [openFamilySearch, setOpenFamilySearch] = useState(false);
   const [families, setFamilies] = useState<CampFamily[]>([]);
   const [medicalConditions, setMedicalConditions] = useState<
@@ -114,7 +133,8 @@ export default function ContributeDialog({
         notes: "",
         families: [],
       });
-      setSelectedFilters([]);
+      setSelectedAgeFilters([]);
+      setSelectedMedicalFilters([]);
     }
   }, [isOpen, form]);
 
@@ -134,6 +154,7 @@ export default function ContributeDialog({
       if (response.success) {
         // @ts-ignore
         const familiesData = response.data?.families || [];
+        console.log({ familiesData });
         setFamilies(Array.isArray(familiesData) ? familiesData : []);
 
         // Also extract medical conditions from here if available
@@ -201,9 +222,17 @@ export default function ContributeDialog({
 
   if (!project) return null;
 
-  const toggleFilter = (id: number) => {
-    setSelectedFilters((prev) =>
+  const toggleAgeFilter = (id: string) => {
+    setSelectedAgeFilters((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const toggleMedicalFilter = (name: string) => {
+    setSelectedMedicalFilters((prev) =>
+      prev.includes(name)
+        ? prev.filter((item) => item !== name)
+        : [...prev, name]
     );
   };
 
@@ -215,6 +244,34 @@ export default function ContributeDialog({
       : [...currentFamilies, id];
     form.setValue("families", newFamilies);
   };
+
+  // Filter families based on selected age groups and medical conditions (OR logic)
+  const filteredFamilies = families.filter((family) => {
+    // If no filters selected, show all families
+    if (
+      selectedAgeFilters.length === 0 &&
+      selectedMedicalFilters.length === 0
+    ) {
+      return true;
+    }
+
+    // Check age group filter
+    const matchesAge =
+      selectedAgeFilters.length > 0 &&
+      family.ageGroups &&
+      family.ageGroups.some((age: string) => selectedAgeFilters.includes(age));
+
+    // Check medical condition filter
+    const matchesMedical =
+      selectedMedicalFilters.length > 0 &&
+      family.medicalConditions &&
+      family.medicalConditions.some((condition: string) =>
+        selectedMedicalFilters.includes(condition)
+      );
+
+    // OR logic: show family if it matches age OR medical condition
+    return matchesAge || matchesMedical;
+  });
 
   const selectedFamilies = form.watch("families") || [];
 
@@ -296,7 +353,7 @@ export default function ContributeDialog({
                                 <>
                                   <CommandEmpty>لا توجد نتائج.</CommandEmpty>
                                   <CommandGroup>
-                                    {families.map((family) => (
+                                    {filteredFamilies.map((family) => (
                                       <CommandItem
                                         key={family.id}
                                         value={`${family.familyName} ${family.nationalId}`}
@@ -331,59 +388,143 @@ export default function ContributeDialog({
                       </Popover>
                     </div>
 
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="w-[100px] bg-white border-gray-200 h-12 rounded-xl flex flex-row-reverse justify-between items-center px-3 text-gray-500 font-normal"
+                    {/* Age Groups Filter */}
+                    <div className="flex items-center gap-1">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="bg-white border-gray-200 h-12 rounded-xl flex flex-row-reverse justify-between items-center px-3 text-gray-500 font-normal gap-1"
+                          >
+                            <ChevronDown className="h-4 w-4 opacity-50" />
+                            <span>الفئة العمرية</span>
+                            {selectedAgeFilters.length > 0 && (
+                              <span className="bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[18px]">
+                                {selectedAgeFilters.length}
+                              </span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-[200px] p-2 bg-white rounded-xl shadow-lg max-h-[300px] overflow-y-auto"
+                          align="end"
                         >
-                          <ChevronDown className="h-4 w-4 opacity-50" />
-                          <span>تنفية</span>
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        className="w-[160px] p-2 bg-white rounded-xl shadow-lg"
-                        align="end"
-                      >
-                        <div className="flex flex-col gap-2">
-                          {isLoadingConditions ? (
-                            <div className="flex items-center justify-center py-4">
-                              <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                            </div>
-                          ) : medicalConditions.length > 0 ? (
-                            medicalConditions.map((condition) => (
+                          <div className="flex flex-col gap-2">
+                            {ageGroupOptions.map((ageGroup) => (
                               <div
-                                key={condition.id}
+                                key={ageGroup.id}
                                 className="flex items-center justify-between gap-2 p-1 hover:bg-gray-50 rounded-md cursor-pointer"
-                                onClick={() => toggleFilter(condition.id)}
+                                onClick={() => toggleAgeFilter(ageGroup.id)}
                               >
                                 <label
-                                  htmlFor={String(condition.id)}
+                                  htmlFor={ageGroup.id}
                                   className="text-sm text-gray-700 cursor-pointer select-none"
                                 >
-                                  {condition.name}
+                                  {ageGroup.name}
                                 </label>
                                 <Checkbox
-                                  id={String(condition.id)}
-                                  checked={selectedFilters.includes(
-                                    condition.id
+                                  id={ageGroup.id}
+                                  checked={selectedAgeFilters.includes(
+                                    ageGroup.id
                                   )}
                                   onCheckedChange={() =>
-                                    toggleFilter(condition.id)
+                                    toggleAgeFilter(ageGroup.id)
                                   }
                                   className="border-gray-300 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                                 />
                               </div>
-                            ))
-                          ) : (
-                            <p className="text-sm text-gray-500 text-center py-2">
-                              لا توجد حالات
-                            </p>
-                          )}
-                        </div>
-                      </PopoverContent>
-                    </Popover>
+                            ))}
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                      {selectedAgeFilters.length > 0 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500"
+                          onClick={() => setSelectedAgeFilters([])}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+
+                    {/* Medical Conditions Filter */}
+                    <div className="flex items-center gap-1">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="bg-white border-gray-200 h-12 rounded-xl flex flex-row-reverse justify-between items-center px-3 text-gray-500 font-normal gap-1"
+                          >
+                            <ChevronDown className="h-4 w-4 opacity-50" />
+                            <span>الحالة الطبية</span>
+                            {selectedMedicalFilters.length > 0 && (
+                              <span className="bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[18px]">
+                                {selectedMedicalFilters.length}
+                              </span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-[200px] p-2 bg-white rounded-xl shadow-lg max-h-[300px] overflow-y-auto"
+                          align="end"
+                        >
+                          <div className="flex flex-col gap-2">
+                            {isLoadingConditions ? (
+                              <div className="flex items-center justify-center py-4">
+                                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                              </div>
+                            ) : medicalConditions.length > 0 ? (
+                              medicalConditions.map((condition) => (
+                                <div
+                                  key={condition.id}
+                                  className="flex items-center justify-between gap-2 p-1 hover:bg-gray-50 rounded-md cursor-pointer"
+                                  onClick={() =>
+                                    toggleMedicalFilter(condition.name)
+                                  }
+                                >
+                                  <label
+                                    htmlFor={`medical-${condition.id}`}
+                                    className="text-sm text-gray-700 cursor-pointer select-none"
+                                  >
+                                    {condition.name}
+                                  </label>
+                                  <Checkbox
+                                    id={`medical-${condition.id}`}
+                                    checked={selectedMedicalFilters.includes(
+                                      condition.name
+                                    )}
+                                    onCheckedChange={() =>
+                                      toggleMedicalFilter(condition.name)
+                                    }
+                                    className="border-gray-300 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                                  />
+                                </div>
+                              ))
+                            ) : (
+                              <p className="text-sm text-gray-500 text-center py-2">
+                                لا توجد حالات
+                              </p>
+                            )}
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                      {selectedMedicalFilters.length > 0 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500"
+                          onClick={() => setSelectedMedicalFilters([])}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
 

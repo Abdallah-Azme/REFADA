@@ -9,15 +9,14 @@ importScripts(
 );
 
 // Initialize Firebase in the service worker
-// TODO: Replace these with your actual Firebase project credentials
-// You can find these in the Firebase Console -> Project Settings
+// Configuration for Refad project
 firebase.initializeApp({
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyBgjHO2oqz-oMrMLFVLsHCZj_1VX1yn0Fw",
+  authDomain: "refad-1239c.firebaseapp.com",
+  projectId: "refad-1239c",
+  storageBucket: "refad-1239c.firebasestorage.app",
+  messagingSenderId: "95478141326",
+  appId: "1:95478141326:web:8ed06150eb68dd604514df",
 });
 
 const messaging = firebase.messaging();

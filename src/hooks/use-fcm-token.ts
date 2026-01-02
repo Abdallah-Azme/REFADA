@@ -2,6 +2,41 @@ import { useEffect, useState } from "react";
 import { notificationService } from "@/core/firebase/notification-service";
 import { Unsubscribe } from "firebase/messaging";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+
+// Send FCM token to backend so they can send push notifications
+async function sendTokenToBackend(fcmToken: string): Promise<boolean> {
+  try {
+    const headers: Record<string, string> = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    };
+
+    if (typeof window !== "undefined") {
+      const authToken = localStorage.getItem("auth_token");
+      if (authToken) {
+        headers.Authorization = `Bearer ${authToken}`;
+      }
+    }
+
+    const response = await fetch(`${API_BASE_URL}/user/fcm-token`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ fcm_token: fcmToken }),
+    });
+
+    if (response.ok) {
+      console.log("FCM token sent to backend successfully");
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Failed to send FCM token to backend:", error);
+    return false;
+  }
+}
+
 const useFcmToken = () => {
   const [token, setToken] = useState<string | null>(null);
   const [notificationPermissionStatus, setNotificationPermissionStatus] =
@@ -16,6 +51,8 @@ const useFcmToken = () => {
             const currentToken = await notificationService.getToken();
             if (currentToken) {
               setToken(currentToken);
+              // Send token to backend
+              await sendTokenToBackend(currentToken);
             }
           }
           setNotificationPermissionStatus(Notification.permission);
@@ -38,6 +75,8 @@ const useFcmToken = () => {
           const newToken = await notificationService.getToken();
           if (newToken) {
             setToken(newToken);
+            // Send token to backend
+            await sendTokenToBackend(newToken);
           }
         }
       }
@@ -52,10 +91,6 @@ const useFcmToken = () => {
     const setupListener = async () => {
       try {
         if (typeof window !== "undefined") {
-          // Ensure initialized (wrapper might handle this but good to be safe)
-          // Actually notificationService.onMessageCallback checks this.messaging
-          // which is set in initialize. But initialize is called in getToken.
-          // If we haven't got a token yet, messaging might be null.
           await notificationService.initialize();
         }
 

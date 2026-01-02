@@ -23,6 +23,8 @@ interface NotificationItemProps {
   title: string;
   description?: string;
   actions?: ActionButton[];
+  timeAgo?: string;
+  isRead?: boolean;
 }
 
 export default function NotificationItem({
@@ -30,6 +32,8 @@ export default function NotificationItem({
   title,
   description,
   actions,
+  timeAgo,
+  isRead,
 }: NotificationItemProps) {
   const iconMap = {
     error: <AlertTriangle className="w-5 h-5 text-red-500 mt-[2px]" />,
@@ -38,11 +42,18 @@ export default function NotificationItem({
   };
 
   return (
-    <div className="p-2 rounded-xl   bg-white ">
+    <div className={`p-2 rounded-xl bg-white ${isRead ? "opacity-60" : ""}`}>
       <div className="flex items-start gap-3">
         {iconMap[type]}
         <div className="flex-1">
-          <p className="font-medium text-sm text-black">{title}</p>
+          <div className="flex items-start justify-between gap-2">
+            <p className="font-medium text-sm text-black flex-1">{title}</p>
+            {timeAgo && (
+              <span className="text-xs text-gray-400 whitespace-nowrap">
+                {timeAgo}
+              </span>
+            )}
+          </div>
 
           {description && (
             <p className="text-black/40 text-xs mt-1">{description}</p>

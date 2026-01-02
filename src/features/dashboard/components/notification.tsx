@@ -7,69 +7,66 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { Bell, AlertTriangle, CheckCircle, Info } from "lucide-react";
+import { Bell, Loader2 } from "lucide-react";
 import NotificationItem from "./notification-item";
 import useFcmToken from "../../../hooks/use-fcm-token";
-import { useEffect, useState } from "react";
+import {
+  useNotifications,
+  BackendNotification,
+} from "../hooks/use-notifications";
 
-type NotificationType = "error" | "info" | "success";
-
-interface ActionButton {
-  label: string;
-  variant?: "primary" | "secondary";
-}
-
-interface NotificationItemProps {
-  type: NotificationType;
-  title: string;
-  description?: string;
-  actions?: ActionButton[];
+// Map backend notification type to UI type
+function getNotificationType(
+  notification: BackendNotification
+): "error" | "info" | "success" {
+  // You can customize this based on notification.type
+  if (notification.type === "error" || notification.type === "rejection") {
+    return "error";
+  }
+  if (notification.type === "success" || notification.type === "approval") {
+    return "success";
+  }
+  return "info";
 }
 
 export default function Notification() {
-  const { token, notificationPermissionStatus, requestPermission, messages } =
+  const { notificationPermissionStatus, requestPermission, messages } =
     useFcmToken();
 
-  // Combine static and dynamic notifications for demo, or replace entirely
-  // For now I will append dynamic messages to the top
-  const dynamicNotifications: NotificationItemProps[] = messages.map(
-    (msg: any, idx: number) => ({
-      type: "info", // Default type
-      title: msg.notification?.title || "New Message",
-      description: msg.notification?.body,
-      actions: [], // You can parse data to add actions if needed
+  const { data: notificationsData, isLoading } = useNotifications();
+
+  // FCM real-time messages (foreground)
+  const fcmNotifications = messages.map((msg: any) => ({
+    type: "info" as const,
+    title: msg.notification?.title || "إشعار جديد",
+    description: msg.notification?.body,
+    timeAgo: "الآن",
+  }));
+
+  // Backend notifications
+  const backendNotifications = (notificationsData?.data || []).map(
+    (notification) => ({
+      type: getNotificationType(notification),
+      title: notification.notificationTitle,
+      description: notification.message,
+      timeAgo: notification.timeAgo,
+      isRead: notification.isRead,
     })
   );
 
-  const initialNotifications: NotificationItemProps[] = [
-    {
-      type: "error",
-      title: "تم رفض المساهمة الأخيرة لعدم اكتمال البيانات…",
-      description: "تم رفض مساهمة لمشروع عوائد النتن",
-      actions: [{ label: "مراجعة" }, { label: "رفض", variant: "secondary" }],
-    },
-    {
-      type: "info",
-      title: "تم تحديث عدد العائلات المسجلة في إيواء جر…",
-      description: "تم تحديث مساهمة مشروع عوائد النتن",
-      actions: [{ label: "تأكيد" }, { label: "رفض", variant: "secondary" }],
-    },
-    {
-      type: "success",
-      title: "تم تنفيذ 80% من مشروع (إيواء النازحين) في إيواء البريح",
-    },
-  ];
-
-  const allNotifications = [...dynamicNotifications, ...initialNotifications];
+  // Combine: FCM first (newest), then backend
+  const allNotifications = [...fcmNotifications, ...backendNotifications];
+  const unreadCount =
+    notificationsData?.meta?.unread_count || fcmNotifications.length;
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <div className="relative cursor-pointer">
           <Bell className="w-6 h-6 text-gray-700" />
-          {allNotifications.length > 0 && (
+          {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-              {allNotifications.length}
+              {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
         </div>
@@ -97,12 +94,17 @@ export default function Notification() {
 
         {/* List */}
         <div className="max-h-[450px] overflow-y-auto px-4 py-3 space-y-2">
-          {allNotifications.map((item, idx) => (
-            <NotificationItem key={idx} {...item} />
-          ))}
-          {token && (
-            <div className="text-[10px] text-gray-400 break-all p-2 bg-gray-50 rounded mt-2">
-              Token: {token.slice(0, 20)}...
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            </div>
+          ) : allNotifications.length > 0 ? (
+            allNotifications.map((item, idx) => (
+              <NotificationItem key={idx} {...item} />
+            ))
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              لا توجد إشعارات
             </div>
           )}
         </div>

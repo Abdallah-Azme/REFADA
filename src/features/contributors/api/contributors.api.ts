@@ -104,6 +104,11 @@ export interface CampFamily {
   notes: string;
   camp: string;
   quantity: number | null;
+  malesCount: number;
+  femalesCount: number;
+  membersCount: number;
+  ageGroups: string[];
+  medicalConditions: string[];
   createdAt: string;
   updatedAt: string;
 }
