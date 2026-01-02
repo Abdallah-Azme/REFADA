@@ -28,7 +28,7 @@ import { useContributors } from "@/features/contributors/hooks/use-contributors"
 import { useDeleteContributor } from "@/features/contributors/hooks/use-delete-contributor";
 import { useChangeRepresentativePassword } from "@/features/representatives/hooks/use-approve-reject";
 import { PendingUser } from "@/features/representatives/types/pending-users.schema";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { DeleteConfirmDialog } from "@/features/marital-status";
 import {
   Dialog,
@@ -42,7 +42,9 @@ import { Input } from "@/components/ui/input";
 
 export default function AdminContributorsTable() {
   const t = useTranslations();
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([
+    { id: "createdAt", desc: true },
+  ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -62,6 +64,8 @@ export default function AdminContributorsTable() {
   const [passwordUser, setPasswordUser] = useState<PendingUser | null>(null);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Fetch contributors
   const { data: response, isLoading, error } = useContributors();
@@ -251,23 +255,51 @@ export default function AdminContributorsTable() {
               <label className="text-sm font-medium">
                 {t("contributors.new_password")}
               </label>
-              <Input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder={t("contributors.new_password_placeholder")}
-              />
+              <div className="relative">
+                <Input
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder={t("contributors.new_password_placeholder")}
+                  className="pe-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-500 hover:text-gray-700"
+                >
+                  {showNewPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">
                 {t("contributors.confirm_new_password")}
               </label>
-              <Input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder={t("contributors.confirm_password_placeholder")}
-              />
+              <div className="relative">
+                <Input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder={t("contributors.confirm_password_placeholder")}
+                  className="pe-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-500 hover:text-gray-700"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
             </div>
             {newPassword &&
               confirmPassword &&

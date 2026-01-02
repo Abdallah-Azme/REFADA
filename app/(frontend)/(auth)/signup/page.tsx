@@ -28,7 +28,7 @@ import {
 import { useAdminPositions } from "@/features/admin-position";
 import { useCamps } from "@/features/camps";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -38,6 +38,8 @@ export default function RegisterPage() {
   const [activeRole, setActiveRole] = useState<"contributor" | "delegate">(
     "contributor"
   );
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { mutate: register, isPending } = useRegister();
   const registerSchema = createRegisterSchema(t);
 
@@ -355,13 +357,26 @@ export default function RegisterPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      className="h-[50px] bg-[#EEEADD]"
-                      type="password"
-                      placeholder={t("password")}
-                      disabled={isPending}
-                      {...field}
-                    />
+                    <div className="relative">
+                      <Input
+                        className="h-[50px] bg-[#EEEADD] pe-10"
+                        type={showPassword ? "text" : "password"}
+                        placeholder={t("password")}
+                        disabled={isPending}
+                        {...field}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-500 hover:text-gray-700"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -375,13 +390,28 @@ export default function RegisterPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      className="h-[50px] bg-[#EEEADD]"
-                      type="password"
-                      placeholder={t("confirm_password")}
-                      disabled={isPending}
-                      {...field}
-                    />
+                    <div className="relative">
+                      <Input
+                        className="h-[50px] bg-[#EEEADD] pe-10"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder={t("confirm_password")}
+                        disabled={isPending}
+                        {...field}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        className="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-500 hover:text-gray-700"
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

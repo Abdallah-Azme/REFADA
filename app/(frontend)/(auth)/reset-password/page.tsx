@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Lock, Loader2, ArrowRight } from "lucide-react";
+import { Lock, Loader2, ArrowRight, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import {
   resetPasswordSchema,
@@ -26,6 +26,8 @@ import { toast } from "sonner";
 export default function ResetPasswordPage() {
   const router = useRouter();
   const { mutate: resetPassword, isPending } = useResetPassword();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
@@ -75,12 +77,23 @@ export default function ResetPasswordPage() {
                     <div className="relative">
                       <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
                       <Input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         placeholder="كلمة المرور الجديدة"
-                        className="ps-9 h-[50px] bg-[#EEEADD]"
+                        className="ps-9 pe-10 h-[50px] bg-[#EEEADD]"
                         disabled={isPending}
                         {...field}
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-500 hover:text-gray-700"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -98,12 +111,25 @@ export default function ResetPasswordPage() {
                     <div className="relative">
                       <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
                       <Input
-                        type="password"
+                        type={showConfirmPassword ? "text" : "password"}
                         placeholder="تأكيد كلمة المرور"
-                        className="ps-9 h-[50px] bg-[#EEEADD]"
+                        className="ps-9 pe-10 h-[50px] bg-[#EEEADD]"
                         disabled={isPending}
                         {...field}
                       />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        className="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-500 hover:text-gray-700"
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
                     </div>
                   </FormControl>
                   <FormMessage />

@@ -36,8 +36,6 @@ export default function SettingsProfileTab() {
       idNumber: "",
       phone: "",
       backupPhone: "",
-      adminPosition: "",
-      licenseNumber: "",
     },
   });
 
@@ -50,8 +48,6 @@ export default function SettingsProfileTab() {
         idNumber: profileData.data.idNumber || "",
         phone: profileData.data.phone || "",
         backupPhone: profileData.data.backupPhone || "",
-        adminPosition: profileData.data.adminPosition || "",
-        licenseNumber: profileData.data.licenseNumber || "",
       });
     }
   }, [profileData, profileForm]);
@@ -230,47 +226,17 @@ export default function SettingsProfileTab() {
               )}
             />
 
-            {/* ADMIN POSITION */}
-            <FormField
-              control={profileForm.control}
-              name="adminPosition"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-medium text-gray-700">
-                    المنصب الإداري
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={!isEditing}
-                      className="h-11 text-base bg-gray-50 border-gray-200"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* LICENSE NUMBER */}
-            <FormField
-              control={profileForm.control}
-              name="licenseNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-medium text-gray-700">
-                    رقم الترخيص
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={!isEditing}
-                      className="h-11 text-base bg-gray-50 border-gray-200"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* ADMIN POSITION NAME - Read Only */}
+            {(profileData?.data as any)?.adminPositionName && (
+              <div>
+                <label className="text-sm font-medium text-gray-700 block mb-2">
+                  الصفة الإدارية
+                </label>
+                <div className="h-11 text-base bg-gray-100 border border-gray-200 rounded-md flex items-center px-3 text-gray-600">
+                  {(profileData?.data as any).adminPositionName}
+                </div>
+              </div>
+            )}
           </div>
 
           {isEditing && (

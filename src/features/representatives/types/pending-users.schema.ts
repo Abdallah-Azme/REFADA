@@ -14,6 +14,7 @@ export interface PendingUser {
   idNumber: string;
   role: "delegate" | "contributor" | "admin";
   adminPosition: string | null;
+  adminPositionName: string | null;
   licenseNumber: string | null;
   acceptTerms: boolean;
   status: "pending" | "approved" | "rejected";

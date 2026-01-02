@@ -33,7 +33,7 @@ import {
 } from "@/features/representatives/hooks/use-approve-reject";
 import { useCamps } from "@/features/camps";
 import { PendingUser } from "@/features/representatives/types/pending-users.schema";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { DeleteConfirmDialog } from "@/features/marital-status";
 import {
   Dialog,
@@ -54,7 +54,9 @@ import {
 
 export default function AdminRepresentativesTable() {
   const t = useTranslations();
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([
+    { id: "createdAt", desc: true },
+  ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -83,6 +85,8 @@ export default function AdminRepresentativesTable() {
   const [passwordUser, setPasswordUser] = useState<PendingUser | null>(null);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Fetch all delegates - API already filters by role=delegate
   const { data: response, isLoading, error } = useRepresentatives();
@@ -118,7 +122,19 @@ export default function AdminRepresentativesTable() {
 
   const handleApprove = (user: PendingUser) => {
     setApprovingUser(user);
-    setSelectedCampId("");
+    // Find matching camp ID from campName
+    if (user.campName) {
+      const matchingCamp = camps.find((camp) => {
+        const campName =
+          typeof camp.name === "string"
+            ? camp.name
+            : camp.name?.ar || camp.name?.en || "";
+        return campName === user.campName;
+      });
+      setSelectedCampId(matchingCamp ? matchingCamp.id.toString() : "");
+    } else {
+      setSelectedCampId("");
+    }
     setApproveOpen(true);
   };
 
@@ -307,7 +323,7 @@ export default function AdminRepresentativesTable() {
 
       {/* Approve Dialog with Camp Selection */}
       <Dialog open={approveOpen} onOpenChange={setApproveOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{t("representatives.approve_title")}</DialogTitle>
           </DialogHeader>
@@ -317,6 +333,64 @@ export default function AdminRepresentativesTable() {
                 name: approvingUser?.name || "",
               })}
             </p>
+
+            {/* User Data Preview */}
+            <div className="grid grid-cols-2 gap-3 bg-gray-50 p-4 rounded-lg">
+              <div>
+                <label className="text-xs text-gray-500">
+                  {t("representatives.name")}
+                </label>
+                <p className="text-sm font-medium">
+                  {approvingUser?.name || "-"}
+                </p>
+              </div>
+              <div>
+                <label className="text-xs text-gray-500">
+                  {t("representatives.email")}
+                </label>
+                <p className="text-sm font-medium">
+                  {approvingUser?.email || "-"}
+                </p>
+              </div>
+              <div>
+                <label className="text-xs text-gray-500">
+                  {t("representatives.phone")}
+                </label>
+                <p className="text-sm font-medium">
+                  {approvingUser?.phone || "-"}
+                </p>
+              </div>
+              <div>
+                <label className="text-xs text-gray-500">
+                  {t("representatives.national_id")}
+                </label>
+                <p className="text-sm font-medium">
+                  {approvingUser?.idNumber || "-"}
+                </p>
+              </div>
+              {approvingUser?.adminPositionName && (
+                <div className="col-span-2">
+                  <label className="text-xs text-gray-500">
+                    {t("representatives.admin_position")}
+                  </label>
+                  <p className="text-sm font-medium">
+                    {approvingUser.adminPositionName}
+                  </p>
+                </div>
+              )}
+              {approvingUser?.licenseNumber && (
+                <div className="col-span-2">
+                  <label className="text-xs text-gray-500">
+                    {t("representatives.license_number")}
+                  </label>
+                  <p className="text-sm font-medium">
+                    {approvingUser.licenseNumber}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Camp Selection */}
             <div className="space-y-2">
               <label className="text-sm font-medium">
                 {t("representatives.select_camp")}
@@ -399,23 +473,53 @@ export default function AdminRepresentativesTable() {
               <label className="text-sm font-medium">
                 {t("representatives.new_password")}
               </label>
-              <Input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder={t("representatives.new_password_placeholder")}
-              />
+              <div className="relative">
+                <Input
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder={t("representatives.new_password_placeholder")}
+                  className="pe-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-500 hover:text-gray-700"
+                >
+                  {showNewPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">
                 {t("representatives.confirm_new_password")}
               </label>
-              <Input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder={t("representatives.confirm_password_placeholder")}
-              />
+              <div className="relative">
+                <Input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder={t(
+                    "representatives.confirm_password_placeholder"
+                  )}
+                  className="pe-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-500 hover:text-gray-700"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
             </div>
             {newPassword &&
               confirmPassword &&

@@ -1,19 +1,24 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ChevronLeft, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import React from "react";
 import CardTitle from "./card-title";
 import { useMyActivities } from "../hooks/use-activities";
 import { Activity } from "../types/activities.schema";
+import { useTranslations, useLocale } from "next-intl";
 
 // Get icon based on activity type
 function getActivityIcon(activity: Activity) {
-  const subjectType = activity.subject_type.split("\\").pop(); // Get model name
   const description = activity.description;
 
   // Check for create/add actions
-  if (description.includes("تم إنشاء") || description.includes("تم إضافة")) {
+  if (
+    description.includes("تم إنشاء") ||
+    description.includes("تم إضافة") ||
+    description.includes("created") ||
+    description.includes("added")
+  ) {
     return {
       bg: "bg-green-100",
       color: "text-green-600",
@@ -22,7 +27,7 @@ function getActivityIcon(activity: Activity) {
   }
 
   // Check for update actions
-  if (description.includes("تم تحديث")) {
+  if (description.includes("تم تحديث") || description.includes("updated")) {
     return {
       bg: "bg-blue-100",
       color: "text-blue-600",
@@ -31,7 +36,7 @@ function getActivityIcon(activity: Activity) {
   }
 
   // Check for delete actions
-  if (description.includes("تم حذف")) {
+  if (description.includes("تم حذف") || description.includes("deleted")) {
     return {
       bg: "bg-red-100",
       color: "text-red-600",
@@ -48,20 +53,28 @@ function getActivityIcon(activity: Activity) {
 }
 
 // Format date to relative time or readable format
-function formatActivityDate(dateString: string) {
-  const date = new Date(dateString);
+// Server returns UTC time without timezone indicator, so we treat it as UTC
+function formatActivityDate(
+  dateString: string,
+  locale: string,
+  t: (key: string, values?: Record<string, string | number>) => string
+) {
+  // Server returns format "2026-01-02 12:03:25" which is UTC but without 'Z'
+  // Add 'Z' to force UTC interpretation, or replace space with 'T' for ISO format
+  const utcDateString = dateString.replace(" ", "T") + "Z";
+  const date = new Date(utcDateString);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffMins = Math.floor(diffMs / (1000 * 60));
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-  if (diffMins < 1) return "الآن";
-  if (diffMins < 60) return `منذ ${diffMins} دقيقة`;
-  if (diffHours < 24) return `منذ ${diffHours} ساعة`;
-  if (diffDays < 7) return `منذ ${diffDays} يوم`;
+  if (diffMins < 1) return t("time_now");
+  if (diffMins < 60) return t("time_minutes_ago", { count: diffMins });
+  if (diffHours < 24) return t("time_hours_ago", { count: diffHours });
+  if (diffDays < 7) return t("time_days_ago", { count: diffDays });
 
-  return date.toLocaleDateString("ar-EG", {
+  return date.toLocaleDateString(locale === "ar" ? "ar-EG" : "en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -73,6 +86,8 @@ export default function LatestActivities({
 }: {
   className?: string;
 }) {
+  const t = useTranslations("admin");
+  const locale = useLocale();
   const { data, isLoading, isError } = useMyActivities();
   const activities = data?.data || [];
 
@@ -81,7 +96,7 @@ export default function LatestActivities({
 
   return (
     <div className={cn("lg:col-span-1", className)}>
-      <CardTitle title="آخر الأنشطة" />
+      <CardTitle title={t("latest_activities")} />
 
       <div className="space-y-3">
         {isLoading && (
@@ -92,13 +107,13 @@ export default function LatestActivities({
 
         {isError && (
           <div className="flex items-center justify-center p-6 text-red-500 text-sm">
-            حدث خطأ في تحميل الأنشطة
+            {t("activities_loading_error")}
           </div>
         )}
 
         {!isLoading && !isError && latestActivities.length === 0 && (
           <div className="flex items-center justify-center p-6 text-gray-500 text-sm">
-            لا توجد أنشطة حتى الآن
+            {t("no_activities")}
           </div>
         )}
 
@@ -127,11 +142,15 @@ export default function LatestActivities({
                       {activity.description}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      {formatActivityDate(activity.created_at)}
+                      {formatActivityDate(activity.created_at, locale, t)}
                     </p>
                   </div>
                 </div>
-                <ChevronLeft className="w-4 h-4 text-gray-400 shrink-0" />
+                {locale === "ar" ? (
+                  <ChevronLeft className="w-4 h-4 text-gray-400 shrink-0" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
+                )}
               </div>
             );
           })}

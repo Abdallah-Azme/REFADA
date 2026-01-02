@@ -21,6 +21,7 @@ import {
   FormItem,
   FormControl,
   FormMessage,
+  FormLabel,
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
@@ -229,10 +230,13 @@ export default function AddFamilyDialog() {
                   name="familyName"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel className="text-xs text-gray-600">
+                        {t("full_name")}
+                      </FormLabel>
                       <FormControl>
                         <Input
                           className="bg-white"
-                          placeholder="الاسم الرباعي"
+                          placeholder={t("full_name")}
                           {...field}
                         />
                       </FormControl>
@@ -247,6 +251,9 @@ export default function AddFamilyDialog() {
                   name="nationalId"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel className="text-xs text-gray-600">
+                        {t("national_id")}
+                      </FormLabel>
                       <FormControl>
                         <Input
                           className="bg-white"
@@ -265,11 +272,14 @@ export default function AddFamilyDialog() {
                   name="dob"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel className="text-xs text-gray-600">
+                        {t("dob_label")}
+                      </FormLabel>
                       <FormControl>
                         <DatePicker
                           value={field.value || ""}
                           onChange={field.onChange}
-                          placeholder="تاريخ الميلاد"
+                          placeholder={t("dob_label")}
                           className="bg-white"
                         />
                       </FormControl>
@@ -284,6 +294,9 @@ export default function AddFamilyDialog() {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel className="text-xs text-gray-600">
+                        {t("phone")}
+                      </FormLabel>
                       <FormControl>
                         <Input
                           className="bg-white"
@@ -302,6 +315,9 @@ export default function AddFamilyDialog() {
                   name="backupPhone"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel className="text-xs text-gray-600">
+                        {t("backup_phone")}
+                      </FormLabel>
                       <FormControl>
                         <Input
                           className="bg-white"
@@ -321,6 +337,9 @@ export default function AddFamilyDialog() {
                   name="gender"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel className="text-xs text-gray-600">
+                        {t("gender")}
+                      </FormLabel>
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
@@ -328,14 +347,16 @@ export default function AddFamilyDialog() {
                         >
                           <SelectTrigger className="w-full bg-white">
                             {field.value === "male"
-                              ? "ذكر"
+                              ? t("male")
                               : field.value === "female"
-                              ? "أنثى"
-                              : "النوع"}
+                              ? t("female")
+                              : t("gender")}
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="male">ذكر</SelectItem>
-                            <SelectItem value="female">أنثى</SelectItem>
+                            <SelectItem value="male">{t("male")}</SelectItem>
+                            <SelectItem value="female">
+                              {t("female")}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -350,6 +371,9 @@ export default function AddFamilyDialog() {
                   name="maritalStatusId"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel className="text-xs text-gray-600">
+                        {t("marital_status")}
+                      </FormLabel>
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
@@ -386,6 +410,9 @@ export default function AddFamilyDialog() {
                     name="campId"
                     render={({ field }) => (
                       <FormItem>
+                        <FormLabel className="text-xs text-gray-600">
+                          {t("camp")}
+                        </FormLabel>
                         <FormControl>
                           <Select
                             onValueChange={field.onChange}
@@ -437,6 +464,9 @@ export default function AddFamilyDialog() {
                   name="totalMembers"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel className="text-xs text-gray-600">
+                        {t("members_count_label")}
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -461,6 +491,9 @@ export default function AddFamilyDialog() {
                   name="medicalConditionId"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel className="text-xs text-gray-600">
+                        {t("medical_condition")}
+                      </FormLabel>
                       <FormControl>
                         <Select
                           onValueChange={(value) => {
@@ -750,6 +783,10 @@ export default function AddFamilyDialog() {
                   name="tentNumber"
                   render={({ field }) => (
                     <FormItem>
+                      <FormLabel className="text-xs text-gray-600">
+                        {t("tent_number")}{" "}
+                        <span className="text-gray-400">({t("optional")})</span>
+                      </FormLabel>
                       <FormControl>
                         <Input
                           className="bg-white"
@@ -769,6 +806,10 @@ export default function AddFamilyDialog() {
                   name="location"
                   render={({ field }) => (
                     <FormItem className="sm:col-span-2">
+                      <FormLabel className="text-xs text-gray-600">
+                        {t("location")}{" "}
+                        <span className="text-gray-400">({t("optional")})</span>
+                      </FormLabel>
                       <FormControl>
                         <Input
                           className="bg-white"
@@ -788,6 +829,10 @@ export default function AddFamilyDialog() {
                   name="notes"
                   render={({ field }) => (
                     <FormItem className="col-span-1 sm:col-span-2 lg:col-span-3">
+                      <FormLabel className="text-xs text-gray-600">
+                        {t("notes_title")}{" "}
+                        <span className="text-gray-400">({t("optional")})</span>
+                      </FormLabel>
                       <FormControl>
                         <Textarea
                           className="bg-white"

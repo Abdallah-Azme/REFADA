@@ -4,15 +4,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Lock, Settings, User2 } from "lucide-react";
 import SettingsPasswordTab from "./settings-password-tab";
 import SettingsProfileTab from "./settings-profile-tab";
+import { useTranslations } from "next-intl";
 
 export default function SettingsPage() {
+  const t = useTranslations("settings");
+
   return (
     <div className="w-full  gap-6 p-8 bg-gray-50 min-h-screen">
       {" "}
       <div className="flex items-center justify-between mb-5">
         <h3 className="text-lg flex gap-1 font-semibold text-gray-900">
           <Settings />
-          الإعدادات
+          {t("title")}
         </h3>
       </div>
       <Tabs
@@ -28,7 +31,7 @@ export default function SettingsPage() {
             <User2 className="h-5 w-5" />
 
             <span className="text-base font-medium hidden md:block">
-              الملف الشخصي
+              {t("profile_tab")}
             </span>
           </TabsTrigger>
 
@@ -39,7 +42,7 @@ export default function SettingsPage() {
             <Lock className="h-5 w-5" />
 
             <span className="text-base font-medium hidden md:block">
-              تغيير كلمة المرور
+              {t("password_tab")}
             </span>
           </TabsTrigger>
         </TabsList>

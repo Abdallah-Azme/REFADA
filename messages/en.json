@@ -103,7 +103,14 @@
     "testimonials_section": "Testimonials",
     "testimonials_section_desc": "Manage beneficiary testimonials",
     "contact_section": "Contact Us",
-    "contact_section_desc": "Edit contact information"
+    "contact_section_desc": "Edit contact information",
+    "latest_activities": "Latest Activities",
+    "activities_loading_error": "Error loading activities",
+    "no_activities": "No activities yet",
+    "time_now": "Now",
+    "time_minutes_ago": "{count} minutes ago",
+    "time_hours_ago": "{count} hours ago",
+    "time_days_ago": "{count} days ago"
   },
   "auth": {
     "create_account": "Create New Account",
@@ -187,7 +194,13 @@
     "dob": "Date of Birth:",
     "notes_title": "Notes",
     "attachments_title": "Attachments",
-    "family_document_alt": "Family Document"
+    "family_document_alt": "Family Document",
+    "medical_condition": "Medical Condition",
+    "full_name": "Full Name",
+    "dob_label": "Date of Birth",
+    "gender": "Gender",
+    "camp": "Shelter",
+    "optional": "optional"
   },
   "projects": {
     "add_project": "Add Project",
@@ -432,5 +445,10 @@
     "footerNote": "Click on any location on the map to see shelter details, family counts, and available services",
     "bankAccount": "Bank Account",
     "gaza": "Gaza"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile_tab": "Profile",
+    "password_tab": "Change Password"
   }
 }

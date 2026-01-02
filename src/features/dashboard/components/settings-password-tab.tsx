@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,10 +18,13 @@ import {
   changePasswordSchema,
   ChangePasswordFormValues,
 } from "@/features/profile";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function SettingsPasswordTab() {
   const changePassword = useChangePassword();
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const passwordForm = useForm<ChangePasswordFormValues>({
     resolver: zodResolver(changePasswordSchema),
@@ -58,12 +62,27 @@ export default function SettingsPasswordTab() {
                     كلمة المرور الحالية
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder="••••••••••"
-                      className="h-11 text-base bg-gray-50 border-gray-200 text-right"
-                    />
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        type={showCurrentPassword ? "text" : "password"}
+                        placeholder="••••••••••"
+                        className="h-11 text-base bg-gray-50 border-gray-200 text-right pe-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowCurrentPassword(!showCurrentPassword)
+                        }
+                        className="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-500 hover:text-gray-700"
+                      >
+                        {showCurrentPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage className="text-red-500 text-xs" />
                 </FormItem>
@@ -81,12 +100,25 @@ export default function SettingsPasswordTab() {
                     كلمة المرور الجديدة
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder="••••••••••"
-                      className="h-11 text-base bg-gray-50 border-gray-200 text-right"
-                    />
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        type={showNewPassword ? "text" : "password"}
+                        placeholder="••••••••••"
+                        className="h-11 text-base bg-gray-50 border-gray-200 text-right pe-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        className="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-500 hover:text-gray-700"
+                      >
+                        {showNewPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -103,12 +135,27 @@ export default function SettingsPasswordTab() {
                     تأكيد كلمة المرور
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder="••••••••••"
-                      className="h-11 text-base bg-gray-50 border-gray-200 text-right"
-                    />
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="••••••••••"
+                        className="h-11 text-base bg-gray-50 border-gray-200 text-right pe-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        className="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-500 hover:text-gray-700"
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -1,28 +1,29 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Mail, Lock } from "lucide-react"
+import { useState } from "react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 interface LoginFormProps {
-  userType: "contributor" | "blogger"
-  setUserType: (type: "contributor" | "blogger") => void
+  userType: "contributor" | "blogger";
+  setUserType: (type: "contributor" | "blogger") => void;
 }
 
 export default function LoginForm({ userType, setUserType }: LoginFormProps) {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
     // Simulate login
     setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
-  }
+      setIsLoading(false);
+    }, 1000);
+  };
 
   return (
     <div className="p-8 lg:p-12 flex flex-col justify-center">
@@ -30,8 +31,17 @@ export default function LoginForm({ userType, setUserType }: LoginFormProps) {
       <div className="mb-8">
         <div className="flex items-center gap-2 text-2xl font-bold text-slate-900">
           <svg className="w-8 h-8" viewBox="0 0 32 32" fill="none">
-            <path d="M8 8L16 2L24 8V24L16 30L8 24V8Z" stroke="currentColor" strokeWidth="2" />
-            <path d="M12 12L16 8L20 12" stroke="currentColor" strokeWidth="2" fill="none" />
+            <path
+              d="M8 8L16 2L24 8V24L16 30L8 24V8Z"
+              stroke="currentColor"
+              strokeWidth="2"
+            />
+            <path
+              d="M12 12L16 8L20 12"
+              stroke="currentColor"
+              strokeWidth="2"
+              fill="none"
+            />
           </svg>
           <span>هضنا... غزة</span>
         </div>
@@ -42,7 +52,9 @@ export default function LoginForm({ userType, setUserType }: LoginFormProps) {
         <button
           onClick={() => setUserType("contributor")}
           className={`px-6 py-2 rounded-full font-medium transition-all ${
-            userType === "contributor" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-900"
+            userType === "contributor"
+              ? "bg-white text-blue-600 shadow-sm"
+              : "text-gray-600 hover:text-gray-900"
           }`}
         >
           مساهم
@@ -50,7 +62,9 @@ export default function LoginForm({ userType, setUserType }: LoginFormProps) {
         <button
           onClick={() => setUserType("blogger")}
           className={`px-6 py-2 rounded-full font-medium transition-all ${
-            userType === "blogger" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-900"
+            userType === "blogger"
+              ? "bg-white text-blue-600 shadow-sm"
+              : "text-gray-600 hover:text-gray-900"
           }`}
         >
           مدون
@@ -78,19 +92,33 @@ export default function LoginForm({ userType, setUserType }: LoginFormProps) {
         {/* Password Input */}
         <div className="relative">
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="كلمة المرور"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
+            className="w-full px-4 py-3 pe-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
             required
           />
           <Lock className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute top-1/2 -translate-y-1/2 ltr:right-4 rtl:left-12 text-gray-500 hover:text-gray-700"
+          >
+            {showPassword ? (
+              <EyeOff className="h-5 w-5" />
+            ) : (
+              <Eye className="h-5 w-5" />
+            )}
+          </button>
         </div>
 
         {/* Forgot Password Link */}
         <div className="text-right">
-          <a href="#" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+          <a
+            href="#"
+            className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+          >
             نسيت كلمة المرور
           </a>
         </div>
@@ -113,5 +141,5 @@ export default function LoginForm({ userType, setUserType }: LoginFormProps) {
         </a>
       </p>
     </div>
-  )
+  );
 }

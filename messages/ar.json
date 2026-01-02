@@ -108,7 +108,14 @@
     "testimonials_section": "آراء المستفيدين",
     "testimonials_section_desc": "إدارة آراء المستفيدين",
     "contact_section": "تواصل معنا",
-    "contact_section_desc": "تعديل معلومات الاتصال"
+    "contact_section_desc": "تعديل معلومات الاتصال",
+    "latest_activities": "آخر الأنشطة",
+    "activities_loading_error": "حدث خطأ في تحميل الأنشطة",
+    "no_activities": "لا توجد أنشطة حتى الآن",
+    "time_now": "الآن",
+    "time_minutes_ago": "منذ {count} دقيقة",
+    "time_hours_ago": "منذ {count} ساعة",
+    "time_days_ago": "منذ {count} يوم"
   },
   "auth": {
     "create_account": "تسجيل حساب جديد",
@@ -192,7 +199,13 @@
     "dob": "تاريخ الميلاد:",
     "notes_title": "ملاحظات",
     "attachments_title": "المرفقات",
-    "family_document_alt": "مستند العائلة"
+    "family_document_alt": "مستند العائلة",
+    "medical_condition": "الحالة الصحية",
+    "full_name": "الاسم الرباعي",
+    "dob_label": "تاريخ الميلاد",
+    "gender": "النوع",
+    "camp": "الإيواء",
+    "optional": "اختياري"
   },
   "projects": {
     "add_project": "إضافة مشروع",
@@ -437,5 +450,10 @@
     "footerNote": "اضغط على أي موقع في الخريطة للاطلاع على تفاصيل الإيواء وعدد الأسر والخدمات المتوفرة",
     "bankAccount": "الحساب البنكي",
     "gaza": "غزة"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "profile_tab": "الملف الشخصي",
+    "password_tab": "تغيير كلمة المرور"
   }
 }

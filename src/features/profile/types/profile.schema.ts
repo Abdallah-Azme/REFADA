@@ -11,6 +11,7 @@ export const profileSchema = z.object({
   idNumber: z.string().optional(),
   role: z.string().optional(),
   adminPosition: z.string().optional().nullable(),
+  adminPositionName: z.string().optional().nullable(),
   licenseNumber: z.string().optional().nullable(),
   acceptTerms: z.boolean().optional(),
   status: z.string().optional(),
@@ -29,8 +30,6 @@ export const updateProfileSchema = z.object({
   idNumber: z.string().optional(),
   phone: z.string().optional(),
   backupPhone: z.string().optional(),
-  adminPosition: z.string().optional(),
-  licenseNumber: z.string().optional(),
   profile_image: z.any().optional(), // Keep as snake_case for file upload
 });
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,13 +12,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock, Mail, Loader2 } from "lucide-react";
+import { Lock, Mail, Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { loginSchema, useLogin, type LoginFormValues } from "@/features/auth";
 
 export default function RefadLogin() {
   const { mutate: login, isPending } = useLogin();
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -82,12 +84,23 @@ export default function RefadLogin() {
                       <div className="relative">
                         <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
                         <Input
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           placeholder="كلمة المرور"
-                          className="ps-9 h-[50px] bg-[#EEEADD]"
+                          className="ps-9 pe-10 h-[50px] bg-[#EEEADD]"
                           disabled={isPending}
                           {...field}
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-500 hover:text-gray-700"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </button>
                       </div>
                     </FormControl>
                     <FormMessage className="" />
@@ -152,12 +165,23 @@ export default function RefadLogin() {
                       <div className="relative">
                         <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
                         <Input
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           placeholder="كلمة المرور"
-                          className="ps-9 h-[50px] bg-[#EEEADD]"
+                          className="ps-9 pe-10 h-[50px] bg-[#EEEADD]"
                           disabled={isPending}
                           {...field}
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-500 hover:text-gray-700"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </button>
                       </div>
                     </FormControl>
                     <FormMessage className="" />

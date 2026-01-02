@@ -27,8 +27,8 @@ export const familySchema = z.object({
     required_error: "النوع مطلوب",
   }), // Gender for the head of family
   totalMembers: z.coerce.number().min(1, "عدد الأفراد مطلوب"),
-  tentNumber: z.string().min(1, "رقم الخيمة مطلوب"),
-  location: z.string().min(1, "العنوان/الموقع مطلوب"),
+  tentNumber: z.string().optional(),
+  location: z.string().optional(),
   notes: z.string().optional(),
   campId: z.string().min(1, "المعسكر مطلوب"),
   maritalStatusId: z.string().min(1, "الحالة الاجتماعية مطلوبة"),

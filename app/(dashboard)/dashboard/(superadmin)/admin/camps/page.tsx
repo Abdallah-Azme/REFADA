@@ -37,7 +37,11 @@ export default function AdminCampsPage() {
   const { data: campDetails, isLoading: isLoadingDetails } =
     useCampDetails(viewingSlug);
 
+  console.log({ campDetails });
+
   const camps = data?.data || [];
+
+  console.log({ camps });
 
   const handleOpenDialog = (camp?: Camp) => {
     if (camp) {
