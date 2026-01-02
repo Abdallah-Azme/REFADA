@@ -130,6 +130,7 @@
     "register": "Register",
     "already_have_account": "Already have an account?",
     "sign_in": "Sign In",
+    "select_camp": "Select Shelter",
     "validation": {
       "invalid_email": "Invalid email address",
       "password_min_length_6": "Password must be at least 6 characters",
@@ -401,7 +402,17 @@
     "errorLoadingData": "Error loading data",
     "processingRequest": "Processing request...",
     "deleteCamp": "Delete Shelter",
-    "deleteConfirmation": "Are you sure you want to delete this shelter? This action cannot be undone."
+    "deleteConfirmation": "Are you sure you want to delete this shelter? This action cannot be undone.",
+    "campCreated": "Shelter Created",
+    "campCreatedSuccess": "Shelter was created successfully",
+    "campCreateError": "Failed to create shelter",
+    "campUpdated": "Shelter Updated",
+    "campUpdatedSuccess": "Shelter was updated successfully",
+    "campUpdateError": "Failed to update shelter",
+    "campDeleted": "Shelter Deleted",
+    "campDeletedSuccess": "Shelter was deleted successfully",
+    "campDeleteError": "Failed to delete shelter",
+    "error": "Error"
   },
   "profile": {
     "representative": "Representative",

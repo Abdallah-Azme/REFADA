@@ -54,6 +54,37 @@ export interface Project {
   updatedAt: string;
 }
 
+export interface CampFamilyMember {
+  id: number;
+  name: string;
+  gender: string;
+  dob: string;
+  nationalId: string;
+  relationship?: string;
+}
+
+export interface CampFamily {
+  id: number;
+  familyName: string;
+  nationalId: string;
+  dob: string;
+  phone: string;
+  backupPhone?: string;
+  totalMembers: number;
+  membersCount: number;
+  malesCount: number;
+  femalesCount: number;
+  maritalStatus: string;
+  tentNumber?: string;
+  location?: string;
+  notes?: string;
+  camp: string;
+  quantity?: number | null;
+  members?: CampFamilyMember[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Camp {
   id: number;
   name: string | { ar?: string; en?: string };
@@ -70,6 +101,12 @@ export interface Camp {
   bankAccount?: string | null;
   campImg?: string;
   projects?: Project[];
+  families?: CampFamily[];
+  statistics?: {
+    familyCount: number;
+    memberCount: number;
+    projectCount: number;
+  };
   createdAt?: string;
   updatedAt?: string;
   status?: "active" | "inactive";

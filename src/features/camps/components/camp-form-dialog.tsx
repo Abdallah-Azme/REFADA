@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { lazy, Suspense } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 const RichTextEditor = lazy(() => import("@/components/rich-text-editor"));
@@ -38,6 +39,7 @@ interface CampFormDialogProps {
   onSubmit: (data: CampFormValues) => void;
   onCancel: () => void;
   role?: "admin" | "representative";
+  isLoading?: boolean;
 }
 
 export function CampFormDialog({
@@ -45,6 +47,7 @@ export function CampFormDialog({
   onSubmit,
   onCancel,
   role = "representative",
+  isLoading = false,
 }: CampFormDialogProps) {
   const t = useTranslations("camps");
   const { form } = useCampForm(initialData);
@@ -278,10 +281,18 @@ export function CampFormDialog({
           )}
 
           <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+              disabled={isLoading}
+            >
               {t("cancel")}
             </Button>
-            <Button type="submit">{t("save")}</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              {t("save")}
+            </Button>
           </div>
         </form>
       </Form>

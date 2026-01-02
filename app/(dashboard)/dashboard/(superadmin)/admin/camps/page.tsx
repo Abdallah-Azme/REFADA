@@ -19,6 +19,7 @@ import {
 } from "@/features/camps";
 import { DeleteConfirmDialog } from "@/features/marital-status";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 
 export default function AdminCampsPage() {
   const t = useTranslations("adminCamps");
@@ -64,9 +65,15 @@ export default function AdminCampsPage() {
             console.log("[DEBUG] Update successful!");
             setIsDialogOpen(false);
             setEditingCamp(null);
+            toast.success(t("campUpdated"), {
+              description: t("campUpdatedSuccess"),
+            });
           },
           onError: (error) => {
             console.error("[DEBUG] Update failed with error:", error);
+            toast.error(t("error"), {
+              description: t("campUpdateError"),
+            });
           },
         }
       );
@@ -77,9 +84,15 @@ export default function AdminCampsPage() {
         onSuccess: () => {
           console.log("[DEBUG] Create successful!");
           setIsDialogOpen(false);
+          toast.success(t("campCreated"), {
+            description: t("campCreatedSuccess"),
+          });
         },
         onError: (error) => {
           console.error("[DEBUG] Create failed with error:", error);
+          toast.error(t("error"), {
+            description: t("campCreateError"),
+          });
         },
       });
     }
@@ -99,6 +112,15 @@ export default function AdminCampsPage() {
         onSuccess: () => {
           setDeleteDialogOpen(false);
           setDeletingCamp(null);
+          toast.success(t("campDeleted"), {
+            description: t("campDeletedSuccess"),
+          });
+        },
+        onError: (error) => {
+          console.error("[DEBUG] Delete failed with error:", error);
+          toast.error(t("error"), {
+            description: t("campDeleteError"),
+          });
         },
       });
     }
@@ -134,6 +156,7 @@ export default function AdminCampsPage() {
             initialData={editingCamp}
             onSubmit={onSubmit}
             onCancel={() => setIsDialogOpen(false)}
+            isLoading={createCamp.isPending || updateCamp.isPending}
           />
         </Dialog>
       </div>

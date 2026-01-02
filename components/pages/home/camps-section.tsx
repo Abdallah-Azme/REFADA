@@ -127,7 +127,12 @@ export default function CampsSection({ camps = [] }: CampsSectionProps) {
                 id={camp.id}
                 title={camp.name}
                 location={camp.location || ""}
-                families={camp.familyCount || 0}
+                families={
+                  camp.statistics?.familyCount ||
+                  camp.families?.length ||
+                  camp.familyCount ||
+                  0
+                }
                 image={camp.campImg || "/placeholder.jpg"}
                 index={index}
                 slug={camp.slug}

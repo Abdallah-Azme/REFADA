@@ -28,6 +28,8 @@ export default function ProjectsTable({
   hideApproveDelete?: boolean;
 }) {
   const { data: projectsData } = useProjects();
+
+  console.log("projectsData", projectsData);
   const projects = projectsData?.data || [];
 
   const form = useForm({

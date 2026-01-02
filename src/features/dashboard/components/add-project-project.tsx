@@ -41,6 +41,7 @@ import {
 } from "@/features/projects";
 import { useCamps } from "@/features/camps";
 import { useProfile } from "@/features/profile";
+import { toast } from "sonner";
 
 // Schema matching the API requirements
 const createProjectFormSchema = (t: any) =>
@@ -52,7 +53,7 @@ const createProjectFormSchema = (t: any) =>
       .min(1, t("validation.beneficiary_count_required")),
     college: z.string().optional(),
     notes: z.string().optional(),
-    camp_id: z.string().min(1, t("validation.camp_required")),
+    camp_id: z.string().optional(),
   });
 
 interface ProjectFormDialogProps {
@@ -101,6 +102,13 @@ export default function ProjectFormDialog({
     },
   });
 
+  // Auto-set campId for delegates when profile loads
+  useEffect(() => {
+    if (isDelegate && userCamp?.id) {
+      form.setValue("camp_id", userCamp.id.toString());
+    }
+  }, [userCamp, isDelegate, form]);
+
   // Reset form when project changes or dialog opens
   useEffect(() => {
     if (open) {
@@ -116,18 +124,16 @@ export default function ProjectFormDialog({
           notes: project.notes || "",
           camp_id: camp ? camp.id.toString() : "",
         });
-        setFile(null); // Reset file on edit open unless we want to show existing?
-        // Note: API doesn't return file object, just URL string project.projectImage
+        setFile(null);
       } else {
-        // For delegates, auto-populate their camp
-        const campId = isDelegate && userCamp ? userCamp.id.toString() : "";
+        // Reset to empty for new project - delegates will have camp_id set by the other useEffect
         form.reset({
           name: "",
           type: "",
           beneficiary_count: "",
           college: "",
           notes: "",
-          camp_id: campId,
+          camp_id: isDelegate && userCamp?.id ? userCamp.id.toString() : "",
         });
         setFile(null);
       }
@@ -135,12 +141,33 @@ export default function ProjectFormDialog({
   }, [open, project, camps, form, isDelegate, userCamp]);
 
   const onSubmit = (values: z.infer<typeof projectFormSchema>) => {
+    // Debug logging
+    console.log("[DEBUG] onSubmit - isDelegate:", isDelegate);
+    console.log("[DEBUG] onSubmit - userCamp:", userCamp);
+    console.log("[DEBUG] onSubmit - profileData:", profileData?.data);
+    console.log("[DEBUG] onSubmit - values.camp_id:", values.camp_id);
+
+    // For delegates, use their assigned camp; for admins, use the selected camp
+    // Also use form's camp_id as fallback
+    const campId =
+      isDelegate && userCamp?.id
+        ? userCamp.id.toString()
+        : values.camp_id || form.getValues("camp_id");
+
+    if (!campId) {
+      console.error("Camp ID is required - userCamp:", userCamp);
+      toast.error("لا يمكن إنشاء المشروع", {
+        description: "لم يتم تحديد الإيواء. تأكد من أنك مسجل في إيواء معين.",
+      });
+      return;
+    }
+
     const formData = new FormData();
     formData.append("name", values.name);
     formData.append("type", values.type);
     formData.append("beneficiary_count", values.beneficiary_count);
     formData.append("college", values.beneficiary_count);
-    formData.append("camp_id", values.camp_id);
+    formData.append("camp_id", campId);
     if (values.notes) {
       formData.append("notes", values.notes);
     }
@@ -247,22 +274,14 @@ export default function ProjectFormDialog({
                   )}
                 />
 
-                {/* المخيم */}
-                <FormField
-                  control={form.control}
-                  name="camp_id"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        {isDelegate && userCamp ? (
-                          // Show read-only camp name for delegates
-                          <Input
-                            value={userCamp.name}
-                            disabled
-                            className="bg-gray-100 cursor-not-allowed"
-                          />
-                        ) : (
-                          // Show dropdown for admins
+                {/* المخيم - Show for admins, or for delegates without an assigned camp */}
+                {(!isDelegate || !userCamp?.id) && (
+                  <FormField
+                    control={form.control}
+                    name="camp_id"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
@@ -285,12 +304,12 @@ export default function ProjectFormDialog({
                               ))}
                             </SelectContent>
                           </Select>
-                        )}
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
               </div>
 
               {/* FILE UPLOAD */}

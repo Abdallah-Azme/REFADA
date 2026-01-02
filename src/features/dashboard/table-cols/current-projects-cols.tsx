@@ -78,11 +78,11 @@ export const createColumns = (
   },
 
   // ========================================
-  // STATUS COLUMN
-  // Shows status with colored badge
-  // Colors match the screenshot: orange, green, pink, blue
+  // PROGRESS COLUMN
+  // Shows progress bar based on totalReceived/total
   // ========================================
   {
+    id: "progress",
     accessorKey: "status",
     header: ({ column }) => {
       return (
@@ -90,38 +90,48 @@ export const createColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          الحالة
+          التقدم
           <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
-    /**
-     * Status badge with conditional styling
-     * We determine the color based on the status value:
-     * - قيد التنفيذ (In Progress) -> Orange
-     * - تم التسليم (Delivered) -> Green
-     * - ملغي (Cancelled) -> Pink
-     * - في الانتظار (Waiting) -> Blue
-     */
     cell: ({ row }) => {
-      const status = row.original.status;
+      const totalReceived = row.original.totalReceived || 0;
+      const totalRemaining = row.original.totalRemaining || 0;
+      const total = totalReceived + totalRemaining;
 
-      let badgeClass =
-        "px-3 py-1 rounded-md text-center w-fit text-sm font-medium inline-block";
+      // Calculate percentage
+      const percentage =
+        total > 0 ? Math.round((totalReceived / total) * 100) : 0;
 
-      if (status === "قيد التنفيذ") {
-        badgeClass += " bg-orange-100 text-orange-700";
-      } else if (status === "تم التسليم") {
-        badgeClass += " bg-green-100 text-green-700";
-      } else if (status === "ملغي") {
-        badgeClass += " bg-pink-100 text-pink-700";
-      } else if (status === "في الانتظار") {
-        badgeClass += " bg-blue-100 text-blue-700";
+      // Determine color based on progress
+      let progressColor = "bg-blue-500"; // Not started
+      let bgColor = "bg-blue-100";
+      let textColor = "text-blue-700";
+
+      if (percentage === 100) {
+        progressColor = "bg-green-500";
+        bgColor = "bg-green-100";
+        textColor = "text-green-700";
+      } else if (percentage > 0) {
+        progressColor = "bg-orange-500";
+        bgColor = "bg-orange-100";
+        textColor = "text-orange-700";
       }
 
       return (
-        <div className="flex justify-center w-full">
-          <span className={badgeClass}>{status}</span>
+        <div className="flex flex-col items-center gap-1 min-w-[120px]">
+          {/* Progress bar */}
+          <div className={`w-full h-2 rounded-full ${bgColor}`}>
+            <div
+              className={`h-full rounded-full transition-all duration-300 ${progressColor}`}
+              style={{ width: `${percentage}%` }}
+            />
+          </div>
+          {/* Percentage text */}
+          <span className={`text-xs font-medium ${textColor}`}>
+            {percentage}% ({totalReceived}/{total})
+          </span>
         </div>
       );
     },

@@ -21,8 +21,9 @@ export default function CampsData() {
   // Get camp data from user's profile
   const userCamp = profileData?.data?.camp;
 
-  // Get families from API
-  const families = familiesData?.data || [];
+  // Get families from API - ensure it's always an array
+  const families =
+    (Array.isArray(familiesData?.data) ? familiesData?.data : []) || [];
 
   // Calculate dynamic stats from families data
   const totalFamilies = families.length;

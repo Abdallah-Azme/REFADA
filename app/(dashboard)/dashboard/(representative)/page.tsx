@@ -16,6 +16,7 @@ export default function DashboardPage() {
   const campSlug = profileData?.data?.camp?.slug;
   const { data: campData } = useCampDetails(campSlug || null);
 
+  console.log("campData", campData);
   const isLoading = profileLoading || projectsLoading;
 
   // Build dynamic stats from API data
@@ -35,8 +36,13 @@ export default function DashboardPage() {
   ).length;
   const totalProjects = projects.length;
 
-  // Get family count from camp
-  const familyCount = campDetails?.familyCount || userCamp?.familyCount || 0;
+  // Get family count from camp - use statistics object first (most accurate)
+  const familyCount =
+    campDetails?.statistics?.familyCount ||
+    campDetails?.families?.length ||
+    campDetails?.familyCount ||
+    userCamp?.familyCount ||
+    0;
 
   // Calculate total contributions (sum of totalReceived from all projects)
   const totalContributions = projects.reduce(

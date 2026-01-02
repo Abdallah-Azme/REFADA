@@ -135,6 +135,7 @@
     "register": "تسجيل",
     "already_have_account": "لديك حساب بالفعل؟",
     "sign_in": "دخول",
+    "select_camp": "اختر الإيواء",
     "validation": {
       "invalid_email": "البريد الإلكتروني غير صحيح",
       "password_min_length_6": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
@@ -406,7 +407,17 @@
     "errorLoadingData": "حدث خطأ أثناء تحميل البيانات",
     "processingRequest": "جاري معالجة الطلب...",
     "deleteCamp": "حذف الإيواء",
-    "deleteConfirmation": "هل أنت متأكد من حذف هذا الإيواء؟ هذا الإجراء لا يمكن التراجع عنه."
+    "deleteConfirmation": "هل أنت متأكد من حذف هذا الإيواء؟ هذا الإجراء لا يمكن التراجع عنه.",
+    "campCreated": "تم إنشاء الإيواء",
+    "campCreatedSuccess": "تم إنشاء الإيواء بنجاح",
+    "campCreateError": "فشل في إنشاء الإيواء",
+    "campUpdated": "تم تحديث الإيواء",
+    "campUpdatedSuccess": "تم تحديث الإيواء بنجاح",
+    "campUpdateError": "فشل في تحديث الإيواء",
+    "campDeleted": "تم حذف الإيواء",
+    "campDeletedSuccess": "تم حذف الإيواء بنجاح",
+    "campDeleteError": "فشل في حذف الإيواء",
+    "error": "خطأ"
   },
   "profile": {
     "representative": "المندوب",

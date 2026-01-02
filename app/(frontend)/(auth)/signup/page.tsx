@@ -26,6 +26,7 @@ import {
   type RegisterFormValues,
 } from "@/features/auth";
 import { useAdminPositions } from "@/features/admin-position";
+import { useCamps } from "@/features/camps";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -44,6 +45,10 @@ export default function RegisterPage() {
   const { data: adminPositionsData } = useAdminPositions();
   const adminPositions = adminPositionsData?.data || [];
 
+  // Fetch camps for delegate camp selection
+  const { data: campsData } = useCamps();
+  const camps = campsData?.data || [];
+
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -57,6 +62,7 @@ export default function RegisterPage() {
       role: "contributor",
       admin_position: "",
       license_number: "",
+      camp_id: "",
       accept_terms: false,
     },
   });
@@ -72,6 +78,9 @@ export default function RegisterPage() {
     if (role === "delegate") {
       form.setValue("admin_position", "");
       form.setValue("license_number", "");
+    } else {
+      // Clear delegate-specific fields when switching to contributor
+      form.setValue("camp_id", "");
     }
   };
 
@@ -291,6 +300,44 @@ export default function RegisterPage() {
                                 {position.name}
                               </SelectItem>
                             ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* اختيار الإيواء للمندوب */}
+                <FormField
+                  control={form.control}
+                  name="camp_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          disabled={isPending}
+                        >
+                          <SelectTrigger className="h-[50px] bg-[#EEEADD]">
+                            <SelectValue placeholder={t("select_camp")} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {camps.map((camp) => {
+                              const campName =
+                                typeof camp.name === "string"
+                                  ? camp.name
+                                  : camp.name?.ar || camp.name?.en || "";
+                              return (
+                                <SelectItem
+                                  key={camp.id}
+                                  value={camp.id.toString()}
+                                >
+                                  {campName}
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
                       </FormControl>

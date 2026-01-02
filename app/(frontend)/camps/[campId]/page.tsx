@@ -20,9 +20,20 @@ export default function Page() {
   const params = useParams();
   const campSlug = params?.campId as string;
   const { data: campData, isLoading } = useCampDetails(campSlug || null);
-
+  console.log("campData", campData);
   const camp = campData?.data;
   const projects = camp?.projects || [];
+  const families = camp?.families || [];
+
+  // Use statistics object as primary source (most accurate), fallback to calculated values
+  const actualFamilyCount =
+    camp?.statistics?.familyCount || families.length || camp?.familyCount || 0;
+  const actualMembersCount =
+    camp?.statistics?.memberCount ||
+    families.reduce(
+      (sum, family) => sum + (family.totalMembers || family.membersCount || 0),
+      0
+    );
 
   // Get coordinates for map
   const position: [number, number] | null =
@@ -78,8 +89,8 @@ export default function Page() {
           </div>
 
           <CampStats
-            familyCount={camp?.familyCount || 0}
-            childrenCount={camp?.childrenCount || 0}
+            familyCount={actualFamilyCount}
+            childrenCount={actualMembersCount || camp?.childrenCount || 0}
             projectsCount={projects.length}
           />
 
