@@ -111,7 +111,11 @@ export interface CampFamily {
 export interface CampFamiliesResponse {
   success: boolean;
   message: string;
-  data: CampFamily[];
+  data: {
+    families: CampFamily[];
+    ageGroups: string[];
+    medicalConditions: string[];
+  };
 }
 
 export async function getCampFamiliesApi(

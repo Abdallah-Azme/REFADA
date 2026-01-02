@@ -1,5 +1,6 @@
 import Header from "@/components/header";
 import Footer from "@/components/shared/footer";
+import FloatingWhatsapp from "@/components/shared/floating-whatsapp";
 import { settingsApi } from "@/features/settings/api/settings.api";
 import React from "react";
 
@@ -43,6 +44,7 @@ export default async function layout({
     <div>
       <Header settings={settings} />
       <div className="min-h-screen">{children}</div>
+      <FloatingWhatsapp phoneNumber={settings?.whatsapp} />
       <Footer settings={settings} />
     </div>
   );

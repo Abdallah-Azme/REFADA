@@ -36,9 +36,21 @@ export default function Page() {
     isLoading,
     isError,
   } = useCampDetails(campSlug || null);
-
+  console.log("campData", JSON.stringify(campData, null, 2));
   const camp = campData?.data;
   const projects = camp?.projects || [];
+
+  const families = camp?.families || [];
+
+  // Use statistics object as primary source (most accurate), fallback to calculated values
+  const actualFamilyCount =
+    camp?.statistics?.familyCount || families.length || camp?.familyCount || 0;
+  const actualMembersCount =
+    camp?.statistics?.memberCount ||
+    families.reduce(
+      (sum, family) => sum + (family.totalMembers || family.membersCount || 0),
+      0
+    );
 
   // Get localized camp name and description
   const campName = getLocalizedText(camp?.name, locale);
@@ -83,8 +95,8 @@ export default function Page() {
           <CampsMapSection secondary camps={camp ? [camp] : []} />
 
           <CampStats
-            familyCount={camp.familyCount || 0}
-            childrenCount={camp.childrenCount || 0}
+            familyCount={actualFamilyCount}
+            childrenCount={actualMembersCount || camp.childrenCount || 0}
             projectsCount={projects.length}
           />
 
