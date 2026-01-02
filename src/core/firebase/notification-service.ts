@@ -74,6 +74,14 @@ class NotificationService {
     });
   }
 
+  onMessageCallback(callback: (payload: any) => void) {
+    if (!this.messaging) return () => {};
+
+    return onMessage(this.messaging, (payload) => {
+      callback(payload);
+    });
+  }
+
   async showNotification(title: string, options?: NotificationOptions) {
     if ("Notification" in window && Notification.permission === "granted") {
       try {

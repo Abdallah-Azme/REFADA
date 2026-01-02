@@ -131,7 +131,6 @@ export default function ContributeDialog({
     setIsLoadingFamilies(true);
     try {
       const response = await getCampFamiliesApi(effectiveCampId);
-      console.log({ response });
       if (response.success) {
         // @ts-ignore
         const familiesData = response.data?.families || [];

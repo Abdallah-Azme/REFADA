@@ -173,9 +173,6 @@ export default function EditFamilyDialog({
   // Populate existing members when membersData loads
   useEffect(() => {
     if (membersData?.data && relationships.length > 0 && open) {
-      console.log("🔍 Members data from API:", membersData.data);
-      console.log("🔢 Number of members:", membersData.data.length);
-
       // Filter out head of family (relationship "أب" or id 1) since they're already in the main form
       const nonHeadMembers = membersData.data.filter((member) => {
         const foundRelationship = relationships.find(
@@ -211,28 +208,13 @@ export default function EditFamilyDialog({
         };
       });
 
-      console.log("📋 Mapped members (excluding head):", existingMembers);
       // Use replace from useFieldArray for proper synchronization
       replace(existingMembers as any);
       form.setValue("totalMembers", existingMembers.length);
     }
   }, [membersData, relationships, medicalConditions, open, replace, form]);
 
-  const onError = (errors: any) => {
-    console.log("❌ FORM ERRORS:", errors);
-    console.log("📋 Current form values:", form.getValues());
-    console.log("🔍 Form state:", {
-      isValid: form.formState.isValid,
-      isDirty: form.formState.isDirty,
-      isSubmitting: form.formState.isSubmitting,
-      errors: form.formState.errors,
-    });
-  };
-
   const onSubmit = async (values: z.infer<typeof familySchema>) => {
-    console.log("✅ Form submitted with values:", values);
-    console.log("👨‍👩‍👧 Family being edited:", family);
-    console.log("🆔 Original National ID:", originalFamilyNationalId);
     if (!family) return;
 
     try {
@@ -355,7 +337,7 @@ export default function EditFamilyDialog({
           {/* FORM */}
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit, onError)}
+              onSubmit={form.handleSubmit(onSubmit)}
               className="space-y-6 p-6"
             >
               {/* PERSONAL INFO */}

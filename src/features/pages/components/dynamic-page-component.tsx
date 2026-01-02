@@ -25,8 +25,6 @@ export default function DynamicPageComponent({
 
   const pageData = data?.data;
 
-  console.log({ pageData });
-
   const handleUpdate = (values: PageUpdateFormValues) => {
     updateMutation.mutate(
       { pageType, data: values },

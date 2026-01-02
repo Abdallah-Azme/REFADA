@@ -36,7 +36,6 @@ export default function Page() {
     isLoading,
     isError,
   } = useCampDetails(campSlug || null);
-  console.log("campData", JSON.stringify(campData, null, 2));
   const camp = campData?.data;
   const projects = camp?.projects || [];
 

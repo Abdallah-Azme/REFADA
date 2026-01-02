@@ -16,7 +16,6 @@ export default function DashboardPage() {
   const campSlug = profileData?.data?.camp?.slug;
   const { data: campData } = useCampDetails(campSlug || null);
 
-  console.log("campData", campData);
   const isLoading = profileLoading || projectsLoading;
 
   // Build dynamic stats from API data

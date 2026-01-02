@@ -141,12 +141,6 @@ export default function ProjectFormDialog({
   }, [open, project, camps, form, isDelegate, userCamp]);
 
   const onSubmit = (values: z.infer<typeof projectFormSchema>) => {
-    // Debug logging
-    console.log("[DEBUG] onSubmit - isDelegate:", isDelegate);
-    console.log("[DEBUG] onSubmit - userCamp:", userCamp);
-    console.log("[DEBUG] onSubmit - profileData:", profileData?.data);
-    console.log("[DEBUG] onSubmit - values.camp_id:", values.camp_id);
-
     // For delegates, use their assigned camp; for admins, use the selected camp
     // Also use form's camp_id as fallback
     const campId =

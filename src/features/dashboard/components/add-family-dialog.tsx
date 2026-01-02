@@ -158,8 +158,6 @@ export default function AddFamilyDialog() {
     }
   }, [totalMembers]);
 
-  const onError = (errors: any) => console.log("❌ FORM ERRORS:", errors);
-
   const onSubmit = async (values: z.infer<typeof familySchema>) => {
     try {
       // Inject custom medical condition text if "other" is selected
@@ -222,10 +220,7 @@ export default function AddFamilyDialog() {
         {/* FORM */}
         <div className="px-6 py-5 max-h-[75vh] overflow-y-auto bg-white">
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit, onError)}
-              className="space-y-6"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* MAIN GRID */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 bg-[#F4F4F4] gap-4 p-4 rounded-xl">
                 {/* الاسم الرباعي */}

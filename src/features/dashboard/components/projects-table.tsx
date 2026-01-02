@@ -29,7 +29,6 @@ export default function ProjectsTable({
 }) {
   const { data: projectsData } = useProjects();
 
-  console.log("projectsData", projectsData);
   const projects = projectsData?.data || [];
 
   const form = useForm({

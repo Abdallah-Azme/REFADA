@@ -9,6 +9,8 @@ importScripts(
 );
 
 // Initialize Firebase in the service worker
+// TODO: Replace these with your actual Firebase project credentials
+// You can find these in the Firebase Console -> Project Settings
 firebase.initializeApp({
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_AUTH_DOMAIN",
@@ -22,11 +24,12 @@ const messaging = firebase.messaging();
 
 // Handle background messages
 messaging.onBackgroundMessage((payload) => {
+  console.log("Background message received: ", payload);
   const notificationTitle = payload.notification?.title || "New Notification";
   const notificationOptions = {
     body: payload.notification?.body || "",
-    icon: payload.notification?.icon || "/logo.png",
-    badge: "/badge.png",
+    icon: payload.notification?.icon || "/logo.png", // Update path to your logo
+    badge: "/badge.png", // Update path to your badge
     data: payload.data,
   };
 
@@ -38,5 +41,24 @@ self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
   // Navigate to a specific URL when notification is clicked
-  event.waitUntil(clients.openWindow(event.notification.data?.url || "/"));
+  // You can send a 'url' in the data payload of the notification
+  const urlToOpen = event.notification.data?.url || "/";
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((windowClients) => {
+        // Check if there is already a window/tab open with the target URL
+        for (let i = 0; i < windowClients.length; i++) {
+          const client = windowClients[i];
+          if (client.url === urlToOpen && "focus" in client) {
+            return client.focus();
+          }
+        }
+        // If not, open a new window
+        if (clients.openWindow) {
+          return clients.openWindow(urlToOpen);
+        }
+      })
+  );
 });

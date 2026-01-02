@@ -67,11 +67,8 @@ export default async function Home() {
   const homePageData = await getHomePageData();
   const slides = homePageData.slides || [];
   const camps = await getCamps();
-  console.log("camps", camps);
   const partners = await getPartners();
   const testimonials = await getTestimonials();
-
-  console.log({ homePageData: homePageData.sections });
 
   return (
     <main className="flex flex-col gap-6 mt-10">

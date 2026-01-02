@@ -54,16 +54,10 @@ export function CampFormDialog({
   const { data: governorates } = useGovernorates();
 
   const handleSubmit = (data: CampFormValues) => {
-    console.log("[DEBUG CampFormDialog] handleSubmit called with data:", data);
-    console.log("[DEBUG CampFormDialog] Form errors:", form.formState.errors);
-    console.log("[DEBUG CampFormDialog] Form isValid:", form.formState.isValid);
-    onSubmit(data);
+     onSubmit(data);
   };
 
-  // Log form state on every render for debugging
-  console.log("[DEBUG CampFormDialog] Current form values:", form.getValues());
-  console.log("[DEBUG CampFormDialog] Initial data received:", initialData);
-
+  
   return (
     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>

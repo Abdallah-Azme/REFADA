@@ -40,29 +40,21 @@ export default function AdminCampsPage() {
   const camps = data?.data || [];
 
   const handleOpenDialog = (camp?: Camp) => {
-    console.log("[DEBUG] handleOpenDialog called with camp:", camp);
     if (camp) {
-      console.log("[DEBUG] Setting editingCamp to:", camp);
       setEditingCamp(camp);
     } else {
-      console.log("[DEBUG] Setting editingCamp to null (new camp mode)");
       setEditingCamp(null);
     }
     setIsDialogOpen(true);
   };
 
   const onSubmit = (data: CampFormValues) => {
-    console.log("[DEBUG] onSubmit called with data:", data);
-    console.log("[DEBUG] editingCamp:", editingCamp);
-    console.log("[DEBUG] editingCamp.slug:", editingCamp?.slug);
     if (editingCamp && editingCamp.slug) {
       // Update existing camp
-      console.log("[DEBUG] Updating camp with slug:", editingCamp.slug);
       updateCamp.mutate(
         { slug: editingCamp.slug, data },
         {
           onSuccess: () => {
-            console.log("[DEBUG] Update successful!");
             setIsDialogOpen(false);
             setEditingCamp(null);
             toast.success(t("campUpdated"), {
@@ -79,10 +71,8 @@ export default function AdminCampsPage() {
       );
     } else {
       // Create new camp
-      console.log("[DEBUG] Creating new camp");
       createCamp.mutate(data, {
         onSuccess: () => {
-          console.log("[DEBUG] Create successful!");
           setIsDialogOpen(false);
           toast.success(t("campCreated"), {
             description: t("campCreatedSuccess"),
