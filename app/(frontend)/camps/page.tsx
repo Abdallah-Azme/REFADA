@@ -6,9 +6,7 @@ export default async function Page() {
   try {
     const response = await campsApi.getAll();
     camps = response.data || [];
-  } catch (error) {
-    console.error("Failed to fetch camps:", error);
-  }
+  } catch (error) {}
 
   return <CampsPageClient camps={camps} />;
 }

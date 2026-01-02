@@ -27,7 +27,6 @@ async function sendTokenToBackend(fcmToken: string): Promise<boolean> {
     });
 
     if (response.ok) {
-      console.log("FCM token sent to backend successfully");
       return true;
     }
     return false;

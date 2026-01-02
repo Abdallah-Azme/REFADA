@@ -37,11 +37,7 @@ export default function AdminCampsPage() {
   const { data: campDetails, isLoading: isLoadingDetails } =
     useCampDetails(viewingSlug);
 
-  console.log({ campDetails });
-
   const camps = data?.data || [];
-
-  console.log({ camps });
 
   const handleOpenDialog = (camp?: Camp) => {
     if (camp) {
@@ -66,7 +62,6 @@ export default function AdminCampsPage() {
             });
           },
           onError: (error) => {
-            console.error("[DEBUG] Update failed with error:", error);
             toast.error(t("error"), {
               description: t("campUpdateError"),
             });
@@ -83,7 +78,6 @@ export default function AdminCampsPage() {
           });
         },
         onError: (error) => {
-          console.error("[DEBUG] Create failed with error:", error);
           toast.error(t("error"), {
             description: t("campCreateError"),
           });
@@ -111,7 +105,6 @@ export default function AdminCampsPage() {
           });
         },
         onError: (error) => {
-          console.error("[DEBUG] Delete failed with error:", error);
           toast.error(t("error"), {
             description: t("campDeleteError"),
           });

@@ -20,7 +20,7 @@ export default function Page() {
   const params = useParams();
   const campSlug = params?.campId as string;
   const { data: campData, isLoading } = useCampDetails(campSlug || null);
-   const camp = campData?.data;
+  const camp = campData?.data;
   const projects = camp?.projects || [];
   const families = camp?.families || [];
 
@@ -89,7 +89,7 @@ export default function Page() {
 
           <CampStats
             familyCount={actualFamilyCount}
-            childrenCount={actualMembersCount || camp?.childrenCount || 0}
+            membersCount={actualMembersCount || 0}
             projectsCount={projects.length}
           />
 

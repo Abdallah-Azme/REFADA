@@ -55,7 +55,7 @@ export function ProjectCard({
           height={221}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
-        <div className="absolute top-3 inset-inline-end-3">
+        <div className="absolute top-3 start-2">
           <span className="bg-teal-500 text-white text-xs px-3 py-1 rounded-full">
             {tag}
           </span>

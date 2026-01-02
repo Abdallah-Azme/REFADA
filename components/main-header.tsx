@@ -15,6 +15,7 @@ import { useTranslations } from "next-intl";
 import LangSwitcher from "./lang-switcher";
 import { motion, AnimatePresence } from "framer-motion";
 import MobileMenu from "./mobile-menu";
+import Logo from "./logo";
 import { useDirection } from "@/hooks/use-direction";
 import { useAuth } from "@/features/auth/context/auth-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,9 +23,10 @@ import { Settings } from "@/features/settings/types/settings.schema";
 
 interface MainHeaderProps {
   settings?: Settings;
+  isScrolled?: boolean;
 }
 
-export default function MainHeader({ settings }: MainHeaderProps) {
+export default function MainHeader({ settings, isScrolled }: MainHeaderProps) {
   const pathName = usePathname();
   const t = useTranslations();
   const { isRTL } = useDirection();
@@ -40,8 +42,26 @@ export default function MainHeader({ settings }: MainHeaderProps) {
   ];
 
   return (
-    <div className="py-4 bg-white shadow-sm">
+    <div
+      className={`${
+        isScrolled ? "py-2" : "py-4"
+      } bg-white shadow-sm transition-all duration-300`}
+    >
       <div className="flex items-center justify-between px-4 container mx-auto ">
+        {/* Logo - shown when scrolled */}
+        <AnimatePresence>
+          {isScrolled && (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="hidden lg:block"
+            >
+              <Logo className="!w-[50px] !h-[50px]" />
+            </motion.div>
+          )}
+        </AnimatePresence>
         {/* --- Desktop Navigation --- */}
         <nav className="hidden lg:flex gap-10 font-medium text-sm">
           {navItems.map((item, i) => (

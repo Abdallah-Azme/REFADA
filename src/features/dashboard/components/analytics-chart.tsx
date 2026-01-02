@@ -1,5 +1,8 @@
+"use client";
+
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import CardTitle from "./card-title";
+import { useTranslations } from "next-intl";
 
 interface AnalyticsChartProps {
   title?: string;
@@ -9,39 +12,43 @@ interface AnalyticsChartProps {
 }
 
 export default function AnalyticsChart({
-  title = "المشاريع الحالية",
+  title,
   familyCount = 0,
   projectCount = 0,
   contributionPercentage = 0,
 }: AnalyticsChartProps) {
+  const t = useTranslations("reportsPage");
   const data = [
     { name: "completed", value: contributionPercentage },
     { name: "remaining", value: 100 - contributionPercentage },
   ];
   return (
     <div className="lg:col-span-1 h-full rounded-lg  ">
-      <CardTitle title={title} className="mb-2" />
+      <CardTitle
+        title={title || t("current_projects_count")}
+        className="mb-2"
+      />
       <div className="bg-white rounded-lg border border-gray-100 p-4 flex flex-col">
         <div className="flex items-center justify-evenly gap-4">
           {/* Stats Section */}
           <div className="space-y-2 text-sm text-gray-700">
             <ul className="list-disc marker:text-[#0682E6] text-[#4F4F4F] font-semibold text-sm space-y-2 min-w-40">
               <li className=" w-full flex items-center justify-between">
-                <span>عدد العائلات المسجلة</span>
+                <span>{t("registered_families")}</span>
                 <span className="font-semibold">
-                  {familyCount.toLocaleString("ar-EG")}
+                  {familyCount.toLocaleString()}
                 </span>
               </li>
 
               <li className=" flex items-center justify-between">
-                <span>عدد المشاريع الحالية</span>
+                <span>{t("current_projects_count")}</span>
                 <span className="font-semibold">
-                  {projectCount.toLocaleString("ar-EG")}
+                  {projectCount.toLocaleString()}
                 </span>
               </li>
 
               <li className=" flex items-center  justify-between">
-                <span>نسبة الإنجاز</span>
+                <span>{t("completion_percentage")}</span>
                 <span className="font-semibold">{contributionPercentage}%</span>
               </li>
             </ul>

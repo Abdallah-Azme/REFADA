@@ -28,7 +28,6 @@ export async function generateMetadata(): Promise<Metadata> {
       description: "جمعية رفاد الخيرية - غزة",
     };
   } catch (error) {
-    console.error("Failed to fetch settings for metadata:", error);
     return {
       title: "Refad",
       icons: {

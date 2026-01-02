@@ -1,17 +1,22 @@
+"use client";
+
 import AnimatedNumber from "@/components/animated-number";
-import { Baby, FolderOpenDot, Users } from "lucide-react";
+import { UsersRound, FolderOpenDot, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface CampStatsProps {
   familyCount?: number;
-  childrenCount?: number;
+  membersCount?: number;
   projectsCount?: number;
 }
 
-export default function CampStats({ 
+export default function CampStats({
   familyCount = 0,
-  childrenCount = 0,
-  projectsCount = 0
+  membersCount = 0,
+  projectsCount = 0,
 }: CampStatsProps) {
+  const t = useTranslations("campStats");
+
   return (
     <div className="flex h-full shadow-sm border flex-col sm:flex-row items-center justify-between bg-white gap-6 text-[#1E1E1E] px-6 py-6 rounded-md">
       {/* Families */}
@@ -20,21 +25,21 @@ export default function CampStats({
           <Users />
         </div>
 
-        <p className="font-bold text-lg">عدد العائلات:</p>
+        <p className="font-bold text-lg">{t("families_count")}</p>
         <p className="text-2xl font-bold text-primary">
-          <AnimatedNumber to={familyCount} /> عائلة
+          <AnimatedNumber to={familyCount} /> {t("family")}
         </p>
       </div>
 
-      {/* Children */}
+      {/* Members */}
       <div className="flex flex-col items-center gap-2 text-center">
         <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-          <Baby />
+          <UsersRound />
         </div>
 
-        <p className="font-bold text-lg">عدد الأطفال:</p>
+        <p className="font-bold text-lg">{t("members_count")}</p>
         <p className="text-2xl font-bold text-primary">
-          <AnimatedNumber to={childrenCount} /> طفل
+          <AnimatedNumber to={membersCount} /> {t("member")}
         </p>
       </div>
 
@@ -44,9 +49,9 @@ export default function CampStats({
           <FolderOpenDot />
         </div>
 
-        <p className="font-bold text-lg">عدد المشاريع:</p>
+        <p className="font-bold text-lg">{t("projects_count")}</p>
         <p className="text-2xl font-bold text-primary">
-          <AnimatedNumber to={projectsCount} /> مشروع
+          <AnimatedNumber to={projectsCount} /> {t("project")}
         </p>
       </div>
     </div>

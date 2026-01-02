@@ -41,8 +41,6 @@ export default function Page() {
 
   const families = camp?.families || [];
 
-  console.log({ families });
-
   // Use statistics object as primary source (most accurate), fallback to calculated values
   const actualFamilyCount =
     camp?.statistics?.familyCount || families.length || camp?.familyCount || 0;

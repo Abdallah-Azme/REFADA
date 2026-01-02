@@ -27,7 +27,6 @@ async function getSettings() {
 
     return response;
   } catch (error) {
-    console.error("Failed to fetch settings:", error);
     return null;
   }
 }

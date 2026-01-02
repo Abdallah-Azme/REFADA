@@ -22,7 +22,6 @@ async function getHomePageData(): Promise<HomePageData> {
     const response = await heroApi.get();
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch home page data:", error);
     return {
       slides: [],
       campsCount: 0,
@@ -48,7 +47,6 @@ async function getPartners() {
     const response = await partnerApi.getAll();
     return response.data || [];
   } catch (error) {
-    console.error("Failed to fetch partners:", error);
     return [];
   }
 }
@@ -58,7 +56,6 @@ async function getTestimonials() {
     const response = await testimonialApi.getAll();
     return response.data || [];
   } catch (error) {
-    console.error("Failed to fetch testimonials:", error);
     return [];
   }
 }

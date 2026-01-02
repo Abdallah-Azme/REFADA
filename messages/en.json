@@ -450,5 +450,42 @@
     "title": "Settings",
     "profile_tab": "Profile",
     "password_tab": "Change Password"
+  },
+  "reportsPage": {
+    "loading": "Loading...",
+    "search": "Search",
+    "reset_search": "Reset Search",
+    "contributions": "Contributions",
+    "total_contributions": "Total completed contributions",
+    "current_projects": "Current Projects",
+    "total_projects": "Total Projects",
+    "completed_projects": "Completed Projects",
+    "of_total": "of total",
+    "families_count": "Families Count",
+    "camp": "Camp",
+    "month_report": "Report for",
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December",
+    "registered_families": "Registered Families",
+    "current_projects_count": "Current Projects",
+    "completion_percentage": "Completion Rate"
+  },
+  "campStats": {
+    "families_count": "Families Count:",
+    "family": "family",
+    "members_count": "Members Count:",
+    "member": "member",
+    "projects_count": "Projects Count:",
+    "project": "project"
   }
 }

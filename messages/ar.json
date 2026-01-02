@@ -455,5 +455,42 @@
     "title": "الإعدادات",
     "profile_tab": "الملف الشخصي",
     "password_tab": "تغيير كلمة المرور"
+  },
+  "reportsPage": {
+    "loading": "جاري التحميل...",
+    "search": "بحث",
+    "reset_search": "إعادة البحث",
+    "contributions": "المساهمات",
+    "total_contributions": "مجموع المساهمات المنتهية",
+    "current_projects": "عدد المشاريع الحالية",
+    "total_projects": "إجمالي المشاريع",
+    "completed_projects": "عدد المشاريع المنفذة",
+    "of_total": "من الإجمالي",
+    "families_count": "عدد العائلات",
+    "camp": "المخيم",
+    "month_report": "تقرير شهر",
+    "january": "يناير",
+    "february": "فبراير",
+    "march": "مارس",
+    "april": "أبريل",
+    "may": "مايو",
+    "june": "يونيو",
+    "july": "يوليو",
+    "august": "أغسطس",
+    "september": "سبتمبر",
+    "october": "أكتوبر",
+    "november": "نوفمبر",
+    "december": "ديسمبر",
+    "registered_families": "عدد العائلات المسجلة",
+    "current_projects_count": "عدد المشاريع الحالية",
+    "completion_percentage": "نسبة الإنجاز"
+  },
+  "campStats": {
+    "families_count": "عدد العائلات:",
+    "family": "عائلة",
+    "members_count": "عدد الأفراد:",
+    "member": "فرد",
+    "projects_count": "عدد المشاريع:",
+    "project": "مشروع"
   }
 }
