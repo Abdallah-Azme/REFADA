@@ -44,6 +44,12 @@ import ProjectDetailsDialog from "./project-details-dialog";
 
 import ContributeDialog from "./contribute-dialog";
 import { Input } from "@/components/ui/input";
+import {
+  useContributorHistory,
+  ContributorFamily,
+} from "@/features/contributor/hooks/use-contributor-history";
+import ContributionFamiliesDialog from "@/features/contributor/components/contribution-families-dialog";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   name: z.string().optional(),
@@ -90,6 +96,18 @@ export default function CurrentProjectsTableContribution({
   const [isContributeDialogOpen, setIsContributeDialogOpen] =
     React.useState(false);
 
+  // History dialog state
+  const [isHistoryDialogOpen, setIsHistoryDialogOpen] = React.useState(false);
+  const [selectedHistoryFamilies, setSelectedHistoryFamilies] = React.useState<
+    ContributorFamily[]
+  >([]);
+  const [selectedHistoryProjectName, setSelectedHistoryProjectName] =
+    React.useState<string>("");
+
+  // Fetch contributor history
+  const { data: historyData } = useContributorHistory();
+  const historyItems = historyData?.data || [];
+
   // Filter projects based on search
   const watchedName = form.watch("name");
   const watchedStatus = form.watch("status");
@@ -115,6 +133,39 @@ export default function CurrentProjectsTableContribution({
     setIsDialogOpen(true);
   };
 
+  const handleViewHistory = (project: Project): void => {
+    // Find the contribution history for this project
+    // Note: The history API returns items with a 'project' object inside.
+    // We need to match the project ID.
+    const historyItem = historyItems.find(
+      (item: { project: { id: number } }) => item.project.id === project.id
+    );
+
+    if (
+      historyItem &&
+      historyItem.contributorFamilies &&
+      historyItem.contributorFamilies.length > 0
+    ) {
+      setSelectedHistoryFamilies(historyItem.contributorFamilies);
+      setSelectedHistoryProjectName(project.name);
+      setIsHistoryDialogOpen(true);
+    } else {
+      // If no history found or no families, show toast or just open project details?
+      // User request specifically asked to "show the data of the families i contributed to".
+      // If not found, maybe just show info toast.
+      // Or fallback to standard project view if no families found?
+      // Let's fallback to standard view if no history, but toast might be better if they expect families.
+      // But for now, let's try to show the families dialog if we have data, otherwise fallback to project details.
+      if (historyItem) {
+        setSelectedHistoryFamilies([]);
+        setSelectedHistoryProjectName(project.name);
+        setIsHistoryDialogOpen(true);
+      } else {
+        toast.info("لم يتم العثور على سجل مساهمات لهذا المشروع");
+      }
+    }
+  };
+
   const handleContribute = (project: Project): void => {
     setSelectedProject(project);
     setIsContributeDialogOpen(true);
@@ -124,7 +175,7 @@ export default function CurrentProjectsTableContribution({
   const table = useReactTable<Project>({
     data: filteredProjects,
     columns: createColumnsForContributor({
-      onView: handleView,
+      onView: handleViewHistory, // Use handleViewHistory for the eye icon
       onContribute: handleContribute,
     }),
     getCoreRowModel: getCoreRowModel(),
@@ -301,6 +352,13 @@ export default function CurrentProjectsTableContribution({
         onClose={() => setIsContributeDialogOpen(false)}
         project={selectedProject}
         campId={campId}
+      />
+
+      <ContributionFamiliesDialog
+        isOpen={isHistoryDialogOpen}
+        onClose={() => setIsHistoryDialogOpen(false)}
+        families={selectedHistoryFamilies}
+        projectName={selectedHistoryProjectName}
       />
     </div>
   );

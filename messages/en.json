@@ -158,6 +158,14 @@
       "license_required_for_association": "License number is required for associations"
     }
   },
+  "contributor_history_title": "Contributed Families",
+  "contributor_history_family_name": "Family Name",
+  "contributor_history_national_id": "National ID",
+  "contributor_history_phone": "Phone",
+  "contributor_history_total_members": "Total Members",
+  "contributor_history_camp": "Shelter",
+  "contributor_history_location": "Location",
+  "contributor_history_no_families_found": "No families found",
   "families": {
     "add_family": "Add Family",
     "family_name": "Family Name",

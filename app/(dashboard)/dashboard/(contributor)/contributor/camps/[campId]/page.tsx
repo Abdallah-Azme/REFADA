@@ -95,7 +95,7 @@ export default function Page() {
 
           <CampStats
             familyCount={actualFamilyCount}
-            childrenCount={actualMembersCount || camp.childrenCount || 0}
+            membersCount={actualMembersCount || camp.childrenCount || 0}
             projectsCount={projects.length}
           />
 
