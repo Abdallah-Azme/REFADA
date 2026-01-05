@@ -207,7 +207,9 @@
     "camp": "الإيواء",
     "optional": "اختياري",
     "delete_title": "حذف العائلة",
-    "delete_description": "هل أنت متأكد من حذف عائلة \"{name}\"؟ هذا الإجراء لا يمكن التراجع عنه."
+    "delete_description": "هل أنت متأكد من حذف عائلة \"{name}\"؟ هذا الإجراء لا يمكن التراجع عنه.",
+    "family_members": "أفراد العائلة",
+    "relationship": "صلة القرابة"
   },
   "projects": {
     "add_project": "إضافة مشروع",

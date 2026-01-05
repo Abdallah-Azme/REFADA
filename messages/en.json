@@ -202,7 +202,9 @@
     "camp": "Shelter",
     "optional": "optional",
     "delete_title": "Delete Family",
-    "delete_description": "Are you sure you want to delete the family \"{name}\"? This action cannot be undone."
+    "delete_description": "Are you sure you want to delete the family \"{name}\"? This action cannot be undone.",
+    "family_members": "Family Members",
+    "relationship": "Relationship"
   },
   "projects": {
     "add_project": "Add Project",

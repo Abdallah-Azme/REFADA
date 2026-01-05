@@ -180,6 +180,105 @@ export default function FamilyDetailsDialog({
                 />
               </div>
             )}
+
+            {/* Family Members Section */}
+            {family.members && family.members.length > 0 && (
+              <div className="bg-white border rounded-xl overflow-hidden">
+                <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-3 border-b">
+                  <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                    <Users className="h-5 w-5 text-primary" />
+                    {t("family_members") || "أفراد العائلة"} (
+                    {family.members.length})
+                  </h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-50 border-b">
+                      <tr>
+                        <th className="px-4 py-3 text-right font-medium text-gray-600">
+                          {t("full_name")}
+                        </th>
+                        <th className="px-4 py-3 text-right font-medium text-gray-600">
+                          {t("national_id_label")}
+                        </th>
+                        <th className="px-4 py-3 text-right font-medium text-gray-600">
+                          {t("gender")}
+                        </th>
+                        <th className="px-4 py-3 text-right font-medium text-gray-600">
+                          {t("dob_label")}
+                        </th>
+                        <th className="px-4 py-3 text-right font-medium text-gray-600">
+                          {t("relationship") || "صلة القرابة"}
+                        </th>
+                        <th className="px-4 py-3 text-right font-medium text-gray-600">
+                          {t("medical_condition")}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {family.members.map((member, index) => (
+                        <tr
+                          key={member.id || index}
+                          className="hover:bg-gray-50 transition-colors"
+                        >
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                                  member.gender === "male"
+                                    ? "bg-blue-100 text-blue-600"
+                                    : "bg-pink-100 text-pink-600"
+                                }`}
+                              >
+                                <User className="h-4 w-4" />
+                              </div>
+                              <span className="font-medium text-gray-900">
+                                {member.name || ""}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 text-gray-600 text-start">
+                            {member.nationalId || ""}
+                          </td>
+                          <td className="px-4 py-3">
+                            <Badge
+                              variant="outline"
+                              className={
+                                member.gender === "male"
+                                  ? "bg-blue-50 text-blue-700 border-blue-200"
+                                  : "bg-pink-50 text-pink-700 border-pink-200"
+                              }
+                            >
+                              {member.gender === "male"
+                                ? t("male")
+                                : t("female")}
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-3 text-gray-600">
+                            {member.dob || ""}
+                          </td>
+                          <td className="px-4 py-3 text-gray-600">
+                            {member.relationship || "-"}
+                          </td>
+                          <td className="px-4 py-3">
+                            {member.medicalCondition ? (
+                              <Badge
+                                variant="secondary"
+                                className="bg-orange-50 text-orange-700 border-orange-200"
+                              >
+                                {member.medicalCondition}
+                              </Badge>
+                            ) : (
+                              <span className="text-gray-400">-</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </DialogContent>

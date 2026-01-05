@@ -33,6 +33,7 @@ export default function AdminFamiliesPage() {
   const [deletingFamily, setDeletingFamily] = useState<Family | null>(null);
 
   const families = response?.data ?? [];
+  console.log({ response });
 
   const handleCreate = () => {
     setEditingFamily(null);

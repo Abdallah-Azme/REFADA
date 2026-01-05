@@ -33,6 +33,7 @@ interface FamilyTableProps {
 }
 
 export function FamilyTable({ data, columns }: FamilyTableProps) {
+  console.log("data", data, { columns });
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
