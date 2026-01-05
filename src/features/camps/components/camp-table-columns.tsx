@@ -30,6 +30,18 @@ export const createAdminCampColumns = ({
     ),
   },
   {
+    accessorKey: "delegate",
+    header: "المندوب",
+    cell: ({ row }) => {
+      const delegate = row.getValue("delegate") as string | null;
+      return (
+        <div className={delegate ? "font-medium" : "text-gray-400 italic"}>
+          {delegate || "غير معين"}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "capacity",
     header: "السعة",
   },

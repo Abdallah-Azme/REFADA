@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -53,11 +53,40 @@ export function CampFormDialog({
   const { form } = useCampForm(initialData);
   const { data: governorates } = useGovernorates();
 
+  // Find governorate ID by name when governorate is a string
+  useEffect(() => {
+    if (initialData && governorates?.data) {
+      let governorateId = "";
+
+      if (initialData.governorate_id) {
+        governorateId = initialData.governorate_id.toString();
+      } else if (initialData.governorate) {
+        if (
+          typeof initialData.governorate === "object" &&
+          "id" in initialData.governorate
+        ) {
+          governorateId = initialData.governorate.id.toString();
+        } else if (typeof initialData.governorate === "string") {
+          // Find governorate by name
+          const foundGov = governorates.data.find(
+            (gov) => gov.name === initialData.governorate
+          );
+          if (foundGov) {
+            governorateId = foundGov.id.toString();
+          }
+        }
+      }
+
+      if (governorateId && form.getValues("governorate_id") !== governorateId) {
+        form.setValue("governorate_id", governorateId);
+      }
+    }
+  }, [initialData, governorates, form]);
+
   const handleSubmit = (data: CampFormValues) => {
-     onSubmit(data);
+    onSubmit(data);
   };
 
-  
   return (
     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
@@ -128,12 +157,15 @@ export function CampFormDialog({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t("governorate")}</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger
+                      className={
+                        form.formState.errors.governorate_id
+                          ? "border-red-500"
+                          : ""
+                      }
+                    >
                       <SelectValue placeholder={t("select_governorate")} />
                     </SelectTrigger>
                   </FormControl>

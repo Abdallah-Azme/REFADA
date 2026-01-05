@@ -11,6 +11,14 @@ import {
   DropdownMenuTrigger,
 } from "@/src/shared/ui/dropdown-menu";
 
+// Helper to sanitize undefined values (both JS undefined and string "undefined")
+const sanitizeValue = (value: unknown): string => {
+  if (value === null || value === undefined || value === "undefined") {
+    return "";
+  }
+  return String(value);
+};
+
 export const createFamilyColumns = (
   onView: (family: Family) => void,
   onEdit: (family: Family) => void,
@@ -20,30 +28,37 @@ export const createFamilyColumns = (
   {
     accessorKey: "familyName",
     header: "اسم العائلة",
+    cell: ({ row }) => sanitizeValue(row.getValue("familyName")),
   },
   {
     accessorKey: "nationalId",
     header: "رقم الهوية",
+    cell: ({ row }) => sanitizeValue(row.getValue("nationalId")),
   },
   {
     accessorKey: "phone",
     header: "رقم الهاتف",
+    cell: ({ row }) => sanitizeValue(row.getValue("phone")),
   },
   {
     accessorKey: "totalMembers",
     header: "عدد الأفراد",
+    cell: ({ row }) => sanitizeValue(row.getValue("totalMembers")),
   },
   {
     accessorKey: "camp",
     header: "إيواء",
+    cell: ({ row }) => sanitizeValue(row.getValue("camp")),
   },
   {
     accessorKey: "tentNumber",
     header: "رقم الخيمة",
+    cell: ({ row }) => sanitizeValue(row.getValue("tentNumber")),
   },
   {
     accessorKey: "location",
     header: "الموقع",
+    cell: ({ row }) => sanitizeValue(row.getValue("location")),
   },
   {
     id: "actions",

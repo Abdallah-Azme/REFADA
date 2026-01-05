@@ -112,6 +112,7 @@ export interface Camp {
   status?: "active" | "inactive";
   capacity?: number;
   currentOccupancy?: number;
+  delegate?: string | null;
   // Form-specific coordinates (for backward compatibility)
   coordinates?: {
     lat: number;

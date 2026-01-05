@@ -205,7 +205,9 @@
     "dob_label": "تاريخ الميلاد",
     "gender": "النوع",
     "camp": "الإيواء",
-    "optional": "اختياري"
+    "optional": "اختياري",
+    "delete_title": "حذف العائلة",
+    "delete_description": "هل أنت متأكد من حذف عائلة \"{name}\"؟ هذا الإجراء لا يمكن التراجع عنه."
   },
   "projects": {
     "add_project": "إضافة مشروع",

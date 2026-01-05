@@ -39,6 +39,8 @@ export default function FamilyDetailsDialog({
   const { data: response, isLoading } = useFamily(initialFamily?.id || null);
   const family = response?.data || initialFamily;
 
+  console.log("family", family);
+
   // Fetch statistics for male/female counts
   const { data: statisticsResponse, isLoading: isLoadingStats } =
     useFamilyStatistics(initialFamily?.id || null);
@@ -53,7 +55,7 @@ export default function FamilyDetailsDialog({
           <div className="flex items-center justify-between">
             <DialogTitle className="text-xl font-bold flex items-center gap-2">
               <span>{family.familyName}</span>
-              <Badge variant="outline">{family.maritalStatus}</Badge>
+              <Badge variant="outline">{family.maritalStatus || ""}</Badge>
             </DialogTitle>
           </div>
         </DialogHeader>
@@ -95,9 +97,11 @@ export default function FamilyDetailsDialog({
                 <span className="text-sm text-gray-500">
                   {t("residence_location")}
                 </span>
-                <span className="font-bold text-green-700">{family.camp}</span>
+                <span className="font-bold text-green-700">
+                  {family.camp || ""}
+                </span>
                 <span className="text-xs text-green-600">
-                  {t("tent")}: {family.tentNumber}
+                  {t("tent")}: {family.tentNumber || ""}
                 </span>
               </div>
 
@@ -107,7 +111,7 @@ export default function FamilyDetailsDialog({
                   {t("national_id_label")}
                 </span>
                 <span className="font-bold text-purple-700">
-                  {family.nationalId}
+                  {family.nationalId || ""}
                 </span>
               </div>
             </div>
@@ -124,7 +128,7 @@ export default function FamilyDetailsDialog({
                     {t("phone_number")}
                   </span>
                   <span className="text-sm font-medium" dir="ltr">
-                    {family.phone}
+                    {family.phone || ""}
                   </span>
                 </div>
                 {family.backupPhone && (
@@ -141,12 +145,16 @@ export default function FamilyDetailsDialog({
                 <div className="flex items-center gap-3">
                   <MapPin className="h-4 w-4 text-gray-500" />
                   <span className="text-sm text-gray-600">{t("address")}</span>
-                  <span className="text-sm font-medium">{family.location}</span>
+                  <span className="text-sm font-medium">
+                    {family.location || ""}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Calendar className="h-4 w-4 text-gray-500" />
                   <span className="text-sm text-gray-600">{t("dob")}</span>
-                  <span className="text-sm font-medium">{family.dob}</span>
+                  <span className="text-sm font-medium">
+                    {family.dob || ""}
+                  </span>
                 </div>
               </div>
             </div>

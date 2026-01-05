@@ -3,10 +3,39 @@
 import LatestActivities from "./latest-activities";
 import AnalyticsChart from "./analytics-chart";
 import { useUserStatistics } from "../hooks/use-statistics";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+
+// Arabic month names mapping
+const arabicMonths: Record<string, string> = {
+  January: "يناير",
+  February: "فبراير",
+  March: "مارس",
+  April: "أبريل",
+  May: "مايو",
+  June: "يونيو",
+  July: "يوليو",
+  August: "أغسطس",
+  September: "سبتمبر",
+  October: "أكتوبر",
+  November: "نوفمبر",
+  December: "ديسمبر",
+};
+
+// Helper to translate month key based on locale
+const translateMonthKey = (monthKey: string, locale: string): string => {
+  if (locale === "ar") {
+    for (const [en, ar] of Object.entries(arabicMonths)) {
+      if (monthKey.includes(en)) {
+        return monthKey.replace(en, ar);
+      }
+    }
+  }
+  return monthKey;
+};
 
 export default function Analytics() {
   const t = useTranslations("reportsPage");
+  const locale = useLocale();
   const { data: statisticsData } = useUserStatistics();
 
   // Get the last month from the statistics data
@@ -28,7 +57,9 @@ export default function Analytics() {
 
       <AnalyticsChart
         title={
-          lastMonthKey ? `${t("month_report")} ${lastMonthKey}` : undefined
+          lastMonthKey
+            ? `${t("month_report")} ${translateMonthKey(lastMonthKey, locale)}`
+            : undefined
         }
         familyCount={lastMonthStats?.familiesCount || 0}
         projectCount={lastMonthStats?.projectsCount || 0}

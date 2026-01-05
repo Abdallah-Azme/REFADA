@@ -200,7 +200,9 @@
     "dob_label": "Date of Birth",
     "gender": "Gender",
     "camp": "Shelter",
-    "optional": "optional"
+    "optional": "optional",
+    "delete_title": "Delete Family",
+    "delete_description": "Are you sure you want to delete the family \"{name}\"? This action cannot be undone."
   },
   "projects": {
     "add_project": "Add Project",

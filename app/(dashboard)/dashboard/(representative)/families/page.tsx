@@ -32,7 +32,6 @@ export default function RepresentativeFamiliesPage() {
 
   const families = response?.data ?? [];
 
- 
   const handleEdit = (family: Family) => {
     setEditingFamily(family);
     setFormOpen(true);
@@ -111,8 +110,10 @@ export default function RepresentativeFamiliesPage() {
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         onConfirm={handleConfirmDelete}
-        title="حذف العائلة"
-        description={`هل أنت متأكد من حذف عائلة "${deletingFamily?.familyName}"؟ هذا الإجراء لا يمكن التراجع عنه.`}
+        title={t("delete_title")}
+        description={t("delete_description", {
+          name: deletingFamily?.familyName || "",
+        })}
         isPending={deleteMutation.isPending}
       />
     </div>

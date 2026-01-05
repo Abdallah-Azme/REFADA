@@ -39,6 +39,8 @@ export default function AdminCampsPage() {
 
   const camps = data?.data || [];
 
+  console.log({ camps });
+
   const handleOpenDialog = (camp?: Camp) => {
     if (camp) {
       setEditingCamp(camp);

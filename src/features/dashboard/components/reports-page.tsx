@@ -18,14 +18,44 @@ import StatsCards from "./stats-cards";
 import { useProfile } from "@/features/profile";
 import { useCampDetails } from "@/features/camps/hooks/use-camps";
 import { useProjects } from "@/features/projects/hooks/use-projects";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useUserStatistics } from "../hooks/use-statistics";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+// Arabic month names mapping
+const arabicMonths: Record<string, string> = {
+  January: "يناير",
+  February: "فبراير",
+  March: "مارس",
+  April: "أبريل",
+  May: "مايو",
+  June: "يونيو",
+  July: "يوليو",
+  August: "أغسطس",
+  September: "سبتمبر",
+  October: "أكتوبر",
+  November: "نوفمبر",
+  December: "ديسمبر",
+};
+
+// Helper to translate month key based on locale
+const translateMonthKey = (monthKey: string, locale: string): string => {
+  if (locale === "ar") {
+    // Replace English month name with Arabic
+    for (const [en, ar] of Object.entries(arabicMonths)) {
+      if (monthKey.includes(en)) {
+        return monthKey.replace(en, ar);
+      }
+    }
+  }
+  return monthKey;
+};
+
 export default function ReportsPage() {
   const t = useTranslations("reportsPage");
+  const locale = useLocale();
   const { data: profileData, isLoading: profileLoading } = useProfile();
   const { data: projectsData, isLoading: projectsLoading } = useProjects();
   const { data: statisticsData, isLoading: statisticsLoading } =
@@ -133,7 +163,7 @@ export default function ReportsPage() {
   const chartData = monthKeys.map((monthKey) => {
     const monthStats = lastMonths[monthKey];
     return {
-      title: `${t("month_report")} ${monthKey}`,
+      title: `${t("month_report")} ${translateMonthKey(monthKey, locale)}`,
       familyCount: monthStats?.familiesCount || 0,
       projectCount: monthStats?.projectsCount || 0,
       contributionPercentage: parsePercentage(
