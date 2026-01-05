@@ -28,7 +28,7 @@ export const createRegisterSchema = (t: (key: string) => string) =>
       admin_position: z.string().optional(),
       license_number: z.string().optional(),
       // Delegate-specific fields
-      camp_id: z.string().optional(),
+      camp_name: z.string().optional(),
       accept_terms: z.boolean().refine((val) => val === true, {
         message: t("validation.terms_required"),
       }),
@@ -116,7 +116,7 @@ export interface RegisterRequest {
   role: "delegate" | "contributor";
   admin_position?: string; // Required for delegate
   license_number?: string; // Required for delegate
-  camp_id?: string; // Required for delegate
+  camp_name?: string; // Required for delegate
   accept_terms: boolean;
 }
 

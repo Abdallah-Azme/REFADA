@@ -143,6 +143,8 @@
     "already_have_account": "لديك حساب بالفعل؟",
     "sign_in": "دخول",
     "select_camp": "اختر الإيواء",
+    "other_camp": "أخرى",
+    "enter_camp_name": "أدخل اسم الإيواء",
     "validation": {
       "invalid_email": "البريد الإلكتروني غير صحيح",
       "password_min_length_6": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",

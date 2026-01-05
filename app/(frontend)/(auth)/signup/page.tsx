@@ -64,13 +64,21 @@ export default function RegisterPage() {
       role: "contributor",
       admin_position: "",
       license_number: "",
-      camp_id: "",
+      camp_name: "",
       accept_terms: false,
     },
   });
 
+  // Watch camp_name to detect "other" selection
+  const watchedCampName = form.watch("camp_name");
+
   const onSubmit = (values: RegisterFormValues) => {
-    register(values);
+    // If "other" was selected, use the custom camp name
+    if (values.camp_name === "__other__" && customCampName) {
+      register({ ...values, camp_name: customCampName });
+    } else {
+      register(values);
+    }
   };
 
   const handleRoleChange = (role: string) => {
@@ -82,9 +90,12 @@ export default function RegisterPage() {
       form.setValue("license_number", "");
     } else {
       // Clear delegate-specific fields when switching to contributor
-      form.setValue("camp_id", "");
+      form.setValue("camp_name", "");
     }
   };
+
+  // State for custom camp name input
+  const [customCampName, setCustomCampName] = useState("");
 
   const watchedAdminPosition = form.watch("admin_position");
 
@@ -313,13 +324,44 @@ export default function RegisterPage() {
                 {/* اختيار الإيواء للمندوب */}
                 <FormField
                   control={form.control}
-                  name="camp_id"
+                  name="camp_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
                         <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
+                          onValueChange={(value) => {
+                            if (value === "__other__") {
+                              field.onChange(value);
+                              setCustomCampName("");
+                            } else {
+                              // Find the camp and set the name as the value
+                              const selectedCamp = camps.find(
+                                (camp) => camp.id.toString() === value
+                              );
+                              if (selectedCamp) {
+                                const campName =
+                                  typeof selectedCamp.name === "string"
+                                    ? selectedCamp.name
+                                    : selectedCamp.name?.ar ||
+                                      selectedCamp.name?.en ||
+                                      "";
+                                field.onChange(campName);
+                              }
+                            }
+                          }}
+                          value={
+                            field.value === "__other__"
+                              ? "__other__"
+                              : camps
+                                  .find((camp) => {
+                                    const campName =
+                                      typeof camp.name === "string"
+                                        ? camp.name
+                                        : camp.name?.ar || camp.name?.en || "";
+                                    return campName === field.value;
+                                  })
+                                  ?.id.toString() || field.value
+                          }
                           disabled={isPending}
                         >
                           <SelectTrigger className="h-[50px] bg-[#EEEADD]">
@@ -340,6 +382,9 @@ export default function RegisterPage() {
                                 </SelectItem>
                               );
                             })}
+                            <SelectItem value="__other__">
+                              {t("other_camp") || "أخرى"}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -347,6 +392,17 @@ export default function RegisterPage() {
                     </FormItem>
                   )}
                 />
+
+                {/* Custom camp name input - shows when "Other" is selected */}
+                {watchedCampName === "__other__" && (
+                  <Input
+                    className="h-[50px] bg-[#EEEADD]"
+                    placeholder={t("enter_camp_name") || "أدخل اسم الإيواء"}
+                    value={customCampName}
+                    onChange={(e) => setCustomCampName(e.target.value)}
+                    disabled={isPending}
+                  />
+                )}
               </>
             )}
 

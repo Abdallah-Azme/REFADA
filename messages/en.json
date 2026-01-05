@@ -138,6 +138,8 @@
     "already_have_account": "Already have an account?",
     "sign_in": "Sign In",
     "select_camp": "Select Shelter",
+    "other_camp": "Other",
+    "enter_camp_name": "Enter shelter name",
     "validation": {
       "invalid_email": "Invalid email address",
       "password_min_length_6": "Password must be at least 6 characters",
