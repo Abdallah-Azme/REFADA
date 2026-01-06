@@ -20,6 +20,7 @@ import {
   FormMessage,
 } from "@/src/shared/ui/form";
 import { Input } from "@/src/shared/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Button } from "@/src/shared/ui/button";
 import {
   Select,
@@ -204,7 +205,11 @@ export function FamilyFormDialog({
                   <FormItem>
                     <FormLabel>رقم الهاتف</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="رقم الهاتف" />
+                      <PhoneInput
+                        placeholder="رقم الهاتف"
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -218,7 +223,11 @@ export function FamilyFormDialog({
                   <FormItem>
                     <FormLabel>رقم هاتف بديل (اختياري)</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="رقم هاتف بديل" />
+                      <PhoneInput
+                        placeholder="رقم هاتف بديل"
+                        value={field.value || ""}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

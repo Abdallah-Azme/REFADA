@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -192,11 +193,12 @@ export default function RegisterPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      className="h-[50px] bg-[#EEEADD]"
+                    <PhoneInput
+                      className="h-[50px] [&_input]:bg-[#EEEADD] [&_input]:h-[50px] [&_button]:h-[50px] [&_button]:bg-[#EEEADD]"
                       placeholder={t("phone")}
                       disabled={isPending}
-                      {...field}
+                      value={field.value}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />
@@ -211,11 +213,12 @@ export default function RegisterPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      className="h-[50px] bg-[#EEEADD]"
+                    <PhoneInput
+                      className="h-[50px] [&_input]:bg-[#EEEADD] [&_input]:h-[50px] [&_button]:h-[50px] [&_button]:bg-[#EEEADD]"
                       placeholder={t("backup_phone")}
                       disabled={isPending}
-                      {...field}
+                      value={field.value}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />

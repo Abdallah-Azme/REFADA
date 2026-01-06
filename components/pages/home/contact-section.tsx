@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -173,10 +174,11 @@ export default function ContactSection() {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input
+                        <PhoneInput
                           placeholder={t("phone_placeholder")}
-                          className="bg-[#F5F3EB] border-none focus-visible:ring-0 h-12 rounded-md text-right"
-                          {...field}
+                          className="[&_input]:bg-[#F5F3EB] [&_input]:border-none [&_input]:focus-visible:ring-0 [&_input]:h-12 [&_button]:h-12 [&_button]:bg-[#F5F3EB] [&_button]:border-none"
+                          value={field.value}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage className="text-red-300 text-xs" />

@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
@@ -417,10 +418,11 @@ export default function EditFamilyDialog({
                         {t("phone")}
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          className="bg-white"
+                        <PhoneInput
+                          className="[&_input]:bg-white [&_button]:bg-white"
                           placeholder={t("phone")}
-                          {...field}
+                          value={field.value}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage />
@@ -438,11 +440,11 @@ export default function EditFamilyDialog({
                         {t("backup_phone")}
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          className="bg-white"
+                        <PhoneInput
+                          className="[&_input]:bg-white [&_button]:bg-white"
                           placeholder={t("backup_phone")}
-                          {...field}
                           value={field.value || ""}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage />

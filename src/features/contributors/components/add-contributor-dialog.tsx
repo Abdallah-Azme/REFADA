@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Button } from "@/components/ui/button";
 
 import { CirclePlus, PlusCircle, Users, Eye, EyeOff } from "lucide-react";
@@ -129,10 +130,11 @@ export default function AddContributorDialog() {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input
-                          className="bg-white"
+                        <PhoneInput
+                          className="[&_input]:bg-white [&_button]:bg-white"
                           placeholder={t("phone")}
-                          {...field}
+                          value={field.value}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage />
@@ -165,11 +167,11 @@ export default function AddContributorDialog() {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input
-                          className="bg-white"
+                        <PhoneInput
+                          className="[&_input]:bg-white [&_button]:bg-white"
                           placeholder={t("backup_phone")}
-                          {...field}
                           value={field.value || ""}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage />

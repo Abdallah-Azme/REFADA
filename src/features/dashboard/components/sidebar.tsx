@@ -45,11 +45,25 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/shared/ui/collapsible";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useLogout } from "@/features/auth";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const { isRTL } = useDirection();
   const [open, setOpen] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const { mutate: logout, isPending: isLoggingOut } = useLogout();
 
   useEffect(() => setOpen(false), [pathname]);
 
@@ -110,7 +124,7 @@ export default function DashboardSidebar() {
       href: "/dashboard/admin/representatives",
     },
     {
-      label: "المستخدمين المعلقين",
+      label: "المعلقين",
       icon: Users,
       href: "/dashboard/admin/pending-users",
     },
@@ -567,13 +581,38 @@ export default function DashboardSidebar() {
 
           {/* LOGOUT */}
           <SidebarFooter className="border-t border-white/10 py-3 px-4 mt-auto relative z-10">
-            <SidebarMenuButton
-              size="lg"
-              className="w-full flex items-center gap-3 text-white hover:bg-white/10 rounded-xl px-4 py-3"
+            <AlertDialog
+              open={logoutDialogOpen}
+              onOpenChange={setLogoutDialogOpen}
             >
-              <LogOut className="size-4" />
-              <span className="text-sm font-medium">تسجيل خروج</span>
-            </SidebarMenuButton>
+              <AlertDialogTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="w-full flex items-center gap-3 text-white hover:bg-white/10 rounded-xl px-4 py-3"
+                >
+                  <LogOut className="size-4" />
+                  <span className="text-sm font-medium">تسجيل خروج</span>
+                </SidebarMenuButton>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>تأكيد تسجيل الخروج</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="gap-2">
+                  <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => logout()}
+                    disabled={isLoggingOut}
+                    className="bg-red-600 hover:bg-red-700"
+                  >
+                    {isLoggingOut ? "جاري..." : "تسجيل خروج"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </SidebarFooter>
 
           {/* ART */}

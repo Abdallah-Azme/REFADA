@@ -9,6 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Pencil, Save, X } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -258,10 +259,11 @@ export default function ContributorForm() {
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormControl>
-                          <Input
-                            {...field}
-                            className="text-right bg-white border-gray-300"
+                          <PhoneInput
+                            className="[&_input]:text-right [&_input]:bg-white [&_input]:border-gray-300 [&_button]:bg-white [&_button]:border-gray-300"
                             placeholder="رقم الجوال"
+                            value={field.value}
+                            onChange={field.onChange}
                           />
                         </FormControl>
                         <FormMessage />
@@ -281,10 +283,11 @@ export default function ContributorForm() {
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormControl>
-                          <Input
-                            {...field}
-                            className="text-right bg-white border-gray-300"
+                          <PhoneInput
+                            className="[&_input]:text-right [&_input]:bg-white [&_input]:border-gray-300 [&_button]:bg-white [&_button]:border-gray-300"
                             placeholder="رقم الجوال الاحتياطي"
+                            value={field.value || ""}
+                            onChange={field.onChange}
                           />
                         </FormControl>
                         <FormMessage />

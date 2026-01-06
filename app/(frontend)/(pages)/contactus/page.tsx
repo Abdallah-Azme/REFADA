@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import {
   Select,
   SelectContent,
@@ -160,10 +161,11 @@ export default function ContactSection() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input
-                            className="h-[50px] bg-[#EEEADD]"
+                          <PhoneInput
+                            className="h-[50px] [&_input]:bg-[#EEEADD] [&_input]:h-[50px] [&_button]:h-[50px] [&_button]:bg-[#EEEADD]"
                             placeholder={t("phonePlaceholder")}
-                            {...field}
+                            value={field.value}
+                            onChange={field.onChange}
                           />
                         </FormControl>
                         <FormMessage />

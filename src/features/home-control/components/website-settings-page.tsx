@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Loader2, Settings, Upload } from "lucide-react";
 import {
   useWebsiteSettings,
@@ -236,7 +237,11 @@ export default function WebsiteSettingsPage() {
                     <FormItem>
                       <FormLabel>رقم الهاتف</FormLabel>
                       <FormControl>
-                        <Input placeholder="+970 59 999 9999" {...field} />
+                        <PhoneInput
+                          placeholder="+970 59 999 9999"
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
