@@ -59,6 +59,11 @@ export default function DashboardSidebar() {
     { label: "بيانات الإيواء", icon: Tent, href: "/dashboard/camps" },
     { label: "العائلات", icon: Users, href: "/dashboard/families" },
     { label: "المشاريع", icon: FolderOpen, href: "/dashboard/projects" },
+    {
+      label: "المساهمات",
+      icon: HeartHandshake,
+      href: "/dashboard/contributions",
+    },
     { label: "التقارير", icon: BarChart3, href: "/dashboard/reports" },
     { label: "الإعدادات", icon: Settings, href: "/dashboard/settings" },
   ];

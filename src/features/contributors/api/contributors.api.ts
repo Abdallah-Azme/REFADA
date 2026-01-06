@@ -109,6 +109,7 @@ export interface CampFamily {
   membersCount: number;
   ageGroups: string[];
   medicalConditions: string[];
+  hasBenefit?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -124,10 +125,12 @@ export interface CampFamiliesResponse {
 }
 
 export async function getCampFamiliesApi(
-  campId: number
+  campId: number,
+  projectId?: number
 ): Promise<CampFamiliesResponse> {
+  const queryParams = projectId ? `?project_id=${projectId}` : "";
   return apiRequest<CampFamiliesResponse>(
-    `/contributor/camps/families/${campId}`,
+    `/contributor/camps/families/${campId}${queryParams}`,
     {
       method: "GET",
     }
@@ -319,6 +322,92 @@ export async function deleteFamilyFromContributionApi(
     `/contributions/${contributionId}/families/${familyId}`,
     {
       method: "DELETE",
+    }
+  );
+}
+
+// ============================================================================
+// Delegate (Representative) Contributions API
+// ============================================================================
+
+export interface DelegateContribution {
+  id: number;
+  notes: string | null;
+  status: string;
+  contributorFamilies: ContributorFamily[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DelegateContributionsResponse {
+  success: boolean;
+  message: string;
+  data: DelegateContribution[];
+}
+
+export async function getDelegateContributionsApi(): Promise<DelegateContributionsResponse> {
+  return apiRequest<DelegateContributionsResponse>("/delegate/contributions", {
+    method: "GET",
+  });
+}
+
+// ============================================================================
+// Confirm Delegate Contribution API
+// ============================================================================
+
+export interface ConfirmDelegateContributionResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function confirmDelegateContributionApi(
+  contributionId: number,
+  confirmedQuantity: number
+): Promise<ConfirmDelegateContributionResponse> {
+  return apiRequest<ConfirmDelegateContributionResponse>(
+    `/delegate/contributions/${contributionId}/confirm`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        confirmed_quantity: confirmedQuantity,
+      }),
+    }
+  );
+}
+
+// ============================================================================
+// Add Families to Contribution API
+// ============================================================================
+
+export interface FamilyQuantity {
+  id: number;
+  quantity: number;
+}
+
+export interface AddFamiliesToContributionResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function addFamiliesToContributionApi(
+  contributionId: number,
+  families: FamilyQuantity[]
+): Promise<AddFamiliesToContributionResponse> {
+  const formData = new FormData();
+
+  families.forEach((family, index) => {
+    formData.append(`families[${index}][id]`, family.id.toString());
+    formData.append(`families[${index}][quantity]`, family.quantity.toString());
+  });
+
+  return apiRequest<AddFamiliesToContributionResponse>(
+    `/delegate/contributions/${contributionId}/add-families`,
+    {
+      method: "POST",
+      body: formData,
     }
   );
 }

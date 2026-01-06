@@ -1,0 +1,6983 @@
+{
+	"info": {
+		"_postman_id": "a3132d04-1ad2-4ce1-bcb1-1169fdf987bc",
+		"name": "Refad",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50947120",
+		"_collection_link": "https://interstellar-spaceship-178248.postman.co/workspace/f4bdd1bb-6546-4966-9358-3fcccb53d4a3/collection/29689936-a3132d04-1ad2-4ce1-bcb1-1169fdf987bc?action=share&source=collection_link&creator=50947120"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "sara",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "takwanassar1@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345678@Ta",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "12345678@Ta",
+									"type": "text"
+								},
+								{
+									"key": "id_number",
+									"value": "30206291604421",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "201281927143",
+									"type": "text"
+								},
+								{
+									"key": "backup_phone",
+									"value": "201229988082",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "delegate",
+									"description": "in:delegate,contributor",
+									"type": "text"
+								},
+								{
+									"key": "admin_position_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "accept_terms",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "camp_name",
+									"value": "sahra",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "contributor",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept-Language",
+										"value": "ar",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "contributor",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "contributor@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "12345678@Ta",
+											"type": "text"
+										},
+										{
+											"key": "password_confirmation",
+											"value": "12345678@Ta",
+											"type": "text"
+										},
+										{
+											"key": "id_number",
+											"value": "30206291601432",
+											"type": "text"
+										},
+										{
+											"key": "phone",
+											"value": "201281927785",
+											"type": "text"
+										},
+										{
+											"key": "backup_phone",
+											"value": "201229988054",
+											"type": "text"
+										},
+										{
+											"key": "role",
+											"value": "contributor",
+											"description": "in:delegate,contributor",
+											"type": "text"
+										},
+										{
+											"key": "accept_terms",
+											"value": "1",
+											"description": "'مبادر', 'فريق', 'جمعية'",
+											"type": "text"
+										},
+										{
+											"key": "admin_position",
+											"value": "فريق",
+											"type": "text"
+										},
+										{
+											"key": "license_number",
+											"value": "",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/auth/register",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "admin@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "delegate",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept-Language",
+										"value": "ar",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": "delegate@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "12345678@Ta",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "contributor",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept-Language",
+										"value": "ar",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": "contributor@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "12345678@Ta",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "forgot-password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "takwanassar1@gmail.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/forgot-password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify-reset-code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "takwanassar1@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "reset_code",
+									"value": "112797",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/verify-reset-code",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"verify-reset-code"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset-password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "reset_token",
+									"value": "pVujTvTQreza69PhXI6oFk0ndKsYtakjyl1bUovI1NQqpzmrXHh1ZvzvnYJI",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Fcis_it4",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "Fcis_it4",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/reset-password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "112|fLWyfaz8sMxQnj7TRQ6Fyiv93IkRBChd7UO6B8w452b8503f",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "takwa@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "T123akw@",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "12|F0aQTJqSpvMmcYDTKDqo9JBHqv1vGOf7pYMZVzHn53691fca",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/delete-account",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"delete-account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fcm Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "3|XuJBIVVr2ay73tisVeZ3DrL4FfgnZ4rsaIXjopmz600cb370",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fcm_token",
+									"value": "fcm_token",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/user/fcm-token",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"fcm-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh-token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "refresh_token",
+									"value": "VP80zn8oizdpZVQk4G1sy091OAo6wXlpQVhDF7K0FPNQRsDJUbCs6N6kUV3YN17K",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/refresh-token",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "pendingUsers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/users/pending",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"pending"
+							],
+							"query": [
+								{
+									"key": "role",
+									"value": "contributor",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "approveUsers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "camp_id",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/users/:user/approve",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								":user",
+								"approve"
+							],
+							"variable": [
+								{
+									"key": "user",
+									"value": "37"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rejectUsers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/users/:user/reject",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								":user",
+								"reject"
+							],
+							"variable": [
+								{
+									"key": "user",
+									"value": "28"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contributions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/admin/contributions?camp_id=1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"contributions"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending",
+									"disabled": true
+								},
+								{
+									"key": "camp_id",
+									"value": "1"
+								},
+								{
+									"key": "project_id",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "mohamed ",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "contributor@example.com",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "2012819271422",
+									"type": "text"
+								},
+								{
+									"key": "id_number",
+									"value": "302098762345985",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "delegate",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123@M123",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "123@M123",
+									"type": "text"
+								},
+								{
+									"key": "backup_phone",
+									"value": "970591234567",
+									"type": "text"
+								},
+								{
+									"key": "admin_position_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "license_number",
+									"value": "12345677",
+									"type": "text"
+								},
+								{
+									"key": "camp_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/admin/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all users",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/admin/users?role=contributor",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							],
+							"query": [
+								{
+									"key": "role",
+									"value": "contributor"
+								},
+								{
+									"key": "status",
+									"value": "approved",
+									"description": "'approved', 'pending', 'rejected'",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/admin/users/29",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"29"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "approve project",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "40|ivSFJfN6tZHnPFgYuBiZVbyNBNABN7dXUvWNbaYId7daa0ce",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "status",
+									"value": "in_progress",
+									"description": "in_progress,cancelled",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/projects/5/approve",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"projects",
+								"5",
+								"approve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change user password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "186|AmUPMPeihoMlmY9jzJDfKq3UEBDDkYtGkaTY9QXcf6991919",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "password",
+									"value": "1234@Ssss",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "1234@Ssss",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/users/:user/change-password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								":user",
+								"change-password"
+							],
+							"variable": [
+								{
+									"key": "user",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "removeFamilyFromContribution",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "92|vCLXUEumien9dTBEuFl92amEjQstqgQMFJn2XPoiff00b687",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/contributions/:contribution/families/:family",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contributions",
+								":contribution",
+								"families",
+								":family"
+							],
+							"variable": [
+								{
+									"key": "contribution",
+									"value": ""
+								},
+								{
+									"key": "family",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "profile",
+			"item": [
+				{
+					"name": "profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "112|fLWyfaz8sMxQnj7TRQ6Fyiv93IkRBChd7UO6B8w452b8503f",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/profile",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "8|Jl4MCJ6FvVjUnQuWI9A6Iw6PTADeBeoUUF11W1zD3eb2c755",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "abdo",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "sara@gmail.com",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "id_number",
+									"value": "30206291601129",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "phone",
+									"value": "201281927190",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "backup_phone",
+									"value": "201229988189",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "admin_position",
+									"value": "foundation ",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "license_number",
+									"value": "12345]",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "profile_image",
+									"type": "file",
+									"src": "postman-cloud:///1f0c7ee5-b3c0-4790-9ce8-62cc8d62d34f"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/profile",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "profile change-password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "8|Jl4MCJ6FvVjUnQuWI9A6Iw6PTADeBeoUUF11W1zD3eb2c755",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "current_password",
+									"value": "Fcis_it4",
+									"type": "text"
+								},
+								{
+									"key": "new_password",
+									"value": "T123akw@",
+									"type": "text"
+								},
+								{
+									"key": "new_password_confirmation",
+									"value": "T123akw@",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/profile/change-password",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"profile",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Camp",
+			"item": [
+				{
+					"name": "camps",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "72|PRepssUy9ZR4qZ6T75hNvFNGgpVfdn3lSOUdtD0va8b0c1a3",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/camps",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"camps"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "location",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "family_count",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "governorate_id",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name[ar]",
+									"value": "شمال غزة",
+									"type": "text"
+								},
+								{
+									"key": "name[en]",
+									"value": "Hope Camp",
+									"type": "text"
+								},
+								{
+									"key": "camp_img",
+									"type": "file",
+									"src": "postman-cloud:///1f0cbc52-5713-4f60-b85c-393668a9208c"
+								},
+								{
+									"key": "location",
+									"value": "شمال قطاع غزة - على بُعد نحو 4 كيلومترات",
+									"type": "text"
+								},
+								{
+									"key": "description[en]",
+									"value": "يُعتبر مخيم جباليا أكبر مخيم للاجئين الفلسطينيين في فلسطين، حيث يعيش فيه 119,000 فلسطيني يتوزعون على مساحة لا تتجاوز 1.4 كيلومتر مربع، مما يجعله واحدًا من أكثر الأماكن اكتظاظًا بالسكان 1948. يُعتبر مخيم",
+									"type": "text"
+								},
+								{
+									"key": "description[ar]",
+									"value": "يُعتبر مخيم جباليا أكبر مخيم للاجئين الفلسطينيين في فلسطين، حيث يعيش فيه 119,000 فلسطيني يتوزعون على مساحة لا تتجاوز 1.4 كيلومتر مربع، مما يجعله واحدًا من أكثر الأماكن اكتظاظًا بالسكان 1948. يُعتبر مخيم",
+									"type": "text"
+								},
+								{
+									"key": "governorate_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "latitude",
+									"value": "11.5",
+									"type": "text"
+								},
+								{
+									"key": "longitude",
+									"value": "12.7",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/camps",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"camps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "215|BoiUgKT3WR3HEUSDUgXlyk3sEJWjkopXZPLKwwsd7c218597",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/camps/Gabalya-Camp",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"camps",
+								"Gabalya-Camp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name[ar]",
+									"value": "معسكر السلام",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "name[en]",
+									"value": "Peace Camp",
+									"type": "text"
+								},
+								{
+									"key": "family_count",
+									"value": "10",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "children_count",
+									"value": "5",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "elderly_count",
+									"value": "3",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "latitude",
+									"value": "30.12345",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "longitude",
+									"value": "31.54321",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "bank_account",
+									"value": "1234567890",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "governorate_id",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/camps/Peace-Camp-4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"camps",
+								"Peace-Camp-4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "destroy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/camps/Gabalya-Camp?deleteRelated=true",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"camps",
+								"Gabalya-Camp"
+							],
+							"query": [
+								{
+									"key": "deleteRelated",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Delete",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/camps/مخيم-جباليا/check-delete",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"camps",
+								"مخيم-جباليا",
+								"check-delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/camps/statistics",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"camps",
+								"statistics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "other statisc",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "128|JYjwj5ByO1WsurqreKFPzF6ouo2fF5sO5dXXny2e36ef3661",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/camp/family-statistics",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"camp",
+								"family-statistics"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Family",
+			"item": [
+				{
+					"name": "index",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/families",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "total_members",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "marital_status",
+									"value": "أرمل",
+									"disabled": true
+								},
+								{
+									"key": "medical_condition",
+									"value": "ضغط دم مرتفع",
+									"disabled": true
+								},
+								{
+									"key": "has_children",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "export",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "2|AMhA6hp05jpY75fQS5i2aYUpLdsKwt9wPkJn8ea57fe24058",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/families/export",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families",
+								"export"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "total_members",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "marital_status",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "family_name",
+									"value": "family name",
+									"type": "text"
+								},
+								{
+									"key": "national_id",
+									"value": "123",
+									"type": "text"
+								},
+								{
+									"key": "dob",
+									"value": "29-6-2002",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "11111111111111",
+									"type": "text"
+								},
+								{
+									"key": "backup_phone",
+									"value": "2034578698",
+									"type": "text"
+								},
+								{
+									"key": "total_members",
+									"value": "50",
+									"type": "text"
+								},
+								{
+									"key": "tent_number",
+									"value": "12",
+									"type": "text"
+								},
+								{
+									"key": "location",
+									"value": "mansoura ",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "notes notes notes ",
+									"type": "text"
+								},
+								{
+									"key": "camp_id",
+									"value": "1",
+									"description": "required only if admin if delegate added by default according to delegate camp",
+									"type": "text"
+								},
+								{
+									"key": "marital_status_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "members[0][name]",
+									"value": "أحمد النجار",
+									"type": "text"
+								},
+								{
+									"key": "members[0][gender]",
+									"value": "male",
+									"type": "text"
+								},
+								{
+									"key": "members[0][dob]",
+									"value": "2005-03-20",
+									"type": "text"
+								},
+								{
+									"key": "members[0][national_id]",
+									"value": "1234567890",
+									"type": "text"
+								},
+								{
+									"key": "members[0][relationship_id]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "members[0][medical_condition_id]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "members[1][name]",
+									"value": "ليلى النجار",
+									"type": "text"
+								},
+								{
+									"key": "members[1][gender]",
+									"value": "female",
+									"type": "text"
+								},
+								{
+									"key": "members[1][dob]",
+									"value": "2008-07-15",
+									"type": "text"
+								},
+								{
+									"key": "members[1][national_id]",
+									"value": "1234567890199",
+									"type": "text"
+								},
+								{
+									"key": "members[1][relationship_id]",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "members[1][medical_condition_id]",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][medical_condition]",
+									"value": "مرهق جدًا",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/families",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "edit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "family_name",
+									"value": "Family Updated",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "national_id",
+									"value": "3020657866666",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "dob",
+									"value": "2002-06-29",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "phone",
+									"value": "201281222222222",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "backup_phone",
+									"value": "2034578698",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "total_members",
+									"value": "52",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "tent_number",
+									"value": "15",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "location",
+									"value": "mansoura updated",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "notes",
+									"value": "updated notes",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "camp_id",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "marital_status_id",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][id]",
+									"value": "44",
+									"type": "text"
+								},
+								{
+									"key": "members[0][name]",
+									"value": "أحمد النجار",
+									"type": "text"
+								},
+								{
+									"key": "members[0][gender]",
+									"value": "male",
+									"type": "text"
+								},
+								{
+									"key": "members[0][dob]",
+									"value": "2005-03-20",
+									"type": "text"
+								},
+								{
+									"key": "members[0][national_id]",
+									"value": "1234567999999999999",
+									"type": "text"
+								},
+								{
+									"key": "members[0][relationship_id]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "members[0][medical_condition]",
+									"value": "السكري النوع الأول",
+									"type": "text"
+								},
+								{
+									"key": "members[0][name]",
+									"value": "يوسف النجار",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][gender]",
+									"value": "male",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][dob]",
+									"value": "2012-05-10",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][national_id]",
+									"value": "12345678978999",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][relationship_id]",
+									"value": "3",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[0][medical_condition_id]",
+									"value": "3",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][name]",
+									"value": "name",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][gender]",
+									"value": "female",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][dob]",
+									"value": "28-4-2012",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][medical_condition_id]",
+									"value": "7",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][national_id]",
+									"value": "123456799999999999",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][medical_condition]",
+									"value": "قرحة المعدة",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "members[1][relationship_id]",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/families/:family",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families",
+								":family"
+							],
+							"variable": [
+								{
+									"key": "family",
+									"value": "11"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "38|u46bbwkngn0A1rktyvFfURm42ZN6DLp0KR0tySHMf1084faa",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/families/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/families/:family",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families",
+								":family"
+							],
+							"variable": [
+								{
+									"key": "family",
+									"value": "11"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete member",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "121|aTyGFVIvWtELRdWncJuRXP3uX52JrUx9Mt47kl3M9bd21e85",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/families/:family/members/:member",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families",
+								":family",
+								"members",
+								":member"
+							],
+							"variable": [
+								{
+									"key": "family",
+									"value": "8"
+								},
+								{
+									"key": "member",
+									"value": "32"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "statistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/families/:family/statistics",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families",
+								":family",
+								"statistics"
+							],
+							"variable": [
+								{
+									"key": "family",
+									"value": "17"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bulk Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "family_ids[]",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "family_ids[]",
+									"value": "4",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/family/bulk-delete",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"family",
+								"bulk-delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Family Memeber",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/families/1/members",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families",
+								"1",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "113|11gZgCn6sB130OXB7vREQWWA1cEAp3rRKb0oCRwi3ab45c26",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "name",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "male",
+									"description": "in:male,female",
+									"type": "text"
+								},
+								{
+									"key": "national_id",
+									"value": "30206578967672",
+									"type": "text"
+								},
+								{
+									"key": "dob",
+									"value": "29-6-2002",
+									"type": "text"
+								},
+								{
+									"key": "relationship_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "medical_condition_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/db.txt"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/families/3/members",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families",
+								"3",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "edit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "113|11gZgCn6sB130OXB7vREQWWA1cEAp3rRKb0oCRwi3ab45c26",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "mmmm",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "gender",
+									"value": "female",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "dob",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "national_id",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "relationship_id",
+									"value": "4",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "medical_condition_id",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/project1.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/families/3/members/7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families",
+								"3",
+								"members",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "82|zx4VPBnVOAEfw5a0SAgguurFtVnMoAPkEu6fUqJx0ea544d0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/families/16/members/4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"families",
+								"16",
+								"members",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Project",
+			"item": [
+				{
+					"name": "store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "project name",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "bebficia",
+									"description": "in:male,female",
+									"type": "text"
+								},
+								{
+									"key": "beneficiary_count",
+									"value": "50",
+									"type": "text"
+								},
+								{
+									"key": "college",
+									"value": "30",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "project_image",
+									"type": "file",
+									"src": "postman-cloud:///1f0cbc52-5713-4f60-b85c-393668a9208c"
+								},
+								{
+									"key": "camp_id",
+									"value": "1",
+									"description": "required only if user is admin if delegate assigned according to delegate camp\n",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/projects",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "18|zuY7TkSRh9G7hm0z3r4wBSyuhsvdHbPhWSu4g5tta7fb3148",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "project name",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "type",
+									"value": "bebficia",
+									"description": "in:male,female",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "beneficiary_count",
+									"value": "50",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "college",
+									"value": "30",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "notes",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "project_image",
+									"type": "file",
+									"src": "postman-cloud:///1f0c52d2-866e-4ec0-8476-1b15719387ae"
+								},
+								{
+									"key": "camp_id ",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/projects/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"projects",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "index",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "193|nHLJn1cV6navpc1WbYfDqUPoUTwMkz76qwzVNgU76e8e7177",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/projects",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"projects"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "project name",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "beneficiary_count",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "type",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "family_name",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "3|XuJBIVVr2ay73tisVeZ3DrL4FfgnZ4rsaIXjopmz600cb370",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/projects/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"projects",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "destroy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/projects/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"projects",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "export",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "59|pNNWit29HGHlL5N5e9UaphEHqMJdJWRB9XMIoOdcde1f7a1e",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/projects/export/data",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"projects",
+								"export",
+								"data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listProjects",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/list-projects",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"list-projects"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "delegate",
+			"item": [
+				{
+					"name": "contributions",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/delegate/contributions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"delegate",
+								"contributions"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending",
+									"description": "'pending', 'approved'",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "confirmContribution",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "confirmed_quantity",
+									"value": "20",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/delegate/contributions/:contribution/confirm",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"delegate",
+								"contributions",
+								":contribution",
+								"confirm"
+							],
+							"variable": [
+								{
+									"key": "contribution",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addFamiliesToContribution",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "families[0][id]",
+									"value": "17",
+									"type": "text"
+								},
+								{
+									"key": "families[0][quantity]",
+									"value": "5",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/delegate/contributions/:contribution/add-families",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"delegate",
+								"contributions",
+								":contribution",
+								"add-families"
+							],
+							"variable": [
+								{
+									"key": "contribution",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateFamilyQuantity",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "92|vCLXUEumien9dTBEuFl92amEjQstqgQMFJn2XPoiff00b687",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "quantity",
+									"value": "10",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/contributions/5/families/3/quantity",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contributions",
+								"5",
+								"families",
+								"3",
+								"quantity"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contributor",
+			"item": [
+				{
+					"name": "families in camp",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/contributor/camps/families/:camp?project_id=2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contributor",
+								"camps",
+								"families",
+								":camp"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "family name",
+									"disabled": true
+								},
+								{
+									"key": "total_members",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "marital_status",
+									"value": "أرمل",
+									"disabled": true
+								},
+								{
+									"key": "has_children",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "year_from",
+									"value": "2002",
+									"disabled": true
+								},
+								{
+									"key": "year_to",
+									"value": "2004",
+									"disabled": true
+								},
+								{
+									"key": "has_medical_condition",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "project_id",
+									"value": "2"
+								}
+							],
+							"variable": [
+								{
+									"key": "camp",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contribute",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "contributedQuantity",
+									"value": "20",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "notes notes ",
+									"type": "text"
+								},
+								{
+									"key": "families[]",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "families[]",
+									"value": "16",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/contributor/projects/:project/contribute",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contributor",
+								"projects",
+								":project",
+								"contribute"
+							],
+							"variable": [
+								{
+									"key": "project",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contribution history",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "93|9iKNrjGjrIvFTTzhZeigfnISyQbKyzQGII5GiA8j487f9ae4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/contributor/history",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contributor",
+								"history"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "activity log",
+			"item": [
+				{
+					"name": "stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/stats",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activity log",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "103|r5zyR4NZxCmoOqyT4T2HymmfKao3j0gUHJxkvZvCf52923b0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/my-activities?page=2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"my-activities"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Setting",
+			"item": [
+				{
+					"name": "update setting",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "39|P0fsxFVrgjWYuNg0PgvEyABzV5NSP9mQFnQZZGFnd473f799",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "site_name[ar]",
+									"value": "رفاد",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "site_name[en]",
+									"value": "Reffad",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "site_logo",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/a-man-working-in-a-call-center-8867431.png",
+									"disabled": true
+								},
+								{
+									"key": "favicon",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/cv4.PNG"
+								},
+								{
+									"key": "phone",
+									"value": "201012345678",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "info@reffad.com",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "facebook",
+									"value": "https://facebook.com/reffad",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "twitter",
+									"value": "https://twitter.com/reffad",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "instagram",
+									"value": "https://instagram.com/reffad",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "linkedin",
+									"value": "https://linkedin.com/reffad",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "youtube",
+									"value": "https://youtube.com/reffad",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "whatsapp",
+									"value": "201012345678",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/settings/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"settings",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setting",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/settings/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"settings",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Home Page",
+			"item": [
+				{
+					"name": "home page",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/homepage",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"homepage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update homepage",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "slides[0][id]",
+									"value": "6",
+									"type": "text"
+								},
+								{
+									"key": "slides[0][hero_title][en]",
+									"value": "With your donation, you can alleviate the suffering of the people of Gaza and spread hope in the hearts of those in need of support and resilience 💚",
+									"type": "text"
+								},
+								{
+									"key": "slides[0][hero_title][ar]",
+									"value": "بتبرعك تقدر تخفف معاناة أهل غزةوتنشر الأمل في قلوب محتاجة للدعم والصمود 💚",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "slides[0][hero_description][en]",
+									"value": "We work on developing important projects that serve the community and contribute to building a better future. Through our partnerships with global organizations, we provide innovative and effective solutions.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "slides[0][hero_description][ar]",
+									"value": "نحن نعمل على تطوير مشاريع مهمة تخدم المجتمع وتساهم في بناء مستقبل أفضل. من خلال شراكاتنا مع منظمات عالمية، نقدم حلولاً مبتكرة وفعالة.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "slides[0][hero_subtitle][en]",
+									"value": "Our goal is to support those in need and nurture hope.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "slides[0][hero_subtitle][ar]",
+									"value": "هدفنا دعم المحتاجين وتنمية الأمل.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "slides[0][hero_image]",
+									"type": "file",
+									"src": "postman-cloud:///1f0cbc52-5713-4f60-b85c-393668a9208c",
+									"disabled": true
+								},
+								{
+									"key": "slides[0][small_hero_image]",
+									"type": "file",
+									"src": "postman-cloud:///1f0cae64-0098-4560-bdb5-0b2d8bc656c2",
+									"disabled": true
+								},
+								{
+									"key": "title[ar]",
+									"value": "من نحن ؟",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "title[en]",
+									"value": "Who we are",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description[en]",
+									"value": "We are a team striving to mend human hearts. We work from the heart of suffering, amidst the rubble, tears, and hope. We extend a helping hand and plant seeds of goodness in every corner of Palestine.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description[ar]",
+									"value": "نحن فريق يسعى لجبر الخواطر الإنسانية، نعمل من قلب المعاناة وسط الركام وأوات الدموع والأمل، نمد يد العون ونزرع بذور الخير في كل أروقة فلسطين.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "sections[0][id]",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "sections[0][title][en]",
+									"value": "section1",
+									"type": "text"
+								},
+								{
+									"key": "sections[0][title][ar]",
+									"value": "البوابة النشطة",
+									"type": "text"
+								},
+								{
+									"key": "sections[0][description][ar]",
+									"value": "section 1 descrption",
+									"type": "text"
+								},
+								{
+									"key": "sections[0][description][en]",
+									"value": "section 1 descrption",
+									"type": "text"
+								},
+								{
+									"key": "sections[0][image]",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/property.jpg",
+									"disabled": true
+								},
+								{
+									"key": "complaint_image",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg",
+									"disabled": true
+								},
+								{
+									"key": "contact_image",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/homepage/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"homepage",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createSlide",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "hero_title[en]",
+									"value": "With your donation, you can alleviate the suffering of the people of Gaza and spread hope in the hearts of those in need of support and resilience 💚",
+									"type": "text"
+								},
+								{
+									"key": "hero_title[ar]",
+									"value": "بتبرعك تقدر تخفف معاناة أهل غزةوتنشر الأمل في قلوب محتاجة للدعم والصمود 💚",
+									"type": "text"
+								},
+								{
+									"key": "hero_description[en]",
+									"value": "We work on developing important projects that serve the community and contribute to building a better future. Through our partnerships with global organizations, we provide innovative and effective solutions.",
+									"type": "text"
+								},
+								{
+									"key": "hero_description[ar]",
+									"value": "نحن نعمل على تطوير مشاريع مهمة تخدم المجتمع وتساهم في بناء مستقبل أفضل. من خلال شراكاتنا مع منظمات عالمية، نقدم حلولاً مبتكرة وفعالة.",
+									"type": "text"
+								},
+								{
+									"key": "hero_subtitle[en]",
+									"value": "Our goal is to support those in need and nurture hope.",
+									"type": "text"
+								},
+								{
+									"key": "hero_subtitle[ar]",
+									"value": "هدفنا دعم المحتاجين وتنمية الأمل.",
+									"type": "text"
+								},
+								{
+									"key": "hero_image",
+									"type": "file",
+									"src": "postman-cloud:///1f0cbc52-5713-4f60-b85c-393668a9208c"
+								},
+								{
+									"key": "small_hero_image",
+									"type": "file",
+									"src": "postman-cloud:///1f0cae73-1b05-4060-aff0-ad2f7c92ec12"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/homepage/slides",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"homepage",
+								"slides"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createSection",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title[en]",
+									"value": "Privacy Policy",
+									"type": "text"
+								},
+								{
+									"key": "title[ar]",
+									"value": " الخصوصية",
+									"type": "text"
+								},
+								{
+									"key": "description[en]",
+									"value": "We work on developing important projects that serve the community and contribute to building a better future. Through our partnerships with global organizations, we provide innovative and effective solutions.",
+									"type": "text"
+								},
+								{
+									"key": "description[ar]",
+									"value": "نحمي بيانات الأفراد والأسر بأقصى درجات العناية،\nونلتزم باستخدامها حصريًا لعرض الواقع الإنساني وتوجيه الاستجابة،\nوفق مبادئ إنسانية ومعايير دولية معتمدة.\n\n",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "postman-cloud:///1f0cbc52-5713-4f60-b85c-393668a9208c"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/homepage/sections",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"homepage",
+								"sections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteSlide",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/homepage/slides/:slide",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"homepage",
+								"slides",
+								":slide"
+							],
+							"variable": [
+								{
+									"key": "slide",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pages",
+			"item": [
+				{
+					"name": "update page",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title[ar]",
+									"value": "سياسة الخصوصية",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "title[en]",
+									"value": "Privacy Policy",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description[ar]",
+									"value": "نحن أولاً نحترم خصوصيتكم...\n\nنحن نولي خصوصيتكم أهمية كبيرة، ونسعى لحماية جميع المعلومات التي تزودوننا بها أثناء استخدامكم لموقعنا أو خدماتنا. يتم جمع البيانات التي تقدمونها طوعًا مثل الاسم ومعلومات التواصل فقط بغرض تحسين جودة الخدمة والتواصل معكم بشكل فعّال. نلتزم بعدم مشاركة أو بيع أي من بياناتكم الشخصية لأي طرف ثالث دون موافقتكم المسبقة، إلا في الحالات التي يفرضها القانون أو تقتضيها متطلبات المساعدة الإنسانية. كما نحرص على تطبيق إجراءات أمان دقيقة لحماية بياناتكم من الوصول أو الاستخدام غير المصرح به. باستخدامكم لموقعنا، فإنكم توافقون على سياسة الخصوصية هذه، ونحتفظ بحق تحديثها من وقت لآخر بما يتناسب مع تطوير خدماتنا. سيتم نشر أي تعديل على هذه الصفحة فور اعتماده، لذا ننصح بزيارتها بشكل دوري للاطلاع على آخر المستجدات. نحن نولي خصوصيتكم أهمية كبيرة، ونسعى لحماية جميع المعلومات التي تزودوننا بها أثناء استخدامكم لموقعنا أو خدماتنا. يتم جمع البيانات التي تقدمونها طوعًا مثل الاسم ومعلومات التواصل فقط بغرض تحسين جودة الخدمة والتواصل معكم بشكل فعّال. نلتزم بعدم مشاركة أو بيع أي من بياناتكم الشخصية لأي طرف ثالث دون موافقتكم المسبقة، إلا في الحالات التي يفرضها القانون أو تقتضيها متطلبات المساعدة الإنسانية. كما نحرص على تطبيق إجراءات أمان دقيقة لحماية بياناتكم من الوصول أو الاستخدام غير المصرح به. باستخدامكم لموقعنا، فإنكم توافقون على سياسة الخصوصية هذه، ونحتفظ بحق تحديثها من وقت لآخر بما يتناسب مع تطوير خدماتنا. سيتم نشر أي تعديل على هذه الصفحة فور اعتماده، لذا ننصح بزيارتها بشكل دوري للاطلاع على آخر المستجدات.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description[en]",
+									"value": "We highly value your privacy and strive to protect all the information you provide while using our website or services. The data you voluntarily provide, such as your name and contact information, is collected solely to improve the quality of our services and communicate with you effectively.\n\nWe commit not to share or sell any of your personal data to any third party without your prior consent, except in cases required by law or when humanitarian assistance requirements demand it. We also take strict security measures to protect your data from unauthorized access or use.\n\nBy using our website, you agree to this privacy policy, and we reserve the right to update it from time to time to align with the development of our services. Any changes will be published on this page as soon as they are approved, so we recommend visiting it periodically to stay informed of the latest updates.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "postman-cloud:///1f0c9d74-d244-46a0-89ec-f40078282a30",
+									"disabled": true
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/db.txt"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/pages/vision",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"pages",
+								"vision"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "page",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/pages/goals",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"pages",
+								"goals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "pages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/pages",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"pages"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Partner",
+			"item": [
+				{
+					"name": "partners",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/partners/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"partners",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "partner",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/partners/7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"partners",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store partner",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "partner name ",
+									"type": "text"
+								},
+								{
+									"key": "logo",
+									"type": "file",
+									"src": "postman-cloud:///1f0cafe4-24d1-4fe0-83ef-e55b810d87a9"
+								},
+								{
+									"key": "order",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/partners/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"partners",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update partner",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "partner name ",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "logo",
+									"type": "file",
+									"src": "postman-cloud:///1f0c7ee5-b3c0-4790-9ce8-62cc8d62d34f"
+								},
+								{
+									"key": "order",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/partners/8",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"partners",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete partner",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/partners/7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"partners",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "testmonials",
+			"item": [
+				{
+					"name": "testimonials",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/testimonials/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"testimonials",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "testmonial",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/testimonials/7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"testimonials",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store testmonial",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_name",
+									"value": "takwa ",
+									"type": "text"
+								},
+								{
+									"key": "user_image",
+									"type": "file",
+									"src": "postman-cloud:///1f0cae73-1b05-4060-aff0-ad2f7c92ec12"
+								},
+								{
+									"key": "opinion[ar]",
+									"value": "لمنصة خلّت التعامل بمهنية، كل البيانات محفوظة وعملية وهتخلينا نكمل بثقة",
+									"type": "text"
+								},
+								{
+									"key": "opinion[en]",
+									"value": "The platform made the process professional; all the data is organized and secure, which will allow us to continue with confidence.",
+									"type": "text"
+								},
+								{
+									"key": "order",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/testimonials/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"testimonials",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update testmonial",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_name",
+									"value": "rawda",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "user_image",
+									"type": "file",
+									"src": "postman-cloud:///1f0c9d74-16c6-45e0-9ec9-4cb562121820",
+									"disabled": true
+								},
+								{
+									"key": "opinion[ar]",
+									"value": "لمنصة خلّت التعامل بمهنية، كل البيانات محفوظة وعملية وهتخلينا نكمل بثقة",
+									"type": "text"
+								},
+								{
+									"key": "opinion[en]",
+									"value": "The platform made the process professional; all the data is organized and secure, which will allow us to continue with confidence.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "order",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/testimonials/7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"testimonials",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "destroy",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/testimonials/7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"testimonials",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "contact us",
+			"item": [
+				{
+					"name": "Contact Us",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "takwa ",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "takwa@mail.com",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "2081927142",
+									"type": "text"
+								},
+								{
+									"key": "message",
+									"value": "messagemessagemessagemessagemessagemessagemessagemessagemessagemessagemessagemessagemessage",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/contact-us/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contact-us",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all contacts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/contact-us",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contact-us"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "single contact",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/contact-us/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contact-us",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "destroy",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/contact-us/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contact-us",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "complaints",
+			"item": [
+				{
+					"name": "store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "108|PzqFfVsaT0zP4t9KdQ4TOLT4nixoCyVg1IaNZT0l6ea85311",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "takwa ",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "takwa@mail.com",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "2081927142",
+									"type": "text"
+								},
+								{
+									"key": "topic",
+									"value": "topic topic ",
+									"type": "text"
+								},
+								{
+									"key": "message",
+									"value": "messagemessagemessagemessagemessagemessagemessagemessagemessagemessagemessagemessagemessage",
+									"type": "text"
+								},
+								{
+									"key": "camp_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/complaints/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"complaints",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "complaints",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/complaints",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"complaints"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "single complaint",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/complaints/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"complaints",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "destroy",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/complaints/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"complaints",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "about us",
+			"item": [
+				{
+					"name": "aboutus",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/about-us/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"about-us",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update about us",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title[ar]",
+									"value": "من نحن",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "title[en]",
+									"value": "are we ",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description[ar]",
+									"value": "نحن أولاً نحترم خصوصيتكم...\n\nنحن نولي خصوصيتكم أهمية كبيرة، ونسعى لحماية جميع المعلومات التي تزودوننا بها أثناء استخدامكم لموقعنا أو خدماتنا. يتم جمع البيانات التي تقدمونها طوعًا مثل الاسم ومعلومات التواصل فقط بغرض تحسين جودة الخدمة والتواصل معكم بشكل فعّال. نلتزم بعدم مشاركة أو بيع أي من بياناتكم الشخصية لأي طرف ثالث دون موافقتكم المسبقة، إلا في الحالات التي يفرضها القانون أو تقتضيها متطلبات المساعدة الإنسانية. كما نحرص على تطبيق إجراءات أمان دقيقة لحماية بياناتكم من الوصول أو الاستخدام غير المصرح به. باستخدامكم لموقعنا، فإنكم توافقون على سياسة الخصوصية هذه، ونحتفظ بحق تحديثها من وقت لآخر بما يتناسب مع تطوير خدماتنا. سيتم نشر أي تعديل على هذه الصفحة فور اعتماده، لذا ننصح بزيارتها بشكل دوري للاطلاع على آخر المستجدات. نحن نولي خصوصيتكم أهمية كبيرة، ونسعى لحماية جميع المعلومات التي تزودوننا بها أثناء استخدامكم لموقعنا أو خدماتنا. يتم جمع البيانات التي تقدمونها طوعًا مثل الاسم ومعلومات التواصل فقط بغرض تحسين جودة الخدمة والتواصل معكم بشكل فعّال. نلتزم بعدم مشاركة أو بيع أي من بياناتكم الشخصية لأي طرف ثالث دون موافقتكم المسبقة، إلا في الحالات التي يفرضها القانون أو تقتضيها متطلبات المساعدة الإنسانية. كما نحرص على تطبيق إجراءات أمان دقيقة لحماية بياناتكم من الوصول أو الاستخدام غير المصرح به. باستخدامكم لموقعنا، فإنكم توافقون على سياسة الخصوصية هذه، ونحتفظ بحق تحديثها من وقت لآخر بما يتناسب مع تطوير خدماتنا. سيتم نشر أي تعديل على هذه الصفحة فور اعتماده، لذا ننصح بزيارتها بشكل دوري للاطلاع على آخر المستجدات.\n\n",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description[en]",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/project1.pdf",
+									"disabled": true
+								},
+								{
+									"key": "second_image",
+									"type": "file",
+									"src": "/C:/Users/Sony Vaio/Desktop/aboutus.jpg",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/about-us/mission",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"about-us",
+								"mission"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "159|LbDfsV5eH2JJG3C6GPpYLIk4W1512xSJbP6Nyur3962e740d",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/notifications",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark as read",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "47|Wg1dm4Osvu5GtYWL0GW3r7am8kq8zeabBbF4LJTD98c05120",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/notifications/1/read",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"notifications",
+								"1",
+								"read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "markAllAsRead",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "47|Wg1dm4Osvu5GtYWL0GW3r7am8kq8zeabBbF4LJTD98c05120",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/notifications/read-all",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"notifications",
+								"read-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "destroy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "47|Wg1dm4Osvu5GtYWL0GW3r7am8kq8zeabBbF4LJTD98c05120",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/notifications/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"notifications",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "destroy all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "62|5Cbyt0zn8xpkOHhuqF9qPPISCZcGNT2hMjjTGYQ7a4794fb1",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/notifications",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dashboard statistic",
+			"item": [
+				{
+					"name": "camp statsistc",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/camp/statistics",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"camp",
+								"statistics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ContributorStatistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "27|N92s0J6EUk2Rfh0ECFyVYjXu2ntsxKG3IdAXGMo23a7e58ce",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/contributor-statistics",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contributor-statistics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Statistics",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/user/statistics",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"statistics"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2025-11-01",
+									"disabled": true
+								},
+								{
+									"key": "end_date",
+									"value": "2025-11-30",
+									"disabled": true
+								},
+								{
+									"key": "month_type",
+									"value": "F",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "export",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "64|Mz9QOqRyXQ1DTTt3X2xRuEnzcAwDlOenFDTZ74WQ3ae09461",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/camp-statistics/export",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"camp-statistics",
+								"export"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2025-11-01",
+									"disabled": true
+								},
+								{
+									"key": "end_date",
+									"value": "2025-11-30",
+									"disabled": true
+								},
+								{
+									"key": "month_type",
+									"value": "F",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin stats",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "72|PRepssUy9ZR4qZ6T75hNvFNGgpVfdn3lSOUdtD0va8b0c1a3",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/stats",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"stats"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Governate",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/governorates",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"governorates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name[en]",
+									"value": "North Gaza",
+									"type": "text"
+								},
+								{
+									"key": "name[ar]",
+									"value": "شمال غزة",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/governorates/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"governorates",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/governorates/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"governorates",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name[en]",
+									"value": "Rafah",
+									"type": "text"
+								},
+								{
+									"key": "name[ar]",
+									"value": "رفح",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/governorates/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"governorates",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/governorates/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"governorates",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MaritalStatus",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/marital-statuses",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"marital-statuses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "متزوج",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/marital-statuses/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"marital-statuses",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/marital-statuses/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"marital-statuses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "يتيم",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/marital-statuses/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"marital-statuses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/marital-statuses/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"marital-statuses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MedicalCondition",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/medical-conditions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"medical-conditions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "قرحة المعدة",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/medical-conditions/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"medical-conditions",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/medical-conditions/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"medical-conditions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "أمراض تنفسية",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/medical-conditions/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"medical-conditions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/medical-conditions/7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"medical-conditions",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Relationship",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/relationships",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"relationships"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "أب",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/relationships/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"relationships",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/relationships/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"relationships",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "جدة",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/relationships/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"relationships",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/relationships/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"relationships",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Position",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/admin-positions",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin-positions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "مشرف",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/admin-positions/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin-positions",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/admin-positions/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin-positions",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "منسق",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/admin-positions/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin-positions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/admin-positions/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin-positions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/check-message-after-delay/SM15941cbb95b98ea1748e4dccb996b5af",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"check-message-after-delay",
+						"SM15941cbb95b98ea1748e4dccb996b5af"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

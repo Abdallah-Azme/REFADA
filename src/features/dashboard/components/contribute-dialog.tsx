@@ -120,10 +120,10 @@ export default function ContributeDialog({
 
   // Fetch families when dialog opens
   useEffect(() => {
-    if (isOpen && effectiveCampId) {
+    if (isOpen && effectiveCampId && project) {
       fetchFamilies();
     }
-  }, [isOpen, effectiveCampId]);
+  }, [isOpen, effectiveCampId, project?.id]);
 
   // Reset form when dialog closes
   useEffect(() => {
@@ -146,11 +146,11 @@ export default function ContributeDialog({
   }, [isOpen]);
 
   const fetchFamilies = async () => {
-    if (!effectiveCampId) return;
+    if (!effectiveCampId || !project) return;
 
     setIsLoadingFamilies(true);
     try {
-      const response = await getCampFamiliesApi(effectiveCampId);
+      const response = await getCampFamiliesApi(effectiveCampId, project.id);
       if (response.success) {
         // @ts-ignore
         const familiesData = response.data?.families || [];
@@ -361,7 +361,14 @@ export default function ContributeDialog({
                                         className="flex items-center justify-between cursor-pointer"
                                       >
                                         <div className="flex flex-col text-right flex-1">
-                                          <span>{family.familyName}</span>
+                                          <div className="flex items-center gap-2">
+                                            <span>{family.familyName}</span>
+                                            {family.hasBenefit && (
+                                              <span className="bg-green-100 text-green-700 text-xs px-1.5 py-0.5 rounded-full">
+                                                مستفيد
+                                              </span>
+                                            )}
+                                          </div>
                                           <span className="text-xs text-gray-500">
                                             {family.nationalId} -{" "}
                                             {family.totalMembers} أفراد
