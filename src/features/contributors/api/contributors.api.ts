@@ -268,3 +268,57 @@ export async function getContributorHistoryApi(): Promise<ContributorHistoryResp
     method: "GET",
   });
 }
+
+// ============================================================================
+// Admin Contributions API
+// ============================================================================
+
+export interface AdminContribution {
+  id: number;
+  totalQuantity: number;
+  notes: string | null;
+  status: string;
+  project: ContributionHistoryProject | null;
+  contributorFamilies: ContributorFamily[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminContributionsResponse {
+  success: boolean;
+  message: string;
+  data: AdminContribution[];
+}
+
+export async function getAdminContributionsApi(
+  campId?: number
+): Promise<AdminContributionsResponse> {
+  const queryParams = campId ? `?camp_id=${campId}` : "";
+  return apiRequest<AdminContributionsResponse>(
+    `/admin/contributions${queryParams}`,
+    {
+      method: "GET",
+    }
+  );
+}
+
+// ============================================================================
+// Delete Family from Contribution API
+// ============================================================================
+
+export interface DeleteFamilyFromContributionResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function deleteFamilyFromContributionApi(
+  contributionId: number,
+  familyId: number
+): Promise<DeleteFamilyFromContributionResponse> {
+  return apiRequest<DeleteFamilyFromContributionResponse>(
+    `/contributions/${contributionId}/families/${familyId}`,
+    {
+      method: "DELETE",
+    }
+  );
+}

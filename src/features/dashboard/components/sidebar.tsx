@@ -144,6 +144,11 @@ export default function DashboardSidebar() {
       icon: UserCog,
       href: "/dashboard/admin/admin-positions",
     },
+    {
+      label: "المساهمات",
+      icon: HeartHandshake,
+      href: "/dashboard/admin/contributions",
+    },
   ];
 
   // HOME PAGE CONTROL MENU (Admin only)
