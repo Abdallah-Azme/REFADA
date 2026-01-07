@@ -93,7 +93,7 @@ export const createColumnsForContributor = (
     accessorKey: "addedBy",
     header: "أضيف بواسطة",
     cell: ({ row }) => (
-      <div className="text-center text-gray-600">{row.original.addedBy}</div>
+      <div className="text-start text-gray-600">{row.original.addedBy}</div>
     ),
   },
   {
@@ -144,7 +144,7 @@ export const createColumnsForContributor = (
       else colorClass = "bg-green-600";
 
       return (
-        <div className="w-24 mx-auto">
+        <div className="w-24">
           <Progress value={value} className="h-2" indicatorColor={colorClass} />
           <div className="text-xs text-center text-gray-500 mt-1">{value}%</div>
         </div>
@@ -155,7 +155,7 @@ export const createColumnsForContributor = (
     accessorKey: "beneficiaryCount",
     header: "المستفيدين",
     cell: ({ row }) => (
-      <div className="text-center text-gray-600">
+      <div className="text-start text-gray-600">
         {row.original.beneficiaryCount}
       </div>
     ),
@@ -164,7 +164,7 @@ export const createColumnsForContributor = (
     accessorKey: "totalReceived",
     header: "تم استلام",
     cell: ({ row }) => (
-      <div className="text-center text-gray-600">
+      <div className="text-start text-gray-600">
         {row.original.totalReceived}
       </div>
     ),
@@ -173,7 +173,7 @@ export const createColumnsForContributor = (
     accessorKey: "totalRemaining",
     header: "المتبقي",
     cell: ({ row }) => (
-      <div className="text-center text-gray-600">
+      <div className="text-start text-gray-600">
         {row.original.totalRemaining}
       </div>
     ),

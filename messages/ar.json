@@ -378,6 +378,7 @@
       "camp_required": "المخيم مطلوب"
     }
   },
+
   "table": {
     "name": "الاسم",
     "role": "الدور",
@@ -1377,5 +1378,33 @@
     "type_project": "مشروع",
     "type_user": "مستخدم",
     "type_family": "عائلة"
+  },
+  "contribution_table": {
+    "title": "سجل المساهمات",
+    "project": "المشروع",
+    "status": "الحالة",
+    "all": "الكل",
+    "pending": "قيد الانتظار",
+    "approved": "موافق عليه",
+    "rejected": "مرفوض",
+    "completed": "مكتمل",
+    "update": "تحديث",
+    "reset_search": "إعادة البحث",
+    "no_contributions": "لا توجد مساهمات بعد.",
+    "details_title": "تفاصيل المساهمة",
+    "type": "النوع",
+    "type_product": "منتج",
+    "type_internal": "داخلي",
+    "quantity": "الكمية",
+    "beneficiary_families": "العائلات المستفيدة",
+    "members": "أفراد",
+    "notes": "ملاحظات",
+    "date": "تاريخ المساهمة",
+    "camp": "الإيواء",
+    "family_name": "اسم العائلة",
+    "others": "آخرين",
+    "view": "عرض",
+    "fetch_error": "فشل في جلب سجل المساهمات",
+    "loading_history": "جاري تحميل سجل المساهمات..."
   }
 }

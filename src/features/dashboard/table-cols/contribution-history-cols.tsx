@@ -17,11 +17,12 @@ type ActionHandlers = {
 };
 
 export const createContributionHistoryColumns = (
-  handlers: ActionHandlers
+  handlers: ActionHandlers,
+  t: any
 ): ColumnDef<ContributionHistoryItem>[] => [
   {
     accessorKey: "project.name",
-    header: "المشروع",
+    header: t("project"),
     cell: ({ row }) => (
       <div className="text-right">
         <div className="font-bold text-gray-900">
@@ -29,9 +30,9 @@ export const createContributionHistoryColumns = (
         </div>
         <div className="text-xs text-gray-500">
           {row.original.project.type === "product"
-            ? "منتج"
+            ? t("type_product")
             : row.original.project.type === "internal"
-            ? "داخلي"
+            ? t("type_internal")
             : row.original.project.type}
         </div>
       </div>
@@ -39,37 +40,37 @@ export const createContributionHistoryColumns = (
   },
   {
     accessorKey: "totalQuantity",
-    header: "الكمية",
+    header: t("quantity"),
     cell: ({ row }) => (
-      <div className="text-center text-gray-600 font-semibold">
+      <div className="text-start text-gray-600 font-semibold">
         {row.original.totalQuantity}
       </div>
     ),
   },
   {
     accessorKey: "status",
-    header: "الحالة",
+    header: t("status"),
     cell: ({ row }) => {
       const status = row.original.status;
       let statusText = status;
       let colorClass = "bg-gray-100 text-gray-700";
 
       if (status === "pending") {
-        statusText = "قيد الانتظار";
+        statusText = t("pending");
         colorClass = "bg-yellow-100 text-yellow-700";
       } else if (status === "approved") {
-        statusText = "موافق عليه";
+        statusText = t("approved");
         colorClass = "bg-green-100 text-green-700";
       } else if (status === "rejected") {
-        statusText = "مرفوض";
+        statusText = t("rejected");
         colorClass = "bg-red-100 text-red-700";
       } else if (status === "completed") {
-        statusText = "مكتمل";
+        statusText = t("completed");
         colorClass = "bg-blue-100 text-blue-700";
       }
 
       return (
-        <div className="flex justify-center">
+        <div className="flex justify-start">
           <span
             className={`px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}
           >
@@ -81,11 +82,11 @@ export const createContributionHistoryColumns = (
   },
   {
     accessorKey: "contributorFamilies",
-    header: "العائلات المستفيدة",
+    header: t("beneficiary_families"),
     cell: ({ row }) => {
       const families = row.original.contributorFamilies;
       if (!families || families.length === 0) {
-        return <div className="text-center text-gray-400">-</div>;
+        return <div className="text-start text-gray-400">-</div>;
       }
 
       const displayCount = Math.min(families.length, 2);
@@ -95,7 +96,7 @@ export const createContributionHistoryColumns = (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="text-center cursor-pointer">
+              <div className="text-start cursor-pointer">
                 <div className="text-gray-600">
                   {families.slice(0, displayCount).map((f, i) => (
                     <span key={f.id}>
@@ -106,7 +107,7 @@ export const createContributionHistoryColumns = (
                   {remaining > 0 && (
                     <span className="text-primary font-medium">
                       {" "}
-                      +{remaining} آخرين
+                      +{remaining} {t("others")}
                     </span>
                   )}
                 </div>
@@ -118,7 +119,7 @@ export const createContributionHistoryColumns = (
                   <div key={f.id} className="text-sm">
                     <span className="font-medium">{f.familyName}</span>
                     <span className="text-gray-400 text-xs mr-2">
-                      ({f.totalMembers} أفراد)
+                      ({f.totalMembers} {t("members")})
                     </span>
                   </div>
                 ))}
@@ -131,20 +132,20 @@ export const createContributionHistoryColumns = (
   },
   {
     accessorKey: "notes",
-    header: "ملاحظات",
+    header: t("notes"),
     cell: ({ row }) => (
-      <div className="text-center text-gray-500 text-sm max-w-[150px] truncate">
+      <div className="text-start text-gray-500 text-sm max-w-[150px] truncate">
         {row.original.notes || "-"}
       </div>
     ),
   },
   {
     accessorKey: "createdAt",
-    header: "تاريخ المساهمة",
+    header: t("date"),
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt);
       return (
-        <div className="text-center text-gray-600 text-sm">
+        <div className="text-start text-gray-600 text-sm">
           {date.toLocaleDateString("ar-EG", {
             year: "numeric",
             month: "short",
@@ -156,9 +157,9 @@ export const createContributionHistoryColumns = (
   },
   {
     id: "view",
-    header: "عرض",
+    header: t("view"),
     cell: ({ row }) => (
-      <div className="flex justify-center">
+      <div className="flex justify-start">
         <Button
           variant="ghost"
           size="icon"

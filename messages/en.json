@@ -1358,5 +1358,33 @@
     "type_project": "Project",
     "type_user": "User",
     "type_family": "Family"
+  },
+  "contribution_table": {
+    "title": "Contribution History",
+    "project": "Project",
+    "status": "Status",
+    "all": "All",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "completed": "Completed",
+    "update": "Update",
+    "reset_search": "Reset Search",
+    "no_contributions": "No contributions yet.",
+    "details_title": "Contribution Details",
+    "type": "Type",
+    "type_product": "Product",
+    "type_internal": "Internal",
+    "quantity": "Quantity",
+    "beneficiary_families": "Beneficiary Families",
+    "members": "members",
+    "notes": "Notes",
+    "date": "Date",
+    "camp": "Shelter",
+    "family_name": "Family Name",
+    "others": "Others",
+    "view": "View",
+    "fetch_error": "Failed to fetch contribution history",
+    "loading_history": "Loading contribution history..."
   }
 }

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -69,25 +70,26 @@ function ContributionDetailsDialog({
   onClose: () => void;
   contribution: ContributionHistoryItem | null;
 }) {
+  const t = useTranslations("contribution_table");
   if (!contribution) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-right">تفاصيل المساهمة</DialogTitle>
+          <DialogTitle className="text-right">{t("details_title")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 text-right">
           {/* Project Info */}
           <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-800 mb-2">المشروع</h4>
+            <h4 className="font-semibold text-gray-800 mb-2">{t("project")}</h4>
             <p className="text-gray-600">{contribution.project.name}</p>
             <p className="text-sm text-gray-500">
-              النوع:{" "}
+              {t("type")}:{" "}
               {contribution.project.type === "product"
-                ? "منتج"
+                ? t("type_product")
                 : contribution.project.type === "internal"
-                ? "داخلي"
+                ? t("type_internal")
                 : contribution.project.type}
             </p>
           </div>
@@ -95,13 +97,17 @@ function ContributionDetailsDialog({
           {/* Contribution Details */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-1">الكمية</h4>
+              <h4 className="font-semibold text-gray-800 mb-1">
+                {t("quantity")}
+              </h4>
               <p className="text-2xl font-bold text-primary">
                 {contribution.totalQuantity}
               </p>
             </div>
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-1">الحالة</h4>
+              <h4 className="font-semibold text-gray-800 mb-1">
+                {t("status")}
+              </h4>
               <p
                 className={`font-medium ${
                   contribution.status === "pending"
@@ -114,13 +120,13 @@ function ContributionDetailsDialog({
                 }`}
               >
                 {contribution.status === "pending"
-                  ? "قيد الانتظار"
+                  ? t("pending")
                   : contribution.status === "approved"
-                  ? "موافق عليه"
+                  ? t("approved")
                   : contribution.status === "rejected"
-                  ? "مرفوض"
+                  ? t("rejected")
                   : contribution.status === "completed"
-                  ? "مكتمل"
+                  ? t("completed")
                   : contribution.status}
               </p>
             </div>
@@ -130,7 +136,8 @@ function ContributionDetailsDialog({
           {contribution.contributorFamilies.length > 0 && (
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="font-semibold text-gray-800 mb-2">
-                العائلات المستفيدة ({contribution.contributorFamilies.length})
+                {t("beneficiary_families")} (
+                {contribution.contributorFamilies.length})
               </h4>
               <div className="space-y-2 max-h-[200px] overflow-y-auto">
                 {contribution.contributorFamilies.map((family) => (
@@ -141,7 +148,7 @@ function ContributionDetailsDialog({
                     <div>
                       <span className="font-medium">{family.familyName}</span>
                       <span className="text-gray-400 text-xs mr-2">
-                        ({family.totalMembers} أفراد)
+                        ({family.totalMembers} {t("members")})
                       </span>
                     </div>
                     <span className="text-xs text-gray-500">{family.camp}</span>
@@ -154,14 +161,14 @@ function ContributionDetailsDialog({
           {/* Notes */}
           {contribution.notes && (
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-1">ملاحظات</h4>
+              <h4 className="font-semibold text-gray-800 mb-1">{t("notes")}</h4>
               <p className="text-gray-600">{contribution.notes}</p>
             </div>
           )}
 
           {/* Date */}
           <div className="text-sm text-gray-500 text-center">
-            تاريخ المساهمة:{" "}
+            {t("date")}:{" "}
             {new Date(contribution.createdAt).toLocaleDateString("ar-EG", {
               year: "numeric",
               month: "long",
@@ -180,6 +187,7 @@ function ContributionDetailsDialog({
 // MAIN TABLE COMPONENT
 // ========================================
 export default function ContributionTable() {
+  const t = useTranslations("contribution_table");
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -204,7 +212,6 @@ export default function ContributionTable() {
     useState<ContributionHistoryItem | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  // Fetch contribution history
   useEffect(() => {
     fetchHistory();
   }, []);
@@ -218,7 +225,7 @@ export default function ContributionTable() {
       }
     } catch (error) {
       console.error("Failed to fetch contribution history:", error);
-      toast.error("فشل في جلب سجل المساهمات");
+      toast.error(t("fetch_error"));
     } finally {
       setIsLoading(false);
     }
@@ -229,7 +236,6 @@ export default function ContributionTable() {
     setIsDialogOpen(true);
   };
 
-  // Filter data based on form values
   const watchedProject = form.watch("project");
   const watchedStatus = form.watch("status");
 
@@ -263,9 +269,12 @@ export default function ContributionTable() {
 
   const table = useReactTable<ContributionHistoryItem>({
     data: filteredData,
-    columns: createContributionHistoryColumns({
-      onView: handleView,
-    }),
+    columns: createContributionHistoryColumns(
+      {
+        onView: handleView,
+      },
+      t
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -292,7 +301,7 @@ export default function ContributionTable() {
     return (
       <div className="w-full p-6 bg-white rounded-lg min-h-[400px] flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="mr-3 text-gray-600">جاري تحميل سجل المساهمات...</span>
+        <span className="mr-3 text-gray-600">{t("loading_history")}</span>
       </div>
     );
   }
@@ -302,7 +311,7 @@ export default function ContributionTable() {
       <div className="space-y-4">
         {/* Header with Title and Search */}
         <div className=" mb-2">
-          <h2 className="text-2xl font-bold text-gray-800">سجل المساهمات</h2>
+          <h2 className="text-2xl font-bold text-gray-800">{t("title")}</h2>
 
           <div className="p-6  ">
             <div className="flex justify-between items-center gap-2">
@@ -324,10 +333,10 @@ export default function ContributionTable() {
                             value={field.value}
                           >
                             <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                              <SelectValue placeholder="المشروع" />
+                              <SelectValue placeholder={t("project")} />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="all">الكل</SelectItem>
+                              <SelectItem value="all">{t("all")}</SelectItem>
                               {uniqueProjects.map((project) => (
                                 <SelectItem key={project.id} value={project.id}>
                                   {project.name}
@@ -352,18 +361,22 @@ export default function ContributionTable() {
                             value={field.value}
                           >
                             <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                              <SelectValue placeholder="الحالة" />
+                              <SelectValue placeholder={t("status")} />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="all">الكل</SelectItem>
+                              <SelectItem value="all">{t("all")}</SelectItem>
                               <SelectItem value="pending">
-                                قيد الانتظار
+                                {t("pending")}
                               </SelectItem>
                               <SelectItem value="approved">
-                                موافق عليه
+                                {t("approved")}
                               </SelectItem>
-                              <SelectItem value="rejected">مرفوض</SelectItem>
-                              <SelectItem value="completed">مكتمل</SelectItem>
+                              <SelectItem value="rejected">
+                                {t("rejected")}
+                              </SelectItem>
+                              <SelectItem value="completed">
+                                {t("completed")}
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -381,7 +394,7 @@ export default function ContributionTable() {
                     onClick={fetchHistory}
                   >
                     <SearchCheck className="w-4 h-4" />
-                    تحديث
+                    {t("update")}
                   </Button>
 
                   <Button
@@ -391,7 +404,7 @@ export default function ContributionTable() {
                     onClick={() => form.reset()}
                   >
                     <RotateCcw className="w-4 h-4 text-primary" />
-                    إعادة البحث
+                    {t("reset_search")}
                   </Button>
                 </div>
               </div>
@@ -406,7 +419,7 @@ export default function ContributionTable() {
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id} className="bg-gray-50">
                   {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id} className="text-center">
+                    <TableHead key={header.id} className="text-start">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -428,7 +441,7 @@ export default function ContributionTable() {
                     className="hover:bg-gray-50"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="text-center">
+                      <TableCell key={cell.id} className="text-start">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -441,13 +454,16 @@ export default function ContributionTable() {
                 <TableRow>
                   <TableCell
                     colSpan={
-                      createContributionHistoryColumns({
-                        onView: handleView,
-                      }).length
+                      createContributionHistoryColumns(
+                        {
+                          onView: handleView,
+                        },
+                        t
+                      ).length
                     }
-                    className="h-24 text-center"
+                    className="h-24 text-start"
                   >
-                    لا توجد مساهمات بعد.
+                    {t("no_contributions")}
                   </TableCell>
                 </TableRow>
               )}
