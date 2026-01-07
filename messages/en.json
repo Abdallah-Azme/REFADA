@@ -281,6 +281,15 @@
   "contributor_history_location": "Location",
   "contributor_history_no_families_found": "No families found",
   "families": {
+    "columns": {
+      "familyName": "Family Name",
+      "nationalId": "ID Number",
+      "phone": "Phone Number",
+      "totalMembers": "Total Members",
+      "camp": "Shelter",
+      "tentNumber": "Tent Number",
+      "location": "Location"
+    },
     "add_family": "Add Family",
     "family_name": "Family Name",
     "national_id": "ID Number",
@@ -298,6 +307,12 @@
     "location": "Location",
     "notes": "Notes...",
     "attachments": "Attachments (Image, Report)",
+    "actions_menu": {
+      "open_menu": "Open menu",
+      "view_details": "View details",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
     "adding": "Adding...",
     "cancel": "Cancel",
     "status_prefix": "Status:",
@@ -305,6 +320,7 @@
     "list_title": "Families List",
     "loading_data": "Loading data...",
     "error_loading": "Error loading data",
+    "export_to_excel": "Export to Excel",
     "members_count_label": "Members Count",
     "male": "Male",
     "female": "Female",

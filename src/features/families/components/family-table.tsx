@@ -31,9 +31,14 @@ import { Family } from "../types/family.schema";
 interface FamilyTableProps {
   data: Family[];
   columns: ColumnDef<Family>[];
+  onSelectionChange?: (selectedRows: Family[]) => void;
 }
 
-export function FamilyTable({ data, columns }: FamilyTableProps) {
+export function FamilyTable({
+  data,
+  columns,
+  onSelectionChange,
+}: FamilyTableProps) {
   const t = useTranslations("families_page");
   const tCommon = useTranslations("common");
   console.log("data", data, { columns });
@@ -71,6 +76,16 @@ export function FamilyTable({ data, columns }: FamilyTableProps) {
       pagination,
     },
   });
+
+  // Notify parent of selection changes
+  React.useEffect(() => {
+    if (onSelectionChange) {
+      const selectedRows = table
+        .getFilteredSelectedRowModel()
+        .rows.map((row) => row.original);
+      onSelectionChange(selectedRows);
+    }
+  }, [rowSelection, onSelectionChange, table]);
 
   return (
     <div className="w-full">

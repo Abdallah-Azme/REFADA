@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/src/shared/ui/button";
-import { Plus, Users, Loader2 } from "lucide-react";
+import { Plus, Users, Loader2, Download } from "lucide-react";
 import MainHeader from "@/src/shared/components/main-header";
 import {
   FamilyTable,
@@ -15,11 +15,12 @@ import EditFamilyDialog from "@/features/families/components/edit-family-dialog"
 import FamilyDetailsDialog from "@/features/families/components/family-details-dialog";
 import { DeleteConfirmDialog } from "@/features/marital-status";
 import AddFamilyDialog from "@/src/features/dashboard/components/add-family-dialog";
+import { exportToExcel, formatFamiliesForExport } from "@/src/lib/export-utils";
 
 import { useTranslations } from "next-intl";
 
 export default function AdminFamiliesPage() {
-  const t = useTranslations("families_page");
+  const t = useTranslations("families");
   const { data: response, isLoading, error } = useFamilies();
   const deleteMutation = useDeleteFamily();
 
@@ -30,6 +31,7 @@ export default function AdminFamiliesPage() {
   const [editingFamily, setEditingFamily] = useState<Family | null>(null);
   const [viewingFamily, setViewingFamily] = useState<Family | null>(null);
   const [deletingFamily, setDeletingFamily] = useState<Family | null>(null);
+  const [selectedFamilies, setSelectedFamilies] = useState<Family[]>([]);
 
   // Extract families data
   const families = response?.data || [];
@@ -61,6 +63,18 @@ export default function AdminFamiliesPage() {
     }
   };
 
+  const handleExportToExcel = () => {
+    // Export selected families if any are selected, otherwise export all
+    const familiesToExport =
+      selectedFamilies.length > 0 ? selectedFamilies : families;
+    const formattedData = formatFamiliesForExport(familiesToExport);
+    const filename =
+      selectedFamilies.length > 0
+        ? `families_export_${selectedFamilies.length}_selected`
+        : "families_export_all";
+    exportToExcel(formattedData, filename, "Families");
+  };
+
   const columns = createFamilyColumns(handleView, handleEdit, handleDelete, t);
 
   return (
@@ -71,7 +85,20 @@ export default function AdminFamiliesPage() {
           <Users className="text-primary" />
         </MainHeader>
 
-        <AddFamilyDialog />
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={handleExportToExcel}
+            disabled={families.length === 0}
+            className="flex items-center gap-2"
+          >
+            <Download className="h-4 w-4" />
+            {selectedFamilies.length > 0
+              ? `${t("export_to_excel")} (${selectedFamilies.length})`
+              : t("export_to_excel")}
+          </Button>
+          <AddFamilyDialog />
+        </div>
       </div>
 
       {/* Content */}
@@ -90,7 +117,11 @@ export default function AdminFamiliesPage() {
             <p className="text-red-600">{t("error_loading")}</p>
           </div>
         ) : (
-          <FamilyTable data={families} columns={columns} />
+          <FamilyTable
+            data={families}
+            columns={columns}
+            onSelectionChange={setSelectedFamilies}
+          />
         )}
       </div>
 

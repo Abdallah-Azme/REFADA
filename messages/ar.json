@@ -274,6 +274,15 @@
   "contributor_history_location": "الموقع",
   "contributor_history_no_families_found": "لم يتم العثور على أسر",
   "families": {
+    "columns": {
+      "familyName": "اسم العائلة",
+      "nationalId": "رقم الهوية",
+      "phone": "رقم الهاتف",
+      "totalMembers": "عدد الأفراد",
+      "camp": "المخيم",
+      "tentNumber": "رقم الخيمة",
+      "location": "الموقع"
+    },
     "add_family": "إضافة عائلة",
     "family_name": "اسم العائلة",
     "national_id": "رقم الهوية",
@@ -298,6 +307,7 @@
     "list_title": "قائمة العائلات",
     "loading_data": "جاري تحميل البيانات...",
     "error_loading": "حدث خطأ أثناء تحميل البيانات",
+    "export_to_excel": "تصدير إلى Excel",
     "members_count_label": "عدد الأفراد",
     "male": "ذكر",
     "female": "أنثى",
@@ -346,7 +356,13 @@
     "healthy": "سليم",
     "other": "أخرى",
     "choose_camp": "اختر المعسكر",
-    "choose_status": "اختر الحالة الاجتماعية"
+    "choose_status": "اختر الحالة الاجتماعية",
+    "actions_menu": {
+      "open_menu": "فتح القائمة",
+      "view_details": "عرض التفاصيل",
+      "edit": "تعديل",
+      "delete": "حذف"
+    }
   },
   "projects": {
     "add_project": "إضافة مشروع",

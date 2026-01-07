@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Family } from "../types/family.schema";
 import { Button } from "@/src/shared/ui/button";
+import { Checkbox } from "@/src/shared/ui/checkbox";
 import { MoreHorizontal, Pencil, Trash, Eye } from "lucide-react";
 import {
   DropdownMenu,
@@ -28,6 +29,31 @@ export const createFamilyColumns = (
   t: (key: string) => string,
   options?: { hideDelete?: boolean }
 ): ColumnDef<Family>[] => [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+    meta: {
+      className: "ps-2",
+    },
+  },
   {
     accessorKey: "familyName",
     header: t("columns.familyName"),
