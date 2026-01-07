@@ -1,7 +1,47 @@
 {
   "common": {
     "cancel": "إلغاء",
-    "loading": "جاري التحميل..."
+    "loading": "جاري التحميل...",
+    "save": "حفظ",
+    "saving": "جاري الحفظ...",
+    "delete": "حذف",
+    "deleting": "جاري الحذف...",
+    "edit": "تعديل",
+    "add": "إضافة",
+    "confirm": "تأكيد",
+    "close": "إغلاق",
+    "yes": "نعم",
+    "no": "لا",
+    "search": "بحث",
+    "filter": "تصفية",
+    "reset": "إعادة تعيين",
+    "actions": "الإجراءات",
+    "status": "الحالة",
+    "id": "الرقم",
+    "name": "الاسم",
+    "toast": {
+      "success": "تم بنجاح",
+      "error": "حدث خطأ",
+      "save_success": "تم الحفظ بنجاح",
+      "save_error": "فشل في الحفظ",
+      "delete_success": "تم الحذف بنجاح",
+      "delete_error": "فشل في الحذف",
+      "update_success": "تم التحديث بنجاح",
+      "update_error": "فشل في التحديث",
+      "create_success": "تم الإنشاء بنجاح",
+      "create_error": "فشل في الإنشاء",
+      "loading_error": "حدث خطأ أثناء التحميل",
+      "fetch_error": "فشل تحميل المساهمات",
+      "delete_family_success": "تم حذف العائلة بنجاح"
+    },
+    "dialog": {
+      "logout_title": "تأكيد تسجيل الخروج",
+      "logout_description": "هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟",
+      "logout_confirm": "تسجيل خروج",
+      "logout_cancel": "إلغاء",
+      "logging_out": "جاري..."
+    },
+    "no_results": "لا توجد نتائج"
   },
   "home": "الرئيسية",
   "about": "من نحن",
@@ -117,6 +157,68 @@
     "time_hours_ago": "منذ {count} ساعة",
     "time_days_ago": "منذ {count} يوم"
   },
+  "sidebar": {
+    "representative_menu": {
+      "home": "الرئيسية",
+      "shelter_data": "بيانات الإيواء",
+      "families": "العائلات",
+      "projects": "المشاريع",
+      "contributions": "المساهمات",
+      "reports": "التقارير",
+      "settings": "الإعدادات"
+    },
+    "contributor_menu": {
+      "contributor_info": "معلومات المساهم",
+      "shelters": "الإيواءات",
+      "settings": "الإعدادات"
+    },
+    "admin_menu": {
+      "home": "الرئيسية",
+      "shelters": "الإيواءات",
+      "messages": "الرسائل",
+      "complaints_suggestions": "الشكاوى والاقتراحات",
+      "settings": "الإعدادات"
+    },
+    "entity_management": {
+      "title": "إدارة النظام",
+      "manage_projects": "إدارة المشاريع",
+      "manage_families": "إدارة العائلات",
+      "manage_representatives": "إدارة المندوبين",
+      "pending_users": "المعلقين",
+      "manage_contributors": "إدارة المساهمين",
+      "activity_log": "سجل النشاطات",
+      "manage_governorates": "إدارة المحافظات",
+      "marital_status": "الحالات الاجتماعية",
+      "medical_conditions": "الحالات الطبية",
+      "relationships": "العلاقات",
+      "admin_positions": "الصفات الإدارية",
+      "contributions": "المساهمات"
+    },
+    "home_control": {
+      "title": "التحكم في الرئيسية",
+      "hero_section": "الرئيسية (Hero)",
+      "about_us": "من نحن",
+      "about_page": "صفحة من نحن",
+      "about_section": "قسم من نحن (الرئيسية)",
+      "policies": "السياسات",
+      "transparency": "الشفافية",
+      "terms": "شروط الاستخدام",
+      "privacy": "الخصوصية",
+      "intellectual_property": "حقوق الملكية",
+      "platform_limits": "حدود دور المنصة",
+      "vulnerable_protection": "حماية الفئات الهشة",
+      "partners": "الشركاء",
+      "testimonials": "آراء المستفيدين",
+      "page_images": "صور الصفحات",
+      "pages": "الصفحات",
+      "website_settings": "إعدادات الموقع"
+    },
+    "dashboard_control": "لوحة التحكم",
+    "admin_dashboard": "لوحة الإدارة",
+    "logout": "تسجيل خروج",
+    "user": "المستخدم",
+    "logging_out": "جاري الخروج..."
+  },
   "auth": {
     "create_account": "تسجيل حساب جديد",
     "contributor": "مساهم",
@@ -219,7 +321,32 @@
     "delete_title": "حذف العائلة",
     "delete_description": "هل أنت متأكد من حذف عائلة \"{name}\"؟ هذا الإجراء لا يمكن التراجع عنه.",
     "family_members": "أفراد العائلة",
-    "relationship": "صلة القرابة"
+    "relationship": "صلة القرابة",
+    "toast": {
+      "update_success": "تم تعديل بيانات العائلة بنجاح",
+      "update_error": "حدث خطأ أثناء تعديل البيانات"
+    },
+    "update_family_title": "تعديل بيانات العائلة",
+    "add_family_title": "إضافة عائلة جديدة",
+    "national_id_placeholder_14": "رقم الهوية (14 رقم)",
+    "backup_phone_optional": "رقم هاتف بديل (اختياري)",
+    "image_optional": "صورة (اختياري)",
+    "notes_optional": "ملاحظات (اختياري)",
+    "notes_placeholder_extra": "أي ملاحظات إضافية",
+    "save_changes": "حفظ التغييرات",
+    "add_family_btn": "إضافة العائلة",
+    "family_members_section": "أفراد العائلة",
+    "add_member_btn": "إضافة فرد",
+    "name_label": "الاسم",
+    "enter_medical_condition": "أدخل الحالة الصحية",
+    "add_member_prompt": "اضغط على \"إضافة فرد\" لإضافة أفراد العائلة",
+    "members_delete_warning": "سيتم حذف {count} فرد عند حفظ التغييرات",
+    "delete_member_title": "حذف فرد من العائلة",
+    "delete_member_desc": "هل أنت متأكد من حذف هذا الفرد؟ سيتم حذفه نهائياً عند حفظ التغييرات.",
+    "healthy": "سليم",
+    "other": "أخرى",
+    "choose_camp": "اختر المعسكر",
+    "choose_status": "اختر الحالة الاجتماعية"
   },
   "projects": {
     "add_project": "إضافة مشروع",
@@ -231,16 +358,18 @@
     "type_beneficiary": "مستفيدين",
     "beneficiary_count": "عدد المستفيدين",
     "college": "الكلية",
-    "select_camp": "اختر المخيم",
-    "notes": "ملاحظات (اختياري)...",
-    "add_image": "إضافة صورة",
+    "select_camp": "اختر الإيواء",
     "change_image": "تغيير الصورة",
-    "upload": "تحميل",
-    "adding": "جاري الإضافة...",
+    "add_image": "إضافة صورة",
+    "upload": "رفع",
+    "notes": "الملاحظات",
     "updating": "جاري التحديث...",
-    "add_btn": "إضافة المشروع",
-    "update_btn": "تحديث المشروع",
+    "adding": "جاري الإضافة...",
+    "update_btn": "تحديث",
+    "add_btn": "إضافة",
     "cancel": "إلغاء",
+    "create_project_error": "لا يمكن إنشاء المشروع",
+    "no_camp_selected_desc": "لم يتم تحديد الإيواء. تأكد من أنك مسجل في إيواء معين.",
     "validation": {
       "name_required": "اسم المشروع مطلوب",
       "type_required": "النوع مطلوب",
@@ -347,6 +476,16 @@
     "no_representatives": "لا يوجد مندوبين معتمدين",
     "loading": "جاري التحميل...",
     "error_loading": "حدث خطأ أثناء تحميل البيانات",
+    "error_title": "حدث خطأ أثناء تحميل النشاطات",
+    "unknown_error": "خطأ غير معروف",
+    "id": "الرقم",
+    "description": "الوصف",
+    "type": "النوع",
+    "date": "التاريخ",
+    "type_camp": "مخيم",
+    "type_project": "مشروع",
+    "type_user": "مستخدم",
+    "type_family": "عائلة",
     "delete_title": "حذف المندوب",
     "delete_description": "هل أنت متأكد من حذف المندوب \"{name}\"؟ هذا الإجراء لا يمكن التراجع عنه.",
     "approve_title": "قبول المندوب",
@@ -468,7 +607,34 @@
   "settings": {
     "title": "الإعدادات",
     "profile_tab": "الملف الشخصي",
-    "password_tab": "تغيير كلمة المرور"
+    "password_tab": "تغيير كلمة المرور",
+    "profile": {
+      "edit_button": "تعديل",
+      "loading": "جاري تحميل البيانات...",
+      "profile_image": "صورة الملف الشخصي",
+      "upload_placeholder": "اضغط لرفع صورة الملف الشخصي",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "id_number": "رقم الهوية",
+      "phone": "رقم الجوال",
+      "backup_phone": "الرقم الاحتياطي",
+      "admin_position": "الصفة الإدارية",
+      "save_button": "حفظ ✓",
+      "saving": "جاري الحفظ...",
+      "cancel_button": "إلغاء ✗"
+    },
+    "password": {
+      "security_note": "لأمان حسابك، يرجى إدخال كلمة المرور الحالية قبل تعيين كلمة مرور جديدة",
+      "current_password": "كلمة المرور الحالية",
+      "new_password": "كلمة المرور الجديدة",
+      "confirm_password": "تأكيد كلمة المرور",
+      "placeholder": "••••••••••",
+      "save_button": "حفظ ✓",
+      "saving": "جاري الحفظ...",
+      "cancel_button": "إلغاء ✗",
+      "password_mismatch": "كلمات المرور غير متطابقة",
+      "validation": "كلمة المرور يجب أن تكون 8 أحرف على الأقل"
+    }
   },
   "reportsPage": {
     "loading": "جاري التحميل...",
@@ -499,6 +665,7 @@
     "current_projects_count": "عدد المشاريع الحالية",
     "completion_percentage": "نسبة الإنجاز"
   },
+
   "campStats": {
     "families_count": "عدد العائلات:",
     "family": "عائلة",
@@ -506,5 +673,709 @@
     "member": "فرد",
     "projects_count": "عدد المشاريع:",
     "project": "مشروع"
+  },
+  "messages": {
+    "page_title": "رسائل التواصل",
+    "all_messages": "جميع الرسائل",
+    "new_messages": "لديك {count} رسالة جديدة",
+    "loading": "جاري تحميل الرسائل...",
+    "error_loading": "حدث خطأ أثناء تحميل الرسائل",
+    "delete_title": "حذف الرسالة",
+    "delete_description": "هل أنت متأكد من حذف هذه الرسالة؟ هذا الإجراء لا يمكن التراجع عنه."
+  },
+  "governorates": {
+    "page_title": "إدارة المحافظات",
+    "add_governorate": "إضافة محافظة",
+    "edit_governorate": "تعديل المحافظة",
+    "delete_title": "حذف المحافظة",
+    "delete_description": "هل أنت متأكد من حذف هذا المحافظة نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
+    "delete_confirm": "حذف",
+    "delete_cancel": "إلغاء",
+    "name": "الاسم",
+    "name_ar": "الاسم (بالعربية)",
+    "name_en": "الاسم (باللغة الإنجليزية)",
+    "name_ar_placeholder": "أدخل الاسم بالعربية",
+    "name_en_placeholder": "Enter name in English",
+    "created_at": "تاريخ الإضافة",
+    "actions": "الإجراءات",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "actions_edit": "تعديل",
+    "actions_delete": "حذف"
+  },
+  "marital_status_page": {
+    "title": "إدارة الحالات الاجتماعية",
+    "list_title": "قائمة الحالات الاجتماعية",
+    "add": "إضافة حالة",
+    "edit_title": "تعديل الحالة الاجتماعية",
+    "add_title": "إضافة حالة اجتماعية جديدة",
+    "delete_title": "حذف الحالة",
+    "delete_desc": "هل أنت متأكد من حذف هذه الحالة؟",
+    "name_label": "الاسم",
+    "placeholder": "مثال: متزوج",
+    "update_btn": "تحديث",
+    "add_btn": "إضافة",
+    "cancel": "إلغاء",
+    "save": "جاري الحفظ..."
+  },
+  "medical_condition_page": {
+    "title": "إدارة الحالات الطبية",
+    "list_title": "قائمة الحالات الطبية",
+    "add": "إضافة حالة",
+    "edit_title": "تعديل الحالة الطبية",
+    "add_title": "إضافة حالة طبية جديدة",
+    "delete_title": "حذف الحالة",
+    "delete_desc": "هل أنت متأكد من حذف هذه الحالة؟",
+    "name_label": "الاسم",
+    "placeholder": "مثال: إعاقة",
+    "update_btn": "تحديث",
+    "add_btn": "إضافة",
+    "cancel": "إلغاء",
+    "save": "جاري الحفظ..."
+  },
+  "relationship_page": {
+    "title": "إدارة العلاقات",
+    "list_title": "قائمة العلاقات",
+    "add": "إضافة علاقة",
+    "edit_title": "تعديل العلاقة",
+    "add_title": "إضافة علاقة جديدة",
+    "delete_title": "حذف العلاقة",
+    "delete_desc": "هل أنت متأكد من حذف هذه العلاقة؟",
+    "name_label": "الاسم",
+    "placeholder": "مثال: أب",
+    "update_btn": "تحديث",
+    "add_btn": "إضافة",
+    "cancel": "إلغاء",
+    "save": "جاري الحفظ..."
+  },
+  "admin_position_page": {
+    "title": "إدارة الصفات الإدارية",
+    "list_title": "قائمة الصفات الإدارية",
+    "add": "إضافة صفة",
+    "edit_title": "تعديل الصفة الإدارية",
+    "add_title": "إضافة صفة إدارية جديدة",
+    "delete_title": "حذف الصفة",
+    "delete_desc": "هل أنت متأكد من حذف هذه الصفة؟",
+    "name_label": "الاسم",
+    "placeholder": "مثال: مدير",
+    "update_btn": "تحديث",
+    "add_btn": "إضافة",
+    "cancel": "إلغاء",
+    "save": "جاري الحفظ..."
+  },
+  "dashboard_stats": {
+    "quick_stats": "احصائيات سريعة",
+    "contributions": "المساهمات",
+    "contributions_subtitle": "مجموع المساهمات المنتهية",
+    "current_projects": "عدد المشاريع الحالية",
+    "current_projects_subtitle": "تم تشغيلها آخر أسبوع • 20%",
+    "completed_projects": "عدد المشاريع المنفذة",
+    "completed_projects_subtitle": "تم تشغيلها آخر أسبوع • 80%",
+    "families_count": "عدد العائلات"
+  },
+  "user_avatar": {
+    "user": "المستخدم",
+    "logout": "تسجيل الخروج",
+    "logging_out": "جاري الخروج..."
+  },
+  "about_control": {
+    "page_title": "تحكم في قسم من نحن (About)",
+    "tabs": {
+      "ar": "العربية",
+      "en": "English"
+    },
+    "form": {
+      "title_ar_label": "العنوان (بالعربية)",
+      "title_ar_placeholder": "أدخل العنوان بالعربية",
+      "description_ar_label": "الوصف (بالعربية)",
+      "description_ar_placeholder": "أدخل الوصف بالعربية",
+      "title_en_label": "العنوان (English)",
+      "title_en_placeholder": "Enter title in English",
+      "description_en_label": "الوصف (English)",
+      "description_en_placeholder": "Enter description in English",
+      "current_image": "الصورة الحالية",
+      "current_second_image": "الصورة الثانية الحالية"
+    },
+    "validation": {
+      "title_ar_required": "العنوان بالعربية مطلوب",
+      "title_en_required": "Title in English is required",
+      "desc_ar_min": "الوصف يجب أن يكون 10 أحرف على الأقل",
+      "desc_en_min": "Description must be at least 10 characters"
+    },
+    "sections": {
+      "title_sections": "أقسام الرسالة والرؤية والأهداف",
+      "mission": "رسالتنا",
+      "vision": "رؤيتنا",
+      "goals": "أهدافنا",
+      "edit_content": "تعديل محتوى من نحن",
+      "no_content": "لا يوجد محتوى"
+    },
+    "actions": {
+      "save_changes": "حفظ التغييرات",
+      "saving": "جاري الحفظ..."
+    },
+    "loading": "جاري التحميل..."
+  },
+  "about_section": {
+    "page_title": "إعدادات قسم من نحن",
+    "page_subtitle": "تعديل العنوان والوصف المعروض في الصفحة الرئيسية",
+    "card_title": "قسم من نحن - الصفحة الرئيسية",
+    "card_description": "هذا القسم يظهر في الصفحة الرئيسية تحت البانر الرئيسي",
+    "form": {
+      "title": "العنوان",
+      "description": "الوصف",
+      "title_placeholder": "مثال: من نحن",
+      "desc_placeholder": "أدخل الوصف بالعربية...",
+      "title_placeholder_en": "Example: About Us",
+      "desc_placeholder_en": "Enter description in English..."
+    },
+    "validation": {
+      "title_ar_required": "العنوان بالعربية مطلوب",
+      "title_en_required": "العنوان بالإنجليزية مطلوب",
+      "desc_ar_required": "الوصف بالعربية مطلوب",
+      "desc_en_required": "الوصف بالإنجليزية مطلوب"
+    }
+  },
+  "camps_control": {
+    "page_title": "تحكم في قسم الإيواءات",
+    "card_title": "تعديل محتوى قسم الإيواءات",
+    "form": {
+      "title": "العنوان",
+      "description": "الوصف",
+      "title_placeholder": "أدخل العنوان",
+      "desc_placeholder": "أدخل الوصف"
+    },
+    "info_label": "إدارة الإيواءات المعروضة",
+    "info_text": "يتم عرض الإيواءات تلقائياً من قاعدة البيانات. يمكنك هنا تخصيص العنوان والوصف العام للقسم.",
+    "validation": {
+      "title_required": "العنوان مطلوب",
+      "desc_min": "الوصف يجب أن يكون 10 أحرف على الأقل"
+    }
+  },
+  "contact_control": {
+    "page_title": "تحكم في قسم تواصل معنا",
+    "card_title": "تعديل معلومات التواصل",
+    "form": {
+      "email": "البريد الإلكتروني",
+      "phone": "رقم الهاتف",
+      "address": "العنوان",
+      "map_url": "رابط الخريطة (Embed URL)",
+      "email_placeholder": "example@domain.com",
+      "address_placeholder": "العنوان بالتفصيل",
+      "map_placeholder": "https://www.google.com/maps/embed?..."
+    },
+    "validation": {
+      "email_invalid": "البريد الإلكتروني غير صحيح",
+      "phone_required": "رقم الهاتف مطلوب",
+      "address_required": "العنوان مطلوب",
+      "map_invalid": "رابط الخريطة غير صحيح"
+    }
+  },
+  "footer_control": {
+    "page_title": "تحكم في تذييل الصفحة (Footer)",
+    "card_title": "تعديل محتوى التذييل",
+    "form": {
+      "about": "نبذة مختصرة",
+      "copyright": "حقوق النشر",
+      "social_links": "روابط التواصل الاجتماعي",
+      "add_link": "إضافة رابط",
+      "link_num": "رابط",
+      "platform": "المنصة",
+      "url": "الرابط",
+      "about_placeholder": "نبذة مختصرة عن الجمعية",
+      "copyright_placeholder": "جميع الحقوق محفوظة..."
+    },
+    "validation": {
+      "platform_required": "اسم المنصة مطلوب",
+      "url_invalid": "الرابط غير صحيح",
+      "about_min": "النبذة يجب أن تكون 10 أحرف على الأقل",
+      "copyright_required": "حقوق النشر مطلوبة"
+    }
+  },
+  "page_images": {
+    "page_title": "صور الصفحات",
+    "page_subtitle": "إدارة صور صفحة الشكاوى/الاقتراحات وصفحة تواصل معنا",
+    "save_changes": "حفظ التغييرات",
+    "complaint_card_title": "صورة صفحة الشكاوى والاقتراحات",
+    "complaint_card_description": "الصورة التي تظهر في صفحة الشكاوى والاقتراحات",
+    "contact_card_title": "صورة صفحة تواصل معنا",
+    "contact_card_description": "الصورة التي تظهر في صفحة تواصل معنا",
+    "change_image": "تغيير الصورة"
+  },
+  "dynamic_pages": {
+    "titles": {
+      "terms": "شروط الاستخدام",
+      "privacy": "سياسة الخصوصية",
+      "transparency": "الشفافية",
+      "mission": "حقوق الملكية",
+      "vision": "حدود دور المنصة",
+      "goals": "حماية الفئات الهشة",
+      "default": "تفاصيل الصفحة"
+    },
+    "edit_content": "تعديل المحتوى",
+    "page_image": "صورة الصفحة",
+    "page_image_desc": "صورة مرفقة بهذه الصفحة",
+    "page_file": "ملف الصفحة",
+    "page_file_desc": "ملف PDF أو مستند مرفق بهذه الصفحة",
+    "view_image": "عرض الصورة",
+    "download_file": "تحميل الملف",
+    "loading": "جاري تحميل البيانات...",
+    "error": "حدث خطأ أثناء تحميل الصفحة أو الصفحة غير موجودة.",
+    "edit_dialog": {
+      "title": "تعديل محتوى الصفحة",
+      "image_label": "صورة الصفحة",
+      "current_image": "عرض الصورة الحالية",
+      "image_hint": "يمكنك رفع صور: JPG, PNG, GIF, WEBP",
+      "file_label": "ملف الصفحة",
+      "current_file": "عرض الملف الحالي",
+      "file_hint": "يمكنك رفع ملفات: PDF, DOC, DOCX, TXT",
+      "cancel": "إلغاء",
+      "save": "حفظ التعديلات"
+    },
+    "validation": {
+      "title_ar_required": "العنوان بالعربية مطلوب",
+      "title_en_required": "العنوان بالإنجليزية مطلوب",
+      "desc_ar_required": "الوصف بالعربية مطلوب",
+      "desc_en_required": "الوصف بالإنجليزية مطلوب"
+    }
+  },
+  "partners_page": {
+    "page_title": "إدارة الشركاء",
+    "add_partner": "إضافة شريك",
+    "list_title": "قائمة الشركاء",
+    "columns": {
+      "id": "الرقم",
+      "logo": "الشعار",
+      "name": "الاسم",
+      "order": "الترتيب",
+      "actions": "الإجراءات",
+      "no_logo": "لا يوجد شعار"
+    },
+    "dialog_view": {
+      "title": "تفاصيل الشريك",
+      "info_title": "معلومات الشريك",
+      "name": "اسم الشريك",
+      "order": "الترتيب",
+      "date_added": "تاريخ الإضافة"
+    },
+    "dialog_form": {
+      "title_add": "إضافة شريك جديد",
+      "title_edit": "تعديل الشريك",
+      "name_label": "اسم الشريك",
+      "name_placeholder": "اسم الشريك...",
+      "logo_label": "الشعار",
+      "logo_preview": "معاينة الشعار",
+      "logo_hint": "يفضل استخدام شعار بخلفية شفافة (PNG)",
+      "order_label": "الترتيب",
+      "cancel": "إلغاء",
+      "add": "إضافة",
+      "update": "تحديث"
+    },
+    "delete_dialog": {
+      "title": "حذف الشريك",
+      "description": "هل أنت متأكد من حذف هذا الشريك؟ هذا الإجراء لا يمكن التراجع عنه."
+    },
+    "validation": {
+      "name_required": "اسم الشريك مطلوب",
+      "order_min": "الترتيب يجب أن يكون 0 على الأقل"
+    }
+  },
+  "policies_page": {
+    "page_title_privacy": "الخصوصية",
+    "page_subtitle_privacy": "إعدادات صفحة سياسة الخصوصية",
+    "page_title_intellectual_property": "حقوق الملكية",
+    "page_subtitle_intellectual_property": "إعدادات صفحة حقوق الملكية الفكرية",
+    "page_title_platform_limits": "حدود دور المنصة",
+    "page_subtitle_platform_limits": "إعدادات صفحة حدود ودور المنصة",
+    "page_title_terms": "شروط الاستخدام",
+    "page_subtitle_terms": "إعدادات صفحة شروط الاستخدام",
+    "page_title_transparency": "الشفافية",
+    "page_subtitle_transparency": "إعدادات صفحة الشفافية",
+    "page_title_vulnerable_protection": "حماية الفئات الهشة",
+    "page_subtitle_vulnerable_protection": "إعدادات صفحة حماية الفئات الهشة",
+    "form": {
+      "title_ar": "العنوان (بالعربية)",
+      "title_en": "العنوان (English)",
+      "content_ar": "المحتوى (بالعربية)",
+      "content_en": "المحتوى (English)",
+      "image_label": "صورة خياصة",
+      "image_optional": "اختياري"
+    },
+    "validation": {
+      "title_ar_required": "العنوان بالعربية مطلوب",
+      "title_en_required": "العنوان بالإنجليزية مطلوب",
+      "content_ar_required": "المحتوى بالعربية مطلوب",
+      "content_en_required": "المحتوى بالإنجليزية مطلوب"
+    },
+    "actions": {
+      "save_changes": "حفظ التغييرات",
+      "create_section": "إنشاء القسم",
+      "saving": "جاري الحفظ..."
+    }
+  },
+  "projects_control": {
+    "page_title": "تحكم في قسم المشاريع",
+    "edit_title": "تعديل محتوى قسم المشاريع",
+    "title_label": "العنوان",
+    "desc_label": "الوصف",
+    "info_title": "إدارة المشاريع المعروضة",
+    "info_text": "يتم عرض المشاريع تلقائياً من قاعدة البيانات. يمكنك هنا تخصيص العنوان والوصف العام للقسم.",
+    "save_changes": "حفظ التغييرات",
+    "validation": {
+      "title_required": "العنوان مطلوب",
+      "desc_min": "الوصف يجب أن يكون 10 أحرف على الأقل"
+    },
+    "placeholders": {
+      "title": "أدخل العنوان",
+      "desc": "أدخل الوصف"
+    }
+  },
+  "stats_control": {
+    "page_title": "تحكم في قسم الإحصائيات",
+    "add_stat": "إضافة إحصائية",
+    "edit_title": "تعديل الإحصائيات",
+    "stat_item": "إحصائية",
+    "label_label": "عنوان الإحصائية",
+    "value_label": "قيمة الإحصائية",
+    "save_changes": "حفظ التغييرات",
+    "validation": {
+      "label_required": "عنوان الإحصائية مطلوب",
+      "value_required": "قيمة الإحصائية مطلوبة",
+      "min_stats": "يجب أن يكون هناك إحصائية واحدة على الأقل"
+    },
+    "placeholders": {
+      "label": "مثال: عدد المستفيدين",
+      "value": "مثال: 1000+"
+    },
+    "defaults": {
+      "beneficiaries": "عدد المستفيدين",
+      "projects": "عدد المشاريع",
+      "volunteers": "عدد المتطوعين"
+    }
+  },
+  "testimonials_page": {
+    "page_title": "إدارة التزكيات (قالوا عنا)",
+    "add_testimonial": "إضافة تزكية",
+    "list_title": "قائمة التزكيات",
+    "columns": {
+      "id": "الرقم",
+      "image": "الصورة",
+      "name": "الاسم",
+      "role": "الصفة/المنصب",
+      "content": "نص التزكية",
+      "rating": "التقييم",
+      "actions": "الإجراءات",
+      "no_image": "لا توجد صورة"
+    },
+    "dialog_view": {
+      "title": "تفاصيل التزكية",
+      "info_title": "معلومات التزكية",
+      "name": "الاسم",
+      "role": "الصفة",
+      "rating": "التقييم",
+      "content": "نص التزكية",
+      "date_added": "تاريخ الإضافة"
+    },
+    "dialog_form": {
+      "title_add": "إضافة تزكية جديدة",
+      "title_edit": "تعديل التزكية",
+      "name_label": "الاسم",
+      "name_placeholder": "اسم صاحب التزكية...",
+      "role_label": "الصفة/المنصب",
+      "role_placeholder": "مثال: مدير شركة...",
+      "content_label_ar": "نص التزكية (عربي)",
+      "content_placeholder_ar": "اكتب نص التزكية هنا...",
+      "content_label_en": "نص التزكية (إنجليزي)",
+      "content_placeholder_en": "Write testimonial content here...",
+      "rating_label": "التقييم (1-5)",
+      "image_label": "الصورة الشخصية",
+      "image_preview": "معاينة الصورة",
+      "image_hint": "يفضل صورة مربعة (1:1)",
+      "cancel": "إلغاء",
+      "add": "إضافة",
+      "update": "تحديث"
+    },
+    "delete_dialog": {
+      "title": "حذف التزكية",
+      "description": "هل أنت متأكد من حذف هذه التزكية؟ هذا الإجراء لا يمكن التراجع عنه."
+    },
+    "validation": {
+      "name_required": "الاسم مطلوب",
+      "role_required": "الصفة مطلوبة",
+      "content_ar_required": "نص التزكية بالعربية مطلوب",
+      "content_en_required": "نص التزكية بالإنجليزية مطلوب",
+      "rating_min": "أقل تقييم هو 1",
+      "rating_max": "أعلى تقييم هو 5"
+    }
+  },
+  "website_settings": {
+    "page_title": "إعدادات الموقع",
+    "loading": "جاري تحميل الإعدادات...",
+    "saving": "جاري الحفظ...",
+    "save_changes": "حفظ التغييرات",
+    "sections": {
+      "site_info": "معلومات الموقع",
+      "contact_info": "معلومات التواصل",
+      "social_links": "روابط التواصل الاجتماعي"
+    },
+    "labels": {
+      "site_name_ar": "اسم الموقع (عربي)",
+      "site_name_en": "اسم الموقع (إنجليزي)",
+      "site_logo": "شعار الموقع",
+      "favicon": "أيقونة الموقع (Favicon)",
+      "phone": "رقم الهاتف",
+      "email": "البريد الإلكتروني",
+      "whatsapp": "رقم الواتساب",
+      "facebook": "فيسبوك",
+      "twitter": "تويتر",
+      "instagram": "انستغرام",
+      "linkedin": "لينكد إن",
+      "youtube": "يوتيوب"
+    },
+    "placeholders": {
+      "refad_ar": "رفد",
+      "refad_en": "Refad",
+      "phone": "+970 59 999 9999",
+      "email": "info@refad.org",
+      "whatsapp": "+970599999999",
+      "social": "https://..."
+    }
+  },
+  "policy_control": {
+    "page_title": "تحكم في قسم السياسات",
+    "edit_title": "تعديل السياسات",
+    "title_label": "العنوان",
+    "content_label": "المحتوى",
+    "save_changes": "حفظ التغييرات",
+    "validation": {
+      "title_required": "العنوان مطلوب",
+      "content_min": "المحتوى يجب أن يكون 10 أحرف على الأقل"
+    },
+    "placeholders": {
+      "title": "أدخل العنوان",
+      "content": "أدخل محتوى السياسات"
+    }
+  },
+  "messages_page": {
+    "columns": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "subject": "الموضوع",
+      "date": "التاريخ",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    }
+  },
+  "camps_page": {
+    "columns": {
+      "name": "اسم الإيواء",
+      "location": "الموقع",
+      "delegate": "المندوب",
+      "capacity": "السعة",
+      "occupancy": "الإشغال",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "full": "ممتلئ"
+    },
+    "no_delegate": "غير معين"
+  },
+  "complaints_page": {
+    "page_title": "إدارة الشكاوى",
+    "list_title": "قائمة الشكاوى",
+    "view_dialog": {
+      "title": "تفاصيل الشكوى",
+      "status": "الحالة",
+      "date": "تاريخ الشكوى",
+      "message": "نص الشكوى",
+      "contact_info": "معلومات الاتصال",
+      "close": "إغلاق"
+    },
+    "delete_dialog": {
+      "title": "حذف الشكوى",
+      "description": "هل أنت متأكد من حذف هذه الشكوى؟ لا يمكن التراجع عن هذا الإجراء.",
+      "confirm": "حذف",
+      "cancel": "إلغاء",
+      "deleting": "جاري الحذف..."
+    },
+    "columns": {
+      "id": "رقم الشكوى",
+      "name": "اسم المرسل",
+      "email": "البريد الإلكتروني",
+      "phone": "رقم الهاتف",
+      "camp": "المخيم",
+      "topic": "الموضوع",
+      "actions": "الإجراءات"
+    }
+  },
+  "families_page": {
+    "page_title": "إدارة العائلات",
+    "list_title": "قائمة العائلات",
+    "add_button": "إضافة عائلة",
+    "loading_data": "جارٍ تحميل البيانات...",
+    "error_loading": "خطأ في تحميل البيانات",
+    "delete_title": "حذف العائلة",
+    "delete_description": "هل أنت متأكد من حذف العائلة {name}؟ لا يمكن التراجع عن هذا الإجراء.",
+    "columns": {
+      "familyName": "اسم العائلة",
+      "nationalId": "رقم الهوية",
+      "phone": "رقم الهاتف",
+      "totalMembers": "عدد الأفراد",
+      "camp": "المخيم",
+      "tentNumber": "رقم الخيمة",
+      "location": "الموقع",
+      "actions": "الإجراءات"
+    },
+    "actions_menu": {
+      "open_menu": "فتح القائمة",
+      "view_details": "عرض التفاصيل",
+      "edit": "تعديل",
+      "delete": "حذف"
+    }
+  },
+  "projects_page": {
+    "title": "المشاريع الحالية",
+    "search_placeholder": "بحث باسم المشروع...",
+    "status_filter": "الحالة",
+    "type_filter": "النوع",
+    "no_results": "لا توجد مشاريع",
+    "columns": {
+      "project": "المشروع",
+      "progress": "التقدم",
+      "total": "الإجمالي",
+      "received": "تم تسليم",
+      "remaining": "المتبقي",
+      "contributions": "المساهمات",
+      "update": "تحديث",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+    "actions": {
+      "select_all": "تحديد الكل",
+      "select_row": "تحديد الصف",
+      "accepted": "تم القبول",
+      "update": "تحديث",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+    "delete_dialog": {
+      "title": "حذف المشروع",
+      "description": "هل أنت متأكد من حذف المشروع {name}؟ لا يمكن التراجع عن هذا الإجراء.",
+      "confirm": "حذف",
+      "cancel": "إلغاء"
+    },
+    "filter_all": "الكل"
+  },
+
+  "contributions": {
+    "page_title": "مساهمات المندوبين",
+    "all_contributions": "جميع المساهمات",
+    "details_title": "تفاصيل المساهمة",
+    "project": "المشروع",
+    "project_type": "النوع",
+    "no_project": "لا يوجد مشروع مرتبط",
+    "quantity": "الكمية",
+    "status": "الحالة",
+    "status_pending": "قيد الانتظار",
+    "status_approved": "موافق عليه",
+    "status_rejected": "مرفوض",
+    "status_completed": "مكتمل",
+    "families_benefited": "العائلات المستفيدة",
+    "members": "أفراد",
+    "notes": "ملاحظات",
+    "contribution_date": "تاريخ المساهمة",
+    "delete_family_title": "تأكيد حذف العائلة",
+    "delete_family_desc": "هل أنت متأكد من رغبتك في حذف عائلة {name} من هذه المساهمة؟ لا يمكن التراجع عن هذا الإجراء.",
+    "confirm_delete": "تأكيد الحذف",
+    "deleting": "جاري الحذف...",
+    "loading": "جاري تحميل المساهمات...",
+    "filter_project": "المشروع",
+    "filter_status": "الحالة",
+    "filter_all": "الكل",
+    "update": "تحديث",
+    "reset": "إعادة البحث",
+    "no_results": "لا توجد مساهمات بعد.",
+    "fetch_error": "فشل تحميل المساهمات",
+    "delete_family_success": "تم حذف العائلة بنجاح",
+    "others": "آخرين",
+    "view": "عرض",
+    "confirm_receipt_title": "تأكيد استلام المساهمة",
+    "confirm_receipt_desc": "هل أنت متأكد من رغبتك في تأكيد استلام المساهمة رقم",
+    "received_quantity": "الكمية المستلمة",
+    "received_quantity_placeholder": "أدخل الكمية المستلمة",
+    "select_beneficiaries_title": "اختيار العائلات المستفيدة",
+    "select_beneficiaries_desc": "اختر العائلات المستفيدة من هذه المساهمة وحدد الكمية لكل عائلة",
+    "quantity_placeholder": "الكمية",
+    "prev": "السابق",
+    "next": "التالي",
+    "confirming": "جاري التأكيد...",
+    "adding_families": "جاري الإضافة...",
+    "confirm_success": "تم تأكيد المساهمة بنجاح",
+    "confirm_error": "فشل في تأكيد المساهمة",
+    "add_families_success": "تم إضافة العائلات بنجاح",
+    "add_families_error": "فشل في إضافة العائلات",
+    "individuals": "أفراد",
+    "fetch_families_error": "فشل في جلب قائمة العائلات",
+    "fetch_history_error": "فشل في جلب سجل المساهمات",
+    "invalid_quantity": "يرجى إدخال كمية صالحة",
+    "select_family": "يرجى اختيار عائلة واحدة على الأقل",
+    "invalid_family_quantity": "يرجى إدخال كمية صالحة لكل عائلة",
+    "create_project_error": "لا يمكن إنشاء المشروع",
+    "contribute_dialog": {
+      "quantity_validation": "يرجى إدخال كمية صالحة",
+      "quantity_label": "من فضلك ادخل الكمية التي تريد المساهمة بها",
+      "quantity_placeholder": "العدد",
+      "beneficiary_families": "العائلات المستفيدة",
+      "enter_family_name": "ادخل اسم العائلة",
+      "selected_one": "تم اختيار عائلة واحدة",
+      "selected_multiple": "تم اختيار {count} عائلات",
+      "search_family_placeholder": "بحث عن عائلة...",
+      "no_results": "لا توجد نتائج.",
+      "beneficiary_tag": "مستفيد",
+      "members_count": "{count} أفراد",
+      "age_group": "الفئة العمرية",
+      "medical_condition": "الحالة الطبية",
+      "no_conditions": "لا توجد حالات",
+      "notes_placeholder": "اكتب ملاحظة",
+      "submit": "ارسال",
+      "submitting": "جاري الارسال...",
+      "success_message": "تم إرسال المساهمة بنجاح",
+      "error_message": "فشل في إرسال المساهمة",
+      "fetch_families_error": "فشل في جلب قائمة العائلات",
+      "fetch_conditions_error": "فشل في جلب الحالات الطبية"
+    },
+    "age_groups": {
+      "newborns": "حديثي الولادة",
+      "infants": "الرضع",
+      "veryEarlyChildhood": "الطفولة المبكرة جداً",
+      "toddlers": "الأطفال الصغار",
+      "earlyChildhood": "الطفولة المبكرة",
+      "children": "الأطفال",
+      "adolescents": "المراهقين",
+      "youth": "الشباب",
+      "youngAdults": "البالغين الشباب",
+      "middleAgeAdults": "متوسطي العمر",
+      "lateMiddleAge": "أواخر متوسط العمر",
+      "seniors": "كبار السن"
+    }
+  },
+  "activities": {
+    "page_title": "سجل النشاطات",
+    "all_activities": "جميع النشاطات",
+    "description": "سجل كامل بجميع الأنشطة والعمليات التي تمت في النظام",
+    "loading": "جاري تحميل النشاطات...",
+    "error_title": "حدث خطأ أثناء تحميل النشاطات",
+    "unknown_error": "خطأ غير معروف",
+    "id": "الرقم",
+    "description": "الوصف",
+    "type": "النوع",
+    "date": "التاريخ",
+    "type_camp": "مخيم",
+    "type_project": "مشروع",
+    "type_user": "مستخدم",
+    "type_family": "عائلة"
   }
 }

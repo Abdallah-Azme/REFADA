@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import {
   Dialog,
   DialogContent,
@@ -20,13 +21,13 @@ import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
 import { Textarea } from "@/shared/ui/textarea";
 import {
-  testimonialSchema,
   TestimonialFormValues,
   Testimonial,
 } from "../types/testimonial.schema";
-import { useEffect, useState } from "react";
-import { Loader2, Upload, User } from "lucide-react";
+import { useEffect, useState, useMemo } from "react";
+import { Loader2, User } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface TestimonialFormDialogProps {
   open: boolean;
@@ -44,6 +45,23 @@ export function TestimonialFormDialog({
   isPending,
 }: TestimonialFormDialogProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const t = useTranslations("testimonials_page");
+
+  const testimonialSchema = useMemo(
+    () =>
+      z.object({
+        userName: z.string().min(2, t("validation.name_required")),
+        userImage: z.any().optional(),
+        opinion_ar: z.string().min(5, t("validation.content_ar_required")),
+        opinion_en: z.string().min(5, t("validation.content_en_required")),
+        order: z
+          .string()
+          .or(z.number())
+          .transform((val) => Number(val))
+          .optional(),
+      }),
+    [t]
+  );
 
   const form = useForm<TestimonialFormValues>({
     resolver: zodResolver(testimonialSchema),
@@ -58,21 +76,18 @@ export function TestimonialFormDialog({
 
   useEffect(() => {
     if (initialData) {
-      // If we have initial data, we populate the form.
-      // Note: for file inputs, we can't programmatically set the file object from URL.
-      // So user_image remains undefined in form state unless user uploads new one.
-      // We assume opinion is returned as an object {ar: "", en: ""} or we need to fetch it?
-      // For now, assuming standard separate fields or we parse it.
-      // If API returns `opinion` as string (standard from previous observation),
-      // we might only populate one language or need to fetch full details.
-      // But standard "Edit" usually requires fetching full Details.
-      // I'll assume `initialData` has opinion_ar and opinion_en if they exist,
-      // or we accept that we might be missing English if list only returns localized.
-      // Ideally page component passes full data.
-
       const opinionAr =
-        (initialData as any).opinion_ar || initialData.opinion || "";
-      const opinionEn = (initialData as any).opinion_en || ""; // Might be missing
+        (initialData as any).opinion_ar ||
+        (typeof initialData.opinion === "object"
+          ? (initialData.opinion as any).ar
+          : initialData.opinion) ||
+        "";
+      const opinionEn =
+        (initialData as any).opinion_en ||
+        (typeof initialData.opinion === "object"
+          ? (initialData.opinion as any).en
+          : "") ||
+        "";
 
       form.reset({
         userName: initialData.userName,
@@ -110,9 +125,6 @@ export function TestimonialFormDialog({
 
   const handleSubmit = (data: TestimonialFormValues) => {
     onSubmit(data);
-    if (!isPending) {
-      // Only reset if creating, or parent handles closing
-    }
   };
 
   return (
@@ -120,7 +132,9 @@ export function TestimonialFormDialog({
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {initialData ? "تعديل التزكية" : "إضافة تزكية جديدة"}
+            {initialData
+              ? t("dialog_form.title_edit")
+              : t("dialog_form.title_add")}
           </DialogTitle>
         </DialogHeader>
 
@@ -136,9 +150,12 @@ export function TestimonialFormDialog({
                 name="userName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>اسم المستخدم</FormLabel>
+                    <FormLabel>{t("dialog_form.name_label")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="اسم صاحب التزكية..." {...field} />
+                      <Input
+                        placeholder={t("dialog_form.name_placeholder")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -151,7 +168,7 @@ export function TestimonialFormDialog({
                 name="userImage"
                 render={({ field: { value, onChange, ...field } }) => (
                   <FormItem>
-                    <FormLabel>صورة المستخدم</FormLabel>
+                    <FormLabel>{t("dialog_form.image_label")}</FormLabel>
                     <FormControl>
                       <div className="flex items-center gap-4">
                         <div className="relative h-20 w-20 rounded-full overflow-hidden border bg-gray-100 flex items-center justify-center shrink-0">
@@ -175,7 +192,7 @@ export function TestimonialFormDialog({
                             className="cursor-pointer"
                           />
                           <p className="text-xs text-gray-500 mt-2">
-                            يفضل استخدام صورة مربعة بحجم 500x500
+                            {t("dialog_form.image_hint")}
                           </p>
                         </div>
                       </div>
@@ -193,10 +210,10 @@ export function TestimonialFormDialog({
                 name="opinion_ar"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>الرأي (بالعربية)</FormLabel>
+                    <FormLabel>{t("dialog_form.content_label_ar")}</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="اكتب الرأي بالعربية..."
+                        placeholder={t("dialog_form.content_placeholder_ar")}
                         className="resize-none h-32"
                         {...field}
                       />
@@ -211,10 +228,10 @@ export function TestimonialFormDialog({
                 name="opinion_en"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>الرأي (بالإنجليزي)</FormLabel>
+                    <FormLabel>{t("dialog_form.content_label_en")}</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Opinion in English..."
+                        placeholder={t("dialog_form.content_placeholder_en")}
                         className="resize-none h-32 direction-ltr"
                         {...field}
                       />
@@ -230,7 +247,7 @@ export function TestimonialFormDialog({
               name="order"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>الترتيب</FormLabel>
+                  <FormLabel>{t("dialog_form.rating_label")}</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="1" {...field} />
                   </FormControl>
@@ -246,18 +263,18 @@ export function TestimonialFormDialog({
                 onClick={() => onOpenChange(false)}
                 disabled={isPending}
               >
-                إلغاء
+                {t("dialog_form.cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                    جاري الحفظ...
+                    {t("actions.saving")}
                   </>
                 ) : initialData ? (
-                  "تحديث"
+                  t("dialog_form.update")
                 ) : (
-                  "إضافة"
+                  t("dialog_form.add")
                 )}
               </Button>
             </div>

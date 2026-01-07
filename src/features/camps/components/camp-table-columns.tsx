@@ -6,22 +6,20 @@ import { Camp } from "../types/camp.schema";
 import { campService } from "../services/camp.service";
 import { CampTableColumn } from "../types/camp-table.types";
 
-export const createAdminCampColumns = ({
-  onEdit,
-  onDelete,
-  onToggleStatus,
-  onView,
-}: CampTableColumn): ColumnDef<Camp>[] => [
+export const createAdminCampColumns = (
+  { onEdit, onDelete, onToggleStatus, onView }: CampTableColumn,
+  t: (key: string) => string
+): ColumnDef<Camp>[] => [
   {
     accessorKey: "name",
-    header: "اسم الإيواء",
+    header: t("columns.name"),
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue("name")}</div>
     ),
   },
   {
     accessorKey: "location",
-    header: "الموقع",
+    header: t("columns.location"),
     cell: ({ row }) => (
       <div className="flex items-center gap-1">
         <MapPin className="h-4 w-4 text-gray-500" />
@@ -31,23 +29,23 @@ export const createAdminCampColumns = ({
   },
   {
     accessorKey: "delegate",
-    header: "المندوب",
+    header: t("columns.delegate"),
     cell: ({ row }) => {
       const delegate = row.getValue("delegate") as string | null;
       return (
         <div className={delegate ? "font-medium" : "text-gray-400 italic"}>
-          {delegate || "غير معين"}
+          {delegate || t("no_delegate")}
         </div>
       );
     },
   },
   {
     accessorKey: "capacity",
-    header: "السعة",
+    header: t("columns.capacity"),
   },
   {
     accessorKey: "currentOccupancy",
-    header: "الإشغال",
+    header: t("columns.occupancy"),
     cell: ({ row }) => {
       const camp = row.original;
       const percentage = campService.calculateOccupancyRate(camp);
@@ -61,7 +59,7 @@ export const createAdminCampColumns = ({
   },
   {
     accessorKey: "status",
-    header: "الحالة",
+    header: t("columns.status"),
     cell: ({ row }) => {
       const status = row.getValue("status") as "active" | "inactive";
       const camp = row.original;
@@ -71,13 +69,15 @@ export const createAdminCampColumns = ({
           className="cursor-pointer hover:opacity-80"
           onClick={() => camp.slug && onToggleStatus(camp.slug)}
         >
-          {campService.getStatusLabel(status)}
+          {/* Attempt to translate status if possible, otherwise use service label */}
+          {t(`status.${status}`) || campService.getStatusLabel(status)}
         </Badge>
       );
     },
   },
   {
     id: "actions",
+    header: t("columns.actions"),
     cell: ({ row }) => {
       const camp = row.original;
       return (
@@ -86,7 +86,7 @@ export const createAdminCampColumns = ({
             variant="outline"
             size="sm"
             onClick={() => onView(camp)}
-            title="عرض التفاصيل"
+            title="عرض التفاصيل" // Translation needed for title? "View Details"
           >
             <Eye className="h-4 w-4" />
           </Button>

@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/shared/ui/table";
 import {
+  ColumnDef,
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
@@ -25,18 +26,23 @@ import { createAdminMessageColumns } from "./message-table-columns";
 import { ContactMessage } from "../types/message.schema";
 import PaginationControls from "@/src/features/dashboard/components/pagination-controls";
 import { Input } from "@/shared/ui/input";
+import { useTranslations } from "next-intl";
 
 interface AdminMessagesTableProps {
   data: ContactMessage[];
   onView: (message: ContactMessage) => void;
   onDelete: (id: number) => void;
+  customColumns?: ColumnDef<ContactMessage>[];
 }
 
 export default function AdminMessagesTable({
   data,
   onView,
   onDelete,
+  customColumns,
 }: AdminMessagesTableProps) {
+  const t = useTranslations("messages_page");
+  const tCommon = useTranslations("common");
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -48,12 +54,16 @@ export default function AdminMessagesTable({
     pageSize: 10,
   });
 
+  // Use custom columns if provided, otherwise create default ones (though default ones might miss translations if we don't pass t here, but creating them here is complex if we depend on parent t)
+  // Actually, better to specificy that we use the customColumns primarily.
+  // We can pass a dummy t if we fallback, or just rely on customColumns being passed from Page.
+  const columns =
+    customColumns ||
+    createAdminMessageColumns({ onView, onDelete }, (key) => key);
+
   const table = useReactTable<ContactMessage>({
     data,
-    columns: createAdminMessageColumns({
-      onView,
-      onDelete,
-    }),
+    columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -74,7 +84,7 @@ export default function AdminMessagesTable({
     <div className="space-y-4">
       <div className="flex items-center gap-4 py-4">
         <Input
-          placeholder="البحث بالاسم..."
+          placeholder={t("columns.name") + "..."}
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -82,7 +92,7 @@ export default function AdminMessagesTable({
           className="max-w-sm"
         />
         <Input
-          placeholder="البحث بالبريد الإلكتروني..."
+          placeholder={t("columns.email") + "..."}
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
@@ -133,15 +143,10 @@ export default function AdminMessagesTable({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={
-                    createAdminMessageColumns({
-                      onView,
-                      onDelete,
-                    }).length
-                  }
+                  colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  لا توجد نتائج.
+                  {tCommon("no_results")}
                 </TableCell>
               </TableRow>
             )}

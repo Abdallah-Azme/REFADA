@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +25,7 @@ import {
 import { ImageUpload } from "@/components/ui/image-upload";
 
 export default function SettingsProfileTab() {
+  const t = useTranslations("settings.profile");
   const [isEditing, setIsEditing] = useState(false);
   const { data: profileData, isLoading } = useProfile();
   const updateProfile = useUpdateProfile();
@@ -65,7 +67,7 @@ export default function SettingsProfileTab() {
       <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <span className="mr-3 text-gray-600">جاري تحميل البيانات...</span>
+          <span className="mr-3 text-gray-600">{t("loading")}</span>
         </div>
       </div>
     );
@@ -79,7 +81,7 @@ export default function SettingsProfileTab() {
             onClick={() => setIsEditing(true)}
             className="bg-primary hover:bg-primary/90 ms-auto text-white px-8 py-2.5 rounded-lg flex items-center gap-2 text-base shadow-sm"
           >
-            <span>تعديل</span>
+            <span>{t("edit_button")}</span>
             <Pencil className="h-4 w-4" />
           </Button>
         )}
@@ -90,7 +92,7 @@ export default function SettingsProfileTab() {
           onSubmit={profileForm.handleSubmit(onProfileSubmit)}
           className="space-y-0"
         >
-          {/* Profile Image Upload - Same pattern as hero settings */}
+          {/* Profile Image Upload */}
           <div className="mb-8">
             <FormField
               control={profileForm.control}
@@ -98,7 +100,7 @@ export default function SettingsProfileTab() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-lg font-medium text-gray-700 block text-center mb-4">
-                    صورة الملف الشخصي
+                    {t("profile_image")}
                   </FormLabel>
                   <FormControl>
                     <div className="flex justify-center">
@@ -108,7 +110,7 @@ export default function SettingsProfileTab() {
                         }
                         onChange={field.onChange}
                         disabled={!isEditing}
-                        placeholder="اضغط لرفع صورة الملف الشخصي"
+                        placeholder={t("upload_placeholder")}
                         imageClassName="h-40 w-40 rounded-full"
                       />
                     </div>
@@ -127,7 +129,7 @@ export default function SettingsProfileTab() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium text-gray-700">
-                    الاسم
+                    {t("name")}
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -148,7 +150,7 @@ export default function SettingsProfileTab() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium text-gray-700">
-                    البريد الإلكتروني
+                    {t("email")}
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -170,7 +172,7 @@ export default function SettingsProfileTab() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium text-gray-700">
-                    رقم الهوية
+                    {t("id_number")}
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -191,7 +193,7 @@ export default function SettingsProfileTab() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium text-gray-700">
-                    رقم الجوال
+                    {t("phone")}
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -212,7 +214,7 @@ export default function SettingsProfileTab() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium text-gray-700">
-                    الرقم الاحتياطي
+                    {t("backup_phone")}
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -230,7 +232,7 @@ export default function SettingsProfileTab() {
             {(profileData?.data as any)?.adminPositionName && (
               <div>
                 <label className="text-sm font-medium text-gray-700 block mb-2">
-                  الصفة الإدارية
+                  {t("admin_position")}
                 </label>
                 <div className="h-11 text-base bg-gray-100 border border-gray-200 rounded-md flex items-center px-3 text-gray-600">
                   {(profileData?.data as any).adminPositionName}
@@ -249,10 +251,10 @@ export default function SettingsProfileTab() {
                 {updateProfile.isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 ml-2 animate-spin" />
-                    جاري الحفظ...
+                    {t("saving")}
                   </>
                 ) : (
-                  "حفظ ✓"
+                  t("save_button")
                 )}
               </Button>
               <Button
@@ -263,7 +265,7 @@ export default function SettingsProfileTab() {
                   profileForm.reset();
                 }}
               >
-                إلغاء ✗
+                {t("cancel_button")}
               </Button>
             </div>
           )}

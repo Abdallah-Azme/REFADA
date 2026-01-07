@@ -1,11 +1,13 @@
 import PolicyPage from "@/features/home-control/components/policy-page";
+import { getTranslations } from "next-intl/server";
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const t = await getTranslations("policies_page");
   return (
     <PolicyPage
       sectionIndex={2}
-      pageTitle="الخصوصية"
-      pageSubtitle="إعدادات صفحة سياسة الخصوصية"
+      pageTitle={t("page_title_privacy")}
+      pageSubtitle={t("page_subtitle_privacy")}
     />
   );
 }

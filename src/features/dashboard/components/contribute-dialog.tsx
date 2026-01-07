@@ -17,7 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Search, Send, ChevronDown, Check, Loader2, X } from "lucide-react";
 import { Project } from "../table-cols/project-contribution-cols";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Command,
   CommandEmpty,
@@ -47,6 +47,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useTranslations } from "next-intl";
 
 interface ContributeDialogProps {
   isOpen: boolean;
@@ -55,16 +56,6 @@ interface ContributeDialogProps {
   campId?: number;
 }
 
-const contributeSchema = z.object({
-  quantity: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-    message: "يرجى إدخال كمية صالحة",
-  }),
-  notes: z.string().optional(),
-  families: z.array(z.number()).optional(),
-});
-
-type ContributeFormValues = z.infer<typeof contributeSchema>;
-
 export default function ContributeDialog({
   isOpen,
   onClose,
@@ -72,21 +63,38 @@ export default function ContributeDialog({
   campId,
 }: ContributeDialogProps) {
   const params = useParams();
+  const t = useTranslations("contributions.contribute_dialog");
+  const tAge = useTranslations("contributions.age_groups");
 
-  // Age group filter options - matching the keys from AgeGroupsCount
+  // Schema with translations
+  const contributeSchema = useMemo(() => {
+    return z.object({
+      quantity: z
+        .string()
+        .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+          message: t("quantity_validation"),
+        }),
+      notes: z.string().optional(),
+      families: z.array(z.number()).optional(),
+    });
+  }, [t]);
+
+  type ContributeFormValues = z.infer<typeof contributeSchema>;
+
+  // Age group filter options
   const ageGroupOptions = [
-    { id: "newborns", name: "حديثي الولادة" },
-    { id: "infants", name: "الرضع" },
-    { id: "veryEarlyChildhood", name: "الطفولة المبكرة جداً" },
-    { id: "toddlers", name: "الأطفال الصغار" },
-    { id: "earlyChildhood", name: "الطفولة المبكرة" },
-    { id: "children", name: "الأطفال" },
-    { id: "adolescents", name: "المراهقين" },
-    { id: "youth", name: "الشباب" },
-    { id: "youngAdults", name: "البالغين الشباب" },
-    { id: "middleAgeAdults", name: "متوسطي العمر" },
-    { id: "lateMiddleAge", name: "أواخر متوسط العمر" },
-    { id: "seniors", name: "كبار السن" },
+    { id: "newborns", name: tAge("newborns") },
+    { id: "infants", name: tAge("infants") },
+    { id: "veryEarlyChildhood", name: tAge("veryEarlyChildhood") },
+    { id: "toddlers", name: tAge("toddlers") },
+    { id: "earlyChildhood", name: tAge("earlyChildhood") },
+    { id: "children", name: tAge("children") },
+    { id: "adolescents", name: tAge("adolescents") },
+    { id: "youth", name: tAge("youth") },
+    { id: "youngAdults", name: tAge("youngAdults") },
+    { id: "middleAgeAdults", name: tAge("middleAgeAdults") },
+    { id: "lateMiddleAge", name: tAge("lateMiddleAge") },
+    { id: "seniors", name: tAge("seniors") },
   ];
 
   // Keep local state for data that is fetched (options)
@@ -154,7 +162,6 @@ export default function ContributeDialog({
       if (response.success) {
         // @ts-ignore
         const familiesData = response.data?.families || [];
-        console.log({ familiesData });
         setFamilies(Array.isArray(familiesData) ? familiesData : []);
 
         // Also extract medical conditions from here if available
@@ -178,7 +185,7 @@ export default function ContributeDialog({
       }
     } catch (error) {
       console.error("Failed to fetch families:", error);
-      toast.error("فشل في جلب قائمة العائلات");
+      toast.error(t("fetch_families_error"));
     } finally {
       setIsLoadingFamilies(false);
     }
@@ -193,6 +200,7 @@ export default function ContributeDialog({
       }
     } catch (error) {
       console.error("Failed to fetch medical conditions:", error);
+      toast.error(t("fetch_conditions_error"));
     } finally {
       setIsLoadingConditions(false);
     }
@@ -211,12 +219,12 @@ export default function ContributeDialog({
       });
 
       if (response.success) {
-        toast.success(response.message || "تم إرسال المساهمة بنجاح");
+        toast.success(response.message || t("success_message"));
         onClose();
       }
     } catch (error: any) {
       console.error("Failed to submit contribution:", error);
-      toast.error(error?.message || "فشل في إرسال المساهمة");
+      toast.error(error?.message || t("error_message"));
     }
   };
 
@@ -295,12 +303,12 @@ export default function ContributeDialog({
                   render={({ field }) => (
                     <FormItem className="space-y-2">
                       <FormLabel className="text-sm font-medium text-gray-600 block text-right">
-                        من فضلك ادخل الكمية التي تريد المساهمة بها
+                        {t("quantity_label")}
                       </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
-                          placeholder="العدد"
+                          placeholder={t("quantity_placeholder")}
                           className="bg-white border-gray-200 text-right h-12 rounded-xl"
                           {...field}
                         />
@@ -313,7 +321,7 @@ export default function ContributeDialog({
                 {/* Beneficiary Families Search */}
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-800 block text-right">
-                    العائلات المستفيدة
+                    {t("beneficiary_families")}
                   </label>
                   <div className="flex gap-2">
                     <div className="relative flex-1">
@@ -324,14 +332,16 @@ export default function ContributeDialog({
                         <PopoverTrigger asChild>
                           <div className="relative w-full">
                             <Input
-                              placeholder="ادخل اسم العائلة"
+                              placeholder={t("enter_family_name")}
                               className="bg-white border-gray-200 text-right h-12 rounded-xl pr-10 cursor-pointer"
                               readOnly
                               value={
                                 selectedFamilies.length > 0
                                   ? selectedFamilies.length === 1
-                                    ? "تم اختيار عائلة واحدة"
-                                    : `تم اختيار ${selectedFamilies.length} عائلات`
+                                    ? t("selected_one")
+                                    : t("selected_multiple", {
+                                        count: selectedFamilies.length,
+                                      })
                                   : ""
                               }
                             />
@@ -341,7 +351,7 @@ export default function ContributeDialog({
                         <PopoverContent className="p-0 w-[300px]" align="end">
                           <Command>
                             <CommandInput
-                              placeholder="بحث عن عائلة..."
+                              placeholder={t("search_family_placeholder")}
                               className="text-right"
                             />
                             <CommandList>
@@ -351,7 +361,7 @@ export default function ContributeDialog({
                                 </div>
                               ) : (
                                 <>
-                                  <CommandEmpty>لا توجد نتائج.</CommandEmpty>
+                                  <CommandEmpty>{t("no_results")}</CommandEmpty>
                                   <CommandGroup>
                                     {filteredFamilies.map((family) => (
                                       <CommandItem
@@ -365,13 +375,15 @@ export default function ContributeDialog({
                                             <span>{family.familyName}</span>
                                             {family.hasBenefit && (
                                               <span className="bg-green-100 text-green-700 text-xs px-1.5 py-0.5 rounded-full">
-                                                مستفيد
+                                                {t("beneficiary_tag")}
                                               </span>
                                             )}
                                           </div>
                                           <span className="text-xs text-gray-500">
                                             {family.nationalId} -{" "}
-                                            {family.totalMembers} أفراد
+                                            {t("members_count", {
+                                              count: family.totalMembers,
+                                            })}
                                           </span>
                                         </div>
                                         <div
@@ -405,7 +417,7 @@ export default function ContributeDialog({
                             className="bg-white border-gray-200 h-12 rounded-xl flex flex-row-reverse justify-between items-center px-3 text-gray-500 font-normal gap-1"
                           >
                             <ChevronDown className="h-4 w-4 opacity-50" />
-                            <span>الفئة العمرية</span>
+                            <span>{t("age_group")}</span>
                             {selectedAgeFilters.length > 0 && (
                               <span className="bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[18px]">
                                 {selectedAgeFilters.length}
@@ -468,7 +480,7 @@ export default function ContributeDialog({
                             className="bg-white border-gray-200 h-12 rounded-xl flex flex-row-reverse justify-between items-center px-3 text-gray-500 font-normal gap-1"
                           >
                             <ChevronDown className="h-4 w-4 opacity-50" />
-                            <span>الحالة الطبية</span>
+                            <span>{t("medical_condition")}</span>
                             {selectedMedicalFilters.length > 0 && (
                               <span className="bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[18px]">
                                 {selectedMedicalFilters.length}
@@ -514,7 +526,7 @@ export default function ContributeDialog({
                               ))
                             ) : (
                               <p className="text-sm text-gray-500 text-center py-2">
-                                لا توجد حالات
+                                {t("no_conditions")}
                               </p>
                             )}
                           </div>
@@ -543,7 +555,7 @@ export default function ContributeDialog({
                     <FormItem>
                       <FormControl>
                         <Textarea
-                          placeholder="اكتب ملاحظة"
+                          placeholder={t("notes_placeholder")}
                           className="bg-white border-gray-200 text-right min-h-[60px] rounded-xl resize-none"
                           {...field}
                         />
@@ -564,11 +576,11 @@ export default function ContributeDialog({
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      جاري الارسال...
+                      {t("submitting")}
                     </>
                   ) : (
                     <>
-                      ارسال
+                      {t("submit")}
                       <Send className="w-5 h-5 rtl:-scale-x-100" />
                     </>
                   )}

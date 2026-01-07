@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Dispatch, SetStateAction, useEffect } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -30,16 +30,22 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { format, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  page?: number;
+  onPageChange?: Dispatch<SetStateAction<number>>;
 }
 
 export function ActivityTable<TData, TValue>({
   columns,
   data,
+  page,
+  onPageChange,
 }: DataTableProps<TData, TValue>) {
+  const tCommon = useTranslations("common");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -47,10 +53,34 @@ export function ActivityTable<TData, TValue>({
     from: Date | undefined;
     to: Date | undefined;
   }>({ from: undefined, to: undefined });
+
   const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
+    pageIndex: page ? page - 1 : 0,
+    pageSize: 15,
   });
+
+  // Sync internal pagination state with external page prop
+  useEffect(() => {
+    if (page !== undefined) {
+      setPagination((prev) => ({ ...prev, pageIndex: page - 1 }));
+    }
+  }, [page]);
+
+  // Handle pagination changes
+  const handlePaginationChange = (updater: any) => {
+    if (typeof updater === "function") {
+      const newPagination = updater(pagination);
+      setPagination(newPagination);
+      if (onPageChange) {
+        onPageChange(newPagination.pageIndex + 1);
+      }
+    } else {
+      setPagination(updater);
+      if (onPageChange) {
+        onPageChange(updater.pageIndex + 1);
+      }
+    }
+  };
 
   // Filter data by date range
   const filteredData = useMemo(() => {
@@ -84,7 +114,8 @@ export function ActivityTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onGlobalFilterChange: setGlobalFilter,
-    onPaginationChange: setPagination,
+    onPaginationChange: handlePaginationChange,
+    manualPagination: !!onPageChange, // Enable manual pagination if onPageChange is provided
     state: {
       sorting,
       columnFilters,
@@ -112,7 +143,7 @@ export function ActivityTable<TData, TValue>({
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
-            placeholder="ابحث في النشاطات..."
+            placeholder={tCommon("search") + "..."}
             value={globalFilter ?? ""}
             onChange={(e) => setGlobalFilter(e.target.value)}
             className="pr-9"
@@ -140,7 +171,9 @@ export function ActivityTable<TData, TValue>({
                   format(dateRange.from, "dd/MM/yyyy", { locale: ar })
                 )
               ) : (
-                <span>اختر نطاق التاريخ</span>
+                <span>
+                  {tCommon("date_range_placeholder") || "اختر نطاق التاريخ"}
+                </span>
               )}
             </Button>
           </PopoverTrigger>
@@ -165,7 +198,7 @@ export function ActivityTable<TData, TValue>({
             className="h-9 px-3"
           >
             <X className="h-4 w-4 ml-1" />
-            مسح الكل
+            {tCommon("clear_all") || "مسح الكل"}
           </Button>
         )}
       </div>
@@ -211,7 +244,7 @@ export function ActivityTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  لا توجد نشاطات
+                  {tCommon("no_results")}
                 </TableCell>
               </TableRow>
             )}

@@ -12,79 +12,82 @@ import {
   MessageSquare,
 } from "lucide-react";
 import Link from "next/link";
-
-const homeControlLinks = [
-  {
-    title: "الرئيسية (Hero)",
-    description: "تعديل العنوان والصورة الرئيسية",
-    icon: Home,
-    href: "/dashboard/admin/home-control/hero",
-    color: "text-blue-500",
-  },
-  {
-    title: "الإحصائيات",
-    description: "تعديل الأرقام والإحصائيات",
-    icon: BarChart3,
-    href: "/dashboard/admin/home-control/stats",
-    color: "text-green-500",
-  },
-  {
-    title: "من نحن",
-    description: "تعديل معلومات الجمعية",
-    icon: Users,
-    href: "/dashboard/admin/home-control/about",
-    color: "text-purple-500",
-  },
-  {
-    title: "السياسات",
-    description: "تعديل سياسات الجمعية",
-    icon: FileText,
-    href: "/dashboard/admin/home-control/policy",
-    color: "text-orange-500",
-  },
-  {
-    title: "الشركاء",
-    description: "إدارة شركاء النجاح",
-    icon: Users,
-    href: "/dashboard/admin/home-control/partners",
-    color: "text-indigo-500",
-  },
-  {
-    title: "الإيواءات",
-    description: "إعدادات قسم الإيواءات",
-    icon: Tent,
-    href: "/dashboard/admin/home-control/camps",
-    color: "text-red-500",
-  },
-  {
-    title: "المشاريع",
-    description: "إعدادات قسم المشاريع",
-    icon: FolderOpen,
-    href: "/dashboard/admin/home-control/projects",
-    color: "text-yellow-500",
-  },
-  {
-    title: "آراء المستفيدين",
-    description: "إدارة آراء المستفيدين",
-    icon: MessageSquare,
-    href: "/dashboard/admin/home-control/testimonials",
-    color: "text-pink-500",
-  },
-  {
-    title: "تواصل معنا",
-    description: "تعديل معلومات الاتصال",
-    icon: Menu,
-    href: "/dashboard/admin/home-control/contact",
-    color: "text-cyan-500",
-  },
-];
+import { useTranslations } from "next-intl";
 
 export default function HomeControlIndexPage() {
+  const t = useTranslations("admin");
+
+  const homeControlLinks = [
+    {
+      title: t("hero_section"),
+      description: t("hero_section_desc"),
+      icon: Home,
+      href: "/dashboard/admin/home-control/hero",
+      color: "text-blue-500",
+    },
+    {
+      title: t("stats_section"),
+      description: t("stats_section_desc"),
+      icon: BarChart3,
+      href: "/dashboard/admin/home-control/stats",
+      color: "text-green-500",
+    },
+    {
+      title: t("about_section"),
+      description: t("about_section_desc"),
+      icon: Users,
+      href: "/dashboard/admin/home-control/about",
+      color: "text-purple-500",
+    },
+    {
+      title: t("policies_section"),
+      description: t("policies_section_desc"),
+      icon: FileText,
+      href: "/dashboard/admin/home-control/policy",
+      color: "text-orange-500",
+    },
+    {
+      title: t("partners_section"),
+      description: t("partners_section_desc"),
+      icon: Users,
+      href: "/dashboard/admin/home-control/partners",
+      color: "text-indigo-500",
+    },
+    {
+      title: t("camps_section"),
+      description: t("camps_section_desc"),
+      icon: Tent,
+      href: "/dashboard/admin/home-control/camps",
+      color: "text-red-500",
+    },
+    {
+      title: t("projects_section"),
+      description: t("projects_section_desc"),
+      icon: FolderOpen,
+      href: "/dashboard/admin/home-control/projects",
+      color: "text-yellow-500",
+    },
+    {
+      title: t("testimonials_section"),
+      description: t("testimonials_section_desc"),
+      icon: MessageSquare,
+      href: "/dashboard/admin/home-control/testimonials",
+      color: "text-pink-500",
+    },
+    {
+      title: t("contact_section"),
+      description: t("contact_section_desc"),
+      icon: Menu,
+      href: "/dashboard/admin/home-control/contact",
+      color: "text-cyan-500",
+    },
+  ];
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight">
-          التحكم في الصفحة الرئيسية
+          {t("home_control")}
         </h1>
         <p className="text-muted-foreground">
           قم باختيار القسم الذي تريد تعديله من القائمة أدناه.

@@ -19,8 +19,10 @@ import {
   ChangePasswordFormValues,
 } from "@/features/profile";
 import { Loader2, Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function SettingsPasswordTab() {
+  const t = useTranslations("settings.password");
   const changePassword = useChangePassword();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -46,7 +48,7 @@ export default function SettingsPasswordTab() {
   return (
     <div className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
       <p className="text-gray-600 mb-6 text-right text-sm leading-relaxed">
-        لأمان حسابك، يرجى إدخال كلمة المرور الحالية قبل تعيين كلمة مرور جديدة
+        {t("security_note")}
       </p>
 
       <Form {...passwordForm}>
@@ -59,14 +61,14 @@ export default function SettingsPasswordTab() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-right text-sm font-medium text-gray-700">
-                    كلمة المرور الحالية
+                    {t("current_password")}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         {...field}
                         type={showCurrentPassword ? "text" : "password"}
-                        placeholder="••••••••••"
+                        placeholder={t("placeholder")}
                         className="h-11 text-base bg-gray-50 border-gray-200 text-right pe-10"
                       />
                       <button
@@ -97,14 +99,14 @@ export default function SettingsPasswordTab() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-right text-sm font-medium text-gray-700">
-                    كلمة المرور الجديدة
+                    {t("new_password")}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         {...field}
                         type={showNewPassword ? "text" : "password"}
-                        placeholder="••••••••••"
+                        placeholder={t("placeholder")}
                         className="h-11 text-base bg-gray-50 border-gray-200 text-right pe-10"
                       />
                       <button
@@ -132,14 +134,14 @@ export default function SettingsPasswordTab() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-right text-sm font-medium text-gray-700">
-                    تأكيد كلمة المرور
+                    {t("confirm_password")}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         {...field}
                         type={showConfirmPassword ? "text" : "password"}
-                        placeholder="••••••••••"
+                        placeholder={t("placeholder")}
                         className="h-11 text-base bg-gray-50 border-gray-200 text-right pe-10"
                       />
                       <button
@@ -173,10 +175,10 @@ export default function SettingsPasswordTab() {
               {changePassword.isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 ml-2 animate-spin" />
-                  جاري الحفظ...
+                  {t("saving")}
                 </>
               ) : (
-                "حفظ ✓"
+                t("save_button")
               )}
             </Button>
 
@@ -186,7 +188,7 @@ export default function SettingsPasswordTab() {
               disabled={changePassword.isPending}
               className="bg-[#C4A862] hover:bg-[#C4A862]/90 text-white px-10 py-2.5 text-base rounded-lg shadow-sm"
             >
-              إلغاء ✗
+              {t("cancel_button")}
             </Button>
           </div>
         </form>

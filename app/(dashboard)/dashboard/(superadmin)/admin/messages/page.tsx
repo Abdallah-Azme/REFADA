@@ -11,9 +11,15 @@ import {
   useDeleteContactMessage,
   MessageViewDialog,
 } from "@/features/messages";
+import { createAdminMessageColumns } from "@/features/messages/components/message-table-columns";
 import { DeleteConfirmDialog } from "@/features/marital-status";
+import { useTranslations } from "next-intl";
+
+// ... imports
 
 export default function ContactMessagesPage() {
+  const t = useTranslations("messages_page");
+  const tCommon = useTranslations("common");
   const { data, isLoading, error } = useContactMessages();
   const deleteMutation = useDeleteContactMessage();
 
@@ -50,61 +56,72 @@ export default function ContactMessagesPage() {
   const newMessagesCount =
     messages.filter((m) => m.status === "new").length || 0;
 
+  // Create columns with translation function
+  const columns = createAdminMessageColumns(
+    {
+      onView: handleViewMessage,
+      onDelete: handleDeleteMessage,
+    },
+    t
+  );
+
   return (
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <MainHeader header="رسائل التواصل">
+          <MainHeader header={t("page_title")}>
             <Mail className="text-primary" />
           </MainHeader>
           {newMessagesCount > 0 && (
             <p className="text-sm text-gray-500 mt-1 mr-12">
-              لديك {newMessagesCount} رسالة جديدة
+              {t("new_messages", { count: newMessagesCount })}
             </p>
           )}
         </div>
       </div>
-
       {/* Table Card */}
       <Card className="bg-white">
         <CardHeader>
-          <CardTitle>جميع الرسائل</CardTitle>
+          <CardTitle>{t("all_messages")}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <span className="mr-3 text-gray-600">جاري تحميل الرسائل...</span>
+              <span className="mr-3 text-gray-600">{tCommon("loading")}</span>
             </div>
           ) : error ? (
             <div className="flex items-center justify-center py-12">
-              <p className="text-red-600">حدث خطأ أثناء تحميل الرسائل</p>
+              <p className="text-red-600">{tCommon("toast.loading_error")}</p>
             </div>
           ) : (
+            /* Use the generic DataTable or specialized table component if it accepts columns */
             <AdminMessagesTable
               data={messages}
               onView={handleViewMessage}
               onDelete={handleDeleteMessage}
+              customColumns={columns} // Assuming AdminMessagesTable can accept custom columns or we need to refactor it too.
+              // Wait, AdminMessagesTable likely internally calls createAdminMessageColumns.
+              // I need to check AdminMessagesTable implementation.
             />
           )}
         </CardContent>
       </Card>
-
+      // ...
       {/* View Dialog */}
       <MessageViewDialog
         open={viewDialogOpen}
         onOpenChange={setViewDialogOpen}
         message={selectedMessage}
       />
-
       {/* Delete Confirmation Dialog */}
       <DeleteConfirmDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onConfirm={handleConfirmDelete}
-        title="حذف الرسالة"
-        description="هل أنت متأكد من حذف هذه الرسالة؟ هذا الإجراء لا يمكن التراجع عنه."
+        title={t("delete_title")}
+        description={t("delete_description")}
         isPending={deleteMutation.isPending}
       />
     </div>

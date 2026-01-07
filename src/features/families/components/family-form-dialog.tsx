@@ -35,6 +35,7 @@ import { Family, FamilyFormValues, familySchema } from "../types/family.schema";
 import { useCreateFamily, useUpdateFamily } from "../hooks/use-families";
 import { useCamps } from "@/features/camps";
 import { useMaritalStatuses } from "@/features/marital-status";
+import { useTranslations } from "next-intl";
 
 interface FamilyFormDialogProps {
   initialData?: Family | null;
@@ -47,6 +48,8 @@ export function FamilyFormDialog({
   open,
   onOpenChange,
 }: FamilyFormDialogProps) {
+  const t = useTranslations("families");
+  const tCommon = useTranslations("common");
   const createMutation = useCreateFamily();
   const updateMutation = useUpdateFamily();
 
@@ -77,17 +80,6 @@ export function FamilyFormDialog({
   useEffect(() => {
     if (initialData) {
       // We need to map the initial data (which has names for camp/maritalStatus) to IDs
-      // This is tricky if we don't have the IDs in the initialData.
-      // The Family interface has `camp: string` and `maritalStatus: string`.
-      // If the backend doesn't provide IDs in the list/show response, we might have a problem editing.
-      // However, usually "edit" requires IDs.
-      // I'll check the User's SHOW response again.
-      // "maritalStatus": "متزوج", "camp": "معسكر السلام".
-      // It DOES NOT have maritalStatusId or campId in the SHOW response provided.
-      // But usually in real apps, the ID is available or we can find it by name (risky).
-      // Wait, standard practice is to return IDs.
-      // If not, I can try to find the ID from the list by name match?
-
       const foundCamp = camps.find((c) => c.name === initialData.camp);
       const foundMS = maritalStatuses.find(
         (m) => m.name === initialData.maritalStatus
@@ -145,7 +137,7 @@ export function FamilyFormDialog({
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {initialData ? "تعديل بيانات العائلة" : "إضافة عائلة جديدة"}
+            {initialData ? t("update_family_title") : t("add_family_title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -157,9 +149,9 @@ export function FamilyFormDialog({
                 name="familyName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>اسم العائلة</FormLabel>
+                    <FormLabel>{t("family_name")}</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="اسم العائلة" />
+                      <Input {...field} placeholder={t("family_name")} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -171,11 +163,11 @@ export function FamilyFormDialog({
                 name="nationalId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>رقم الهوية</FormLabel>
+                    <FormLabel>{t("national_id")}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="رقم الهوية (14 رقم)"
+                        placeholder={t("national_id_placeholder_14")}
                         maxLength={14}
                       />
                     </FormControl>
@@ -189,7 +181,7 @@ export function FamilyFormDialog({
                 name="dob"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>تاريخ الميلاد</FormLabel>
+                    <FormLabel>{t("dob_label")}</FormLabel>
                     <FormControl>
                       <Input {...field} type="date" />
                     </FormControl>
@@ -203,10 +195,10 @@ export function FamilyFormDialog({
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>رقم الهاتف</FormLabel>
+                    <FormLabel>{t("phone")}</FormLabel>
                     <FormControl>
                       <PhoneInput
-                        placeholder="رقم الهاتف"
+                        placeholder={t("phone")}
                         value={field.value}
                         onChange={field.onChange}
                       />
@@ -221,10 +213,10 @@ export function FamilyFormDialog({
                 name="backupPhone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>رقم هاتف بديل (اختياري)</FormLabel>
+                    <FormLabel>{t("backup_phone_optional")}</FormLabel>
                     <FormControl>
                       <PhoneInput
-                        placeholder="رقم هاتف بديل"
+                        placeholder={t("backup_phone")}
                         value={field.value || ""}
                         onChange={field.onChange}
                       />
@@ -239,7 +231,7 @@ export function FamilyFormDialog({
                 name="totalMembers"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>عدد الأفراد</FormLabel>
+                    <FormLabel>{t("members_count_label")}</FormLabel>
                     <FormControl>
                       <Input {...field} type="number" min={1} />
                     </FormControl>
@@ -253,11 +245,11 @@ export function FamilyFormDialog({
                 name="maritalStatusId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>الحالة الاجتماعية</FormLabel>
+                    <FormLabel>{t("marital_status")}</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="اختر الحالة الاجتماعية" />
+                          <SelectValue placeholder={t("choose_status")} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -281,11 +273,11 @@ export function FamilyFormDialog({
                 name="campId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>المعسكر</FormLabel>
+                    <FormLabel>{t("camp")}</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="اختر المعسكر" />
+                          <SelectValue placeholder={t("choose_camp")} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -306,9 +298,9 @@ export function FamilyFormDialog({
                 name="tentNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>رقم الخيمة</FormLabel>
+                    <FormLabel>{t("tent_number")}</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="رقم الخيمة" />
+                      <Input {...field} placeholder={t("tent_number")} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -320,9 +312,9 @@ export function FamilyFormDialog({
                 name="location"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>الموقع / العنوان</FormLabel>
+                    <FormLabel>{t("location")}</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="الموقع" />
+                      <Input {...field} placeholder={t("location")} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -335,7 +327,7 @@ export function FamilyFormDialog({
                   name="file"
                   render={({ field: { value, onChange, ...field } }) => (
                     <FormItem>
-                      <FormLabel>صورة (اختياري)</FormLabel>
+                      <FormLabel>{t("image_optional")}</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -359,9 +351,12 @@ export function FamilyFormDialog({
                   name="notes"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>ملاحظات (اختياري)</FormLabel>
+                      <FormLabel>{t("notes_optional")}</FormLabel>
                       <FormControl>
-                        <Textarea {...field} placeholder="أي ملاحظات إضافية" />
+                        <Textarea
+                          {...field}
+                          placeholder={t("notes_placeholder_extra")}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -376,11 +371,11 @@ export function FamilyFormDialog({
                 variant="outline"
                 onClick={() => onOpenChange(false)}
               >
-                إلغاء
+                {tCommon("cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {initialData ? "حفظ التغييرات" : "إضافة العائلة"}
+                {initialData ? t("save_changes") : t("add_family_btn")}
               </Button>
             </div>
           </form>

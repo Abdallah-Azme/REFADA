@@ -4,6 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Check, Pencil, Trash2 } from "lucide-react";
 import { Project } from "@/features/projects";
 
+export type { Project };
+
 /**
  * Creates column definitions for the data table
  *
@@ -11,10 +13,13 @@ import { Project } from "@/features/projects";
  * @returns Array of column definitions compatible with @tanstack/react-table
  */
 
+// ... imports
+
 type ActionHandlers = {
   onEdit: (project: Project) => void;
   onDelete: (project: Project) => void;
   onUpdate: (project: Project) => void;
+  t: (key: string) => string;
   hideApproveDelete?: boolean;
 };
 
@@ -23,7 +28,6 @@ export const createColumns = (
 ): ColumnDef<Project>[] => [
   {
     id: "select",
-
     header: ({ table }) => (
       <div className="  flex items-start mx-6">
         <Checkbox
@@ -32,27 +36,21 @@ export const createColumns = (
             (table.getIsSomePageRowsSelected() && "indeterminate")
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="تحديد الكل"
+          aria-label={handlers.t("actions.select_all")}
         />
       </div>
     ),
-
     cell: ({ row }) => (
       <Checkbox
         className=" mx-6"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="تحديد الصف"
+        aria-label={handlers.t("actions.select_row")}
       />
     ),
-    // Disable sorting and hiding for this utility column
     enableSorting: false,
     enableHiding: false,
   },
-
-  // ========================================
-  // PROJECT NAME COLUMN (Project)
-  // ========================================
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -61,7 +59,7 @@ export const createColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          المشروع
+          {handlers.t("columns.project")}
           <ArrowUpDown className="me-2 h-4 w-4" />
         </Button>
       );
@@ -70,17 +68,11 @@ export const createColumns = (
       <div className="text-right">
         <div className="font-semibold text-gray-900">{row.original.name}</div>
         <div className="text-sm text-gray-500">
-          {/* Requests field not in API, using beneficiaryCount as substitute or empty */}
           {row.original.beneficiaryCount} مستفيد
         </div>
       </div>
     ),
   },
-
-  // ========================================
-  // PROGRESS COLUMN
-  // Shows progress bar based on totalReceived/total
-  // ========================================
   {
     id: "progress",
     accessorKey: "status",
@@ -90,22 +82,21 @@ export const createColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          التقدم
+          {handlers.t("columns.progress")}
           <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
+    // ... cell implementation remains same logic, just keeping it
     cell: ({ row }) => {
       const totalReceived = row.original.totalReceived || 0;
       const totalRemaining = row.original.totalRemaining || 0;
       const total = totalReceived + totalRemaining;
 
-      // Calculate percentage
       const percentage =
         total > 0 ? Math.round((totalReceived / total) * 100) : 0;
 
-      // Determine color based on progress
-      let progressColor = "bg-blue-500"; // Not started
+      let progressColor = "bg-blue-500";
       let bgColor = "bg-blue-100";
       let textColor = "text-blue-700";
 
@@ -121,14 +112,12 @@ export const createColumns = (
 
       return (
         <div className="flex flex-col items-center gap-1 min-w-[120px]">
-          {/* Progress bar */}
           <div className={`w-full h-2 rounded-full ${bgColor}`}>
             <div
               className={`h-full rounded-full transition-all duration-300 ${progressColor}`}
               style={{ width: `${percentage}%` }}
             />
           </div>
-          {/* Percentage text */}
           <span className={`text-xs font-medium ${textColor}`}>
             {percentage}% ({totalReceived}/{total})
           </span>
@@ -136,10 +125,6 @@ export const createColumns = (
       );
     },
   },
-
-  // ========================================
-  // TOTAL COLUMN
-  // ========================================
   {
     id: "total",
     header: ({ column }) => {
@@ -148,7 +133,7 @@ export const createColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          الاجمالي
+          {handlers.t("columns.total")}
           <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
@@ -159,10 +144,6 @@ export const createColumns = (
       </div>
     ),
   },
-
-  // ========================================
-  // RECEIVED COLUMN
-  // ========================================
   {
     accessorKey: "totalReceived",
     header: ({ column }) => {
@@ -171,7 +152,7 @@ export const createColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          تم تسليم
+          {handlers.t("columns.received")}
           <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
@@ -180,10 +161,6 @@ export const createColumns = (
       <div className="text-center">{row.original.totalReceived}</div>
     ),
   },
-
-  // ========================================
-  // REMAINING COLUMN
-  // ========================================
   {
     accessorKey: "totalRemaining",
     header: ({ column }) => {
@@ -192,7 +169,7 @@ export const createColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          المتبقي
+          {handlers.t("columns.remaining")}
           <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
@@ -201,10 +178,6 @@ export const createColumns = (
       <div className="text-center">{row.original.totalRemaining}</div>
     ),
   },
-
-  // ========================================
-  // CONTRIBUTIONS COLUMN
-  // ========================================
   {
     id: "contributions",
     header: ({ column }) => {
@@ -213,27 +186,20 @@ export const createColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          المساهمات
+          {handlers.t("columns.contributions")}
           <ArrowUpDown className="mr-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <div className="text-center">0</div> // API doesn't return contributions count yet
-    ),
+    cell: ({ row }) => <div className="text-center">0</div>,
   },
-
-  // ========================================
-  // ACTIONS COLUMN
-  // Following shadcn/ui pattern for row actions
-  // Contains edit, delete, and approve buttons
-  // Uses Button component with ghost variant and icon size
-  // ========================================
   {
     id: "update",
     header: () =>
       handlers.hideApproveDelete ? null : (
-        <div className="text-center font-semibold">تحديث</div>
+        <div className="text-center font-semibold">
+          {handlers.t("columns.update")}
+        </div>
       ),
     cell: ({ row }) => {
       if (handlers.hideApproveDelete) return null;
@@ -241,12 +207,11 @@ export const createColumns = (
       const isPending =
         project.status === "pending" || project.status === "في الانتظار";
 
-      // Show accepted indicator if project is not pending
       if (!isPending) {
         return (
           <div className="flex items-center justify-center">
             <span className="px-3 py-1 rounded-md text-xs font-medium bg-green-100 text-green-700">
-              تم القبول
+              {handlers.t("actions.accepted")}
             </span>
           </div>
         );
@@ -260,7 +225,7 @@ export const createColumns = (
             onClick={() => handlers.onUpdate(project)}
           >
             <Check className="h-4 w-4" />
-            <span className="sr-only">تحديث</span>
+            <span className="sr-only">{handlers.t("actions.update")}</span>
           </Button>
         </div>
       );
@@ -268,10 +233,13 @@ export const createColumns = (
     enableSorting: false,
     enableHiding: false,
   },
-
   {
     id: "edit",
-    header: () => <div className="text-center font-semibold">تعديل</div>,
+    header: () => (
+      <div className="text-center font-semibold">
+        {handlers.t("columns.edit")}
+      </div>
+    ),
     cell: ({ row }) => {
       const project = row.original;
 
@@ -283,7 +251,7 @@ export const createColumns = (
             onClick={() => handlers.onEdit(project)}
           >
             <Pencil className="h-4 w-4" />
-            <span className="sr-only">تعديل</span>
+            <span className="sr-only">{handlers.t("actions.edit")}</span>
           </Button>
         </div>
       );
@@ -291,12 +259,13 @@ export const createColumns = (
     enableSorting: false,
     enableHiding: false,
   },
-
   {
     id: "delete",
     header: () =>
       handlers.hideApproveDelete ? null : (
-        <div className="text-center font-semibold">حذف</div>
+        <div className="text-center font-semibold">
+          {handlers.t("columns.delete")}
+        </div>
       ),
     cell: ({ row }) => {
       if (handlers.hideApproveDelete) return null;
@@ -310,7 +279,7 @@ export const createColumns = (
             onClick={() => handlers.onDelete(project)}
           >
             <Trash2 className="h-4 w-4" />
-            <span className="sr-only">حذف</span>
+            <span className="sr-only">{handlers.t("actions.delete")}</span>
           </Button>
         </div>
       );

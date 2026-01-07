@@ -13,8 +13,10 @@ import {
   useCreateGovernorate,
   useUpdateGovernorate,
 } from "@/features/dashboard/hooks/use-governorates";
+import { useTranslations } from "next-intl";
 
 export default function AdminGovernoratesPage() {
+  const t = useTranslations("governorates");
   const [open, setOpen] = useState(false);
   const [selectedGovernorate, setSelectedGovernorate] =
     useState<Governorate | null>(null);
@@ -50,10 +52,10 @@ export default function AdminGovernoratesPage() {
   return (
     <section className="p-7 flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">إدارة المحافظات</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t("page_title")}</h1>
         <Button onClick={handleAdd} className="gap-2">
           <Plus className="h-4 w-4" />
-          إضافة محافظة
+          {t("add_governorate")}
         </Button>
       </div>
 

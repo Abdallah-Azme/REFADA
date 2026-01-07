@@ -19,54 +19,10 @@ import AddFamilyDialog from "@/src/features/dashboard/components/add-family-dial
 import { useTranslations } from "next-intl";
 
 export default function AdminFamiliesPage() {
-  const t = useTranslations("families");
+  const t = useTranslations("families_page");
   const { data: response, isLoading, error } = useFamilies();
-  const deleteMutation = useDeleteFamily();
-
-  const [formOpen, setFormOpen] = useState(false);
-  const [editingFamily, setEditingFamily] = useState<Family | null>(null);
-
-  const [viewOpen, setViewOpen] = useState(false);
-  const [viewingFamily, setViewingFamily] = useState<Family | null>(null);
-
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deletingFamily, setDeletingFamily] = useState<Family | null>(null);
-
-  const families = response?.data ?? [];
-  console.log({ response });
-
-  const handleCreate = () => {
-    setEditingFamily(null);
-    setFormOpen(true);
-  };
-
-  const handleEdit = (family: Family) => {
-    setEditingFamily(family);
-    setFormOpen(true);
-  };
-
-  const handleView = (family: Family) => {
-    setViewingFamily(family);
-    setViewOpen(true);
-  };
-
-  const handleDelete = (family: Family) => {
-    setDeletingFamily(family);
-    setDeleteOpen(true);
-  };
-
-  const handleConfirmDelete = () => {
-    if (deletingFamily) {
-      deleteMutation.mutate(deletingFamily.id, {
-        onSuccess: () => {
-          setDeleteOpen(false);
-          setDeletingFamily(null);
-        },
-      });
-    }
-  };
-
-  const columns = createFamilyColumns(handleView, handleEdit, handleDelete);
+  // ...
+  const columns = createFamilyColumns(handleView, handleEdit, handleDelete, t);
 
   return (
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">
@@ -116,8 +72,10 @@ export default function AdminFamiliesPage() {
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         onConfirm={handleConfirmDelete}
-        title="حذف العائلة"
-        description={`هل أنت متأكد من حذف عائلة "${deletingFamily?.familyName}"؟ هذا الإجراء لا يمكن التراجع عنه.`}
+        title={t("delete_title")}
+        description={t("delete_description", {
+          name: deletingFamily?.familyName || "",
+        })}
         isPending={deleteMutation.isPending}
       />
     </div>

@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -13,7 +13,6 @@ import {
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
-import { Textarea } from "@/shared/ui/textarea";
 import {
   Card,
   CardContent,
@@ -27,22 +26,13 @@ import {
   useUpdateSection,
   useCreateSection,
 } from "@/features/home-control/hooks/use-hero";
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect, lazy, Suspense, useMemo } from "react";
 import { Loader2, Save, FileText } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const RichTextEditor = lazy(() => import("@/components/rich-text-editor"));
 import MainHeader from "@/shared/components/main-header";
 import { ImageUpload } from "@/components/ui/image-upload";
-
-const policySchema = z.object({
-  title_ar: z.string().min(1, "العنوان بالعربية مطلوب"),
-  title_en: z.string().min(1, "العنوان بالإنجليزية مطلوب"),
-  description_ar: z.string().min(1, "المحتوى بالعربية مطلوب"),
-  description_en: z.string().min(1, "المحتوى بالإنجليزية مطلوب"),
-  image: z.any().optional(),
-});
-
-type PolicyFormValues = z.infer<typeof policySchema>;
 
 interface PolicyPageProps {
   sectionIndex: number;
@@ -55,9 +45,25 @@ export default function PolicyPage({
   pageTitle,
   pageSubtitle,
 }: PolicyPageProps) {
+  const t = useTranslations("policies_page");
+  const tCommon = useTranslations("common");
   const { data: heroData, isLoading, error } = useHero();
   const updateMutation = useUpdateSection();
   const createMutation = useCreateSection();
+
+  const policySchema = useMemo(
+    () =>
+      z.object({
+        title_ar: z.string().min(1, t("validation.title_ar_required")),
+        title_en: z.string().min(1, t("validation.title_en_required")),
+        description_ar: z.string().min(1, t("validation.content_ar_required")),
+        description_en: z.string().min(1, t("validation.content_en_required")),
+        image: z.any().optional(),
+      }),
+    [t]
+  );
+
+  type PolicyFormValues = z.infer<typeof policySchema>;
 
   // Check if the section exists in the database
   const sectionExists = heroData?.data?.sections?.[sectionIndex]?.id;
@@ -121,7 +127,7 @@ export default function PolicyPage({
     return (
       <div className="flex items-center justify-center h-[calc(100vh-200px)]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="mr-3 text-gray-600">جاري تحميل البيانات...</span>
+        <span className="mr-3 text-gray-600">{tCommon("loading")}</span>
       </div>
     );
   }
@@ -130,7 +136,7 @@ export default function PolicyPage({
     return (
       <div className="flex items-center justify-center h-[calc(100vh-200px)]">
         <div className="text-center">
-          <p className="text-red-600 mb-2">حدث خطأ أثناء تحميل البيانات</p>
+          <p className="text-red-600 mb-2">{tCommon("error_loading")}</p>
           <p className="text-sm text-gray-500">
             {(error as any)?.message || "Unknown error"}
           </p>
@@ -158,12 +164,14 @@ export default function PolicyPage({
               {isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                  جاري الحفظ...
+                  {t("actions.saving")}
                 </>
               ) : (
                 <>
                   <Save className="h-4 w-4 ml-2" />
-                  {sectionExists ? "حفظ التغييرات" : "إنشاء القسم"}
+                  {sectionExists
+                    ? t("actions.save_changes")
+                    : t("actions.create_section")}
                 </>
               )}
             </Button>
@@ -172,8 +180,8 @@ export default function PolicyPage({
           {/* Image Section */}
           <Card className="border-none shadow-sm">
             <CardHeader>
-              <CardTitle>صورة القسم</CardTitle>
-              <CardDescription>صورة خاصة بهذا القسم (اختياري)</CardDescription>
+              <CardTitle>{t("form.image_label")}</CardTitle>
+              <CardDescription>{t("form.image_optional")}</CardDescription>
             </CardHeader>
             <CardContent>
               <FormField
@@ -203,14 +211,18 @@ export default function PolicyPage({
                   <FileText className="h-5 w-5 text-primary" />
                   {pageTitle}
                 </CardTitle>
-                <CardDescription>تعديل عنوان ومحتوى الصفحة</CardDescription>
+                <CardDescription>{pageSubtitle}</CardDescription>
               </div>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="ar" className="w-full">
                 <TabsList className="mb-6">
-                  <TabsTrigger value="ar">العربية</TabsTrigger>
-                  <TabsTrigger value="en">English</TabsTrigger>
+                  <TabsTrigger value="ar">
+                    {tCommon("languages.ar")}
+                  </TabsTrigger>
+                  <TabsTrigger value="en">
+                    {tCommon("languages.en")}
+                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="ar" className="space-y-6">
@@ -219,12 +231,12 @@ export default function PolicyPage({
                     name="title_ar"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>العنوان (بالعربية)</FormLabel>
+                        <FormLabel>{t("form.title_ar")}</FormLabel>
                         <FormControl>
                           <Input
                             {...field}
                             className="bg-gray-50/50"
-                            placeholder="أدخل العنوان بالعربية"
+                            placeholder={t("form.title_ar")}
                             dir="rtl"
                           />
                         </FormControl>
@@ -237,7 +249,7 @@ export default function PolicyPage({
                     name="description_ar"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>المحتوى (بالعربية)</FormLabel>
+                        <FormLabel>{t("form.content_ar")}</FormLabel>
                         <FormControl>
                           <Suspense
                             fallback={
@@ -247,7 +259,7 @@ export default function PolicyPage({
                             <RichTextEditor
                               content={field.value}
                               onChange={field.onChange}
-                              placeholder="أدخل المحتوى بالعربية..."
+                              placeholder={t("form.content_ar")}
                             />
                           </Suspense>
                         </FormControl>
@@ -264,13 +276,13 @@ export default function PolicyPage({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-left w-full block" dir="ltr">
-                          Title (English)
+                          {t("form.title_en")}
                         </FormLabel>
                         <FormControl>
                           <Input
                             {...field}
                             className="bg-gray-50/50"
-                            placeholder="Enter title in English"
+                            placeholder={t("form.title_en")}
                             dir="ltr"
                           />
                         </FormControl>
@@ -284,7 +296,7 @@ export default function PolicyPage({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-left w-full block" dir="ltr">
-                          Content (English)
+                          {t("form.content_en")}
                         </FormLabel>
                         <FormControl>
                           <Suspense
@@ -295,7 +307,7 @@ export default function PolicyPage({
                             <RichTextEditor
                               content={field.value}
                               onChange={field.onChange}
-                              placeholder="Enter content in English..."
+                              placeholder={t("form.content_en")}
                             />
                           </Suspense>
                         </FormControl>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
@@ -18,125 +19,118 @@ import {
 import { AdminPositionTable } from "./admin-position-table";
 import { createAdminPositionColumns } from "./admin-position-columns";
 import { AdminPositionFormDialog } from "./admin-position-form-dialog";
-import { DeleteConfirmDialog } from "./delete-confirm-dialog";
+import { DeleteConfirmDialog } from "@/features/marital-status/components/delete-confirm-dialog";
 
 export default function AdminPositionPage() {
+  const t = useTranslations("admin_position_page");
+  const tCommon = useTranslations("common");
+
   const { data, isLoading, error } = useAdminPositions();
   const createMutation = useCreateAdminPosition();
   const updateMutation = useUpdateAdminPosition();
   const deleteMutation = useDeleteAdminPosition();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingPosition, setEditingPosition] = useState<AdminPosition | null>(
-    null
-  );
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<AdminPosition | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  const adminPositions = data?.data || [];
-
-  const handleOpenDialog = (position?: AdminPosition) => {
-    if (position) {
-      setEditingPosition(position);
-    } else {
-      setEditingPosition(null);
-    }
-    setIsDialogOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-    setEditingPosition(null);
-  };
-
-  const handleSubmit = (formData: AdminPositionFormValues) => {
-    if (editingPosition) {
+  const handleSubmit = (values: AdminPositionFormValues) => {
+    if (editingItem) {
       updateMutation.mutate(
-        { id: editingPosition.id, data: formData },
+        { id: editingItem.id, data: values },
         {
           onSuccess: () => {
-            handleCloseDialog();
+            setIsDialogOpen(false);
+            setEditingItem(null);
           },
         }
       );
     } else {
-      createMutation.mutate(formData, {
+      createMutation.mutate(values, {
         onSuccess: () => {
-          handleCloseDialog();
+          setIsDialogOpen(false);
         },
       });
     }
   };
 
-  const handleDelete = (id: number) => {
-    setDeletingId(id);
-    setDeleteDialogOpen(true);
+  const handleEdit = (item: AdminPosition) => {
+    setEditingItem(item);
+    setIsDialogOpen(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleDeleteCallback = (id: number) => {
+    setDeletingId(id);
+  };
+
+  const confirmDelete = () => {
     if (deletingId) {
       deleteMutation.mutate(deletingId, {
         onSuccess: () => {
-          setDeleteDialogOpen(false);
           setDeletingId(null);
         },
       });
     }
   };
 
-  const columns = createAdminPositionColumns(handleOpenDialog, handleDelete);
+  const columns = createAdminPositionColumns(
+    handleEdit,
+    handleDeleteCallback,
+    t
+  );
+
+  if (error) {
+    return (
+      <div className="p-8 text-center text-red-500">
+        {tCommon("error_loading")}
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">
-      {/* Header with Add Button */}
-      <div className="flex items-center justify-between">
-        <MainHeader header="إدارة الصفات الإدارية">
-          <Briefcase className="text-primary" />
-        </MainHeader>
+    <div className="space-y-6">
+      <MainHeader header={t("title")} subheader={t("list_title")}>
+        <Briefcase className="h-6 w-6 text-primary" />
+      </MainHeader>
 
-        <Button onClick={() => handleOpenDialog()}>
-          <Plus className="h-4 w-4 mr-2" />
-          إضافة صفة إدارية
-        </Button>
-      </div>
-
-      {/* Table Card */}
-      <Card className="bg-white">
-        <CardHeader>
-          <CardTitle>قائمة الصفات الإدارية</CardTitle>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-lg font-medium">
+            {t("list_title")}
+          </CardTitle>
+          <Button onClick={() => setIsDialogOpen(true)} className="gap-2">
+            <Plus className="h-4 w-4" />
+            {t("add")}
+          </Button>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex items-center justify-center py-12">
+            <div className="flex justify-center p-8">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <span className="mr-3 text-gray-600">جاري تحميل البيانات...</span>
-            </div>
-          ) : error ? (
-            <div className="flex items-center justify-center py-12">
-              <p className="text-red-600">حدث خطأ أثناء تحميل البيانات</p>
             </div>
           ) : (
-            <AdminPositionTable columns={columns} data={adminPositions} />
+            <AdminPositionTable columns={columns} data={data?.data || []} />
           )}
         </CardContent>
       </Card>
 
-      {/* Form Dialog */}
       <AdminPositionFormDialog
         open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        initialData={editingPosition}
+        onOpenChange={(open) => {
+          setIsDialogOpen(open);
+          if (!open) setEditingItem(null);
+        }}
+        initialData={editingItem}
         onSubmit={handleSubmit}
         isPending={createMutation.isPending || updateMutation.isPending}
       />
 
-      {/* Delete Confirmation Dialog */}
       <DeleteConfirmDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onConfirm={handleConfirmDelete}
-        title="حذف الصفة الإدارية"
-        description="هل أنت متأكد من حذف هذه الصفة الإدارية؟ هذا الإجراء لا يمكن التراجع عنه."
+        open={!!deletingId}
+        onOpenChange={(open) => !open && setDeletingId(null)}
+        onConfirm={confirmDelete}
+        title={t("delete_title")}
+        description={t("delete_desc")}
         isPending={deleteMutation.isPending}
       />
     </div>

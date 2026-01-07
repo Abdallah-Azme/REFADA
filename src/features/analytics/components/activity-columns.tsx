@@ -7,7 +7,9 @@ import { ar } from "date-fns/locale";
 import { Button } from "@/shared/ui/button";
 import { ArrowUpDown } from "lucide-react";
 
-export const activityColumns: ColumnDef<Activity>[] = [
+export const createActivityColumns = (
+  t: (key: string) => string
+): ColumnDef<Activity>[] => [
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -15,7 +17,7 @@ export const activityColumns: ColumnDef<Activity>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        الرقم <ArrowUpDown className="ms-2 h-4 w-4" />
+        {t("id")} <ArrowUpDown className="ms-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => <div className="font-medium">#{row.getValue("id")}</div>,
@@ -27,7 +29,7 @@ export const activityColumns: ColumnDef<Activity>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        الوصف <ArrowUpDown className="ms-2 h-4 w-4" />
+        {t("description")} <ArrowUpDown className="ms-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
@@ -45,7 +47,7 @@ export const activityColumns: ColumnDef<Activity>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        النوع <ArrowUpDown className="ms-2 h-4 w-4" />
+        {t("type")} <ArrowUpDown className="ms-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
@@ -60,10 +62,10 @@ export const activityColumns: ColumnDef<Activity>[] = [
       };
 
       const typeLabels: Record<string, string> = {
-        Camp: "مخيم",
-        Project: "مشروع",
-        User: "مستخدم",
-        Family: "عائلة",
+        Camp: t("type_camp"),
+        Project: t("type_project"),
+        User: t("type_user"),
+        Family: t("type_family"),
       };
 
       return (
@@ -84,7 +86,7 @@ export const activityColumns: ColumnDef<Activity>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        التاريخ <ArrowUpDown className="ms-2 h-4 w-4" />
+        {t("date")} <ArrowUpDown className="ms-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {

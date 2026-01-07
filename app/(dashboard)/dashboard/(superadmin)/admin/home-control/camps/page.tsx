@@ -15,15 +15,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import RichTextEditor from "@/components/rich-text-editor";
-
-const campsSchema = z.object({
-  title: z.string().min(1, "العنوان مطلوب"),
-  description: z.string().min(10, "الوصف يجب أن يكون 10 أحرف على الأقل"),
-});
-
-type CampsFormValues = z.infer<typeof campsSchema>;
+import { useTranslations } from "next-intl";
+import { useMemo } from "react";
+import { toast } from "sonner";
 
 export default function CampsControlPage() {
+  const t = useTranslations("camps_control");
+  const tCommon = useTranslations("common");
+
+  const campsSchema = useMemo(
+    () =>
+      z.object({
+        title: z.string().min(1, t("validation.title_required")),
+        description: z.string().min(10, t("validation.desc_min")),
+      }),
+    [t]
+  );
+
+  type CampsFormValues = z.infer<typeof campsSchema>;
+
   const form = useForm<CampsFormValues>({
     resolver: zodResolver(campsSchema),
     defaultValues: {
@@ -34,16 +44,16 @@ export default function CampsControlPage() {
 
   const onSubmit = (data: CampsFormValues) => {
     // Here you would typically save to your backend
-    alert("تم حفظ التغييرات بنجاح!");
+    toast.success(tCommon("toast.save_success"));
   };
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">تحكم في قسم الإيواءات</h1>
+      <h1 className="text-2xl font-bold">{t("page_title")}</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle>تعديل محتوى قسم الإيواءات</CardTitle>
+          <CardTitle>{t("card_title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -53,9 +63,12 @@ export default function CampsControlPage() {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>العنوان</FormLabel>
+                    <FormLabel>{t("form.title")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="أدخل العنوان" {...field} />
+                      <Input
+                        placeholder={t("form.title_placeholder")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -67,12 +80,12 @@ export default function CampsControlPage() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>الوصف</FormLabel>
+                    <FormLabel>{t("form.description")}</FormLabel>
                     <FormControl>
                       <RichTextEditor
                         content={field.value}
                         onChange={field.onChange}
-                        placeholder="أدخل الوصف"
+                        placeholder={t("form.desc_placeholder")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -81,14 +94,13 @@ export default function CampsControlPage() {
               />
 
               <div className="space-y-2">
-                <FormLabel>إدارة الإيواءات المعروضة</FormLabel>
+                <FormLabel>{t("info_label")}</FormLabel>
                 <p className="text-sm text-muted-foreground">
-                  يتم عرض الإيواءات تلقائياً من قاعدة البيانات. يمكنك هنا تخصيص
-                  العنوان والوصف العام للقسم.
+                  {t("info_text")}
                 </p>
               </div>
 
-              <Button type="submit">حفظ التغييرات</Button>
+              <Button type="submit">{tCommon("save_changes")}</Button>
             </form>
           </Form>
         </CardContent>

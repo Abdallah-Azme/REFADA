@@ -9,7 +9,8 @@ type ActionHandlers = {
 };
 
 export const createGovernorateColumns = (
-  handlers: ActionHandlers
+  handlers: ActionHandlers,
+  t: (key: string) => string
 ): ColumnDef<Governorate>[] => [
   {
     accessorKey: "id",
@@ -34,7 +35,7 @@ export const createGovernorateColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          الاسم
+          {t("name")}
           <ArrowUpDown className="ms-2 h-4 w-4" />
         </Button>
       );
@@ -51,7 +52,7 @@ export const createGovernorateColumns = (
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          تاريخ الإضافة
+          {t("created_at")}
           <ArrowUpDown className="ms-2 h-4 w-4" />
         </Button>
       );
@@ -64,7 +65,9 @@ export const createGovernorateColumns = (
   },
   {
     id: "actions",
-    header: () => <div className="text-center font-semibold">الإجراءات</div>,
+    header: () => (
+      <div className="text-center font-semibold">{t("actions")}</div>
+    ),
     cell: ({ row }) => {
       const governorate = row.original;
       return (
@@ -74,7 +77,7 @@ export const createGovernorateColumns = (
             size="icon"
             className="h-8 w-8 p-0 text-blue-600 hover:bg-blue-100 hover:text-blue-700"
             onClick={() => handlers.onEdit(governorate)}
-            title="تعديل"
+            title={t("actions_edit")}
           >
             <Edit className="h-4 w-4" />
           </Button>
@@ -83,7 +86,7 @@ export const createGovernorateColumns = (
             size="icon"
             className="h-8 w-8 p-0 text-red-600 hover:bg-red-100 hover:text-red-700"
             onClick={() => handlers.onDelete(governorate)}
-            title="حذف"
+            title={t("actions_delete")}
           >
             <Trash2 className="h-4 w-4" />
           </Button>

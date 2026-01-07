@@ -7,43 +7,44 @@ import { Eye, Trash2 } from "lucide-react";
 
 export const createComplaintColumns = (
   onView: (complaint: Complaint) => void,
-  onDelete: (id: number) => void
+  onDelete: (id: number) => void,
+  t: (key: string) => string
 ): ColumnDef<Complaint>[] => [
   {
     accessorKey: "id",
-    header: "الرقم",
+    header: t("columns.id"),
     cell: ({ row }) => <div className="font-medium">{row.getValue("id")}</div>,
   },
   {
     accessorKey: "name",
-    header: "الاسم",
+    header: t("columns.name"),
     cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
   {
     accessorKey: "email",
-    header: "البريد الإلكتروني",
+    header: t("columns.email"),
     cell: ({ row }) => <div className="text-sm">{row.getValue("email")}</div>,
   },
   {
     accessorKey: "phone",
-    header: "الهاتف",
+    header: t("columns.phone"),
     cell: ({ row }) => <div className="text-sm">{row.getValue("phone")}</div>,
   },
   {
     accessorKey: "campName",
-    header: "الإيواء",
+    header: t("columns.camp"),
     cell: ({ row }) => <div>{row.getValue("campName")}</div>,
   },
   {
     accessorKey: "topic",
-    header: "الموضوع",
+    header: t("columns.topic"),
     cell: ({ row }) => (
       <div className="max-w-xs truncate">{row.getValue("topic")}</div>
     ),
   },
   {
     id: "actions",
-    header: "الإجراءات",
+    header: t("columns.actions"),
     cell: ({ row }) => {
       const complaint = row.original;
 

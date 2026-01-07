@@ -21,12 +21,8 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import React, { useState, useMemo } from "react";
-import {
-  createColumns,
-  Project, // This now refers to the API type we updated in steps 535
-} from "../table-cols/current-projects-cols";
+import { createColumns, Project } from "../table-cols/current-projects-cols";
 import PaginationControls from "./pagination-controls";
-// ... imports ...
 import ProjectFormDialog from "./add-project-project";
 import {
   useProjects,
@@ -35,6 +31,7 @@ import {
 } from "@/features/projects/hooks/use-projects";
 import { Loader2 } from "lucide-react";
 import { DeleteConfirmDialog } from "@/features/marital-status/components/delete-confirm-dialog";
+import { useTranslations } from "next-intl";
 
 interface Filters {
   search?: string;
@@ -51,6 +48,8 @@ export default function CurrentProjectsTable({
   filters,
   hideApproveDelete,
 }: CurrentProjectsTableProps) {
+  const t = useTranslations("projects_page");
+  const tCommon = useTranslations("common");
   const { data: projectsData, isLoading } = useProjects();
   const deleteProject = useDeleteProject();
   const approveProject = useApproveProject();
@@ -139,6 +138,7 @@ export default function CurrentProjectsTable({
       onDelete: handleDelete,
       onUpdate: handleUpdate,
       hideApproveDelete,
+      t: t,
     }),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -214,11 +214,12 @@ export default function CurrentProjectsTable({
                       onEdit: handleEdit,
                       onDelete: handleDelete,
                       onUpdate: handleUpdate,
+                      t: t,
                     }).length
                   }
                   className="h-24 text-center"
                 >
-                  لا توجد نتائج.
+                  {t("no_results")}
                 </TableCell>
               </TableRow>
             )}
@@ -236,8 +237,10 @@ export default function CurrentProjectsTable({
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onConfirm={confirmDelete}
-        title="حذف المشروع"
-        description={`هل أنت متأكد من حذف المشروع "${projectToDelete?.name}"؟ هذا الإجراء لا يمكن التراجع عنه.`}
+        title={t("delete_dialog.title")}
+        description={t("delete_dialog.description", {
+          name: projectToDelete?.name,
+        })}
         isPending={deleteProject.isPending}
       />
 

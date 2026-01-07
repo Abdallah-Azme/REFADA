@@ -25,6 +25,7 @@ import {
 } from "../types/marital-status.schema";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface MaritalStatusFormDialogProps {
   open: boolean;
@@ -41,6 +42,7 @@ export function MaritalStatusFormDialog({
   onSubmit,
   isPending,
 }: MaritalStatusFormDialogProps) {
+  const t = useTranslations("marital_status_page");
   const form = useForm<MaritalStatusFormValues>({
     resolver: zodResolver(maritalStatusSchema),
     defaultValues: {
@@ -72,9 +74,7 @@ export function MaritalStatusFormDialog({
       <DialogContent className="sm:max-w-[425px]!">
         <DialogHeader>
           <DialogTitle>
-            {initialData
-              ? "تعديل الحالة الاجتماعية"
-              : "إضافة حالة اجتماعية جديدة"}
+            {initialData ? t("edit_title") : t("add_title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -88,9 +88,9 @@ export function MaritalStatusFormDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>الاسم</FormLabel>
+                  <FormLabel>{t("name_label")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="مثال: متزوج" {...field} />
+                    <Input placeholder={t("placeholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -104,18 +104,18 @@ export function MaritalStatusFormDialog({
                 onClick={() => onOpenChange(false)}
                 disabled={isPending}
               >
-                إلغاء
+                {t("cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                    جاري الحفظ...
+                    {t("save")}
                   </>
                 ) : initialData ? (
-                  "تحديث"
+                  t("update_btn")
                 ) : (
-                  "إضافة"
+                  t("add_btn")
                 )}
               </Button>
             </div>

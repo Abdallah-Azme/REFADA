@@ -23,8 +23,10 @@ import {
 } from "@/features/home-control";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export default function WebsiteSettingsPage() {
+  const t = useTranslations("website_settings");
   const { data, isLoading } = useWebsiteSettings();
   const { mutate: updateSettings, isPending } = useUpdateWebsiteSettings();
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -102,7 +104,7 @@ export default function WebsiteSettingsPage() {
       <div className="w-full gap-6 p-8 bg-gray-50 min-h-screen">
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <span className="mr-3 text-gray-600">جاري تحميل الإعدادات...</span>
+          <span className="mr-3 text-gray-600">{t("loading")}</span>
         </div>
       </div>
     );
@@ -113,7 +115,7 @@ export default function WebsiteSettingsPage() {
       <div className="flex items-center justify-between mb-5">
         <h3 className="text-lg flex gap-1 font-semibold text-gray-900">
           <Settings />
-          إعدادات الموقع
+          {t("page_title")}
         </h3>
       </div>
 
@@ -122,7 +124,7 @@ export default function WebsiteSettingsPage() {
           {/* Site Information */}
           <Card className="bg-white">
             <CardHeader>
-              <CardTitle>معلومات الموقع</CardTitle>
+              <CardTitle>{t("sections.site_info")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 ">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -131,9 +133,12 @@ export default function WebsiteSettingsPage() {
                   name="siteName.ar"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>اسم الموقع (عربي)</FormLabel>
+                      <FormLabel>{t("labels.site_name_ar")}</FormLabel>
                       <FormControl>
-                        <Input placeholder="رفد" {...field} />
+                        <Input
+                          placeholder={t("placeholders.refad_ar")}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -145,9 +150,12 @@ export default function WebsiteSettingsPage() {
                   name="siteName.en"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>اسم الموقع (إنجليزي)</FormLabel>
+                      <FormLabel>{t("labels.site_name_en")}</FormLabel>
                       <FormControl>
-                        <Input placeholder="Refad" {...field} />
+                        <Input
+                          placeholder={t("placeholders.refad_en")}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -162,7 +170,7 @@ export default function WebsiteSettingsPage() {
                   name="siteLogo"
                   render={({ field: { value, onChange, ...field } }) => (
                     <FormItem>
-                      <FormLabel>شعار الموقع</FormLabel>
+                      <FormLabel>{t("labels.site_logo")}</FormLabel>
                       <FormControl>
                         <div className="space-y-2">
                           <Input
@@ -194,7 +202,7 @@ export default function WebsiteSettingsPage() {
                   name="favicon"
                   render={({ field: { value, onChange, ...field } }) => (
                     <FormItem>
-                      <FormLabel>أيقونة الموقع (Favicon)</FormLabel>
+                      <FormLabel>{t("labels.favicon")}</FormLabel>
                       <FormControl>
                         <div className="space-y-2">
                           <Input
@@ -226,7 +234,7 @@ export default function WebsiteSettingsPage() {
           {/* Contact Information */}
           <Card className="bg-white">
             <CardHeader>
-              <CardTitle>معلومات التواصل</CardTitle>
+              <CardTitle>{t("sections.contact_info")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 ">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -235,10 +243,10 @@ export default function WebsiteSettingsPage() {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>رقم الهاتف</FormLabel>
+                      <FormLabel>{t("labels.phone")}</FormLabel>
                       <FormControl>
                         <PhoneInput
-                          placeholder="+970 59 999 9999"
+                          placeholder={t("placeholders.phone")}
                           value={field.value}
                           onChange={field.onChange}
                         />
@@ -253,11 +261,11 @@ export default function WebsiteSettingsPage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>البريد الإلكتروني</FormLabel>
+                      <FormLabel>{t("labels.email")}</FormLabel>
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="info@refad.org"
+                          placeholder={t("placeholders.email")}
                           {...field}
                         />
                       </FormControl>
@@ -271,9 +279,12 @@ export default function WebsiteSettingsPage() {
                   name="whatsapp"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>رقم الواتساب</FormLabel>
+                      <FormLabel>{t("labels.whatsapp")}</FormLabel>
                       <FormControl>
-                        <Input placeholder="+970599999999" {...field} />
+                        <Input
+                          placeholder={t("placeholders.whatsapp")}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -286,7 +297,7 @@ export default function WebsiteSettingsPage() {
           {/* Social Media Links */}
           <Card className="bg-white">
             <CardHeader>
-              <CardTitle>روابط التواصل الاجتماعي</CardTitle>
+              <CardTitle>{t("sections.social_links")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 ">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -295,10 +306,10 @@ export default function WebsiteSettingsPage() {
                   name="facebook"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>فيسبوك</FormLabel>
+                      <FormLabel>{t("labels.facebook")}</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="https://facebook.com/refadorg"
+                          placeholder={t("placeholders.social")}
                           {...field}
                         />
                       </FormControl>
@@ -312,10 +323,10 @@ export default function WebsiteSettingsPage() {
                   name="twitter"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>تويتر</FormLabel>
+                      <FormLabel>{t("labels.twitter")}</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="https://twitter.com/refadorg"
+                          placeholder={t("placeholders.social")}
                           {...field}
                         />
                       </FormControl>
@@ -329,10 +340,10 @@ export default function WebsiteSettingsPage() {
                   name="instagram"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>انستغرام</FormLabel>
+                      <FormLabel>{t("labels.instagram")}</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="https://instagram.com/refadorg"
+                          placeholder={t("placeholders.social")}
                           {...field}
                         />
                       </FormControl>
@@ -346,10 +357,10 @@ export default function WebsiteSettingsPage() {
                   name="linkedin"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>لينكد إن</FormLabel>
+                      <FormLabel>{t("labels.linkedin")}</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="https://linkedin.com/company/refad"
+                          placeholder={t("placeholders.social")}
                           {...field}
                         />
                       </FormControl>
@@ -363,10 +374,10 @@ export default function WebsiteSettingsPage() {
                   name="youtube"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>يوتيوب</FormLabel>
+                      <FormLabel>{t("labels.youtube")}</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="https://youtube.com/refadorg"
+                          placeholder={t("placeholders.social")}
                           {...field}
                         />
                       </FormControl>
@@ -384,10 +395,10 @@ export default function WebsiteSettingsPage() {
               {isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                  جاري الحفظ...
+                  {t("saving")}
                 </>
               ) : (
-                "حفظ التغييرات"
+                t("save_changes")
               )}
             </Button>
           </div>

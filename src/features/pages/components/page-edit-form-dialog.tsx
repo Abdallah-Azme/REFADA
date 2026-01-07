@@ -18,17 +18,17 @@ import {
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
-import { Textarea } from "@/shared/ui/textarea";
 import {
   pageUpdateSchema,
   PageUpdateFormValues,
   PageData,
 } from "../types/page.schema";
-import { useEffect, useState, lazy, Suspense } from "react";
-import { Loader2, Upload, FileText, ImageIcon } from "lucide-react";
+import { useEffect, useState, lazy, Suspense, useMemo } from "react";
+import { Loader2, FileText, ImageIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+import * as z from "zod";
 
 const RichTextEditor = lazy(() => import("@/components/rich-text-editor"));
-import Image from "next/image";
 
 interface PageEditFormDialogProps {
   open: boolean;
@@ -45,11 +45,26 @@ export function PageEditFormDialog({
   onSubmit,
   isPending,
 }: PageEditFormDialogProps) {
+  const t = useTranslations("dynamic_pages");
+  const tCommon = useTranslations("common");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
 
+  const localizedSchema = useMemo(
+    () =>
+      z.object({
+        title_ar: z.string().min(1, t("validation.title_ar_required")),
+        title_en: z.string().min(1, t("validation.title_en_required")),
+        description_ar: z.string().min(1, t("validation.desc_ar_required")),
+        description_en: z.string().min(1, t("validation.desc_en_required")),
+        image: z.any().optional(),
+        file: z.any().optional(),
+      }),
+    [t]
+  );
+
   const form = useForm<PageUpdateFormValues>({
-    resolver: zodResolver(pageUpdateSchema),
+    resolver: zodResolver(localizedSchema),
     defaultValues: {
       title_ar: "",
       title_en: "",
@@ -126,12 +141,7 @@ export function PageEditFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            تعديل محتوى الصفحة:{" "}
-            {typeof pageData.title === "object"
-              ? pageData.title?.ar
-              : pageData.title}
-          </DialogTitle>
+          <DialogTitle>{t("edit_dialog.title")}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -145,7 +155,7 @@ export function PageEditFormDialog({
               name="image"
               render={({ field: { value, onChange, ...field } }) => (
                 <FormItem>
-                  <FormLabel>صورة الصفحة</FormLabel>
+                  <FormLabel>{t("edit_dialog.image_label")}</FormLabel>
                   <FormControl>
                     <div className="flex flex-col gap-4">
                       {imagePreview && (
@@ -157,7 +167,7 @@ export function PageEditFormDialog({
                             rel="noopener noreferrer"
                             className="text-sm text-primary hover:underline"
                           >
-                            عرض الصورة الحالية
+                            {t("edit_dialog.current_image")}
                           </a>
                         </div>
                       )}
@@ -170,7 +180,7 @@ export function PageEditFormDialog({
                           className="cursor-pointer"
                         />
                         <p className="text-xs text-gray-500 mt-2">
-                          يمكنك رفع صور: JPG, PNG, GIF, WEBP
+                          {t("edit_dialog.image_hint")}
                         </p>
                       </div>
                     </div>
@@ -186,7 +196,7 @@ export function PageEditFormDialog({
               name="file"
               render={({ field: { value, onChange, ...field } }) => (
                 <FormItem>
-                  <FormLabel>ملف الصفحة</FormLabel>
+                  <FormLabel>{t("edit_dialog.file_label")}</FormLabel>
                   <FormControl>
                     <div className="flex flex-col gap-4">
                       {filePreview && (
@@ -199,7 +209,7 @@ export function PageEditFormDialog({
                               rel="noopener noreferrer"
                               className="text-sm text-primary hover:underline"
                             >
-                              عرض الملف الحالي
+                              {t("edit_dialog.current_file")}
                             </a>
                           ) : (
                             <span className="text-sm text-gray-700">
@@ -217,7 +227,7 @@ export function PageEditFormDialog({
                           className="cursor-pointer"
                         />
                         <p className="text-xs text-gray-500 mt-2">
-                          يمكنك رفع ملفات: PDF, DOC, DOCX, TXT
+                          {t("edit_dialog.file_hint")}
                         </p>
                       </div>
                     </div>
@@ -234,9 +244,12 @@ export function PageEditFormDialog({
                 name="title_ar"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>العنوان (بالعربية)</FormLabel>
+                    <FormLabel>{t("validation.title_ar_required")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="العنوان بالعربية..." {...field} />
+                      <Input
+                        placeholder={t("validation.title_ar_required")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -248,10 +261,10 @@ export function PageEditFormDialog({
                 name="title_en"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>العنوان (بالإنجليزي)</FormLabel>
+                    <FormLabel>{t("validation.title_en_required")}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="English Title..."
+                        placeholder={t("validation.title_en_required")}
                         className="direction-ltr"
                         {...field}
                       />
@@ -269,7 +282,7 @@ export function PageEditFormDialog({
                 name="description_ar"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>الوصف (بالعربية)</FormLabel>
+                    <FormLabel>{t("validation.desc_ar_required")}</FormLabel>
                     <FormControl>
                       <Suspense
                         fallback={
@@ -279,7 +292,7 @@ export function PageEditFormDialog({
                         <RichTextEditor
                           content={field.value}
                           onChange={field.onChange}
-                          placeholder="الوصف بالعربية..."
+                          placeholder={t("validation.desc_ar_required")}
                         />
                       </Suspense>
                     </FormControl>
@@ -293,7 +306,7 @@ export function PageEditFormDialog({
                 name="description_en"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>الوصف (بالإنجليزي)</FormLabel>
+                    <FormLabel>{t("validation.desc_en_required")}</FormLabel>
                     <FormControl>
                       <Suspense
                         fallback={
@@ -303,7 +316,7 @@ export function PageEditFormDialog({
                         <RichTextEditor
                           content={field.value}
                           onChange={field.onChange}
-                          placeholder="English Description..."
+                          placeholder={t("validation.desc_en_required")}
                         />
                       </Suspense>
                     </FormControl>
@@ -320,16 +333,16 @@ export function PageEditFormDialog({
                 onClick={() => onOpenChange(false)}
                 disabled={isPending}
               >
-                إلغاء
+                {t("edit_dialog.cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                    جاري الحفظ...
+                    {tCommon("saving")}
                   </>
                 ) : (
-                  "حفظ التعديلات"
+                  t("edit_dialog.save")
                 )}
               </Button>
             </div>

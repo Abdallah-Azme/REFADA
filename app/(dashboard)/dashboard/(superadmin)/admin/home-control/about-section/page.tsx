@@ -25,22 +25,29 @@ import {
   useHero,
   useUpdateAboutSection,
 } from "@/features/home-control/hooks/use-hero";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Loader2, Save, FileText } from "lucide-react";
 import MainHeader from "@/shared/components/main-header";
-
-const aboutSectionSchema = z.object({
-  title_ar: z.string().min(1, "العنوان بالعربية مطلوب"),
-  title_en: z.string().min(1, "العنوان بالإنجليزية مطلوب"),
-  description_ar: z.string().min(1, "الوصف بالعربية مطلوب"),
-  description_en: z.string().min(1, "الوصف بالإنجليزية مطلوب"),
-});
-
-type AboutSectionFormValues = z.infer<typeof aboutSectionSchema>;
+import { useTranslations } from "next-intl";
 
 export default function AboutSectionPage() {
+  const t = useTranslations("about_section");
+  const tCommon = useTranslations("common");
   const { data: heroData, isLoading, error } = useHero();
   const updateMutation = useUpdateAboutSection();
+
+  const aboutSectionSchema = useMemo(
+    () =>
+      z.object({
+        title_ar: z.string().min(1, t("validation.title_ar_required")),
+        title_en: z.string().min(1, t("validation.title_en_required")),
+        description_ar: z.string().min(1, t("validation.desc_ar_required")),
+        description_en: z.string().min(1, t("validation.desc_en_required")),
+      }),
+    [t]
+  );
+
+  type AboutSectionFormValues = z.infer<typeof aboutSectionSchema>;
 
   const form = useForm<AboutSectionFormValues>({
     resolver: zodResolver(aboutSectionSchema),
@@ -72,7 +79,7 @@ export default function AboutSectionPage() {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-200px)]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="mr-3 text-gray-600">جاري تحميل البيانات...</span>
+        <span className="mr-3 text-gray-600">{tCommon("loading")}</span>
       </div>
     );
   }
@@ -81,7 +88,7 @@ export default function AboutSectionPage() {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-200px)]">
         <div className="text-center">
-          <p className="text-red-600 mb-2">حدث خطأ أثناء تحميل البيانات</p>
+          <p className="text-red-600 mb-2">{tCommon("error_loading")}</p>
           <p className="text-sm text-gray-500">
             {(error as any)?.message || "Unknown error"}
           </p>
@@ -92,10 +99,7 @@ export default function AboutSectionPage() {
 
   return (
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50/50 min-h-screen">
-      <MainHeader
-        header="إعدادات قسم من نحن"
-        subheader="تعديل العنوان والوصف المعروض في الصفحة الرئيسية"
-      />
+      <MainHeader header={t("page_title")} subheader={t("page_subtitle")} />
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -110,12 +114,12 @@ export default function AboutSectionPage() {
               {updateMutation.isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                  جاري الحفظ...
+                  {tCommon("saving")}
                 </>
               ) : (
                 <>
                   <Save className="h-4 w-4 ml-2" />
-                  حفظ التغييرات
+                  {tCommon("save_changes")}
                 </>
               )}
             </Button>
@@ -126,30 +130,28 @@ export default function AboutSectionPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5 text-primary" />
-                قسم من نحن - الصفحة الرئيسية
+                {t("card_title")}
               </CardTitle>
-              <CardDescription>
-                هذا القسم يظهر في الصفحة الرئيسية تحت البانر الرئيسي
-              </CardDescription>
+              <CardDescription>{t("card_description")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Arabic Fields */}
                 <div className="space-y-4">
                   <h3 className="font-semibold text-gray-900 border-b pb-2 text-right">
-                    العربية
+                    {tCommon("languages.ar")}
                   </h3>
                   <FormField
                     control={form.control}
                     name="title_ar"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>العنوان</FormLabel>
+                        <FormLabel>{t("form.title")}</FormLabel>
                         <FormControl>
                           <Input
                             {...field}
                             className="bg-gray-50/50"
-                            placeholder="مثال: من نحن"
+                            placeholder={t("form.title_placeholder")}
                             dir="rtl"
                           />
                         </FormControl>
@@ -162,12 +164,12 @@ export default function AboutSectionPage() {
                     name="description_ar"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>الوصف</FormLabel>
+                        <FormLabel>{t("form.description")}</FormLabel>
                         <FormControl>
                           <Textarea
                             {...field}
                             className="min-h-[150px] bg-gray-50/50 resize-none"
-                            placeholder="أدخل الوصف بالعربية..."
+                            placeholder={t("form.desc_placeholder")}
                             dir="rtl"
                           />
                         </FormControl>
@@ -183,7 +185,7 @@ export default function AboutSectionPage() {
                     className="font-semibold text-gray-900 border-b pb-2 text-left"
                     dir="ltr"
                   >
-                    English
+                    {tCommon("languages.en")}
                   </h3>
                   <FormField
                     control={form.control}
@@ -191,13 +193,13 @@ export default function AboutSectionPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-left w-full block" dir="ltr">
-                          Title
+                          {t("form.title")}
                         </FormLabel>
                         <FormControl>
                           <Input
                             {...field}
                             className="bg-gray-50/50"
-                            placeholder="Example: About Us"
+                            placeholder={t("form.title_placeholder_en")}
                             dir="ltr"
                           />
                         </FormControl>
@@ -211,13 +213,13 @@ export default function AboutSectionPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-left w-full block" dir="ltr">
-                          Description
+                          {t("form.description")}
                         </FormLabel>
                         <FormControl>
                           <Textarea
                             {...field}
                             className="min-h-[150px] bg-gray-50/50 resize-none"
-                            placeholder="Enter description in English..."
+                            placeholder={t("form.desc_placeholder_en")}
                             dir="ltr"
                           />
                         </FormControl>

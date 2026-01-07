@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  ColumnDef,
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
@@ -20,7 +21,6 @@ import {
   SortingState,
   useReactTable,
   VisibilityState,
-  ColumnDef,
 } from "@tanstack/react-table";
 import React, { useEffect, useState } from "react";
 
@@ -55,6 +55,7 @@ import {
   FamilyQuantity,
 } from "@/features/contributors/api/contributors.api";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -88,10 +89,13 @@ const formSchema = z.object({
 // ========================================
 // COLUMN DEFINITIONS
 // ========================================
-const createDelegateContributionColumns = (handlers: {
-  onView: (item: DelegateContribution) => void;
-  onConfirm: (item: DelegateContribution) => void;
-}): ColumnDef<DelegateContribution>[] => [
+const createDelegateContributionColumns = (
+  handlers: {
+    onView: (item: DelegateContribution) => void;
+    onConfirm: (item: DelegateContribution) => void;
+  },
+  t: (key: string) => string
+): ColumnDef<DelegateContribution>[] => [
   {
     accessorKey: "id",
     header: "#",
@@ -103,23 +107,23 @@ const createDelegateContributionColumns = (handlers: {
   },
   {
     accessorKey: "status",
-    header: "الحالة",
+    header: t("status"),
     cell: ({ row }) => {
       const status = row.original.status;
       let statusText = status;
       let colorClass = "bg-gray-100 text-gray-700";
 
       if (status === "pending") {
-        statusText = "قيد الانتظار";
+        statusText = t("status_pending");
         colorClass = "bg-yellow-100 text-yellow-700";
       } else if (status === "approved") {
-        statusText = "موافق عليه";
+        statusText = t("status_approved");
         colorClass = "bg-green-100 text-green-700";
       } else if (status === "rejected") {
-        statusText = "مرفوض";
+        statusText = t("status_rejected");
         colorClass = "bg-red-100 text-red-700";
       } else if (status === "completed") {
-        statusText = "مكتمل";
+        statusText = t("status_completed");
         colorClass = "bg-blue-100 text-blue-700";
       }
 
@@ -136,7 +140,7 @@ const createDelegateContributionColumns = (handlers: {
   },
   {
     accessorKey: "contributorFamilies",
-    header: "العائلات المستفيدة",
+    header: t("families_benefited"),
     cell: ({ row }) => {
       const families = row.original.contributorFamilies;
       if (!families || families.length === 0) {
@@ -161,7 +165,7 @@ const createDelegateContributionColumns = (handlers: {
                   {remaining > 0 && (
                     <span className="text-primary font-medium">
                       {" "}
-                      +{remaining} آخرين
+                      +{remaining} {t("others")}
                     </span>
                   )}
                 </div>
@@ -186,7 +190,7 @@ const createDelegateContributionColumns = (handlers: {
   },
   {
     accessorKey: "notes",
-    header: "ملاحظات",
+    header: t("notes"),
     cell: ({ row }) => (
       <div className="text-center text-gray-500 text-sm max-w-[150px] truncate">
         {row.original.notes || "-"}
@@ -195,7 +199,7 @@ const createDelegateContributionColumns = (handlers: {
   },
   {
     accessorKey: "createdAt",
-    header: "تاريخ المساهمة",
+    header: t("contribution_date"),
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt);
       return (
@@ -211,7 +215,7 @@ const createDelegateContributionColumns = (handlers: {
   },
   {
     id: "actions",
-    header: "الإجراءات",
+    header: t("view"),
     cell: ({ row }) => (
       <div className="flex justify-center gap-2">
         <Button
@@ -249,25 +253,32 @@ function DelegateContributionDetailsDialog({
   onClose: () => void;
   contribution: DelegateContribution | null;
 }) {
+  const t = useTranslations("contributions");
   if (!contribution) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-right">تفاصيل المساهمة</DialogTitle>
+          <DialogTitle className="text-right">
+            {t("contribution_details")}
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 text-right">
           {/* Contribution Details */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-1">رقم المساهمة</h4>
+              <h4 className="font-semibold text-gray-800 mb-1">
+                {t("contribution_number")}
+              </h4>
               <p className="text-2xl font-bold text-primary">
                 #{contribution.id}
               </p>
             </div>
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-1">الحالة</h4>
+              <h4 className="font-semibold text-gray-800 mb-1">
+                {t("status")}
+              </h4>
               <p
                 className={`font-medium ${
                   contribution.status === "pending"
@@ -280,13 +291,13 @@ function DelegateContributionDetailsDialog({
                 }`}
               >
                 {contribution.status === "pending"
-                  ? "قيد الانتظار"
+                  ? t("status_pending")
                   : contribution.status === "approved"
-                  ? "موافق عليه"
+                  ? t("status_approved")
                   : contribution.status === "rejected"
-                  ? "مرفوض"
+                  ? t("status_rejected")
                   : contribution.status === "completed"
-                  ? "مكتمل"
+                  ? t("status_completed")
                   : contribution.status}
               </p>
             </div>
@@ -296,7 +307,8 @@ function DelegateContributionDetailsDialog({
           {contribution.contributorFamilies.length > 0 && (
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="font-semibold text-gray-800 mb-2">
-                العائلات المستفيدة ({contribution.contributorFamilies.length})
+                {t("families_benefited")} (
+                {contribution.contributorFamilies.length})
               </h4>
               <div className="space-y-2 max-h-[200px] overflow-y-auto">
                 {contribution.contributorFamilies.map((family) => (
@@ -307,7 +319,7 @@ function DelegateContributionDetailsDialog({
                     <div>
                       <span className="font-medium">{family.familyName}</span>
                       <span className="text-gray-400 text-xs mr-2">
-                        ({family.totalMembers} أفراد)
+                        ({family.totalMembers} {t("individuals")})
                       </span>
                     </div>
                     <span className="text-xs text-gray-500">{family.camp}</span>
@@ -320,14 +332,14 @@ function DelegateContributionDetailsDialog({
           {/* Notes */}
           {contribution.notes && (
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-1">ملاحظات</h4>
+              <h4 className="font-semibold text-gray-800 mb-1">{t("notes")}</h4>
               <p className="text-gray-600">{contribution.notes}</p>
             </div>
           )}
 
           {/* Date */}
           <div className="text-sm text-gray-500 text-center">
-            تاريخ المساهمة:{" "}
+            {t("contribution_date")}:{" "}
             {new Date(contribution.createdAt).toLocaleDateString("ar-EG", {
               year: "numeric",
               month: "long",
@@ -381,6 +393,8 @@ export default function DelegateContributionsTable() {
     new Map()
   );
   const [isAddingFamilies, setIsAddingFamilies] = useState(false);
+  const t = useTranslations("contributions");
+  const tCommon = useTranslations("common");
 
   // Fetch contributions
   useEffect(() => {
@@ -396,7 +410,7 @@ export default function DelegateContributionsTable() {
       }
     } catch (error) {
       console.error("Failed to fetch contributions:", error);
-      toast.error("فشل في جلب المساهمات");
+      toast.error(t("fetch_error"));
     } finally {
       setIsLoading(false);
     }
@@ -419,7 +433,7 @@ export default function DelegateContributionsTable() {
 
     const quantity = parseInt(confirmedQuantity);
     if (isNaN(quantity) || quantity <= 0) {
-      toast.error("يرجى إدخال كمية صالحة");
+      toast.error(t("invalid_quantity"));
       return;
     }
 
@@ -462,7 +476,7 @@ export default function DelegateContributionsTable() {
 
   const handleAddFamilies = async () => {
     if (!confirmingContribution || selectedFamilies.size === 0) {
-      toast.error("يرجى اختيار عائلة واحدة على الأقل");
+      toast.error(t("select_family"));
       return;
     }
 
@@ -470,7 +484,7 @@ export default function DelegateContributionsTable() {
     for (const [id, qty] of selectedFamilies) {
       const quantity = parseInt(qty);
       if (isNaN(quantity) || quantity <= 0) {
-        toast.error("يرجى إدخال كمية صالحة لكل عائلة");
+        toast.error(t("invalid_family_quantity"));
         return;
       }
       families.push({ id, quantity });
@@ -519,10 +533,13 @@ export default function DelegateContributionsTable() {
 
   const table = useReactTable<DelegateContribution>({
     data: filteredData,
-    columns: createDelegateContributionColumns({
-      onView: handleView,
-      onConfirm: handleConfirmClick,
-    }),
+    columns: createDelegateContributionColumns(
+      {
+        onView: handleView,
+        onConfirm: handleConfirmClick,
+      },
+      t
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -670,14 +687,17 @@ export default function DelegateContributionsTable() {
                 <TableRow>
                   <TableCell
                     colSpan={
-                      createDelegateContributionColumns({
-                        onView: handleView,
-                        onConfirm: handleConfirmClick,
-                      }).length
+                      createDelegateContributionColumns(
+                        {
+                          onView: handleView,
+                          onConfirm: handleConfirmClick,
+                        },
+                        t
+                      ).length
                     }
                     className="h-24 text-center"
                   >
-                    لا توجد مساهمات بعد.
+                    {tCommon("no_results")}
                   </TableCell>
                 </TableRow>
               )}
@@ -706,8 +726,8 @@ export default function DelegateContributionsTable() {
             <DialogHeader>
               <DialogTitle className="text-right">
                 {confirmStep === 1
-                  ? "تأكيد استلام المساهمة"
-                  : "اختيار العائلات المستفيدة"}
+                  ? t("confirm_receipt_title")
+                  : t("select_beneficiaries_title")}
               </DialogTitle>
             </DialogHeader>
 
@@ -715,7 +735,7 @@ export default function DelegateContributionsTable() {
               // Step 1: Quantity Input
               <div className="space-y-4 text-right">
                 <p className="text-gray-600">
-                  هل أنت متأكد من رغبتك في تأكيد استلام المساهمة رقم{" "}
+                  {t("confirm_receipt_desc")}{" "}
                   <span className="font-semibold text-gray-900">
                     #{confirmingContribution?.id}
                   </span>
@@ -727,12 +747,13 @@ export default function DelegateContributionsTable() {
                     htmlFor="confirmed-quantity"
                     className="text-right block"
                   >
-                    الكمية المستلمة <span className="text-red-500">*</span>
+                    {t("received_quantity")}{" "}
+                    <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="confirmed-quantity"
                     type="number"
-                    placeholder="أدخل الكمية المستلمة"
+                    placeholder={t("received_quantity_placeholder")}
                     value={confirmedQuantity}
                     onChange={(e) => setConfirmedQuantity(e.target.value)}
                     className="text-right h-12 rounded-xl"
@@ -746,31 +767,21 @@ export default function DelegateContributionsTable() {
                     onClick={handleCloseConfirmDialog}
                     disabled={isConfirming}
                   >
-                    إلغاء
+                    {tCommon("cancel")}
                   </Button>
                   <Button
                     onClick={handleConfirmContribution}
                     disabled={isConfirming || !confirmedQuantity}
                     className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
-                    {isConfirming ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                        جاري التأكيد...
-                      </>
-                    ) : (
-                      "التالي"
-                    )}
+                    {isConfirming ? <>{t("confirming")}</> : t("next")}
                   </Button>
                 </div>
               </div>
             ) : (
               // Step 2: Family Selection
               <div className="space-y-4 text-right">
-                <p className="text-gray-600">
-                  اختر العائلات المستفيدة من هذه المساهمة وحدد الكمية لكل عائلة:
-                </p>
-
+                {t("select_beneficiaries_desc")}:
                 <div className="space-y-3 max-h-[300px] overflow-y-auto">
                   {confirmingContribution?.contributorFamilies.map((family) => (
                     <div
@@ -802,7 +813,7 @@ export default function DelegateContributionsTable() {
                       {selectedFamilies.has(family.id) && (
                         <Input
                           type="number"
-                          placeholder="الكمية"
+                          placeholder={t("quantity_placeholder")}
                           value={selectedFamilies.get(family.id) || ""}
                           onChange={(e) =>
                             handleFamilyQuantityChange(
@@ -818,14 +829,13 @@ export default function DelegateContributionsTable() {
                     </div>
                   ))}
                 </div>
-
                 <div className="flex gap-3 justify-end mt-6">
                   <Button
                     variant="outline"
                     onClick={() => setConfirmStep(1)}
                     disabled={isAddingFamilies}
                   >
-                    السابق
+                    {t("prev")}
                   </Button>
                   <Button
                     onClick={handleAddFamilies}
@@ -835,7 +845,7 @@ export default function DelegateContributionsTable() {
                     {isAddingFamilies ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                        جاري الإضافة...
+                        {t("adding_families")}
                       </>
                     ) : (
                       "إضافة العائلات"

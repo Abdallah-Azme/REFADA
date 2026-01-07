@@ -16,21 +16,35 @@ import {
 } from "@/components/ui/form";
 import RichTextEditor from "@/components/rich-text-editor";
 import { Plus, Trash2 } from "lucide-react";
-
-const socialLinkSchema = z.object({
-  platform: z.string().min(1, "اسم المنصة مطلوب"),
-  url: z.string().url("الرابط غير صحيح"),
-});
-
-const footerSchema = z.object({
-  about: z.string().min(10, "النبذة يجب أن تكون 10 أحرف على الأقل"),
-  copyright: z.string().min(1, "حقوق النشر مطلوبة"),
-  socialLinks: z.array(socialLinkSchema),
-});
-
-type FooterFormValues = z.infer<typeof footerSchema>;
+import { useTranslations } from "next-intl";
+import { useMemo } from "react";
+import { toast } from "sonner";
 
 export default function FooterControlPage() {
+  const t = useTranslations("footer_control");
+  const tCommon = useTranslations("common");
+
+  const socialLinkSchema = useMemo(
+    () =>
+      z.object({
+        platform: z.string().min(1, t("validation.platform_required")),
+        url: z.string().url(t("validation.url_invalid")),
+      }),
+    [t]
+  );
+
+  const footerSchema = useMemo(
+    () =>
+      z.object({
+        about: z.string().min(10, t("validation.about_min")),
+        copyright: z.string().min(1, t("validation.copyright_required")),
+        socialLinks: z.array(socialLinkSchema),
+      }),
+    [t, socialLinkSchema]
+  );
+
+  type FooterFormValues = z.infer<typeof footerSchema>;
+
   const form = useForm<FooterFormValues>({
     resolver: zodResolver(footerSchema),
     defaultValues: {
@@ -60,16 +74,16 @@ export default function FooterControlPage() {
 
   const onSubmit = (data: FooterFormValues) => {
     // Here you would typically save to your backend
-    alert("تم حفظ التغييرات بنجاح!");
+    toast.success(tCommon("toast.save_success"));
   };
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">تحكم في تذييل الصفحة (Footer)</h1>
+      <h1 className="text-2xl font-bold">{t("page_title")}</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle>تعديل محتوى التذييل</CardTitle>
+          <CardTitle>{t("card_title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -79,12 +93,12 @@ export default function FooterControlPage() {
                 name="about"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>نبذة مختصرة</FormLabel>
+                    <FormLabel>{t("form.about")}</FormLabel>
                     <FormControl>
                       <RichTextEditor
                         content={field.value}
                         onChange={field.onChange}
-                        placeholder="نبذة مختصرة عن الجمعية"
+                        placeholder={t("form.about_placeholder")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -97,9 +111,12 @@ export default function FooterControlPage() {
                 name="copyright"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>حقوق النشر</FormLabel>
+                    <FormLabel>{t("form.copyright")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="جميع الحقوق محفوظة..." {...field} />
+                      <Input
+                        placeholder={t("form.copyright_placeholder")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -108,7 +125,7 @@ export default function FooterControlPage() {
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <FormLabel>روابط التواصل الاجتماعي</FormLabel>
+                  <FormLabel>{t("form.social_links")}</FormLabel>
                   <Button
                     type="button"
                     variant="outline"
@@ -116,7 +133,7 @@ export default function FooterControlPage() {
                     onClick={handleAddSocialLink}
                   >
                     <Plus className="w-4 h-4 ml-2" />
-                    إضافة رابط
+                    {t("form.add_link")}
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -127,7 +144,7 @@ export default function FooterControlPage() {
                     >
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-semibold text-sm">
-                          رابط {index + 1}
+                          {t("form.link_num")} {index + 1}
                         </h3>
                         <Button
                           type="button"
@@ -144,7 +161,7 @@ export default function FooterControlPage() {
                         name={`socialLinks.${index}.platform`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>المنصة</FormLabel>
+                            <FormLabel>{t("form.platform")}</FormLabel>
                             <FormControl>
                               <Input placeholder="Facebook" {...field} />
                             </FormControl>
@@ -157,7 +174,7 @@ export default function FooterControlPage() {
                         name={`socialLinks.${index}.url`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>الرابط</FormLabel>
+                            <FormLabel>{t("form.url")}</FormLabel>
                             <FormControl>
                               <Input
                                 placeholder="https://facebook.com/..."
@@ -173,7 +190,7 @@ export default function FooterControlPage() {
                 </div>
               </div>
 
-              <Button type="submit">حفظ التغييرات</Button>
+              <Button type="submit">{tCommon("save_changes")}</Button>
             </form>
           </Form>
         </CardContent>

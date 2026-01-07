@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -70,6 +70,7 @@ export default function ProjectFormDialog({
   trigger,
 }: ProjectFormDialogProps) {
   const t = useTranslations("projects");
+  const locale = useLocale();
   const [file, setFile] = useState<File | null>(null);
   const [internalOpen, setInternalOpen] = useState(false);
 
@@ -150,8 +151,8 @@ export default function ProjectFormDialog({
 
     if (!campId) {
       console.error("Camp ID is required - userCamp:", userCamp);
-      toast.error("لا يمكن إنشاء المشروع", {
-        description: "لم يتم تحديد الإيواء. تأكد من أنك مسجل في إيواء معين.",
+      toast.error(t("create_project_error"), {
+        description: t("no_camp_selected_desc"),
       });
       return;
     }
@@ -282,20 +283,35 @@ export default function ProjectFormDialog({
                           >
                             <SelectTrigger className="w-full bg-white">
                               {field.value
-                                ? camps.find(
-                                    (c) => c.id.toString() === field.value
-                                  )?.name || t("select_camp")
+                                ? (() => {
+                                    const selectedCamp = camps.find(
+                                      (c) => c.id.toString() === field.value
+                                    );
+                                    if (!selectedCamp) return t("select_camp");
+                                    return typeof selectedCamp.name === "string"
+                                      ? selectedCamp.name
+                                      : selectedCamp.name[
+                                          locale as "ar" | "en"
+                                        ] || selectedCamp.name["ar"];
+                                  })()
                                 : t("select_camp")}
                             </SelectTrigger>
                             <SelectContent>
-                              {camps.map((camp) => (
-                                <SelectItem
-                                  key={camp.id}
-                                  value={camp.id.toString()}
-                                >
-                                  {camp.name}
-                                </SelectItem>
-                              ))}
+                              {camps.map((camp) => {
+                                const campName =
+                                  typeof camp.name === "string"
+                                    ? camp.name
+                                    : camp.name[locale as "ar" | "en"] ||
+                                      camp.name["ar"];
+                                return (
+                                  <SelectItem
+                                    key={camp.id}
+                                    value={camp.id.toString()}
+                                  >
+                                    {campName}
+                                  </SelectItem>
+                                );
+                              })}
                             </SelectContent>
                           </Select>
                         </FormControl>

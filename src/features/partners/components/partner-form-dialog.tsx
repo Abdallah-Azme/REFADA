@@ -18,14 +18,12 @@ import {
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
-import {
-  partnerSchema,
-  PartnerFormValues,
-  Partner,
-} from "../types/partner.schema";
-import { useEffect, useState } from "react";
+import { PartnerFormValues, Partner } from "../types/partner.schema";
+import { useEffect, useState, useMemo } from "react";
 import { Loader2, Upload, Building2, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+import * as z from "zod";
 
 interface PartnerFormDialogProps {
   open: boolean;
@@ -42,10 +40,21 @@ export function PartnerFormDialog({
   onSubmit,
   isPending,
 }: PartnerFormDialogProps) {
+  const t = useTranslations("partners_page");
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
+  const localizedSchema = useMemo(
+    () =>
+      z.object({
+        name: z.string().min(1, t("validation.name_required")),
+        order: z.number().min(0, t("validation.order_min")).default(0),
+        logo: z.any().optional(),
+      }),
+    [t]
+  );
+
   const form = useForm<PartnerFormValues>({
-    resolver: zodResolver(partnerSchema),
+    resolver: zodResolver(localizedSchema),
     defaultValues: {
       name: "",
       order: 0,
@@ -94,7 +103,9 @@ export function PartnerFormDialog({
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {initialData ? "تعديل الشريك" : "إضافة شريك جديد"}
+            {initialData
+              ? t("dialog_form.title_edit")
+              : t("dialog_form.title_add")}
           </DialogTitle>
         </DialogHeader>
 
@@ -109,9 +120,12 @@ export function PartnerFormDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>اسم الشريك</FormLabel>
+                  <FormLabel>{t("dialog_form.name_label")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="اسم الشريك..." {...field} />
+                    <Input
+                      placeholder={t("dialog_form.name_placeholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -124,7 +138,7 @@ export function PartnerFormDialog({
               name="logo"
               render={({ field: { value, onChange, ...field } }) => (
                 <FormItem>
-                  <FormLabel>الشعار</FormLabel>
+                  <FormLabel>{t("dialog_form.logo_label")}</FormLabel>
                   <FormControl>
                     <div className="flex flex-col gap-4">
                       <div className="relative h-40 w-full rounded-lg overflow-hidden border-2 border-dashed bg-gray-50 flex items-center justify-center shrink-0">
@@ -138,7 +152,9 @@ export function PartnerFormDialog({
                         ) : (
                           <div className="flex flex-col items-center gap-2 text-gray-400">
                             <ImageIcon className="h-10 w-10" />
-                            <span className="text-sm">معاينة الشعار</span>
+                            <span className="text-sm">
+                              {t("dialog_form.logo_preview")}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -151,7 +167,7 @@ export function PartnerFormDialog({
                           className="cursor-pointer"
                         />
                         <p className="text-xs text-gray-500 mt-2">
-                          يفضل استخدام شعار بخلفية شفافة (PNG)
+                          {t("dialog_form.logo_hint")}
                         </p>
                       </div>
                     </div>
@@ -166,7 +182,7 @@ export function PartnerFormDialog({
               name="order"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>الترتيب</FormLabel>
+                  <FormLabel>{t("dialog_form.order_label")}</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="1" {...field} />
                   </FormControl>
@@ -182,18 +198,18 @@ export function PartnerFormDialog({
                 onClick={() => onOpenChange(false)}
                 disabled={isPending}
               >
-                إلغاء
+                {t("dialog_form.cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                    جاري الحفظ...
+                    {t("dialog_form.save_loading")}
                   </>
                 ) : initialData ? (
-                  "تحديث"
+                  t("dialog_form.update")
                 ) : (
-                  "إضافة"
+                  t("dialog_form.add")
                 )}
               </Button>
             </div>

@@ -22,11 +22,16 @@ interface ProjectFilteringFormProps {
   statuses: string[];
 }
 
+import { useTranslations } from "next-intl";
+// ... imports
+
 export default function ProjectFilteringForm({
   form,
   types,
   statuses,
 }: ProjectFilteringFormProps) {
+  const t = useTranslations("projects_page");
+
   return (
     <Form {...form}>
       <div className="flex items-center gap-3 self-end">
@@ -40,7 +45,7 @@ export default function ProjectFilteringForm({
                 <div className="relative">
                   <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
-                    placeholder="بحث بالاسم..."
+                    placeholder={t("search_placeholder")}
                     className="w-[200px] h-10 pr-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700"
                     {...field}
                   />
@@ -59,10 +64,10 @@ export default function ProjectFilteringForm({
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                    <SelectValue placeholder="النوع" />
+                    <SelectValue placeholder={t("type_filter")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">الكل</SelectItem>
+                    <SelectItem value="all">{t("filter_all")}</SelectItem>
                     {types.map((type) => (
                       <SelectItem key={type} value={type}>
                         {type}
@@ -84,10 +89,10 @@ export default function ProjectFilteringForm({
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                    <SelectValue placeholder="الحالة" />
+                    <SelectValue placeholder={t("status_filter")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">الكل</SelectItem>
+                    <SelectItem value="all">{t("filter_all")}</SelectItem>
                     {statuses.map((status) => (
                       <SelectItem key={status} value={status}>
                         {status}

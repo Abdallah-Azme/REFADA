@@ -1,18 +1,5 @@
 import { DynamicPageComponent } from "@/features/pages";
-
-// Map titles for known page types to display in header before data loads
-// NOTE: Backend uses mission/vision/goals but these actually represent:
-// - mission → حقوق الملكية (Intellectual Property)
-// - vision → حدود دور المنصة (Platform Limits)
-// - goals → حماية الفئات الهشة (Vulnerable Protection)
-const PAGE_TITLES: Record<string, string> = {
-  terms: "شروط الاستخدام",
-  privacy: "سياسة الخصوصية",
-  transparency: "الشفافية",
-  mission: "حقوق الملكية",
-  vision: "حدود دور المنصة",
-  goals: "حماية الفئات الهشة",
-};
+import { getTranslations } from "next-intl/server";
 
 export default async function Page({
   params,
@@ -20,6 +7,11 @@ export default async function Page({
   params: Promise<{ pageType: string }>;
 }) {
   const { pageType } = await params;
-  const title = PAGE_TITLES[pageType] || "تفاصيل الصفحة";
+  const t = await getTranslations("dynamic_pages.titles");
+
+  // Map pageType to partial key if it exists, otherwise fallback or handle nicely
+  // Using 'as any' to avoid rigid key typing issues if pageType is dynamic string
+  const title = t.has(pageType as any) ? t(pageType as any) : t("default");
+
   return <DynamicPageComponent pageType={pageType} title={title} />;
 }

@@ -9,18 +9,19 @@ import Image from "next/image";
 export const createPartnerColumns = (
   onView: (partner: Partner) => void,
   onEdit: (partner: Partner) => void,
-  onDelete: (id: number) => void
+  onDelete: (id: number) => void,
+  t: (key: string) => string
 ): ColumnDef<Partner>[] => [
   {
     accessorKey: "id",
-    header: "الرقم",
+    header: t("columns.id"),
     cell: ({ row }) => (
       <div className="font-medium text-center">{row.getValue("id")}</div>
     ),
   },
   {
     accessorKey: "logo",
-    header: "الشعار",
+    header: t("columns.logo"),
     cell: ({ row }) => {
       const logo = row.getValue("logo") as string;
       return (
@@ -36,7 +37,7 @@ export const createPartnerColumns = (
               }}
             />
           ) : (
-            <div className="text-xs text-gray-400">No Logo</div>
+            <div className="text-xs text-gray-400">{t("columns.no_logo")}</div>
           )}
         </div>
       );
@@ -44,21 +45,21 @@ export const createPartnerColumns = (
   },
   {
     accessorKey: "name",
-    header: "الاسم",
+    header: t("columns.name"),
     cell: ({ row }) => (
       <div className="font-medium text-center">{row.getValue("name")}</div>
     ),
   },
   {
     accessorKey: "order",
-    header: "الترتيب",
+    header: t("columns.order"),
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("order")}</div>
     ),
   },
   {
     id: "actions",
-    header: "الإجراءات",
+    header: t("columns.actions"),
     cell: ({ row }) => {
       const partner = row.original;
 

@@ -18,8 +18,11 @@ import { createPartnerColumns } from "./partner-columns";
 import { PartnerViewDialog } from "./partner-view-dialog";
 import { PartnerFormDialog } from "./partner-form-dialog";
 import { DeleteConfirmDialog } from "@/features/marital-status";
+import { useTranslations } from "next-intl";
 
 export default function PartnersPage() {
+  const t = useTranslations("partners_page");
+  const tCommon = useTranslations("common");
   const { data, isLoading, error } = usePartners();
   const createMutation = useCreatePartner();
   const updateMutation = useUpdatePartner();
@@ -97,35 +100,36 @@ export default function PartnersPage() {
     }
   };
 
-  const columns = createPartnerColumns(handleView, handleEdit, handleDelete);
+  // We need to pass translation function to columns creator to translate headers
+  const columns = createPartnerColumns(handleView, handleEdit, handleDelete, t);
 
   return (
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <MainHeader header="إدارة الشركاء">
+        <MainHeader header={t("page_title")}>
           <Users className="text-primary" />
         </MainHeader>
         <Button onClick={handleCreate}>
           <Plus className="h-4 w-4 ml-2" />
-          إضافة شريك
+          {t("add_partner")}
         </Button>
       </div>
 
       {/* Table Card */}
       <Card className="bg-white">
         <CardHeader>
-          <CardTitle>قائمة الشركاء</CardTitle>
+          <CardTitle>{t("list_title")}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <span className="mr-3 text-gray-600">جاري تحميل البيانات...</span>
+              <span className="mr-3 text-gray-600">{tCommon("loading")}</span>
             </div>
           ) : error ? (
             <div className="flex items-center justify-center py-12">
-              <p className="text-red-600">حدث خطأ أثناء تحميل البيانات</p>
+              <p className="text-red-600">{tCommon("error_loading")}</p>
             </div>
           ) : (
             <PartnerTable columns={columns} data={partners} />
@@ -154,8 +158,8 @@ export default function PartnersPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onConfirm={handleConfirmDelete}
-        title="حذف الشريك"
-        description="هل أنت متأكد من حذف هذا الشريك؟ هذا الإجراء لا يمكن التراجع عنه."
+        title={t("delete_dialog.title")}
+        description={t("delete_dialog.description")}
         isPending={deleteMutation.isPending}
       />
     </div>

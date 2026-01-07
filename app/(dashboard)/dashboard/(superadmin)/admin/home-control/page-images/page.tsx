@@ -17,8 +17,11 @@ import { Label } from "@/shared/ui/label";
 import { ImageIcon, Loader2, Save } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function PageImagesPage() {
+  const t = useTranslations("page_images");
+  const tCommon = useTranslations("common");
   const { data: heroData, isLoading } = useHero();
   const updateMutation = useUpdatePageImages();
 
@@ -81,10 +84,8 @@ export default function PageImagesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">صور الصفحات</h1>
-          <p className="text-muted-foreground">
-            إدارة صور صفحة الشكاوى/الاقتراحات وصفحة تواصل معنا
-          </p>
+          <h1 className="text-2xl font-bold">{t("page_title")}</h1>
+          <p className="text-muted-foreground">{t("page_subtitle")}</p>
         </div>
         <Button
           onClick={handleSave}
@@ -99,7 +100,7 @@ export default function PageImagesPage() {
           ) : (
             <Save className="h-4 w-4" />
           )}
-          حفظ التغييرات
+          {t("save_changes")}
         </Button>
       </div>
 
@@ -109,11 +110,9 @@ export default function PageImagesPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ImageIcon className="h-5 w-5" />
-              صورة صفحة الشكاوى والاقتراحات
+              {t("complaint_card_title")}
             </CardTitle>
-            <CardDescription>
-              الصورة التي تظهر في صفحة الشكاوى والاقتراحات
-            </CardDescription>
+            <CardDescription>{t("complaint_card_description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Current Image Preview */}
@@ -121,7 +120,7 @@ export default function PageImagesPage() {
               {complaintPreview || currentComplaintImage ? (
                 <Image
                   src={complaintPreview || currentComplaintImage || ""}
-                  alt="صورة صفحة الشكاوى"
+                  alt="Complaint Page Image"
                   fill
                   className="object-contain"
                 />
@@ -134,7 +133,7 @@ export default function PageImagesPage() {
 
             {/* Upload Input */}
             <div className="space-y-2">
-              <Label htmlFor="complaint-image">تغيير الصورة</Label>
+              <Label htmlFor="complaint-image">{t("change_image")}</Label>
               <Input
                 id="complaint-image"
                 type="file"
@@ -151,11 +150,9 @@ export default function PageImagesPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ImageIcon className="h-5 w-5" />
-              صورة صفحة تواصل معنا
+              {t("contact_card_title")}
             </CardTitle>
-            <CardDescription>
-              الصورة التي تظهر في صفحة تواصل معنا
-            </CardDescription>
+            <CardDescription>{t("contact_card_description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Current Image Preview */}
@@ -163,7 +160,7 @@ export default function PageImagesPage() {
               {contactPreview || currentContactImage ? (
                 <Image
                   src={contactPreview || currentContactImage || ""}
-                  alt="صورة صفحة تواصل معنا"
+                  alt="Contact Page Image"
                   fill
                   className="object-contain"
                 />
@@ -176,7 +173,7 @@ export default function PageImagesPage() {
 
             {/* Upload Input */}
             <div className="space-y-2">
-              <Label htmlFor="contact-image">تغيير الصورة</Label>
+              <Label htmlFor="contact-image">{t("change_image")}</Label>
               <Input
                 id="contact-image"
                 type="file"

@@ -11,10 +11,12 @@ import {
   DropdownMenuLabel,
 } from "@/shared/ui/dropdown-menu";
 import { LogOut, User } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function UserAvatar() {
   const { data: profile, isLoading } = useProfile();
   const logout = useLogout();
+  const t = useTranslations("user_avatar");
 
   if (isLoading) {
     return (
@@ -41,14 +43,14 @@ export default function UserAvatar() {
             <AvatarFallback>{initial}</AvatarFallback>
           </Avatar>
           <span className="text-gray-800 font-medium text-sm hidden 2xl:block">
-            {user?.name || "المستخدم"}
+            {user?.name || t("user")}
           </span>
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-48">
         <DropdownMenuLabel className="flex items-center gap-2">
           <User className="size-4" />
-          {user?.name || "المستخدم"}
+          {user?.name || t("user")}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -58,7 +60,7 @@ export default function UserAvatar() {
           className="cursor-pointer"
         >
           <LogOut className="size-4" />
-          {logout.isPending ? "جاري الخروج..." : "تسجيل الخروج"}
+          {logout.isPending ? t("logging_out") : t("logout")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

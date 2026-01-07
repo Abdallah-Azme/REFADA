@@ -16,15 +16,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import RichTextEditor from "@/components/rich-text-editor";
-
-const policySchema = z.object({
-  title: z.string().min(1, "العنوان مطلوب"),
-  content: z.string().min(10, "المحتوى يجب أن يكون 10 أحرف على الأقل"),
-});
-
-type PolicyFormValues = z.infer<typeof policySchema>;
+import { useTranslations } from "next-intl";
+import { useMemo } from "react";
+import { toast } from "sonner";
 
 export default function PolicyControlPage() {
+  const t = useTranslations("policy_control");
+  const tCommon = useTranslations("common");
+
+  const policySchema = useMemo(
+    () =>
+      z.object({
+        title: z.string().min(1, t("validation.title_required")),
+        content: z.string().min(10, t("validation.content_min")),
+      }),
+    [t]
+  );
+
+  type PolicyFormValues = z.infer<typeof policySchema>;
+
   const form = useForm<PolicyFormValues>({
     resolver: zodResolver(policySchema),
     defaultValues: {
@@ -35,16 +45,16 @@ export default function PolicyControlPage() {
 
   const onSubmit = (data: PolicyFormValues) => {
     // Here you would typically save to your backend
-    alert("تم حفظ التغييرات بنجاح!");
+    toast.success(tCommon("toast.save_success"));
   };
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">تحكم في قسم السياسات</h1>
+      <h1 className="text-2xl font-bold">{t("page_title")}</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle>تعديل السياسات</CardTitle>
+          <CardTitle>{t("edit_title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -54,9 +64,9 @@ export default function PolicyControlPage() {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>العنوان</FormLabel>
+                    <FormLabel>{t("title_label")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="أدخل العنوان" {...field} />
+                      <Input placeholder={t("placeholders.title")} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -68,12 +78,12 @@ export default function PolicyControlPage() {
                 name="content"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>المحتوى</FormLabel>
+                    <FormLabel>{t("content_label")}</FormLabel>
                     <FormControl>
                       <RichTextEditor
                         content={field.value}
                         onChange={field.onChange}
-                        placeholder="أدخل محتوى السياسات"
+                        placeholder={t("placeholders.content")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -81,7 +91,7 @@ export default function PolicyControlPage() {
                 )}
               />
 
-              <Button type="submit">حفظ التغييرات</Button>
+              <Button type="submit">{t("save_changes")}</Button>
             </form>
           </Form>
         </CardContent>

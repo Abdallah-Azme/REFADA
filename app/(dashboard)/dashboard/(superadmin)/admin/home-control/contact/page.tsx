@@ -16,17 +16,31 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-
-const contactSchema = z.object({
-  email: z.string().email("البريد الإلكتروني غير صحيح"),
-  phone: z.string().min(1, "رقم الهاتف مطلوب"),
-  address: z.string().min(1, "العنوان مطلوب"),
-  mapUrl: z.string().url("رابط الخريطة غير صحيح").optional().or(z.literal("")),
-});
-
-type ContactFormValues = z.infer<typeof contactSchema>;
+import { useTranslations } from "next-intl";
+import { useMemo } from "react";
+import { toast } from "sonner";
 
 export default function ContactControlPage() {
+  const t = useTranslations("contact_control");
+  const tCommon = useTranslations("common");
+
+  const contactSchema = useMemo(
+    () =>
+      z.object({
+        email: z.string().email(t("validation.email_invalid")),
+        phone: z.string().min(1, t("validation.phone_required")),
+        address: z.string().min(1, t("validation.address_required")),
+        mapUrl: z
+          .string()
+          .url(t("validation.map_invalid"))
+          .optional()
+          .or(z.literal("")),
+      }),
+    [t]
+  );
+
+  type ContactFormValues = z.infer<typeof contactSchema>;
+
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
@@ -39,16 +53,16 @@ export default function ContactControlPage() {
 
   const onSubmit = (data: ContactFormValues) => {
     // Here you would typically save to your backend
-    alert("تم حفظ التغييرات بنجاح!");
+    toast.success(tCommon("toast.save_success"));
   };
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">تحكم في قسم تواصل معنا</h1>
+      <h1 className="text-2xl font-bold">{t("page_title")}</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle>تعديل معلومات التواصل</CardTitle>
+          <CardTitle>{t("card_title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -58,9 +72,12 @@ export default function ContactControlPage() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>البريد الإلكتروني</FormLabel>
+                    <FormLabel>{t("form.email")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="example@domain.com" {...field} />
+                      <Input
+                        placeholder={t("form.email_placeholder")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -72,7 +89,7 @@ export default function ContactControlPage() {
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>رقم الهاتف</FormLabel>
+                    <FormLabel>{t("form.phone")}</FormLabel>
                     <FormControl>
                       <PhoneInput
                         placeholder="+970 59 000 0000"
@@ -90,9 +107,12 @@ export default function ContactControlPage() {
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>العنوان</FormLabel>
+                    <FormLabel>{t("form.address")}</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="العنوان بالتفصيل" {...field} />
+                      <Textarea
+                        placeholder={t("form.address_placeholder")}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -104,10 +124,10 @@ export default function ContactControlPage() {
                 name="mapUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>رابط الخريطة (Embed URL)</FormLabel>
+                    <FormLabel>{t("form.map_url")}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="https://www.google.com/maps/embed?..."
+                        placeholder={t("form.map_placeholder")}
                         {...field}
                       />
                     </FormControl>
@@ -116,7 +136,7 @@ export default function ContactControlPage() {
                 )}
               />
 
-              <Button type="submit">حفظ التغييرات</Button>
+              <Button type="submit">{tCommon("save_changes")}</Button>
             </form>
           </Form>
         </CardContent>

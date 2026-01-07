@@ -21,8 +21,11 @@ import { createTestimonialColumns } from "./testimonial-columns";
 import { TestimonialViewDialog } from "./testimonial-view-dialog";
 import { TestimonialFormDialog } from "./testimonial-form-dialog";
 import { DeleteConfirmDialog } from "@/features/marital-status";
+import { useTranslations } from "next-intl";
 
 export default function TestimonialsPage() {
+  const t = useTranslations("testimonials_page");
+  const tCommon = useTranslations("common");
   const { data, isLoading, error } = useTestimonials();
   const createMutation = useCreateTestimonial();
   const updateMutation = useUpdateTestimonial();
@@ -108,36 +111,37 @@ export default function TestimonialsPage() {
   const columns = createTestimonialColumns(
     handleView,
     handleEdit,
-    handleDelete
+    handleDelete,
+    t
   );
 
   return (
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <MainHeader header="إدارة التزكيات (قالوا عنا)">
+        <MainHeader header={t("page_title")}>
           <Quote className="text-primary" />
         </MainHeader>
         <Button onClick={handleCreate}>
           <Plus className="h-4 w-4 ml-2" />
-          إضافة تزكية
+          {t("add_testimonial")}
         </Button>
       </div>
 
       {/* Table Card */}
       <Card className="bg-white">
         <CardHeader>
-          <CardTitle>قائمة التزكيات</CardTitle>
+          <CardTitle>{t("list_title")}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <span className="mr-3 text-gray-600">جاري تحميل البيانات...</span>
+              <span className="mr-3 text-gray-600">{tCommon("loading")}</span>
             </div>
           ) : error ? (
             <div className="flex items-center justify-center py-12">
-              <p className="text-red-600">حدث خطأ أثناء تحميل البيانات</p>
+              <p className="text-red-600">{tCommon("error_loading")}</p>
             </div>
           ) : (
             <TestimonialTable columns={columns} data={testimonials} />
@@ -166,8 +170,8 @@ export default function TestimonialsPage() {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onConfirm={handleConfirmDelete}
-        title="حذف التزكية"
-        description="هل أنت متأكد من حذف هذه التزكية؟ هذا الإجراء لا يمكن التراجع عنه."
+        title={t("delete_dialog.title")}
+        description={t("delete_dialog.description")}
         isPending={deleteMutation.isPending}
       />
     </div>

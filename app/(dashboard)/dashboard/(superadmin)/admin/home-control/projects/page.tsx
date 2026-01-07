@@ -15,15 +15,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import RichTextEditor from "@/components/rich-text-editor";
-
-const projectsSchema = z.object({
-  title: z.string().min(1, "العنوان مطلوب"),
-  description: z.string().min(10, "الوصف يجب أن يكون 10 أحرف على الأقل"),
-});
-
-type ProjectsFormValues = z.infer<typeof projectsSchema>;
+import { useTranslations } from "next-intl";
+import { useMemo } from "react";
+import { toast } from "sonner";
 
 export default function ProjectsControlPage() {
+  const t = useTranslations("projects_control");
+  const tCommon = useTranslations("common");
+
+  const projectsSchema = useMemo(
+    () =>
+      z.object({
+        title: z.string().min(1, t("validation.title_required")),
+        description: z.string().min(10, t("validation.desc_min")),
+      }),
+    [t]
+  );
+
+  type ProjectsFormValues = z.infer<typeof projectsSchema>;
+
   const form = useForm<ProjectsFormValues>({
     resolver: zodResolver(projectsSchema),
     defaultValues: {
@@ -34,16 +44,16 @@ export default function ProjectsControlPage() {
 
   const onSubmit = (data: ProjectsFormValues) => {
     // Here you would typically save to your backend
-    alert("تم حفظ التغييرات بنجاح!");
+    toast.success(tCommon("toast.save_success"));
   };
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">تحكم في قسم المشاريع</h1>
+      <h1 className="text-2xl font-bold">{t("page_title")}</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle>تعديل محتوى قسم المشاريع</CardTitle>
+          <CardTitle>{t("edit_title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -53,9 +63,9 @@ export default function ProjectsControlPage() {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>العنوان</FormLabel>
+                    <FormLabel>{t("title_label")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="أدخل العنوان" {...field} />
+                      <Input placeholder={t("placeholders.title")} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -67,12 +77,12 @@ export default function ProjectsControlPage() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>الوصف</FormLabel>
+                    <FormLabel>{t("desc_label")}</FormLabel>
                     <FormControl>
                       <RichTextEditor
                         content={field.value}
                         onChange={field.onChange}
-                        placeholder="أدخل الوصف"
+                        placeholder={t("placeholders.desc")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -81,14 +91,13 @@ export default function ProjectsControlPage() {
               />
 
               <div className="space-y-2">
-                <FormLabel>إدارة المشاريع المعروضة</FormLabel>
+                <FormLabel>{t("info_title")}</FormLabel>
                 <p className="text-sm text-muted-foreground">
-                  يتم عرض المشاريع تلقائياً من قاعدة البيانات. يمكنك هنا تخصيص
-                  العنوان والوصف العام للقسم.
+                  {t("info_text")}
                 </p>
               </div>
 
-              <Button type="submit">حفظ التغييرات</Button>
+              <Button type="submit">{t("save_changes")}</Button>
             </form>
           </Form>
         </CardContent>

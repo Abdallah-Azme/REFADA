@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Loader2, MessageSquareWarning } from "lucide-react";
 import MainHeader from "@/shared/components/main-header";
@@ -12,6 +13,7 @@ import { ComplaintViewDialog } from "./complaint-view-dialog";
 import { DeleteConfirmDialog } from "@/features/marital-status";
 
 export default function ComplaintsPage() {
+  const t = useTranslations("complaints_page");
   const { data, isLoading, error } = useComplaints();
   const deleteMutation = useDeleteComplaint();
 
@@ -45,7 +47,7 @@ export default function ComplaintsPage() {
     }
   };
 
-  const columns = createComplaintColumns(handleView, handleDelete);
+  const columns = createComplaintColumns(handleView, handleDelete, t);
 
   return (
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">

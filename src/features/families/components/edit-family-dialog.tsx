@@ -68,6 +68,7 @@ export default function EditFamilyDialog({
   onOpenChange,
 }: EditFamilyDialogProps) {
   const t = useTranslations("families");
+  const tCommon = useTranslations("common");
   const [membersToDelete, setMembersToDelete] = useState<number[]>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [memberToDelete, setMemberToDelete] = useState<{
@@ -271,7 +272,7 @@ export default function EditFamilyDialog({
         }
       }
 
-      toast.success("تم تعديل بيانات العائلة بنجاح");
+      toast.success(t("toast.update_success"));
       onOpenChange(false);
       form.reset();
       setMembersToDelete([]);
@@ -279,7 +280,7 @@ export default function EditFamilyDialog({
       setMemberOtherMedicals({});
     } catch (error: any) {
       console.error("Error updating family:", error);
-      toast.error("حدث خطأ أثناء تعديل البيانات");
+      toast.error(t("toast.update_error"));
     }
   };
 
@@ -332,7 +333,7 @@ export default function EditFamilyDialog({
           <div className="flex justify-between items-center px-6 py-4 border-b">
             <DialogTitle className="text-xl font-semibold flex gap-1 items-center">
               <Users className="w-6 h-6 text-primary" />
-              تعديل بيانات العائلة
+              {t("update_family_title")}
             </DialogTitle>
           </div>
 
@@ -624,15 +625,15 @@ export default function EditFamilyDialog({
                         >
                           <SelectTrigger className="w-full bg-white">
                             {field.value === "other"
-                              ? "أخرى"
+                              ? t("other")
                               : field.value && field.value !== "none"
                               ? medicalConditions.find(
                                   (m) => m.id.toString() === field.value
-                                )?.name || "الحالة الصحية"
-                              : "سليم"}
+                                )?.name || t("medical_condition")
+                              : t("healthy")}
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="none">سليم</SelectItem>
+                            <SelectItem value="none">{t("healthy")}</SelectItem>
                             {medicalConditions.map((condition) => (
                               <SelectItem
                                 key={condition.id}
@@ -641,7 +642,7 @@ export default function EditFamilyDialog({
                                 {condition.name}
                               </SelectItem>
                             ))}
-                            <SelectItem value="other">أخرى</SelectItem>
+                            <SelectItem value="other">{t("other")}</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -656,7 +657,7 @@ export default function EditFamilyDialog({
                     <FormControl>
                       <Input
                         className="bg-white"
-                        placeholder="أدخل الحالة الصحية"
+                        placeholder={t("enter_medical_condition")}
                         value={headOtherMedical}
                         onChange={(e) => setHeadOtherMedical(e.target.value)}
                       />
@@ -740,7 +741,9 @@ export default function EditFamilyDialog({
               {/* FAMILY MEMBERS SECTION */}
               <div className="bg-[#F4F4F4] p-4 rounded-xl space-y-4">
                 <div className="flex justify-between items-center">
-                  <p className="text-sm font-medium">أفراد العائلة</p>
+                  <p className="text-sm font-medium">
+                    {t("family_members_section")}
+                  </p>
                   <Button
                     type="button"
                     variant="outline"
@@ -749,7 +752,7 @@ export default function EditFamilyDialog({
                     className="bg-primary text-white hover:bg-primary/90"
                   >
                     <UserPlus className="w-4 h-4 ml-2" />
-                    إضافة فرد
+                    {t("add_member_btn")}
                   </Button>
                 </div>
 
@@ -758,7 +761,7 @@ export default function EditFamilyDialog({
                   <div className="flex items-center justify-center py-8">
                     <Loader2 className="w-6 h-6 animate-spin text-primary" />
                     <span className="mr-2 text-sm text-gray-600">
-                      جاري تحميل أفراد العائلة...
+                      {tCommon("loading")}
                     </span>
                   </div>
                 )}
@@ -782,7 +785,10 @@ export default function EditFamilyDialog({
                             render={({ field }) => (
                               <FormItem>
                                 <FormControl>
-                                  <Input placeholder="الاسم" {...field} />
+                                  <Input
+                                    placeholder={t("name_label")}
+                                    {...field}
+                                  />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -796,7 +802,10 @@ export default function EditFamilyDialog({
                             render={({ field }) => (
                               <FormItem>
                                 <FormControl>
-                                  <Input placeholder="رقم الهوية" {...field} />
+                                  <Input
+                                    placeholder={t("national_id")}
+                                    {...field}
+                                  />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -816,15 +825,17 @@ export default function EditFamilyDialog({
                                   >
                                     <SelectTrigger className="w-full">
                                       {field.value === "male"
-                                        ? "ذكر"
+                                        ? t("male")
                                         : field.value === "female"
-                                        ? "أنثى"
-                                        : "النوع"}
+                                        ? t("female")
+                                        : t("gender")}
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="male">ذكر</SelectItem>
+                                      <SelectItem value="male">
+                                        {t("male")}
+                                      </SelectItem>
                                       <SelectItem value="female">
-                                        أنثى
+                                        {t("female")}
                                       </SelectItem>
                                     </SelectContent>
                                   </Select>
@@ -850,8 +861,8 @@ export default function EditFamilyDialog({
                                         ? relationships.find(
                                             (r) =>
                                               r.id.toString() === field.value
-                                          )?.name || "صلة القرابة"
-                                        : "صلة القرابة"}
+                                          )?.name || t("relationship")
+                                        : t("relationship")}
                                     </SelectTrigger>
                                     <SelectContent>
                                       {relationships.map((rel) => (
@@ -880,7 +891,7 @@ export default function EditFamilyDialog({
                                   <DatePicker
                                     value={field.value}
                                     onChange={field.onChange}
-                                    placeholder="تاريخ الميلاد"
+                                    placeholder={t("dob_label")}
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -910,16 +921,18 @@ export default function EditFamilyDialog({
                                   >
                                     <SelectTrigger className="w-full">
                                       {field.value === "other"
-                                        ? "أخرى"
+                                        ? t("other")
                                         : field.value && field.value !== "none"
                                         ? medicalConditions.find(
                                             (m) =>
                                               m.id.toString() === field.value
-                                          )?.name || "الحالة الصحية"
-                                        : "سليم"}
+                                          )?.name || t("medical_condition")
+                                        : t("healthy")}
                                     </SelectTrigger>
                                     <SelectContent>
-                                      <SelectItem value="none">سليم</SelectItem>
+                                      <SelectItem value="none">
+                                        {t("healthy")}
+                                      </SelectItem>
                                       {medicalConditions.map((condition) => (
                                         <SelectItem
                                           key={condition.id}
@@ -929,7 +942,7 @@ export default function EditFamilyDialog({
                                         </SelectItem>
                                       ))}
                                       <SelectItem value="other">
-                                        أخرى
+                                        {t("other")}
                                       </SelectItem>
                                     </SelectContent>
                                   </Select>
@@ -945,7 +958,7 @@ export default function EditFamilyDialog({
                             <FormItem className="sm:col-span-7 mt-2">
                               <FormControl>
                                 <Input
-                                  placeholder="أدخل الحالة الصحية"
+                                  placeholder={t("enter_medical_condition")}
                                   value={memberOtherMedicals[index] || ""}
                                   onChange={(e) =>
                                     setMemberOtherMedicals((prev) => ({
@@ -976,13 +989,15 @@ export default function EditFamilyDialog({
 
                 {!isLoadingMembers && fields.length === 0 && (
                   <p className="text-sm text-gray-500 text-center py-4">
-                    اضغط على &quot;إضافة فرد&quot; لإضافة أفراد العائلة
+                    {t("add_member_prompt")}
                   </p>
                 )}
 
                 {membersToDelete.length > 0 && (
                   <p className="text-sm text-amber-600 text-center">
-                    سيتم حذف {membersToDelete.length} فرد عند حفظ التغييرات
+                    {t("members_delete_warning", {
+                      count: membersToDelete.length,
+                    })}
                   </p>
                 )}
               </div>
@@ -995,7 +1010,7 @@ export default function EditFamilyDialog({
                   className="border-gray-300 text-gray-600 px-8"
                   onClick={() => onOpenChange(false)}
                 >
-                  إلغاء
+                  {tCommon("cancel")}
                 </Button>
 
                 <Button
@@ -1006,7 +1021,7 @@ export default function EditFamilyDialog({
                   {isSubmitting && (
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   )}
-                  حفظ التغييرات
+                  {t("save_changes")}
                 </Button>
               </div>
             </form>
@@ -1019,8 +1034,8 @@ export default function EditFamilyDialog({
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onConfirm={confirmDeleteMember}
-        title="حذف فرد من العائلة"
-        description="هل أنت متأكد من حذف هذا الفرد؟ سيتم حذفه نهائياً عند حفظ التغييرات."
+        title={t("delete_member_title")}
+        description={t("delete_member_desc")}
         isPending={false}
       />
     </>

@@ -1,11 +1,13 @@
 import PolicyPage from "@/features/home-control/components/policy-page";
+import { getTranslations } from "next-intl/server";
 
-export default function VulnerableProtectionPage() {
+export default async function VulnerableProtectionPage() {
+  const t = await getTranslations("policies_page");
   return (
     <PolicyPage
       sectionIndex={5}
-      pageTitle="حماية الفئات الهشة"
-      pageSubtitle="إعدادات صفحة حماية الفئات الهشة"
+      pageTitle={t("page_title_vulnerable_protection")}
+      pageSubtitle={t("page_subtitle_vulnerable_protection")}
     />
   );
 }

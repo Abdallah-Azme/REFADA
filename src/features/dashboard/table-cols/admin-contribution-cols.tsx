@@ -17,7 +17,8 @@ type ActionHandlers = {
 };
 
 export const createAdminContributionColumns = (
-  handlers: ActionHandlers
+  handlers: ActionHandlers,
+  t: (key: string) => string
 ): ColumnDef<AdminContribution>[] => [
   {
     accessorKey: "id",
@@ -30,7 +31,7 @@ export const createAdminContributionColumns = (
   },
   {
     accessorKey: "project.name",
-    header: "المشروع",
+    header: t("project"),
     cell: ({ row }) => (
       <div className="text-right">
         {row.original.project ? (
@@ -43,14 +44,14 @@ export const createAdminContributionColumns = (
             </div>
           </>
         ) : (
-          <span className="text-gray-400">لا يوجد مشروع</span>
+          <span className="text-gray-400">{t("no_project")}</span>
         )}
       </div>
     ),
   },
   {
     accessorKey: "totalQuantity",
-    header: "الكمية",
+    header: t("quantity"),
     cell: ({ row }) => (
       <div className="text-center text-gray-600 font-semibold">
         {row.original.totalQuantity}
@@ -59,23 +60,23 @@ export const createAdminContributionColumns = (
   },
   {
     accessorKey: "status",
-    header: "الحالة",
+    header: t("status"),
     cell: ({ row }) => {
       const status = row.original.status;
       let statusText = status;
       let colorClass = "bg-gray-100 text-gray-700";
 
       if (status === "pending") {
-        statusText = "قيد الانتظار";
+        statusText = t("status_pending");
         colorClass = "bg-yellow-100 text-yellow-700";
       } else if (status === "approved") {
-        statusText = "موافق عليه";
+        statusText = t("status_approved");
         colorClass = "bg-green-100 text-green-700";
       } else if (status === "rejected") {
-        statusText = "مرفوض";
+        statusText = t("status_rejected");
         colorClass = "bg-red-100 text-red-700";
       } else if (status === "completed") {
-        statusText = "مكتمل";
+        statusText = t("status_completed");
         colorClass = "bg-blue-100 text-blue-700";
       }
 
@@ -92,7 +93,7 @@ export const createAdminContributionColumns = (
   },
   {
     accessorKey: "contributorFamilies",
-    header: "العائلات المستفيدة",
+    header: t("families_benefited"),
     cell: ({ row }) => {
       const families = row.original.contributorFamilies;
       if (!families || families.length === 0) {
@@ -117,7 +118,7 @@ export const createAdminContributionColumns = (
                   {remaining > 0 && (
                     <span className="text-primary font-medium">
                       {" "}
-                      +{remaining} آخرين
+                      +{remaining} {t("others")}
                     </span>
                   )}
                 </div>
@@ -129,7 +130,7 @@ export const createAdminContributionColumns = (
                   <div key={f.id} className="text-sm">
                     <span className="font-medium">{f.familyName}</span>
                     <span className="text-gray-400 text-xs mr-2">
-                      ({f.totalMembers} أفراد)
+                      ({f.totalMembers} {t("members")})
                     </span>
                   </div>
                 ))}
@@ -142,7 +143,7 @@ export const createAdminContributionColumns = (
   },
   {
     accessorKey: "notes",
-    header: "ملاحظات",
+    header: t("notes"),
     cell: ({ row }) => (
       <div className="text-center text-gray-500 text-sm max-w-[150px] truncate">
         {row.original.notes || "-"}
@@ -151,7 +152,7 @@ export const createAdminContributionColumns = (
   },
   {
     accessorKey: "createdAt",
-    header: "تاريخ المساهمة",
+    header: t("contribution_date"),
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt);
       return (
@@ -167,7 +168,7 @@ export const createAdminContributionColumns = (
   },
   {
     id: "view",
-    header: "عرض",
+    header: t("view"),
     cell: ({ row }) => (
       <div className="flex justify-center">
         <Button

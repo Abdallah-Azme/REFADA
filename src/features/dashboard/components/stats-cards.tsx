@@ -2,37 +2,38 @@
 
 import { cn } from "@/lib/utils";
 import { Heart, Zap, CheckCircle, Users, LucideIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export const stats = [
   {
     icon: Heart,
-    label: "المساهمات",
+    labelKey: "contributions",
     value: "314",
-    subtitle: "مجموع المساهمات المنتهية",
+    subtitleKey: "contributions_subtitle",
     color: "bg-green-50",
     iconColor: "text-green-500",
   },
   {
     icon: Zap,
-    label: "عدد المشاريع الحالية",
+    labelKey: "current_projects",
     value: "50",
-    subtitle: "تم تشغيلها آخر أسبوع • 20%",
+    subtitleKey: "current_projects_subtitle",
     subColor: "text-red-500",
     color: "bg-orange-50",
     iconColor: "text-orange-500",
   },
   {
     icon: CheckCircle,
-    label: "عدد المشاريع المنفذة",
+    labelKey: "completed_projects",
     value: "1200",
-    subtitle: "تم تشغيلها آخر أسبوع • 80%",
+    subtitleKey: "completed_projects_subtitle",
     subColor: "text-green-500",
     color: "bg-green-50",
     iconColor: "text-green-500",
   },
   {
     icon: Users,
-    label: "عدد العائلات",
+    labelKey: "families_count",
     value: "1297",
     subtitle: "+ 5.2%",
     subColor: "text-green-500",
@@ -40,36 +41,37 @@ export const stats = [
     iconColor: "text-blue-500",
   },
 ];
+
 export const stats4 = [
   {
     icon: Heart,
-    label: "المساهمات",
+    labelKey: "contributions",
     value: "314",
-    subtitle: "مجموع المساهمات المنتهية",
+    subtitleKey: "contributions_subtitle",
     color: "bg-green-50",
     iconColor: "text-green-500",
   },
   {
     icon: Zap,
-    label: "عدد المشاريع الحالية",
+    labelKey: "current_projects",
     value: "50",
-    subtitle: "تم تشغيلها آخر أسبوع • 20%",
+    subtitleKey: "current_projects_subtitle",
     subColor: "text-red-500",
     color: "bg-orange-50",
     iconColor: "text-orange-500",
   },
   {
     icon: CheckCircle,
-    label: "عدد المشاريع المنفذة",
+    labelKey: "completed_projects",
     value: "1200",
-    subtitle: "تم تشغيلها آخر أسبوع • 80%",
+    subtitleKey: "completed_projects_subtitle",
     subColor: "text-green-500",
     color: "bg-green-50",
     iconColor: "text-green-500",
   },
   {
     icon: Users,
-    label: "عدد العائلات",
+    labelKey: "families_count",
     value: "1297",
     subtitle: "+ 5.2%",
     subColor: "text-green-500",
@@ -80,9 +82,10 @@ export const stats4 = [
 
 type StatItem = {
   icon: LucideIcon;
-  label: string;
+  labelKey: string;
   value: string | number;
-  subtitle: string;
+  subtitleKey?: string;
+  subtitle?: string;
   subColor?: string;
   color: string;
   iconColor: string;
@@ -103,10 +106,12 @@ export default function StatsCards({
   showTitle = true,
   secondary = false,
 }: StatsCardsProps) {
+  const t = useTranslations("dashboard_stats");
+
   return (
     <section className="flex flex-col gap-2 ">
       {showTitle && (
-        <h2 className="text-[#333333] font-bold text-lg">احصائيات سريعة</h2>
+        <h2 className="text-[#333333] font-bold text-lg">{t("quick_stats")}</h2>
       )}
       <div
         className={cn(
@@ -125,7 +130,9 @@ export default function StatsCards({
             )}
           >
             {/* Label */}
-            <p className="text-sm font-semibold text-[#828282]">{stat.label}</p>
+            <p className="text-sm font-semibold text-[#828282]">
+              {t(stat.labelKey)}
+            </p>
 
             {/* Value + Icon */}
             <div className="flex items-center justify-between w-full">
@@ -146,7 +153,7 @@ export default function StatsCards({
                 stat.subColor ? stat.subColor : "text-[#828282]"
               }`}
             >
-              {stat.subtitle}
+              {stat.subtitleKey ? t(stat.subtitleKey) : stat.subtitle}
             </p>
           </div>
         ))}

@@ -14,6 +14,7 @@ import {
   useReactTable,
   PaginationState,
 } from "@tanstack/react-table";
+import { useTranslations } from "next-intl";
 import { Input } from "@/src/shared/ui/input";
 import {
   Table,
@@ -33,6 +34,8 @@ interface FamilyTableProps {
 }
 
 export function FamilyTable({ data, columns }: FamilyTableProps) {
+  const t = useTranslations("families_page");
+  const tCommon = useTranslations("common");
   console.log("data", data, { columns });
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -76,7 +79,7 @@ export function FamilyTable({ data, columns }: FamilyTableProps) {
         <div className="relative w-full max-w-sm">
           <Search className="absolute right-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="بحث عن عائلة..."
+            placeholder={t("columns.familyName") + "..."}
             value={
               (table.getColumn("familyName")?.getFilterValue() as string) ?? ""
             }

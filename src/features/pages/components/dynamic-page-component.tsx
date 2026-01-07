@@ -8,7 +8,7 @@ import MainHeader from "@/shared/components/main-header";
 import { usePage, useUpdatePage } from "../hooks/use-pages";
 import { PageUpdateFormValues } from "../types/page.schema";
 import { PageEditFormDialog } from "./page-edit-form-dialog";
-import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface DynamicPageComponentProps {
   pageType: string;
@@ -19,6 +19,7 @@ export default function DynamicPageComponent({
   pageType,
   title,
 }: DynamicPageComponentProps) {
+  const t = useTranslations("dynamic_pages");
   const { data, isLoading, error } = usePage(pageType);
   const updateMutation = useUpdatePage();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -40,7 +41,7 @@ export default function DynamicPageComponent({
     return (
       <div className="w-full h-full flex items-center justify-center p-12">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="mr-3 text-gray-600">جاري تحميل البيانات...</span>
+        <span className="mr-3 text-gray-600">{t("loading")}</span>
       </div>
     );
   }
@@ -49,7 +50,7 @@ export default function DynamicPageComponent({
     return (
       <div className="w-full p-8">
         <div className="bg-red-50 text-red-600 p-4 rounded-lg border border-red-200">
-          حدث خطأ أثناء تحميل الصفحة أو الصفحة غير موجودة.
+          {t("error")}
         </div>
       </div>
     );
@@ -73,7 +74,7 @@ export default function DynamicPageComponent({
                 </h2>
                 <Button onClick={() => setEditDialogOpen(true)}>
                   <Edit className="h-4 w-4 ml-2" />
-                  تعديل المحتوى
+                  {t("edit_content")}
                 </Button>
               </div>
 
@@ -95,9 +96,11 @@ export default function DynamicPageComponent({
           {/* Image Section */}
           <Card className="bg-white border-none shadow-sm overflow-hidden">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-gray-900 mb-2">صورة الصفحة</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">
+                {t("page_image")}
+              </h3>
               <p className="text-sm text-gray-500 mb-4">
-                صورة مرفقة بهذه الصفحة
+                {t("page_image_desc")}
               </p>
               {pageData.image ? (
                 <a
@@ -107,7 +110,7 @@ export default function DynamicPageComponent({
                   className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                 >
                   <FileText className="h-5 w-5" />
-                  عرض الصورة
+                  {t("view_image")}
                 </a>
               ) : (
                 <div className="flex items-center justify-center p-6 bg-gray-100 rounded-lg text-gray-400">
@@ -120,9 +123,11 @@ export default function DynamicPageComponent({
           {/* File Section */}
           <Card className="bg-white border-none shadow-sm overflow-hidden">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-gray-900 mb-2">ملف الصفحة</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">
+                {t("page_file")}
+              </h3>
               <p className="text-sm text-gray-500 mb-4">
-                ملف PDF أو مستند مرفق بهذه الصفحة
+                {t("page_file_desc")}
               </p>
               {pageData.file ? (
                 <a
@@ -133,7 +138,7 @@ export default function DynamicPageComponent({
                   className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                 >
                   <FileText className="h-5 w-5" />
-                  تحميل الملف
+                  {t("download_file")}
                 </a>
               ) : (
                 <div className="flex items-center justify-center p-6 bg-gray-100 rounded-lg text-gray-400">

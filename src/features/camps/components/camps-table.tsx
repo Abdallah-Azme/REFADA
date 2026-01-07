@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  ColumnDef, // Ensure ColumnDef is imported
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
@@ -26,9 +27,11 @@ import { createAdminCampColumns } from "./camp-table-columns";
 import { Camp } from "../types/camp.schema";
 import { CampTableColumn } from "../types/camp-table.types";
 import PaginationControls from "@/src/features/dashboard/components/pagination-controls";
+import { useTranslations } from "next-intl";
 
 interface CampsTableProps extends CampTableColumn {
   data: Camp[];
+  customColumns?: ColumnDef<Camp>[];
 }
 
 export function CampsTable({
@@ -37,7 +40,10 @@ export function CampsTable({
   onDelete,
   onToggleStatus,
   onView,
+  customColumns,
 }: CampsTableProps) {
+  const t = useTranslations("camps_page");
+  const tCommon = useTranslations("common");
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -49,14 +55,21 @@ export function CampsTable({
     pageSize: 10,
   });
 
+  const columns =
+    customColumns ||
+    createAdminCampColumns(
+      {
+        onEdit,
+        onDelete,
+        onToggleStatus,
+        onView,
+      },
+      (key) => key
+    );
+
   const table = useReactTable<Camp>({
     data,
-    columns: createAdminCampColumns({
-      onEdit,
-      onDelete,
-      onToggleStatus,
-      onView,
-    }),
+    columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -77,7 +90,7 @@ export function CampsTable({
     <div className="space-y-4">
       <div className="flex items-center py-4">
         <Input
-          placeholder="بحث عن إيواء..."
+          placeholder={t("columns.name") + "..."}
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -123,17 +136,10 @@ export function CampsTable({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={
-                    createAdminCampColumns({
-                      onEdit,
-                      onDelete,
-                      onToggleStatus,
-                      onView,
-                    }).length
-                  }
+                  colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  لا توجد نتائج.
+                  {tCommon("no_results")}
                 </TableCell>
               </TableRow>
             )}

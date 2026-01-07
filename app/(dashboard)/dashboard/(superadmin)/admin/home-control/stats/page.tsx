@@ -15,26 +15,40 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Plus, Trash2 } from "lucide-react";
-
-const statSchema = z.object({
-  label: z.string().min(1, "عنوان الإحصائية مطلوب"),
-  value: z.string().min(1, "قيمة الإحصائية مطلوبة"),
-});
-
-const statsSchema = z.object({
-  stats: z.array(statSchema).min(1, "يجب أن يكون هناك إحصائية واحدة على الأقل"),
-});
-
-type StatsFormValues = z.infer<typeof statsSchema>;
+import { useTranslations } from "next-intl";
+import { useMemo } from "react";
+import { toast } from "sonner";
 
 export default function StatsControlPage() {
+  const t = useTranslations("stats_control");
+  const tCommon = useTranslations("common");
+
+  const statSchema = useMemo(
+    () =>
+      z.object({
+        label: z.string().min(1, t("validation.label_required")),
+        value: z.string().min(1, t("validation.value_required")),
+      }),
+    [t]
+  );
+
+  const statsSchema = useMemo(
+    () =>
+      z.object({
+        stats: z.array(statSchema).min(1, t("validation.min_stats")),
+      }),
+    [t, statSchema]
+  );
+
+  type StatsFormValues = z.infer<typeof statsSchema>;
+
   const form = useForm<StatsFormValues>({
     resolver: zodResolver(statsSchema),
     defaultValues: {
       stats: [
-        { label: "عدد المستفيدين", value: "1000+" },
-        { label: "عدد المشاريع", value: "50+" },
-        { label: "عدد المتطوعين", value: "200+" },
+        { label: t("defaults.beneficiaries"), value: "1000+" },
+        { label: t("defaults.projects"), value: "50+" },
+        { label: t("defaults.volunteers"), value: "200+" },
       ],
     },
   });
@@ -50,30 +64,30 @@ export default function StatsControlPage() {
 
   const handleDeleteStat = (index: number) => {
     if (fields.length <= 1) {
-      alert("يجب أن يكون هناك إحصائية واحدة على الأقل");
+      toast.error(t("validation.min_stats"));
       return;
     }
     remove(index);
   };
 
   const onSubmit = (data: StatsFormValues) => {
-     // Here you would typically save to your backend
-    alert("تم حفظ التغييرات بنجاح!");
+    // Here you would typically save to your backend
+    toast.success(tCommon("toast.save_success"));
   };
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">تحكم في قسم الإحصائيات</h1>
+        <h1 className="text-2xl font-bold">{t("page_title")}</h1>
         <Button type="button" onClick={handleAddStat}>
           <Plus className="w-4 h-4 ml-2" />
-          إضافة إحصائية
+          {t("add_stat")}
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>تعديل الإحصائيات</CardTitle>
+          <CardTitle>{t("edit_title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -85,7 +99,9 @@ export default function StatsControlPage() {
                     className="p-4 border rounded-lg space-y-4 relative"
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold">إحصائية {index + 1}</h3>
+                      <h3 className="font-semibold">
+                        {t("stat_item")} {index + 1}
+                      </h3>
                       <Button
                         type="button"
                         variant="ghost"
@@ -101,10 +117,10 @@ export default function StatsControlPage() {
                       name={`stats.${index}.label`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>عنوان الإحصائية</FormLabel>
+                          <FormLabel>{t("label_label")}</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="مثال: عدد المستفيدين"
+                              placeholder={t("placeholders.label")}
                               {...field}
                             />
                           </FormControl>
@@ -117,9 +133,12 @@ export default function StatsControlPage() {
                       name={`stats.${index}.value`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>قيمة الإحصائية</FormLabel>
+                          <FormLabel>{t("value_label")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="مثال: 1000+" {...field} />
+                            <Input
+                              placeholder={t("placeholders.value")}
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -129,7 +148,7 @@ export default function StatsControlPage() {
                 ))}
               </div>
 
-              <Button type="submit">حفظ التغييرات</Button>
+              <Button type="submit">{t("save_changes")}</Button>
             </form>
           </Form>
         </CardContent>

@@ -1,4 +1,46 @@
 {
+  "common": {
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "save": "Save",
+    "saving": "Saving...",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "edit": "Edit",
+    "add": "Add",
+    "confirm": "Confirm",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset",
+    "actions": "Actions",
+    "status": "Status",
+    "id": "ID",
+    "name": "Name",
+    "toast": {
+      "success": "Success",
+      "error": "An error occurred",
+      "save_success": "Saved successfully",
+      "save_error": "Failed to save",
+      "delete_success": "Deleted successfully",
+      "delete_error": "Failed to delete",
+      "update_success": "Updated successfully",
+      "update_error": "Failed to update",
+      "create_success": "Created successfully",
+      "create_error": "Failed to create",
+      "loading_error": "Error loading data"
+    },
+    "dialog": {
+      "logout_title": "Confirm Logout",
+      "logout_description": "Are you sure you want to log out of your account?",
+      "logout_confirm": "Logout",
+      "logout_cancel": "Cancel",
+      "logging_out": "Logging out..."
+    },
+    "no_results": "No results found"
+  },
   "home": "Home",
   "about": "About Us",
   "reports": "Reports",
@@ -106,11 +148,83 @@
     "contact_section_desc": "Edit contact information",
     "latest_activities": "Latest Activities",
     "activities_loading_error": "Error loading activities",
+    "error_title": "Error loading activities",
+    "unknown_error": "Unknown error",
+    "id": "ID",
+    "description": "Description",
+    "type": "Type",
+    "date": "Date",
+    "type_camp": "Camp",
+    "type_project": "Project",
+    "type_user": "User",
+    "type_family": "Family",
     "no_activities": "No activities yet",
     "time_now": "Now",
     "time_minutes_ago": "{count} minutes ago",
     "time_hours_ago": "{count} hours ago",
     "time_days_ago": "{count} days ago"
+  },
+  "sidebar": {
+    "representative_menu": {
+      "home": "Home",
+      "shelter_data": "Shelter Data",
+      "families": "Families",
+      "projects": "Projects",
+      "contributions": "Contributions",
+      "reports": "Reports",
+      "settings": "Settings"
+    },
+    "contributor_menu": {
+      "contributor_info": "Contributor Info",
+      "shelters": "Shelters",
+      "settings": "Settings"
+    },
+    "admin_menu": {
+      "home": "Home",
+      "shelters": "Shelters",
+      "messages": "Messages",
+      "complaints_suggestions": "Complaints & Suggestions",
+      "settings": "Settings"
+    },
+    "entity_management": {
+      "title": "System Management",
+      "manage_projects": "Manage Projects",
+      "manage_families": "Manage Families",
+      "manage_representatives": "Manage Representatives",
+      "pending_users": "Pending Users",
+      "manage_contributors": "Manage Contributors",
+      "activity_log": "Activity Log",
+      "manage_governorates": "Manage Governorates",
+      "marital_status": "Marital Status",
+      "medical_conditions": "Medical Conditions",
+      "relationships": "Relationships",
+      "admin_positions": "Admin Positions",
+      "contributions": "Contributions"
+    },
+    "home_control": {
+      "title": "Home Control",
+      "hero_section": "Hero Section",
+      "about_us": "About Us",
+      "about_page": "About Us Page",
+      "about_section": "About Us Section (Home)",
+      "policies": "Policies",
+      "transparency": "Transparency",
+      "terms": "Terms of Use",
+      "privacy": "Privacy",
+      "intellectual_property": "Intellectual Property",
+      "platform_limits": "Platform Limits",
+      "vulnerable_protection": "Vulnerable Protection",
+      "partners": "Partners",
+      "testimonials": "Testimonials",
+      "page_images": "Page Images",
+      "pages": "Pages",
+      "website_settings": "Website Settings"
+    },
+    "dashboard_control": "Dashboard",
+    "admin_dashboard": "Admin Dashboard",
+    "logout": "Logout",
+    "user": "User",
+    "logging_out": "Logging out..."
   },
   "auth": {
     "create_account": "Create New Account",
@@ -214,7 +328,32 @@
     "delete_title": "Delete Family",
     "delete_description": "Are you sure you want to delete the family \"{name}\"? This action cannot be undone.",
     "family_members": "Family Members",
-    "relationship": "Relationship"
+    "relationship": "Relationship",
+    "toast": {
+      "update_success": "Family data updated successfully",
+      "update_error": "Error updating family data"
+    },
+    "update_family_title": "Edit Family Data",
+    "add_family_title": "Add New Family",
+    "national_id_placeholder_14": "National ID (14 digits)",
+    "backup_phone_optional": "Backup Phone (Optional)",
+    "image_optional": "Image (Optional)",
+    "notes_optional": "Notes (Optional)",
+    "notes_placeholder_extra": "Any additional notes",
+    "save_changes": "Save Changes",
+    "add_family_btn": "Add Family",
+    "family_members_section": "Family Members",
+    "add_member_btn": "Add Member",
+    "name_label": "Name",
+    "enter_medical_condition": "Enter medical condition",
+    "add_member_prompt": "Click \"Add Member\" to add family members",
+    "members_delete_warning": "{count} member(s) will be deleted upon saving",
+    "delete_member_title": "Delete Family Member",
+    "delete_member_desc": "Are you sure you want to delete this member? This action cannot be undone.",
+    "healthy": "Healthy",
+    "other": "Other",
+    "choose_camp": "Select Camp",
+    "choose_status": "Select Status"
   },
   "projects": {
     "add_project": "Add Project",
@@ -227,15 +366,17 @@
     "beneficiary_count": "Beneficiary Count",
     "college": "College",
     "select_camp": "Select Camp",
-    "notes": "Notes (Optional)...",
-    "add_image": "Add Image",
     "change_image": "Change Image",
+    "add_image": "Add Image",
     "upload": "Upload",
-    "adding": "Adding...",
+    "notes": "Notes",
     "updating": "Updating...",
-    "add_btn": "Add Project",
-    "update_btn": "Update Project",
+    "adding": "Adding...",
+    "update_btn": "Update",
+    "add_btn": "Add",
     "cancel": "Cancel",
+    "create_project_error": "Cannot create project",
+    "no_camp_selected_desc": "Camp is not selected. Ensure you are registered in a specific camp.",
     "validation": {
       "name_required": "Project name is required",
       "type_required": "Type is required",
@@ -463,7 +604,34 @@
   "settings": {
     "title": "Settings",
     "profile_tab": "Profile",
-    "password_tab": "Change Password"
+    "password_tab": "Change Password",
+    "profile": {
+      "edit_button": "Edit",
+      "loading": "Loading data...",
+      "profile_image": "Profile Image",
+      "upload_placeholder": "Click to upload profile image",
+      "name": "Name",
+      "email": "Email",
+      "id_number": "ID Number",
+      "phone": "Mobile Number",
+      "backup_phone": "Backup Number",
+      "admin_position": "Admin Position",
+      "save_button": "Save ✓",
+      "saving": "Saving...",
+      "cancel_button": "Cancel ✗"
+    },
+    "password": {
+      "security_note": "For your security, please enter your current password before setting a new one",
+      "current_password": "Current Password",
+      "new_password": "New Password",
+      "confirm_password": "Confirm Password",
+      "placeholder": "••••••••••",
+      "save_button": "Save ✓",
+      "saving": "Saving...",
+      "cancel_button": "Cancel ✗",
+      "password_mismatch": "Passwords do not match",
+      "validation": "Password must be at least 8 characters"
+    }
   },
   "reportsPage": {
     "loading": "Loading...",
@@ -494,6 +662,7 @@
     "current_projects_count": "Current Projects",
     "completion_percentage": "Completion Rate"
   },
+
   "campStats": {
     "families_count": "Families Count:",
     "family": "family",
@@ -501,5 +670,693 @@
     "member": "member",
     "projects_count": "Projects Count:",
     "project": "project"
+  },
+  "messages": {
+    "page_title": "Contact Messages",
+    "all_messages": "All Messages",
+    "new_messages": "You have {count} new messages",
+    "loading": "Loading messages...",
+    "error_loading": "Error loading messages",
+    "delete_title": "Delete Message",
+    "delete_description": "Are you sure you want to delete this message? This action cannot be undone."
+  },
+  "governorates": {
+    "page_title": "Governorates Management",
+    "add_governorate": "Add Governorate",
+    "edit_governorate": "Edit Governorate",
+    "delete_title": "Delete Governorate",
+    "delete_description": "Are you sure you want to delete this governorate? This action cannot be undone.",
+    "delete_confirm": "Delete",
+    "delete_cancel": "Cancel",
+    "name": "Name",
+    "name_ar": "Name (Arabic)",
+    "name_en": "Name (English)",
+    "name_ar_placeholder": "Enter name in Arabic",
+    "name_en_placeholder": "Enter name in English",
+    "created_at": "Date Added",
+    "actions": "Actions",
+    "save": "Save",
+    "cancel": "Cancel",
+    "actions_edit": "Edit",
+    "actions_delete": "Delete"
+  },
+  "marital_status_page": {
+    "title": "Manage Marital Status",
+    "list_title": "Marital Status List",
+    "add": "Add Status",
+    "edit_title": "Edit Marital Status",
+    "add_title": "Add New Marital Status",
+    "delete_title": "Delete Status",
+    "delete_desc": "Are you sure you want to delete this status?",
+    "name_label": "Name",
+    "placeholder": "Example: Married",
+    "update_btn": "Update",
+    "add_btn": "Add",
+    "cancel": "Cancel",
+    "save": "Saving..."
+  },
+  "medical_condition_page": {
+    "title": "Manage Medical Conditions",
+    "list_title": "Medical Conditions List",
+    "add": "Add Condition",
+    "edit_title": "Edit Medical Condition",
+    "add_title": "Add New Medical Condition",
+    "delete_title": "Delete Condition",
+    "delete_desc": "Are you sure you want to delete this condition?",
+    "name_label": "Name",
+    "placeholder": "Example: Disability",
+    "update_btn": "Update",
+    "add_btn": "Add",
+    "cancel": "Cancel",
+    "save": "Saving..."
+  },
+  "relationship_page": {
+    "title": "Manage Relationships",
+    "list_title": "Relationships List",
+    "add": "Add Relationship",
+    "edit_title": "Edit Relationship",
+    "add_title": "Add New Relationship",
+    "delete_title": "Delete Relationship",
+    "delete_desc": "Are you sure you want to delete this relationship?",
+    "name_label": "Name",
+    "placeholder": "Example: Father",
+    "update_btn": "Update",
+    "add_btn": "Add",
+    "cancel": "Cancel",
+    "save": "Saving..."
+  },
+  "admin_position_page": {
+    "title": "Manage Admin Positions",
+    "list_title": "Admin Positions List",
+    "add": "Add Position",
+    "edit_title": "Edit Admin Position",
+    "add_title": "Add New Admin Position",
+    "delete_title": "Delete Position",
+    "delete_desc": "Are you sure you want to delete this position?",
+    "name_label": "Name",
+    "placeholder": "Example: Manager",
+    "update_btn": "Update",
+    "add_btn": "Add",
+    "cancel": "Cancel",
+    "save": "Saving..."
+  },
+  "dashboard_stats": {
+    "quick_stats": "Quick Statistics",
+    "contributions": "Contributions",
+    "contributions_subtitle": "Total completed contributions",
+    "current_projects": "Current Projects Count",
+    "current_projects_subtitle": "Started last week • 20%",
+    "completed_projects": "Completed Projects Count",
+    "completed_projects_subtitle": "Started last week • 80%",
+    "families_count": "Families Count"
+  },
+  "user_avatar": {
+    "user": "User",
+    "logout": "Logout",
+    "logging_out": "Logging out..."
+  },
+  "about_control": {
+    "page_title": "About Section Control",
+    "tabs": {
+      "ar": "Arabic",
+      "en": "English"
+    },
+    "form": {
+      "title_ar_label": "Title (Arabic)",
+      "title_ar_placeholder": "Enter title in Arabic",
+      "description_ar_label": "Description (Arabic)",
+      "description_ar_placeholder": "Enter description in Arabic",
+      "title_en_label": "Title (English)",
+      "title_en_placeholder": "Enter title in English",
+      "description_en_label": "Description (English)",
+      "description_en_placeholder": "Enter description in English",
+      "current_image": "Current Image",
+      "current_second_image": "Current Second Image"
+    },
+    "validation": {
+      "title_ar_required": "Arabic title is required",
+      "title_en_required": "English title is required",
+      "desc_ar_min": "Arabic description must be at least 10 characters",
+      "desc_en_min": "English description must be at least 10 characters"
+    },
+    "sections": {
+      "title_sections": "Mission, Vision, and Goals Sections",
+      "mission": "Our Mission",
+      "vision": "Our Vision",
+      "goals": "Our Goals",
+      "edit_content": "Edit About Content",
+      "no_content": "No content"
+    },
+    "actions": {
+      "save_changes": "Save Changes",
+      "saving": "Saving..."
+    },
+    "loading": "Loading..."
+  },
+  "about_section": {
+    "page_title": "About Section Settings",
+    "page_subtitle": "Edit the title and description displayed on the home page",
+    "card_title": "About Section - Home Page",
+    "card_description": "This section appears on the home page under the main banner",
+    "form": {
+      "title": "Title",
+      "description": "Description",
+      "title_placeholder": "Example: About Us",
+      "desc_placeholder": "Enter description in Arabic...",
+      "title_placeholder_en": "Example: About Us",
+      "desc_placeholder_en": "Enter description in English..."
+    },
+    "validation": {
+      "title_ar_required": "Arabic title is required",
+      "title_en_required": "English title is required",
+      "desc_ar_required": "Arabic description is required",
+      "desc_en_required": "English description is required"
+    }
+  },
+  "camps_control": {
+    "page_title": "Shelters Section Control",
+    "card_title": "Edit Shelters Section Content",
+    "form": {
+      "title": "Title",
+      "description": "Description",
+      "title_placeholder": "Enter title",
+      "desc_placeholder": "Enter description"
+    },
+    "info_label": "Manage Displayed Shelters",
+    "info_text": "Shelters are displayed automatically from the database. Here you can customize the section's general title and description.",
+    "validation": {
+      "title_required": "Title is required",
+      "desc_min": "Description must be at least 10 characters"
+    }
+  },
+  "contact_control": {
+    "page_title": "Contact Us Section Control",
+    "card_title": "Edit Contact Information",
+    "form": {
+      "email": "Email",
+      "phone": "Phone Number",
+      "address": "Address",
+      "map_url": "Map Link (Embed URL)",
+      "email_placeholder": "example@domain.com",
+      "address_placeholder": "Detailed address",
+      "map_placeholder": "https://www.google.com/maps/embed?..."
+    },
+    "validation": {
+      "email_invalid": "Invalid email address",
+      "phone_required": "Phone number is required",
+      "address_required": "Address is required",
+      "map_invalid": "Invalid map URL"
+    }
+  },
+  "footer_control": {
+    "page_title": "Footer Control",
+    "card_title": "Edit Footer Content",
+    "form": {
+      "about": "Brief Summary",
+      "copyright": "Copyright",
+      "social_links": "Social Media Links",
+      "add_link": "Add Link",
+      "link_num": "Link",
+      "platform": "Platform",
+      "url": "URL",
+      "about_placeholder": "Brief summary about the association",
+      "copyright_placeholder": "All rights reserved..."
+    },
+    "validation": {
+      "platform_required": "Platform name is required",
+      "url_invalid": "Invalid URL",
+      "about_min": "Summary must be at least 10 characters",
+      "copyright_required": "Copyright is required"
+    }
+  },
+  "page_images": {
+    "page_title": "Page Images",
+    "page_subtitle": "Manage Complaints/Suggestions and Contact Us page images",
+    "save_changes": "Save Changes",
+    "complaint_card_title": "Complaints & Suggestions Page Image",
+    "complaint_card_description": "Image displayed on the Complaints & Suggestions page",
+    "contact_card_title": "Contact Us Page Image",
+    "contact_card_description": "Image displayed on the Contact Us page",
+    "change_image": "Change Image"
+  },
+  "dynamic_pages": {
+    "titles": {
+      "terms": "Terms of Use",
+      "privacy": "Privacy Policy",
+      "transparency": "Transparency",
+      "mission": "Intellectual Property",
+      "vision": "Platform Limits",
+      "goals": "Vulnerable Protection",
+      "default": "Page Details"
+    },
+    "edit_content": "Edit Content",
+    "page_image": "Page Image",
+    "page_image_desc": "Image attached to this page",
+    "page_file": "Page File",
+    "page_file_desc": "PDF file or document attached to this page",
+    "view_image": "View Image",
+    "download_file": "Download File",
+    "loading": "Loading data...",
+    "error": "Error loading page or page does not exist.",
+    "edit_dialog": {
+      "title": "Edit Page Content",
+      "image_label": "Page Image",
+      "current_image": "View Current Image",
+      "image_hint": "Supported formats: JPG, PNG, GIF, WEBP",
+      "file_label": "Page File",
+      "current_file": "View Current File",
+      "file_hint": "Supported formats: PDF, DOC, DOCX, TXT",
+      "cancel": "Cancel",
+      "save": "Save Changes"
+    },
+    "validation": {
+      "title_ar_required": "Arabic title is required",
+      "title_en_required": "English title is required",
+      "desc_ar_required": "Arabic description is required",
+      "desc_en_required": "English description is required"
+    }
+  },
+  "partners_page": {
+    "page_title": "Partners Management",
+    "add_partner": "Add Partner",
+    "list_title": "Partners List",
+    "columns": {
+      "id": "ID",
+      "logo": "Logo",
+      "name": "Name",
+      "order": "Order",
+      "actions": "Actions",
+      "no_logo": "No Logo"
+    },
+    "dialog_view": {
+      "title": "Partner Details",
+      "info_title": "Partner Information",
+      "name": "Partner Name",
+      "order": "Order",
+      "date_added": "Date Added"
+    },
+    "dialog_form": {
+      "title_add": "Add New Partner",
+      "title_edit": "Edit Partner",
+      "name_label": "Partner Name",
+      "name_placeholder": "Partner name...",
+      "logo_label": "Logo",
+      "logo_preview": "Logo Preview",
+      "logo_hint": "Transparent background (PNG) preferred",
+      "order_label": "Order",
+      "cancel": "Cancel",
+      "add": "Add",
+      "update": "Update"
+    },
+    "delete_dialog": {
+      "title": "Delete Partner",
+      "description": "Are you sure you want to delete this partner? This action cannot be undone."
+    },
+    "validation": {
+      "name_required": "Partner name is required",
+      "order_min": "Order must be at least 0"
+    }
+  },
+  "policies_page": {
+    "page_title_privacy": "Privacy",
+    "page_subtitle_privacy": "Privacy Policy Page Settings",
+    "page_title_intellectual_property": "Intellectual Property",
+    "page_subtitle_intellectual_property": "Intellectual Property Page Settings",
+    "page_title_platform_limits": "Platform Limits",
+    "page_subtitle_platform_limits": "Platform Limits Page Settings",
+    "page_title_terms": "Terms of Use",
+    "page_subtitle_terms": "Terms of Use Page Settings",
+    "page_title_transparency": "Transparency",
+    "page_subtitle_transparency": "Transparency Page Settings",
+    "page_title_vulnerable_protection": "Vulnerable Protection",
+    "page_subtitle_vulnerable_protection": "Vulnerable Protection Page Settings",
+    "form": {
+      "title_ar": "Title (Arabic)",
+      "title_en": "Title (English)",
+      "content_ar": "Content (Arabic)",
+      "content_en": "Content (English)",
+      "image_label": "Section Image",
+      "image_optional": "Optional"
+    },
+    "validation": {
+      "title_ar_required": "Arabic title is required",
+      "title_en_required": "English title is required",
+      "content_ar_required": "Arabic content is required",
+      "content_en_required": "English content is required"
+    },
+    "actions": {
+      "save_changes": "Save Changes",
+      "create_section": "Create Section",
+      "saving": "Saving..."
+    }
+  },
+  "projects_control": {
+    "page_title": "Projects Section Control",
+    "edit_title": "Edit Projects Section Content",
+    "title_label": "Title",
+    "desc_label": "Description",
+    "info_title": "Displayed Projects Management",
+    "info_text": "Projects are displayed automatically from the database. Here you can customize the general title and description of the section.",
+    "save_changes": "Save Changes",
+    "validation": {
+      "title_required": "Title is required",
+      "desc_min": "Description must be at least 10 characters"
+    },
+    "placeholders": {
+      "title": "Enter title",
+      "desc": "Enter description"
+    }
+  },
+  "stats_control": {
+    "page_title": "Stats Section Control",
+    "add_stat": "Add Statistic",
+    "edit_title": "Edit Statistics",
+    "stat_item": "Statistic",
+    "label_label": "Statistic Label",
+    "value_label": "Statistic Value",
+    "save_changes": "Save Changes",
+    "validation": {
+      "label_required": "Label is required",
+      "value_required": "Value is required",
+      "min_stats": "At least one statistic is required"
+    },
+    "placeholders": {
+      "label": "e.g., Beneficiaries Count",
+      "value": "e.g., 1000+"
+    },
+    "defaults": {
+      "beneficiaries": "Beneficiaries",
+      "projects": "Projects",
+      "volunteers": "Volunteers"
+    }
+  },
+  "testimonials_page": {
+    "page_title": "Testimonials Management",
+    "add_testimonial": "Add Testimonial",
+    "list_title": "Testimonials List",
+    "columns": {
+      "id": "ID",
+      "image": "Image",
+      "name": "Name",
+      "role": "Role/Position",
+      "content": "Content",
+      "rating": "Rating",
+      "actions": "Actions",
+      "no_image": "No Image"
+    },
+    "dialog_view": {
+      "title": "Testimonial Details",
+      "info_title": "Testimonial Info",
+      "name": "Name",
+      "role": "Role",
+      "rating": "Rating",
+      "content": "Content",
+      "date_added": "Date Added"
+    },
+    "dialog_form": {
+      "title_add": "Add New Testimonial",
+      "title_edit": "Edit Testimonial",
+      "name_label": "Name",
+      "name_placeholder": "Name...",
+      "role_label": "Role/Position",
+      "role_placeholder": "e.g. CEO...",
+      "content_label_ar": "Content (Arabic)",
+      "content_placeholder_ar": "Write testimonial content here...",
+      "content_label_en": "Content (English)",
+      "content_placeholder_en": "Write testimonial content here...",
+      "rating_label": "Rating (1-5)",
+      "image_label": "Avatar",
+      "image_preview": "Avatar Preview",
+      "image_hint": "Square image (1:1) preferred",
+      "cancel": "Cancel",
+      "add": "Add",
+      "update": "Update"
+    },
+    "delete_dialog": {
+      "title": "Delete Testimonial",
+      "description": "Are you sure you want to delete this testimonial? This action cannot be undone."
+    },
+    "validation": {
+      "name_required": "Name is required",
+      "role_required": "Role is required",
+      "content_ar_required": "Arabic content is required",
+      "content_en_required": "English content is required",
+      "rating_min": "Minimum rating is 1",
+      "rating_max": "Maximum rating is 5"
+    }
+  },
+  "website_settings": {
+    "page_title": "Website Settings",
+    "loading": "Loading settings...",
+    "saving": "Saving...",
+    "save_changes": "Save Changes",
+    "sections": {
+      "site_info": "Site Information",
+      "contact_info": "Contact Information",
+      "social_links": "Social Media Links"
+    },
+    "labels": {
+      "site_name_ar": "Site Name (Arabic)",
+      "site_name_en": "Site Name (English)",
+      "site_logo": "Site Logo",
+      "favicon": "Favicon",
+      "phone": "Phone Number",
+      "email": "Email",
+      "whatsapp": "WhatsApp Number",
+      "facebook": "Facebook",
+      "twitter": "Twitter",
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn",
+      "youtube": "YouTube"
+    },
+    "placeholders": {
+      "refad_ar": "Refad",
+      "refad_en": "Refad",
+      "phone": "+970 59 999 9999",
+      "email": "info@refad.org",
+      "whatsapp": "+970599999999",
+      "social": "https://..."
+    }
+  },
+  "policy_control": {
+    "page_title": "Policies Section Control",
+    "edit_title": "Edit Policies",
+    "title_label": "Title",
+    "content_label": "Content",
+    "save_changes": "Save Changes",
+    "validation": {
+      "title_required": "Title is required",
+      "content_min": "Content must be at least 10 characters"
+    },
+    "placeholders": {
+      "title": "Enter title",
+      "content": "Enter policy content"
+    }
+  },
+  "messages_page": {
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "subject": "Subject",
+      "date": "Date",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "camps_page": {
+    "columns": {
+      "name": "Camp Name",
+      "location": "Location",
+      "delegate": "Delegate",
+      "capacity": "Capacity",
+      "occupancy": "Occupancy",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "full": "Full"
+    },
+    "no_delegate": "Not Assigned"
+  },
+  "complaints_page": {
+    "page_title": "Complaints Management",
+    "list_title": "Complaints List",
+    "view_dialog": {
+      "title": "Complaint Details",
+      "status": "Status",
+      "date": "Date",
+      "message": "Message",
+      "contact_info": "Contact Info",
+      "close": "Close"
+    },
+    "delete_dialog": {
+      "title": "Delete Complaint",
+      "description": "Are you sure you want to delete this complaint? This action cannot be undone.",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "deleting": "Deleting..."
+    },
+    "columns": {
+      "id": "Complaint ID",
+      "name": "Sender Name",
+      "email": "Email",
+      "phone": "Phone Number",
+      "camp": "Camp",
+      "topic": "Topic",
+      "actions": "Actions"
+    }
+  },
+  "families_page": {
+    "page_title": "Families Management",
+    "list_title": "Families List",
+    "add_button": "Add Family",
+    "loading_data": "Loading data...",
+    "error_loading": "Error loading data",
+    "delete_title": "Delete Family",
+    "delete_description": "Are you sure you want to delete family {name}? This action cannot be undone.",
+    "columns": {
+      "familyName": "Family Name",
+      "nationalId": "National ID",
+      "phone": "Phone Number",
+      "totalMembers": "Members Count",
+      "camp": "Camp",
+      "tentNumber": "Tent Number",
+      "location": "Location",
+      "actions": "Actions"
+    },
+    "actions_menu": {
+      "open_menu": "Open menu",
+      "view_details": "View details",
+      "edit": "Edit",
+      "delete": "Delete"
+    }
+  },
+  "projects_page": {
+    "title": "Current Projects",
+    "search_placeholder": "Search by project name...",
+    "status_filter": "Status",
+    "type_filter": "Type",
+    "no_results": "No projects found",
+    "columns": {
+      "project": "Project",
+      "progress": "Progress",
+      "total": "Total",
+      "received": "Received",
+      "remaining": "Remaining",
+      "contributions": "Contributions",
+      "update": "Update",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "actions": {
+      "select_all": "Select All",
+      "select_row": "Select Row",
+      "accepted": "Accepted",
+      "update": "Update",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "delete_dialog": {
+      "title": "Delete Project",
+      "description": "Are you sure you want to delete project {name}? This action cannot be undone.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "filter_all": "All"
+  },
+
+  "contributions": {
+    "page_title": "Delegate Contributions",
+    "all_contributions": "All Contributions",
+    "details_title": "Contribution Details",
+    "project": "Project",
+    "project_type": "Type",
+    "no_project": "No associated project",
+    "quantity": "Quantity",
+    "status": "Status",
+    "status_pending": "Pending",
+    "status_approved": "Approved",
+    "status_rejected": "Rejected",
+    "status_completed": "Completed",
+    "families_benefited": "Beneficiary Families",
+    "members": "members",
+    "notes": "Notes",
+    "contribution_date": "Contribution Date",
+    "delete_family_title": "Confirm Family Deletion",
+    "delete_family_desc": "Are you sure you want to delete family {name} from this contribution? This action cannot be undone.",
+    "confirm_delete": "Confirm Delete",
+    "deleting": "Deleting...",
+    "loading": "Loading contributions...",
+    "filter_project": "Project",
+    "filter_status": "Status",
+    "filter_all": "All",
+    "update": "Update",
+    "reset": "Reset Search",
+    "no_results": "No contributions yet.",
+    "fetch_error": "Failed to fetch contributions",
+    "delete_family_success": "Family deleted successfully",
+    "others": "others",
+    "view": "View",
+    "fetch_families_error": "Failed to fetch families list",
+    "fetch_history_error": "Failed to fetch contribution history",
+    "invalid_quantity": "Please enter a valid quantity",
+    "select_family": "Please select at least one family",
+    "invalid_family_quantity": "Please enter a valid quantity for each family",
+    "create_project_error": "Cannot create project",
+    "contribute_dialog": {
+      "quantity_validation": "Please enter a valid quantity",
+      "quantity_label": "Please enter the quantity you want to contribute",
+      "quantity_placeholder": "Amount",
+      "beneficiary_families": "Beneficiary Families",
+      "enter_family_name": "Enter family name",
+      "selected_one": "1 family selected",
+      "selected_multiple": "{count} families selected",
+      "search_family_placeholder": "Search for a family...",
+      "no_results": "No results.",
+      "beneficiary_tag": "Beneficiary",
+      "members_count": "{count} members",
+      "age_group": "Age Group",
+      "medical_condition": "Medical Condition",
+      "no_conditions": "No conditions",
+      "notes_placeholder": "Write a note",
+      "submit": "Send",
+      "submitting": "Sending...",
+      "success_message": "Contribution sent successfully",
+      "error_message": "Failed to send contribution",
+      "fetch_families_error": "Failed to fetch families list",
+      "fetch_conditions_error": "Failed to fetch medical conditions"
+    },
+    "age_groups": {
+      "newborns": "Newborns",
+      "infants": "Infants",
+      "veryEarlyChildhood": "Very Early Childhood",
+      "toddlers": "Toddlers",
+      "earlyChildhood": "Early Childhood",
+      "children": "Children",
+      "adolescents": "Adolescents",
+      "youth": "Youth",
+      "youngAdults": "Young Adults",
+      "middleAgeAdults": "Middle Age Adults",
+      "lateMiddleAge": "Late Middle Age",
+      "seniors": "Seniors"
+    }
+  },
+  "activities": {
+    "page_title": "Activities Log",
+    "all_activities": "All Activities",
+    "description": "Complete log of all activities and operations in the system",
+    "loading": "Loading activities...",
+    "error_title": "Error loading activities",
+    "unknown_error": "Unknown error",
+    "id": "ID",
+    "description": "Description",
+    "type": "Type",
+    "date": "Date",
+    "type_camp": "Camp",
+    "type_project": "Project",
+    "type_user": "User",
+    "type_family": "Family"
   }
 }

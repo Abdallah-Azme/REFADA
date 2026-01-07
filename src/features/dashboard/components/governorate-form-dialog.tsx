@@ -25,6 +25,7 @@ import {
   GovernorateFormValues,
   Governorate,
 } from "../types/governorates.schema";
+import { useTranslations } from "next-intl";
 
 interface GovernorateFormDialogProps {
   initialData: Governorate | null;
@@ -39,6 +40,7 @@ export default function GovernorateFormDialog({
   onOpenChange,
   onSubmit,
 }: GovernorateFormDialogProps) {
+  const t = useTranslations("governorates");
   const form = useForm<GovernorateFormValues>({
     resolver: zodResolver(governorateSchema),
     defaultValues: {
@@ -72,7 +74,7 @@ export default function GovernorateFormDialog({
       <DialogContent className="max-w-md!">
         <DialogHeader>
           <DialogTitle>
-            {initialData ? "تعديل المحافظة" : "إضافة محافظة جديدة"}
+            {initialData ? t("edit_governorate") : t("add_governorate")}
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -85,9 +87,9 @@ export default function GovernorateFormDialog({
               name="name_ar"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>الاسم (بالعربية)</FormLabel>
+                  <FormLabel>{t("name_ar")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="أدخل الاسم بالعربية" {...field} />
+                    <Input placeholder={t("name_ar_placeholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -99,9 +101,9 @@ export default function GovernorateFormDialog({
               name="name_en"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>الاسم (باللغة الإنجليزية)</FormLabel>
+                  <FormLabel>{t("name_en")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter name in English" {...field} />
+                    <Input placeholder={t("name_en_placeholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -114,9 +116,9 @@ export default function GovernorateFormDialog({
                 variant="outline"
                 onClick={() => onOpenChange(false)}
               >
-                إلغاء
+                {t("cancel")}
               </Button>
-              <Button type="submit">حفظ</Button>
+              <Button type="submit">{t("save")}</Button>
             </div>
           </form>
         </Form>

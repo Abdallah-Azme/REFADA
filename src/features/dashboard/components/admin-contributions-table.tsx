@@ -47,14 +47,12 @@ import {
   ContributorFamily,
 } from "@/features/contributors/api/contributors.api";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -89,6 +87,8 @@ function AdminContributionDetailsDialog({
   const [deletingFamily, setDeletingFamily] =
     useState<ContributorFamily | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const t = useTranslations("contributions");
+  const tCommon = useTranslations("common");
 
   if (!contribution) return null;
 
@@ -102,15 +102,15 @@ function AdminContributionDetailsDialog({
         deletingFamily.id
       );
       if (response.success) {
-        toast.success("تم حذف العائلة من المساهمة بنجاح");
+        toast.success(t("delete_family_success"));
         onFamilyDeleted();
         setDeletingFamily(null);
       } else {
-        toast.error(response.message || "فشل في حذف العائلة");
+        toast.error(response.message || t("delete_family_success"));
       }
     } catch (error: any) {
       console.error("Failed to delete family:", error);
-      toast.error(error?.message || "فشل في حذف العائلة من المساهمة");
+      toast.error(error?.message || t("delete_family_success"));
     } finally {
       setIsDeleting(false);
     }
@@ -121,34 +121,42 @@ function AdminContributionDetailsDialog({
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-right">تفاصيل المساهمة</DialogTitle>
+            <DialogTitle className="text-right">
+              {t("details_title")}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 text-right">
             {/* Project Info */}
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-2">المشروع</h4>
+              <h4 className="font-semibold text-gray-800 mb-2">
+                {t("project")}
+              </h4>
               {contribution.project ? (
                 <>
                   <p className="text-gray-600">{contribution.project.name}</p>
                   <p className="text-sm text-gray-500">
-                    النوع: {contribution.project.type}
+                    {t("project_type")}: {contribution.project.type}
                   </p>
                 </>
               ) : (
-                <p className="text-gray-400">لا يوجد مشروع مرتبط</p>
+                <p className="text-gray-400">{t("no_project")}</p>
               )}
             </div>
 
             {/* Contribution Details */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-gray-800 mb-1">الكمية</h4>
+                <h4 className="font-semibold text-gray-800 mb-1">
+                  {t("quantity")}
+                </h4>
                 <p className="text-2xl font-bold text-primary">
                   {contribution.totalQuantity}
                 </p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-gray-800 mb-1">الحالة</h4>
+                <h4 className="font-semibold text-gray-800 mb-1">
+                  {t("status")}
+                </h4>
                 <p
                   className={`font-medium ${
                     contribution.status === "pending"
@@ -161,13 +169,13 @@ function AdminContributionDetailsDialog({
                   }`}
                 >
                   {contribution.status === "pending"
-                    ? "قيد الانتظار"
+                    ? t("status_pending")
                     : contribution.status === "approved"
-                    ? "موافق عليه"
+                    ? t("status_approved")
                     : contribution.status === "rejected"
-                    ? "مرفوض"
+                    ? t("status_rejected")
                     : contribution.status === "completed"
-                    ? "مكتمل"
+                    ? t("status_completed")
                     : contribution.status}
                 </p>
               </div>
@@ -177,7 +185,8 @@ function AdminContributionDetailsDialog({
             {contribution.contributorFamilies.length > 0 && (
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h4 className="font-semibold text-gray-800 mb-2">
-                  العائلات المستفيدة ({contribution.contributorFamilies.length})
+                  {t("families_benefited")} (
+                  {contribution.contributorFamilies.length})
                 </h4>
                 <div className="space-y-2 max-h-[200px] overflow-y-auto">
                   {contribution.contributorFamilies.map((family) => (
@@ -191,7 +200,7 @@ function AdminContributionDetailsDialog({
                             {family.familyName}
                           </span>
                           <span className="text-gray-400 text-xs mr-2">
-                            ({family.totalMembers} أفراد)
+                            ({family.totalMembers} {t("members")})
                           </span>
                         </div>
                       </div>
@@ -217,14 +226,16 @@ function AdminContributionDetailsDialog({
             {/* Notes */}
             {contribution.notes && (
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-gray-800 mb-1">ملاحظات</h4>
+                <h4 className="font-semibold text-gray-800 mb-1">
+                  {t("notes")}
+                </h4>
                 <p className="text-gray-600">{contribution.notes}</p>
               </div>
             )}
 
             {/* Date */}
             <div className="text-sm text-gray-500 text-center">
-              تاريخ المساهمة:{" "}
+              {t("contribution_date")}:{" "}
               {new Date(contribution.createdAt).toLocaleDateString("ar-EG", {
                 year: "numeric",
                 month: "long",
@@ -245,18 +256,18 @@ function AdminContributionDetailsDialog({
         <AlertDialogContent dir="rtl">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-right">
-              تأكيد حذف العائلة
+              {t("delete_family_title")}
             </AlertDialogTitle>
             <AlertDialogDescription className="text-right">
-              هل أنت متأكد من رغبتك في حذف عائلة{" "}
-              <span className="font-semibold text-gray-900">
-                {deletingFamily?.familyName}
-              </span>{" "}
-              من هذه المساهمة؟ لا يمكن التراجع عن هذا الإجراء.
+              {t("delete_family_desc", {
+                name: deletingFamily?.familyName ?? "",
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex gap-3 sm:gap-3">
-            <AlertDialogCancel disabled={isDeleting}>إلغاء</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>
+              {tCommon("cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteFamily}
               disabled={isDeleting}
@@ -265,10 +276,10 @@ function AdminContributionDetailsDialog({
               {isDeleting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                  جاري الحذف...
+                  {t("deleting")}
                 </>
               ) : (
-                "تأكيد الحذف"
+                t("confirm_delete")
               )}
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -305,6 +316,7 @@ export default function AdminContributionsTable() {
   const [selectedContribution, setSelectedContribution] =
     useState<AdminContribution | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const t = useTranslations("contributions");
 
   // Fetch contributions
   useEffect(() => {
@@ -320,7 +332,7 @@ export default function AdminContributionsTable() {
       }
     } catch (error) {
       console.error("Failed to fetch contributions:", error);
-      toast.error("فشل في جلب المساهمات");
+      toast.error(t("fetch_error"));
     } finally {
       setIsLoading(false);
     }
@@ -375,9 +387,12 @@ export default function AdminContributionsTable() {
 
   const table = useReactTable<AdminContribution>({
     data: filteredData,
-    columns: createAdminContributionColumns({
-      onView: handleView,
-    }),
+    columns: createAdminContributionColumns(
+      {
+        onView: handleView,
+      },
+      t
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -404,7 +419,7 @@ export default function AdminContributionsTable() {
     return (
       <div className="w-full p-6 bg-white rounded-lg min-h-[400px] flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="mr-3 text-gray-600">جاري تحميل المساهمات...</span>
+        <span className="mr-3 text-gray-600">{t("loading")}</span>
       </div>
     );
   }
@@ -414,7 +429,9 @@ export default function AdminContributionsTable() {
       <div className="space-y-4">
         {/* Header with Title and Search */}
         <div className=" mb-2">
-          <h2 className="text-2xl font-bold text-gray-800">جميع المساهمات</h2>
+          <h2 className="text-2xl font-bold text-gray-800">
+            {t("all_contributions")}
+          </h2>
 
           <div className="p-6  ">
             <div className="flex justify-between items-center gap-2">
@@ -436,10 +453,12 @@ export default function AdminContributionsTable() {
                             value={field.value}
                           >
                             <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                              <SelectValue placeholder="المشروع" />
+                              <SelectValue placeholder={t("filter_project")} />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="all">الكل</SelectItem>
+                              <SelectItem value="all">
+                                {t("filter_all")}
+                              </SelectItem>
                               {uniqueProjects.map((project) => (
                                 <SelectItem key={project.id} value={project.id}>
                                   {project.name}
@@ -464,18 +483,24 @@ export default function AdminContributionsTable() {
                             value={field.value}
                           >
                             <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                              <SelectValue placeholder="الحالة" />
+                              <SelectValue placeholder={t("filter_status")} />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="all">الكل</SelectItem>
+                              <SelectItem value="all">
+                                {t("filter_all")}
+                              </SelectItem>
                               <SelectItem value="pending">
-                                قيد الانتظار
+                                {t("status_pending")}
                               </SelectItem>
                               <SelectItem value="approved">
-                                موافق عليه
+                                {t("status_approved")}
                               </SelectItem>
-                              <SelectItem value="rejected">مرفوض</SelectItem>
-                              <SelectItem value="completed">مكتمل</SelectItem>
+                              <SelectItem value="rejected">
+                                {t("status_rejected")}
+                              </SelectItem>
+                              <SelectItem value="completed">
+                                {t("status_completed")}
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -493,7 +518,7 @@ export default function AdminContributionsTable() {
                     onClick={fetchContributions}
                   >
                     <SearchCheck className="w-4 h-4" />
-                    تحديث
+                    {t("update")}
                   </Button>
 
                   <Button
@@ -503,7 +528,7 @@ export default function AdminContributionsTable() {
                     onClick={() => form.reset()}
                   >
                     <RotateCcw className="w-4 h-4 text-primary" />
-                    إعادة البحث
+                    {t("reset")}
                   </Button>
                 </div>
               </div>
@@ -553,13 +578,16 @@ export default function AdminContributionsTable() {
                 <TableRow>
                   <TableCell
                     colSpan={
-                      createAdminContributionColumns({
-                        onView: handleView,
-                      }).length
+                      createAdminContributionColumns(
+                        {
+                          onView: handleView,
+                        },
+                        t
+                      ).length
                     }
                     className="h-24 text-center"
                   >
-                    لا توجد مساهمات بعد.
+                    {t("no_results")}
                   </TableCell>
                 </TableRow>
               )}

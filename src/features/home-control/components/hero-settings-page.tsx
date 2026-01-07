@@ -47,8 +47,11 @@ import {
 } from "@/shared/ui/alert-dialog";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { useTranslations } from "next-intl";
 
 export default function HeroSettingsPage() {
+  const t = useTranslations("hero_settings");
+  const tCommon = useTranslations("common");
   const { data: heroData, isLoading, error } = useHero();
   const updateMutation = useUpdateHero();
   const deleteMutation = useDeleteSlide();
@@ -130,7 +133,7 @@ export default function HeroSettingsPage() {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-200px)]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="mr-3 text-gray-600">جاري تحميل البيانات...</span>
+        <span className="mr-3 text-gray-600">{tCommon("loading")}</span>
       </div>
     );
   }
@@ -139,7 +142,7 @@ export default function HeroSettingsPage() {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-200px)]">
         <div className="text-center">
-          <p className="text-red-600 mb-2">حدث خطأ أثناء تحميل البيانات</p>
+          <p className="text-red-600 mb-2">{tCommon("error_loading")}</p>
           <p className="text-sm text-gray-500">
             {(error as any)?.message || "Unknown error"}
           </p>
@@ -153,13 +156,13 @@ export default function HeroSettingsPage() {
   return (
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50/50 min-h-screen">
       <MainHeader
-        header="إعدادات الواجهة الرئيسية"
+        header={t("page_title")}
         subheader={
           selectedSlide
             ? selectedSlide.id === 0
-              ? "إضافة شريحة جديدة"
-              : "تعديل الشريحة"
-            : "قائمة الشرائح المعروضة"
+              ? t("add_slide")
+              : t("edit_slide")
+            : t("slides_list")
         }
       />
 
@@ -194,13 +197,13 @@ export default function HeroSettingsPage() {
                     className="font-semibold line-clamp-1 text-right"
                     dir="rtl"
                   >
-                    {slide.heroTitle?.ar || "بدون عنوان"}
+                    {slide.heroTitle?.ar || "No Title"}
                   </h4>
                   <p
                     className="text-sm text-gray-500 line-clamp-2 mt-1 text-right"
                     dir="rtl"
                   >
-                    {slide.heroDescription?.ar || "بدون وصف"}
+                    {slide.heroDescription?.ar || "No Description"}
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -210,7 +213,7 @@ export default function HeroSettingsPage() {
                     variant="outline"
                   >
                     <Edit className="w-4 h-4 ml-2" />
-                    تعديل
+                    {tCommon("edit")}
                   </Button>
                   <AlertDialog
                     open={slideToDelete?.id === slide.id}
@@ -227,14 +230,15 @@ export default function HeroSettingsPage() {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
+                        <AlertDialogTitle>
+                          {t("delete_confirm_title")}
+                        </AlertDialogTitle>
                         <AlertDialogDescription>
-                          هل أنت متأكد من حذف هذه الشريحة؟ لا يمكن التراجع عن
-                          هذا الإجراء.
+                          {t("delete_confirm_desc")}
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter className="gap-2">
-                        <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                        <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
                         <AlertDialogAction
                           onClick={() =>
                             slide.id && handleDeleteSlide(slide.id)
@@ -242,7 +246,9 @@ export default function HeroSettingsPage() {
                           className="bg-red-500 hover:bg-red-600"
                           disabled={deleteMutation.isPending}
                         >
-                          {deleteMutation.isPending ? "جاري الحذف..." : "حذف"}
+                          {deleteMutation.isPending
+                            ? t("deleting")
+                            : t("delete")}
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -263,13 +269,13 @@ export default function HeroSettingsPage() {
               </div>
             </div>
             <h3 className="font-semibold text-gray-600 group-hover:text-primary">
-              إضافة شريحة جديدة
+              {t("add_slide")}
             </h3>
           </Card>
 
           {slides.length === 0 && (
             <div className="col-span-full text-center py-12 text-gray-500">
-              لا توجد شرائح مضاف لعرضها.
+              {t("no_slides")}
             </div>
           )}
         </div>
@@ -287,7 +293,7 @@ export default function HeroSettingsPage() {
                   onClick={() => setSelectedSlide(null)}
                 >
                   <ArrowRight className="w-4 h-4 ml-2" />
-                  العودة للقائمة
+                  {t("back_to_list")}
                 </Button>
 
                 <Button
@@ -299,14 +305,14 @@ export default function HeroSettingsPage() {
                   {updateMutation.isPending ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                      جاري الحفظ...
+                      {tCommon("saving")}
                     </>
                   ) : (
                     <>
                       <Save className="h-4 w-4 ml-2" />
                       {selectedSlide.id === 0
-                        ? "إنشاء الشريحة"
-                        : "حفظ التعديلات"}
+                        ? t("create_slide")
+                        : t("save_edits")}
                     </>
                   )}
                 </Button>
@@ -317,10 +323,10 @@ export default function HeroSettingsPage() {
                 <Card className="border-none shadow-sm">
                   <CardHeader>
                     <CardTitle className="text-lg">
-                      الصورة الرئيسية (Banner)
+                      {t("cards.main_image")}
                     </CardTitle>
                     <CardDescription>
-                      الصورة الكبيرة في الخلفية. يفضل مقاس عرضي (16:9).
+                      {t("cards.main_image_desc")}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -336,7 +342,7 @@ export default function HeroSettingsPage() {
                               disabled={updateMutation.isPending}
                               imageClassName="w-full h-auto aspect-video object-cover"
                               className="w-full max-w-[250px]"
-                              placeholder="رفع صورة البانر"
+                              placeholder={t("form.upload_banner")}
                             />
                           </FormControl>
                           <FormMessage />
@@ -348,9 +354,11 @@ export default function HeroSettingsPage() {
 
                 <Card className="border-none shadow-sm">
                   <CardHeader>
-                    <CardTitle className="text-lg">الصورة المصغرة</CardTitle>
+                    <CardTitle className="text-lg">
+                      {t("cards.small_image")}
+                    </CardTitle>
                     <CardDescription>
-                      الصورة الجانبية أو المتراكبة. يفضل مقاس مربع (1:1).
+                      {t("cards.small_image_desc")}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -366,7 +374,7 @@ export default function HeroSettingsPage() {
                               disabled={updateMutation.isPending}
                               imageClassName="w-full h-auto aspect-square object-cover"
                               className="w-full max-w-[150px] justify-center"
-                              placeholder="رفع صورة مصغرة"
+                              placeholder={t("form.upload_small")}
                             />
                           </FormControl>
                           <FormMessage />
@@ -382,28 +390,26 @@ export default function HeroSettingsPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <FileText className="h-5 w-5 text-primary" />
-                    النصوص الرئيسية{" "}
+                    {t("cards.main_texts")}{" "}
                     {selectedSlide.id !== 0 &&
-                      `- شريحة #${
+                      `- ${t("cards.slide_num")}${
                         slides.findIndex((s) => s.id === selectedSlide.id) + 1
                       }`}
                   </CardTitle>
-                  <CardDescription>
-                    تخصيص العناوين والوصف لهذه الشريحة
-                  </CardDescription>
+                  <CardDescription>{t("cards.texts_desc")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
                       <h3 className="font-semibold text-gray-900 border-b pb-2 text-right">
-                        العربية
+                        {tCommon("languages.ar")}
                       </h3>
                       <FormField
                         control={form.control}
                         name="hero_title_ar"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>العنوان الرئيسي</FormLabel>
+                            <FormLabel>{t("form.main_title")}</FormLabel>
                             <FormControl>
                               <Input {...field} className="bg-gray-50/50" />
                             </FormControl>
@@ -416,7 +422,7 @@ export default function HeroSettingsPage() {
                         name="hero_subtitle_ar"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>العنوان الفرعي</FormLabel>
+                            <FormLabel>{t("form.subtitle")}</FormLabel>
                             <FormControl>
                               <Input {...field} className="bg-gray-50/50" />
                             </FormControl>
@@ -429,7 +435,7 @@ export default function HeroSettingsPage() {
                         name="hero_description_ar"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>الوصف</FormLabel>
+                            <FormLabel>{t("form.description")}</FormLabel>
                             <FormControl>
                               <Textarea
                                 {...field}
@@ -447,7 +453,7 @@ export default function HeroSettingsPage() {
                         className="font-semibold text-gray-900 border-b pb-2 text-left"
                         dir="ltr"
                       >
-                        English
+                        {tCommon("languages.en")}
                       </h3>
                       <FormField
                         control={form.control}
@@ -458,7 +464,7 @@ export default function HeroSettingsPage() {
                               className="text-left w-full block"
                               dir="ltr"
                             >
-                              Main Title
+                              {t("form.main_title")}
                             </FormLabel>
                             <FormControl>
                               <Input
@@ -481,7 +487,7 @@ export default function HeroSettingsPage() {
                               className="text-left w-full block"
                               dir="ltr"
                             >
-                              Subtitle
+                              {t("form.subtitle")}
                             </FormLabel>
                             <FormControl>
                               <Input
@@ -504,7 +510,7 @@ export default function HeroSettingsPage() {
                               className="text-left w-full block"
                               dir="ltr"
                             >
-                              Description
+                              {t("form.description")}
                             </FormLabel>
                             <FormControl>
                               <Textarea

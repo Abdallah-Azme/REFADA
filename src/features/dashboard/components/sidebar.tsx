@@ -57,6 +57,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useLogout } from "@/features/auth";
+import { useTranslations } from "next-intl";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
@@ -64,30 +65,52 @@ export default function DashboardSidebar() {
   const [open, setOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
+  const t = useTranslations("common.dialog");
+  const tRepMenu = useTranslations("sidebar.representative_menu");
+  const tContMenu = useTranslations("sidebar.contributor_menu");
+  const tAdminMenu = useTranslations("sidebar.admin_menu");
+  const tEntity = useTranslations("sidebar.entity_management");
+  const tHome = useTranslations("sidebar.home_control");
 
   useEffect(() => setOpen(false), [pathname]);
 
   // REPRESENTATIVE MENU (default dashboard menu)
   const representativeMenu = [
-    { label: "الرئيسية", icon: Home, href: "/dashboard" },
-    { label: "بيانات الإيواء", icon: Tent, href: "/dashboard/camps" },
-    { label: "العائلات", icon: Users, href: "/dashboard/families" },
-    { label: "المشاريع", icon: FolderOpen, href: "/dashboard/projects" },
+    { label: tRepMenu("home"), icon: Home, href: "/dashboard" },
+    { label: tRepMenu("shelter_data"), icon: Tent, href: "/dashboard/camps" },
+    { label: tRepMenu("families"), icon: Users, href: "/dashboard/families" },
     {
-      label: "المساهمات",
+      label: tRepMenu("projects"),
+      icon: FolderOpen,
+      href: "/dashboard/projects",
+    },
+    {
+      label: tRepMenu("contributions"),
       icon: HeartHandshake,
       href: "/dashboard/contributions",
     },
-    { label: "التقارير", icon: BarChart3, href: "/dashboard/reports" },
-    { label: "الإعدادات", icon: Settings, href: "/dashboard/settings" },
+    { label: tRepMenu("reports"), icon: BarChart3, href: "/dashboard/reports" },
+    {
+      label: tRepMenu("settings"),
+      icon: Settings,
+      href: "/dashboard/settings",
+    },
   ];
 
   // CONTRIBUTOR MENU
   const contributorMenu = [
-    { label: "معلومات المساهم", icon: Users, href: "/dashboard/contributor" },
-    { label: "الإيواءات", icon: Tent, href: "/dashboard/contributor/camps" },
     {
-      label: "الإعدادات",
+      label: tContMenu("contributor_info"),
+      icon: Users,
+      href: "/dashboard/contributor",
+    },
+    {
+      label: tContMenu("shelters"),
+      icon: Tent,
+      href: "/dashboard/contributor/camps",
+    },
+    {
+      label: tContMenu("settings"),
       icon: Settings,
       href: "/dashboard/contributor/settings",
     },
@@ -95,76 +118,88 @@ export default function DashboardSidebar() {
 
   // ADMIN MAIN MENU
   const adminMenu = [
-    { label: "الرئيسية", icon: Home, href: "/dashboard/admin" },
-    { label: "الإيواءات", icon: Tent, href: "/dashboard/admin/camps" },
-    { label: "الرسائل", icon: Mail, href: "/dashboard/admin/messages" },
+    { label: tAdminMenu("home"), icon: Home, href: "/dashboard/admin" },
     {
-      label: "الشكاوى والاقتراحات",
+      label: tAdminMenu("shelters"),
+      icon: Tent,
+      href: "/dashboard/admin/camps",
+    },
+    {
+      label: tAdminMenu("messages"),
+      icon: Mail,
+      href: "/dashboard/admin/messages",
+    },
+    {
+      label: tAdminMenu("complaints_suggestions"),
       icon: MessageSquareWarning,
       href: "/dashboard/admin/complaints",
     },
-    { label: "الإعدادات", icon: Settings, href: "/dashboard/admin/settings" },
+    {
+      label: tAdminMenu("settings"),
+      icon: Settings,
+      href: "/dashboard/admin/settings",
+    },
   ];
 
   // ENTITY MANAGEMENT MENU (Admin only)
   const entityManagementMenu = [
     {
-      label: "إدارة المشاريع",
+      label: tEntity("manage_projects"),
       icon: FolderOpen,
       href: "/dashboard/admin/projects",
     },
     {
-      label: "إدارة العائلات",
+      label: tEntity("manage_families"),
       icon: Users,
       href: "/dashboard/admin/families",
     },
     {
-      label: "إدارة المندوبين",
+      label: tEntity("manage_representatives"),
       icon: UserCog,
       href: "/dashboard/admin/representatives",
     },
     {
-      label: "المعلقين",
+      label: tEntity("pending_users"),
       icon: Users,
       href: "/dashboard/admin/pending-users",
     },
     {
-      label: "إدارة المساهمين",
+      label: tEntity("manage_contributors"),
       icon: HeartHandshake,
       href: "/dashboard/admin/contributors",
     },
     {
-      label: "سجل النشاطات",
+      label: tEntity("activity_log"),
       icon: Activity,
       href: "/dashboard/admin/activities",
     },
     {
-      label: "إدارة المحافظات",
+      label: tEntity("manage_governorates"),
       icon: Landmark,
       href: "/dashboard/admin/governorates",
     },
     {
-      label: "الحالات الاجتماعية",
+      label: tEntity("marital_status"),
       icon: HeartHandshake,
       href: "/dashboard/admin/marital-status",
     },
     {
-      label: "الحالات الطبية",
+      label: tEntity("medical_conditions"),
       icon: Activity,
       href: "/dashboard/admin/medical-condition",
     },
     {
-      label: "العلاقات",
+      label: tEntity("relationships"),
       icon: Users2,
       href: "/dashboard/admin/relationship",
     },
     {
-      label: "الصفات الإدارية",
+      label: tEntity("admin_positions"),
       icon: UserCog,
       href: "/dashboard/admin/admin-positions",
     },
     {
-      label: "المساهمات",
+      label: tEntity("contributions"),
       icon: HeartHandshake,
       href: "/dashboard/admin/contributions",
     },
@@ -173,7 +208,7 @@ export default function DashboardSidebar() {
   // HOME PAGE CONTROL MENU (Admin only)
   const homeControlMenu = [
     {
-      label: "الرئيسية (Hero)",
+      label: tHome("hero_section"),
       icon: Home,
       href: "/dashboard/admin/home-control/hero",
     },
@@ -183,47 +218,47 @@ export default function DashboardSidebar() {
     //   href: "/dashboard/admin/home-control/stats",
     // },
     {
-      label: "من نحن",
+      label: tHome("about_us"),
       icon: Users,
       href: "#",
       children: [
         {
-          label: "صفحة من نحن",
+          label: tHome("about_page"),
           href: "/dashboard/admin/home-control/about",
         },
         {
-          label: "قسم من نحن (الرئيسية)",
+          label: tHome("about_section"),
           href: "/dashboard/admin/home-control/about-section",
         },
       ],
     },
     {
-      label: "السياسات",
+      label: tHome("policies"),
       icon: FileText,
       href: "#",
       children: [
         {
-          label: "الشفافية",
+          label: tHome("transparency"),
           href: "/dashboard/admin/home-control/policies/transparency",
         },
         {
-          label: "شروط الاستخدام",
+          label: tHome("terms"),
           href: "/dashboard/admin/home-control/policies/terms",
         },
         {
-          label: "الخصوصية",
+          label: tHome("privacy"),
           href: "/dashboard/admin/home-control/policies/privacy",
         },
         {
-          label: "حقوق الملكية",
+          label: tHome("intellectual_property"),
           href: "/dashboard/admin/home-control/policies/intellectual-property",
         },
         {
-          label: "حدود دور المنصة",
+          label: tHome("platform_limits"),
           href: "/dashboard/admin/home-control/policies/platform-limits",
         },
         {
-          label: "حماية الفئات الهشة",
+          label: tHome("vulnerable_protection"),
           href: "/dashboard/admin/home-control/policies/vulnerable-protection",
         },
       ],
@@ -235,7 +270,7 @@ export default function DashboardSidebar() {
     //   href: "/dashboard/admin/home-control/policy",
     // },
     {
-      label: "الشركاء",
+      label: tHome("partners"),
       icon: Users,
       href: "/dashboard/admin/home-control/partners",
     },
@@ -596,19 +631,19 @@ export default function DashboardSidebar() {
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>تأكيد تسجيل الخروج</AlertDialogTitle>
+                  <AlertDialogTitle>{t("logout_title")}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟
+                    {t("logout_description")}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="gap-2">
-                  <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                  <AlertDialogCancel>{t("logout_cancel")}</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => logout()}
                     disabled={isLoggingOut}
                     className="bg-red-600 hover:bg-red-700"
                   >
-                    {isLoggingOut ? "جاري..." : "تسجيل خروج"}
+                    {isLoggingOut ? t("logging_out") : t("logout_confirm")}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

@@ -11,6 +11,7 @@ import ProjectFilteringForm from "./project-filtering-form";
 import { cn } from "@/lib/utils";
 import { useProjects } from "@/features/projects/hooks/use-projects";
 import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 
 const formSchema = z.object({
   search: z.string().optional(),
@@ -27,6 +28,7 @@ export default function ProjectsTable({
   main?: boolean;
   hideApproveDelete?: boolean;
 }) {
+  const t = useTranslations("projects_page");
   const { data: projectsData } = useProjects();
 
   const projects = projectsData?.data || [];
@@ -67,9 +69,7 @@ export default function ProjectsTable({
       >
         {/* HEADER & BUTTONS */}
         <div className="flex flex-col gap-2">
-          {!main && (
-            <CardTitle title="المشاريع الحالية" className="self-start" />
-          )}
+          {!main && <CardTitle title={t("title")} className="self-start" />}
           <ProjectFilteringForm
             form={form}
             types={uniqueTypes}

@@ -12,6 +12,7 @@ import {
   ColumnFiltersState,
   PaginationState,
 } from "@tanstack/react-table";
+import { useTranslations } from "next-intl";
 
 import {
   Table,
@@ -34,6 +35,8 @@ export function ComplaintTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const t = useTranslations("complaints_page");
+  const tCommon = useTranslations("common");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -62,7 +65,7 @@ export function ComplaintTable<TData, TValue>({
     <div className="space-y-4">
       <div className="flex items-center gap-4">
         <Input
-          placeholder="البحث بالاسم..."
+          placeholder={t("columns.name") + "..."}
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -70,7 +73,7 @@ export function ComplaintTable<TData, TValue>({
           className="max-w-sm"
         />
         <Input
-          placeholder="البحث بالبريد الإلكتروني..."
+          placeholder={t("columns.email") + "..."}
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
@@ -122,7 +125,9 @@ export function ComplaintTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  لا توجد نتائج
+                  import {useTranslations} from "next-intl"; // ... (keep
+                  earlier imports) // ... // ...
+                  {tCommon("no_results")}
                 </TableCell>
               </TableRow>
             )}

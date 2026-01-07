@@ -1,207 +1,154 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/src/shared/ui/button";
-import { Dialog, DialogTrigger } from "@/src/shared/ui/dialog";
-import { Plus, Tent, Loader2 } from "lucide-react";
-import MainHeader from "@/src/shared/components/main-header";
+import { useTranslations } from "next-intl";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Loader2, Plus, Tent } from "lucide-react";
+import MainHeader from "@/shared/components/main-header";
+
 import {
-  CampFormDialog,
-  CampsTable,
-  Camp,
-  CampFormValues,
   useCamps,
   useCreateCamp,
   useUpdateCamp,
   useDeleteCamp,
-  CampDetailsDialog,
   useCampDetails,
-} from "@/features/camps";
-import { DeleteConfirmDialog } from "@/features/marital-status";
-import { useTranslations } from "next-intl";
-import { toast } from "sonner";
+} from "@/features/camps/hooks/use-camps";
+import { CampFormDialog } from "@/features/camps/components/camp-form-dialog";
+import { CampsTable } from "@/features/camps/components/camps-table";
+import { CampDetailsDialog } from "@/features/camps/components/camp-details-dialog";
+import { Camp, CampFormValues } from "@/features/camps/types/camp.schema";
+import { DeleteConfirmDialog } from "@/features/marital-status/components/delete-confirm-dialog";
+import { createAdminCampColumns } from "@/features/camps/components/camp-table-columns";
 
 export default function AdminCampsPage() {
-  const t = useTranslations("adminCamps");
-  const { data, isLoading, error } = useCamps();
-  const createCamp = useCreateCamp();
-  const updateCamp = useUpdateCamp();
-  const deleteCamp = useDeleteCamp();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingCamp, setEditingCamp] = useState<Camp | null>(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deletingCamp, setDeletingCamp] = useState<Camp | null>(null);
-  const [viewDialogOpen, setViewDialogOpen] = useState(false);
-  const [viewingSlug, setViewingSlug] = useState<string | null>(null);
+  const t = useTranslations("camps");
+  const tCommon = useTranslations("common");
 
+  // State
+  const [formOpen, setFormOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [selectedCamp, setSelectedCamp] = useState<Camp | null>(null);
+  const [detailsId, setDetailsId] = useState<number | null>(null);
+
+  // Queries & Mutations
+  const { data: campsData, isLoading: isLoadingCamps } = useCamps();
   const { data: campDetails, isLoading: isLoadingDetails } =
-    useCampDetails(viewingSlug);
+    useCampDetails(detailsId);
+  const createMutation = useCreateCamp();
+  const updateMutation = useUpdateCamp();
+  const deleteMutation = useDeleteCamp();
 
-  const camps = data?.data || [];
-
-  console.log({ camps });
-
-  const handleOpenDialog = (camp?: Camp) => {
-    if (camp) {
-      setEditingCamp(camp);
-    } else {
-      setEditingCamp(null);
-    }
-    setIsDialogOpen(true);
-  };
-
-  const onSubmit = (data: CampFormValues) => {
-    if (editingCamp && editingCamp.slug) {
-      // Update existing camp
-      updateCamp.mutate(
-        { slug: editingCamp.slug, data },
+  const handleSubmit = (data: CampFormValues) => {
+    if (selectedCamp) {
+      updateMutation.mutate(
+        { id: selectedCamp.id, data },
         {
           onSuccess: () => {
-            setIsDialogOpen(false);
-            setEditingCamp(null);
-            toast.success(t("campUpdated"), {
-              description: t("campUpdatedSuccess"),
-            });
-          },
-          onError: (error) => {
-            toast.error(t("error"), {
-              description: t("campUpdateError"),
-            });
+            setFormOpen(false);
+            setSelectedCamp(null);
           },
         }
       );
     } else {
-      // Create new camp
-      createCamp.mutate(data, {
+      createMutation.mutate(data, {
         onSuccess: () => {
-          setIsDialogOpen(false);
-          toast.success(t("campCreated"), {
-            description: t("campCreatedSuccess"),
-          });
-        },
-        onError: (error) => {
-          toast.error(t("error"), {
-            description: t("campCreateError"),
-          });
+          setFormOpen(false);
         },
       });
     }
   };
 
-  const handleDeleteCamp = (slug: string) => {
-    const camp = camps.find((c) => c.slug === slug);
-    if (camp) {
-      setDeletingCamp(camp);
-      setDeleteDialogOpen(true);
-    }
+  const handleEdit = (camp: Camp) => {
+    setSelectedCamp(camp);
+    setFormOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    if (deletingCamp && deletingCamp.slug) {
-      deleteCamp.mutate(deletingCamp.slug, {
-        onSuccess: () => {
-          setDeleteDialogOpen(false);
-          setDeletingCamp(null);
-          toast.success(t("campDeleted"), {
-            description: t("campDeletedSuccess"),
-          });
-        },
-        onError: (error) => {
-          toast.error(t("error"), {
-            description: t("campDeleteError"),
-          });
-        },
-      });
-    }
+  const handleDelete = (camp: Camp) => {
+    setDeleteId(camp.id);
   };
 
-  const handleToggleStatus = (slug: string) => {
-    // TODO: Implement toggle status API call
+  const handleViewDetails = (camp: Camp) => {
+    setDetailsId(camp.id);
+    setDetailsOpen(true);
   };
 
-  const handleViewCamp = (camp: Camp) => {
-    if (camp.slug) {
-      setViewingSlug(camp.slug);
-      setViewDialogOpen(true);
-    }
+  const handleToggleStatus = (camp: Camp) => {
+    // Implement status toggle if needed, or use updateMutation
+    // For now logging or no-op as per previous logic
+    console.log("Toggle status", camp.slug);
   };
+
+  const columns = createAdminCampColumns(
+    t,
+    handleEdit,
+    handleDelete,
+    handleViewDetails,
+    handleToggleStatus
+  );
 
   return (
-    <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">
-      {/* Header with Add Button */}
-      <div className="flex items-center justify-between">
-        <MainHeader header={t("pageTitle")}>
-          <Tent className="text-primary" />
-        </MainHeader>
+    <div className="space-y-6">
+      <MainHeader header={t("admin_title")} subheader={t("admin_subtitle")}>
+        <Tent className="h-6 w-6 text-primary" />
+      </MainHeader>
 
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => handleOpenDialog()}>
-              <Plus className="h-4 w-4 mr-2" />
-              {t("addNewCamp")}
-            </Button>
-          </DialogTrigger>
-          <CampFormDialog
-            initialData={editingCamp}
-            onSubmit={onSubmit}
-            onCancel={() => setIsDialogOpen(false)}
-            isLoading={createCamp.isPending || updateCamp.isPending}
-          />
-        </Dialog>
-      </div>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-xl font-semibold">
+            {t("camps_list")}
+          </CardTitle>
+          <Button onClick={() => setFormOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            {t("add_camp")}
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {isLoadingCamps ? (
+            <div className="flex justify-center p-8">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <CampsTable data={campsData?.data || []} columns={columns} />
+          )}
+        </CardContent>
+      </Card>
 
-      {/* Admin Camps Table - styled like representative page */}
-      <div className="w-full bg-white rounded-xl p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">
-          {t("campsList")}
-        </h3>
-
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="mr-3 text-gray-600">{t("loadingData")}</span>
-          </div>
-        ) : error ? (
-          <div className="flex items-center justify-center py-12">
-            <p className="text-red-600">{t("errorLoadingData")}</p>
-          </div>
-        ) : createCamp.isPending ||
-          updateCamp.isPending ||
-          deleteCamp.isPending ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="mr-3 text-gray-600">{t("processingRequest")}</span>
-          </div>
-        ) : (
-          <CampsTable
-            data={camps}
-            onEdit={handleOpenDialog}
-            onDelete={handleDeleteCamp}
-            onToggleStatus={handleToggleStatus}
-            onView={handleViewCamp}
-          />
-        )}
-      </div>
-
-      {/* Delete Confirmation Dialog */}
-      <DeleteConfirmDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onConfirm={handleConfirmDelete}
-        title={t("deleteCamp")}
-        description={t("deleteConfirmation")}
-        isPending={deleteCamp.isPending}
+      <CampFormDialog
+        open={formOpen}
+        onOpenChange={(open) => {
+          setFormOpen(open);
+          if (!open) setSelectedCamp(null);
+        }}
+        initialData={selectedCamp}
+        onSubmit={handleSubmit}
+        isSubmitting={createMutation.isPending || updateMutation.isPending}
       />
 
-      {/* View Details Dialog */}
       <CampDetailsDialog
-        open={viewDialogOpen}
+        open={detailsOpen}
         onOpenChange={(open) => {
-          setViewDialogOpen(open);
-          if (!open) setViewingSlug(null);
+          setDetailsOpen(open);
+          if (!open) setDetailsId(null);
         }}
-        camp={campDetails?.data || null}
+        camp={campDetails?.data}
         isLoading={isLoadingDetails}
+      />
+
+      <DeleteConfirmDialog
+        open={!!deleteId}
+        onOpenChange={(open) => !open && setDeleteId(null)}
+        onConfirm={() => {
+          if (deleteId) {
+            deleteMutation.mutate(deleteId, {
+              onSuccess: () => setDeleteId(null),
+            });
+          }
+        }}
+        title={t("delete_title")}
+        description={t("delete_desc")}
+        isPending={deleteMutation.isPending}
       />
     </div>
   );

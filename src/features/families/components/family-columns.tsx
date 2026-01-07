@@ -19,45 +19,48 @@ const sanitizeValue = (value: unknown): string => {
   return String(value);
 };
 
+// ... imports
+
 export const createFamilyColumns = (
   onView: (family: Family) => void,
   onEdit: (family: Family) => void,
   onDelete: (family: Family) => void,
+  t: (key: string) => string,
   options?: { hideDelete?: boolean }
 ): ColumnDef<Family>[] => [
   {
     accessorKey: "familyName",
-    header: "اسم العائلة",
+    header: t("columns.familyName"),
     cell: ({ row }) => sanitizeValue(row.getValue("familyName")),
   },
   {
     accessorKey: "nationalId",
-    header: "رقم الهوية",
+    header: t("columns.nationalId"),
     cell: ({ row }) => sanitizeValue(row.getValue("nationalId")),
   },
   {
     accessorKey: "phone",
-    header: "رقم الهاتف",
+    header: t("columns.phone"),
     cell: ({ row }) => sanitizeValue(row.getValue("phone")),
   },
   {
     accessorKey: "totalMembers",
-    header: "عدد الأفراد",
+    header: t("columns.totalMembers"),
     cell: ({ row }) => sanitizeValue(row.getValue("totalMembers")),
   },
   {
     accessorKey: "camp",
-    header: "إيواء",
+    header: t("columns.camp"),
     cell: ({ row }) => sanitizeValue(row.getValue("camp")),
   },
   {
     accessorKey: "tentNumber",
-    header: "رقم الخيمة",
+    header: t("columns.tentNumber"),
     cell: ({ row }) => sanitizeValue(row.getValue("tentNumber")),
   },
   {
     accessorKey: "location",
-    header: "الموقع",
+    header: t("columns.location"),
     cell: ({ row }) => sanitizeValue(row.getValue("location")),
   },
   {
@@ -69,18 +72,18 @@ export const createFamilyColumns = (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">فتح القائمة</span>
+              <span className="sr-only">{t("actions_menu.open_menu")}</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => onView(family)}>
               <Eye className="mr-2 h-4 w-4" />
-              عرض التفاصيل
+              {t("actions_menu.view_details")}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onEdit(family)}>
               <Pencil className="mr-2 h-4 w-4" />
-              تعديل
+              {t("actions_menu.edit")}
             </DropdownMenuItem>
             {!options?.hideDelete && (
               <DropdownMenuItem
@@ -88,7 +91,7 @@ export const createFamilyColumns = (
                 className="text-red-600 focus:text-red-600"
               >
                 <Trash className="mr-2 h-4 w-4" />
-                حذف
+                {t("actions_menu.delete")}
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>

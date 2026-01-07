@@ -7,21 +7,22 @@ import { Edit, Trash2 } from "lucide-react";
 
 export const createMaritalStatusColumns = (
   onEdit: (status: MaritalStatus) => void,
-  onDelete: (id: number) => void
+  onDelete: (id: number) => void,
+  t: (key: string) => string
 ): ColumnDef<MaritalStatus>[] => [
   {
     accessorKey: "id",
-    header: "الرقم",
+    header: t("id"),
     cell: ({ row }) => <div className="font-medium">{row.getValue("id")}</div>,
   },
   {
     accessorKey: "name",
-    header: "الاسم",
+    header: t("name"),
     cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
   {
     id: "actions",
-    header: "الإجراءات",
+    header: t("actions"),
     cell: ({ row }) => {
       const status = row.original;
 

@@ -26,43 +26,12 @@ import {
   PageUpdateFormValues,
   PageData,
 } from "@/features/pages/types/page.schema";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { ShieldCheck, Eye, Target, Edit, Loader2 } from "lucide-react";
-
-const aboutSchema = z.object({
-  title: z.object({
-    ar: z.string().min(1, "العنوان بالعربية مطلوب"),
-    en: z.string().min(1, "Title in English is required"),
-  }),
-  description: z.object({
-    ar: z.string().min(10, "الوصف يجب أن يكون 10 أحرف على الأقل"),
-    en: z.string().min(10, "Description must be at least 10 characters"),
-  }),
-  image: z.string().optional(),
-  imageFile: z.any().optional(),
-  secondImage: z.string().optional(),
-  secondImageFile: z.any().optional(),
-});
-
-type AboutFormValues = z.infer<typeof aboutSchema>;
-
-// Section card configuration
-const SECTION_CONFIG = {
-  mission: {
-    title: "رسالتنا",
-    icon: ShieldCheck,
-  },
-  vision: {
-    title: "رؤيتنا",
-    icon: Eye,
-  },
-  goals: {
-    title: "أهدافنا",
-    icon: Target,
-  },
-};
+import { useTranslations } from "next-intl";
 
 export default function AboutControlPage() {
+  const t = useTranslations("about_control");
   const { data: aboutData, isLoading: aboutLoading } = useAboutUs();
   const updateSectionMutation = useUpdateAboutUsSection();
   const { mutate: updateAbout, isPending } = useUpdateAboutUs();
@@ -70,6 +39,47 @@ export default function AboutControlPage() {
   const [activeTab, setActiveTab] = useState("ar");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingPage, setEditingPage] = useState<PageData | null>(null);
+
+  // Schema creation inside component to access translations
+  const aboutSchema = useMemo(
+    () =>
+      z.object({
+        title: z.object({
+          ar: z.string().min(1, t("validation.title_ar_required")),
+          en: z.string().min(1, t("validation.title_en_required")),
+        }),
+        description: z.object({
+          ar: z.string().min(10, t("validation.desc_ar_min")),
+          en: z.string().min(10, t("validation.desc_en_min")),
+        }),
+        image: z.string().optional(),
+        imageFile: z.any().optional(),
+        secondImage: z.string().optional(),
+        secondImageFile: z.any().optional(),
+      }),
+    [t]
+  );
+
+  type AboutFormValues = z.infer<typeof aboutSchema>;
+
+  // Section card configuration with translations
+  const sectionConfig = useMemo(
+    () => ({
+      mission: {
+        title: t("sections.mission"),
+        icon: ShieldCheck,
+      },
+      vision: {
+        title: t("sections.vision"),
+        icon: Eye,
+      },
+      goals: {
+        title: t("sections.goals"),
+        icon: Target,
+      },
+    }),
+    [t]
+  );
 
   // Get all page items from the array response
   const pageItems = aboutData?.data || [];
@@ -156,25 +166,25 @@ export default function AboutControlPage() {
     return (
       <div className="p-6 flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="mr-3">جاري التحميل...</span>
+        <span className="mr-3">{t("loading")}</span>
       </div>
     );
   }
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">تحكم في قسم من نحن (About)</h1>
+      <h1 className="text-2xl font-bold">{t("page_title")}</h1>
 
       {/* About Us Section */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-fit grid-cols-2">
-          <TabsTrigger value="ar">العربية</TabsTrigger>
-          <TabsTrigger value="en">English</TabsTrigger>
+          <TabsTrigger value="ar">{t("tabs.ar")}</TabsTrigger>
+          <TabsTrigger value="en">{t("tabs.en")}</TabsTrigger>
         </TabsList>
 
         <Card className="mt-6">
           <CardHeader>
-            <CardTitle>تعديل محتوى من نحن</CardTitle>
+            <CardTitle>{t("sections.edit_content")}</CardTitle>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -188,10 +198,10 @@ export default function AboutControlPage() {
                     name="title.ar"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>العنوان (بالعربية)</FormLabel>
+                        <FormLabel>{t("form.title_ar_label")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="أدخل العنوان بالعربية"
+                            placeholder={t("form.title_ar_placeholder")}
                             {...field}
                           />
                         </FormControl>
@@ -205,12 +215,12 @@ export default function AboutControlPage() {
                     name="description.ar"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>الوصف (بالعربية)</FormLabel>
+                        <FormLabel>{t("form.description_ar_label")}</FormLabel>
                         <FormControl>
                           <RichTextEditor
                             content={field.value}
                             onChange={field.onChange}
-                            placeholder="أدخل الوصف بالعربية"
+                            placeholder={t("form.description_ar_placeholder")}
                           />
                         </FormControl>
                         <FormMessage />
@@ -225,10 +235,10 @@ export default function AboutControlPage() {
                     name="title.en"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Title (English)</FormLabel>
+                        <FormLabel>{t("form.title_en_label")}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter title in English"
+                            placeholder={t("form.title_en_placeholder")}
                             {...field}
                           />
                         </FormControl>
@@ -242,12 +252,12 @@ export default function AboutControlPage() {
                     name="description.en"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description (English)</FormLabel>
+                        <FormLabel>{t("form.description_en_label")}</FormLabel>
                         <FormControl>
                           <RichTextEditor
                             content={field.value}
                             onChange={field.onChange}
-                            placeholder="Enter description in English"
+                            placeholder={t("form.description_en_placeholder")}
                           />
                         </FormControl>
                         <FormMessage />
@@ -262,7 +272,7 @@ export default function AboutControlPage() {
                     name="image"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>الصورة الحالية</FormLabel>
+                        <FormLabel>{t("form.current_image")}</FormLabel>
                         {field.value && (
                           <div className="mb-4">
                             <img
@@ -304,7 +314,7 @@ export default function AboutControlPage() {
                     name="secondImage"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>الصورة الثانية الحالية</FormLabel>
+                        <FormLabel>{t("form.current_second_image")}</FormLabel>
                         {field.value && (
                           <div className="mb-4">
                             <img
@@ -341,7 +351,7 @@ export default function AboutControlPage() {
                 </div>
 
                 <Button type="submit" disabled={isPending}>
-                  {isPending ? "جاري الحفظ..." : "حفظ التغييرات"}
+                  {isPending ? t("actions.saving") : t("actions.save_changes")}
                 </Button>
               </form>
             </Form>
@@ -352,7 +362,7 @@ export default function AboutControlPage() {
       {/* Mission, Vision, Goals Sections */}
       <div className="space-y-4">
         <h2 className="text-xl font-bold border-b pb-2">
-          أقسام الرسالة والرؤية والأهداف
+          {t("sections.title_sections")}
         </h2>
 
         <div className="grid gap-4 md:grid-cols-3">
@@ -363,7 +373,7 @@ export default function AboutControlPage() {
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="h-5 w-5 text-primary" />
                   <CardTitle className="text-lg">
-                    {SECTION_CONFIG.mission.title}
+                    {sectionConfig.mission.title}
                   </CardTitle>
                 </div>
                 <Button
@@ -382,8 +392,8 @@ export default function AboutControlPage() {
                 dangerouslySetInnerHTML={{
                   __html:
                     typeof missionPage?.description === "object"
-                      ? missionPage?.description?.ar || "لا يوجد محتوى"
-                      : missionPage?.description || "لا يوجد محتوى",
+                      ? missionPage?.description?.ar || t("sections.no_content")
+                      : missionPage?.description || t("sections.no_content"),
                 }}
               />
             </CardContent>
@@ -396,7 +406,7 @@ export default function AboutControlPage() {
                 <div className="flex items-center gap-2">
                   <Eye className="h-5 w-5 text-primary" />
                   <CardTitle className="text-lg">
-                    {SECTION_CONFIG.vision.title}
+                    {sectionConfig.vision.title}
                   </CardTitle>
                 </div>
                 <Button
@@ -415,8 +425,8 @@ export default function AboutControlPage() {
                 dangerouslySetInnerHTML={{
                   __html:
                     typeof visionPage?.description === "object"
-                      ? visionPage?.description?.ar || "لا يوجد محتوى"
-                      : visionPage?.description || "لا يوجد محتوى",
+                      ? visionPage?.description?.ar || t("sections.no_content")
+                      : visionPage?.description || t("sections.no_content"),
                 }}
               />
             </CardContent>
@@ -429,7 +439,7 @@ export default function AboutControlPage() {
                 <div className="flex items-center gap-2">
                   <Target className="h-5 w-5 text-primary" />
                   <CardTitle className="text-lg">
-                    {SECTION_CONFIG.goals.title}
+                    {sectionConfig.goals.title}
                   </CardTitle>
                 </div>
                 <Button
@@ -448,8 +458,8 @@ export default function AboutControlPage() {
                 dangerouslySetInnerHTML={{
                   __html:
                     typeof goalsPage?.description === "object"
-                      ? goalsPage?.description?.ar || "لا يوجد محتوى"
-                      : goalsPage?.description || "لا يوجد محتوى",
+                      ? goalsPage?.description?.ar || t("sections.no_content")
+                      : goalsPage?.description || t("sections.no_content"),
                 }}
               />
             </CardContent>

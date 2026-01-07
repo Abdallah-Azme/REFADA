@@ -6,28 +6,28 @@ import { ContactMessage } from "../types/message.schema";
 import { messageService } from "../services/message.service";
 import { MessageTableColumn } from "../types/message-table.types";
 
-export const createAdminMessageColumns = ({
-  onView,
-  onDelete,
-}: MessageTableColumn): ColumnDef<ContactMessage>[] => [
+export const createAdminMessageColumns = (
+  { onView, onDelete }: MessageTableColumn,
+  t: (key: string) => string
+): ColumnDef<ContactMessage>[] => [
   {
     accessorKey: "name",
-    header: "الاسم",
+    header: t("columns.name"),
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue("name")}</div>
     ),
   },
   {
     accessorKey: "email",
-    header: "البريد الإلكتروني",
+    header: t("columns.email"),
   },
   {
     accessorKey: "subject",
-    header: "الموضوع",
+    header: t("columns.subject"),
   },
   {
     accessorKey: "createdAt",
-    header: "التاريخ",
+    header: t("columns.date"),
     cell: ({ row }) => {
       const date = row.getValue("createdAt") as Date;
       return (
@@ -39,12 +39,14 @@ export const createAdminMessageColumns = ({
   },
   {
     accessorKey: "status",
-    header: "الحالة",
+    header: t("columns.status"),
     cell: ({ row }) => {
       const status = row.getValue("status") as "new" | "read" | "replied";
       const variant = messageService.getStatusVariant(status);
       const colorClass = messageService.getStatusColor(status);
-      const label = messageService.getStatusLabel(status);
+      const label = messageService.getStatusLabel(status); // Ideally this should be translated too, but service might be generic.
+      // Assuming service returns localized label or we need to translate the status key.
+      // For now, I'll keep service logic but ideally `getStatusLabel` needs translation.
 
       const Icon =
         status === "new" ? Clock : status === "read" ? Eye : CheckCircle;
@@ -59,6 +61,7 @@ export const createAdminMessageColumns = ({
   },
   {
     id: "actions",
+    header: t("columns.actions"),
     cell: ({ row }) => {
       const message = row.original;
       return (

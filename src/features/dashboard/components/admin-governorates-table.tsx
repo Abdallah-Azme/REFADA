@@ -32,13 +32,14 @@ import {
 } from "@tanstack/react-table";
 import React from "react";
 import { createGovernorateColumns } from "../table-cols/admin-governorates-cols";
-import PaginationControls from "./pagination-controls"; // Assuming this exists as shared component
+import PaginationControls from "./pagination-controls";
 import {
   useGovernorates,
   useDeleteGovernorate,
 } from "../hooks/use-governorates";
 import { Governorate } from "../types/governorates.schema";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface AdminGovernoratesTableProps {
   onEdit: (governorate: Governorate) => void;
@@ -47,6 +48,8 @@ interface AdminGovernoratesTableProps {
 export default function AdminGovernoratesTable({
   onEdit,
 }: AdminGovernoratesTableProps) {
+  const t = useTranslations("governorates");
+  const tCommon = useTranslations("common");
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -61,7 +64,6 @@ export default function AdminGovernoratesTable({
   const { data: response, isLoading } = useGovernorates();
   const deleteMutation = useDeleteGovernorate();
 
-  // Flatten data if needed, assuming API response returns data array in `data`
   const data = React.useMemo(() => response?.data || [], [response]);
 
   const [deleteId, setDeleteId] = React.useState<number | null>(null);
@@ -79,10 +81,13 @@ export default function AdminGovernoratesTable({
 
   const table = useReactTable<Governorate>({
     data,
-    columns: createGovernorateColumns({
-      onEdit: onEdit,
-      onDelete: handleDeleteClick,
-    }),
+    columns: createGovernorateColumns(
+      {
+        onEdit: onEdit,
+        onDelete: handleDeleteClick,
+      },
+      t
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -149,14 +154,17 @@ export default function AdminGovernoratesTable({
                 <TableRow>
                   <TableCell
                     colSpan={
-                      createGovernorateColumns({
-                        onEdit: onEdit,
-                        onDelete: handleDeleteClick,
-                      }).length
+                      createGovernorateColumns(
+                        {
+                          onEdit: onEdit,
+                          onDelete: handleDeleteClick,
+                        },
+                        t
+                      ).length
                     }
                     className="h-24 text-center"
                   >
-                    لا توجد نتائج.
+                    {tCommon("no_results")}
                   </TableCell>
                 </TableRow>
               )}
@@ -175,19 +183,18 @@ export default function AdminGovernoratesTable({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>هل أنت متأكد؟</AlertDialogTitle>
+            <AlertDialogTitle>{t("delete_title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              هذا الإجراء سيقوم بحذف المحافظة نهائياً. لا يمكن التراجع عن هذا
-              الإجراء.
+              {t("delete_description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>إلغاء</AlertDialogCancel>
+            <AlertDialogCancel>{t("delete_cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmDelete}
               className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
             >
-              حذف
+              {t("delete_confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

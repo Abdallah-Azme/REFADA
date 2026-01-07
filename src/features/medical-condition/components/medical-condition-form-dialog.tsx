@@ -25,6 +25,7 @@ import {
 } from "../types/medical-condition.schema";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface MedicalConditionFormDialogProps {
   open: boolean;
@@ -41,6 +42,7 @@ export function MedicalConditionFormDialog({
   onSubmit,
   isPending,
 }: MedicalConditionFormDialogProps) {
+  const t = useTranslations("medical_condition_page");
   const form = useForm<MedicalConditionFormValues>({
     resolver: zodResolver(medicalConditionSchema),
     defaultValues: {
@@ -72,7 +74,7 @@ export function MedicalConditionFormDialog({
       <DialogContent className="sm:max-w-[425px]!">
         <DialogHeader>
           <DialogTitle>
-            {initialData ? "تعديل الحالة الطبية" : "إضافة حالة طبية جديدة"}
+            {initialData ? t("edit_title") : t("add_title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -86,9 +88,9 @@ export function MedicalConditionFormDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>الاسم</FormLabel>
+                  <FormLabel>{t("name_label")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="مثال: إعاقة جسدية" {...field} />
+                    <Input placeholder={t("placeholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -102,18 +104,18 @@ export function MedicalConditionFormDialog({
                 onClick={() => onOpenChange(false)}
                 disabled={isPending}
               >
-                إلغاء
+                {t("cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                    جاري الحفظ...
+                    {t("save")}
                   </>
                 ) : initialData ? (
-                  "تحديث"
+                  t("update_btn")
                 ) : (
-                  "إضافة"
+                  t("add_btn")
                 )}
               </Button>
             </div>

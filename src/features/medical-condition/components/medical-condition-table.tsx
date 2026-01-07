@@ -24,6 +24,7 @@ import {
 import { Input } from "@/shared/ui/input";
 import { useState } from "react";
 import PaginationControls from "@/src/features/dashboard/components/pagination-controls";
+import { useTranslations } from "next-intl";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,6 +35,7 @@ export function MedicalConditionTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const tCommon = useTranslations("common");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -62,7 +64,7 @@ export function MedicalConditionTable<TData, TValue>({
     <div className="space-y-4">
       <div className="flex items-center">
         <Input
-          placeholder="البحث بالاسم..."
+          placeholder={tCommon("search") + "..."}
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -114,7 +116,7 @@ export function MedicalConditionTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  لا توجد نتائج
+                  {tCommon("no_results")}
                 </TableCell>
               </TableRow>
             )}
