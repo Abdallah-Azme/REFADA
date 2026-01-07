@@ -246,17 +246,11 @@ export default function CurrentProjectsTableContribution({
                           <SelectValue placeholder={t("project_status")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="pending">
-                            {t("pending")}
-                          </SelectItem>
                           <SelectItem value="approved">
                             {t("approved")}
                           </SelectItem>
-                          <SelectItem value="completed">
-                            {t("completed")}
-                          </SelectItem>
-                          <SelectItem value="rejected">
-                            {t("rejected")}
+                          <SelectItem value="delivered">
+                            {t("delivered")}
                           </SelectItem>
                         </SelectContent>
                       </Select>

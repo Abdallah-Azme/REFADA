@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+
 import { ColumnDef } from "@tanstack/react-table";
 import { Progress } from "@/components/ui/progress";
 import { Eye, Heart } from "lucide-react";
@@ -13,6 +13,7 @@ export type Project = {
   name: string;
   type: string;
   addedBy: string;
+  DelegatePhone?: string;
   beneficiaryCount: number;
   college: string;
   status: string;
@@ -50,31 +51,6 @@ export const createColumnsForContributor = (
   t: any
 ): ColumnDef<Project>[] => [
   {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-start mx-4">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label={t("select_all")}
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        className="mx-4"
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label={t("select_row")}
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     accessorKey: "name",
     header: t("project"),
     cell: ({ row }) => (
@@ -98,6 +74,15 @@ export const createColumnsForContributor = (
     ),
   },
   {
+    accessorKey: "DelegatePhone",
+    header: t("mobile"),
+    cell: ({ row }) => (
+      <div className="text-start text-gray-600">
+        {row.original.DelegatePhone || "-"}
+      </div>
+    ),
+  },
+  {
     accessorKey: "status",
     header: t("status"),
     cell: ({ row }) => {
@@ -117,6 +102,9 @@ export const createColumnsForContributor = (
       } else if (status === "completed") {
         statusText = t("completed");
         colorClass = "bg-blue-100 text-blue-700";
+      } else if (status === "delivered") {
+        statusText = t("delivered");
+        colorClass = "bg-purple-100 text-purple-700";
       }
 
       return (

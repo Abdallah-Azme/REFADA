@@ -1390,6 +1390,7 @@
   "project_columns": {
     "project": "Project",
     "added_by": "Added By",
+    "mobile": "Mobile",
     "status": "Status",
     "indicator": "Indicator",
     "beneficiaries": "Beneficiaries",
@@ -1404,6 +1405,7 @@
     "approved": "Approved",
     "rejected": "Rejected",
     "completed": "Completed",
+    "delivered": "Delivered",
     "select_all": "Select All",
     "select_row": "Select Row",
     "search_project": "Project Name",

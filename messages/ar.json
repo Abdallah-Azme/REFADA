@@ -1410,6 +1410,7 @@
   "project_columns": {
     "project": "المشروع",
     "added_by": "أضيف بواسطة",
+    "mobile": "رقم الجوال",
     "status": "الحالة",
     "indicator": "المؤشر",
     "beneficiaries": "المستفيدين",
@@ -1424,6 +1425,7 @@
     "approved": "موافق عليه",
     "rejected": "مرفوض",
     "completed": "مكتمل",
+    "delivered": "تم التسليم",
     "select_all": "تحديد الكل",
     "select_row": "تحديد الصف",
     "search_project": "اسم المشروع",
