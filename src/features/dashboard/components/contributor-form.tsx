@@ -15,26 +15,34 @@ import { Loader2, Pencil, Save, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useTranslations } from "next-intl";
 import {
   useProfile,
   useUpdateProfile,
   UpdateProfileFormValues,
 } from "@/features/profile";
 
-// Zod Schema for contributor form
-const contributorFormSchema = z.object({
-  name: z.string().min(1, "اسم المساهم مطلوب"),
-  email: z.string().email("البريد الإلكتروني غير صحيح"),
-  phone: z.string().min(10, "رقم الهاتف غير صحيح"),
-  backupPhone: z.string().optional(),
-});
+// Helper function to create schema with translations
+const createContributorSchema = (t: (key: string) => string) =>
+  z.object({
+    name: z.string().min(1, t("validation.name_required")),
+    email: z.string().email(t("validation.email_invalid")),
+    phone: z.string().min(10, t("validation.phone_invalid")),
+    backupPhone: z.string().optional(),
+  });
 
-type ContributorFormValues = z.infer<typeof contributorFormSchema>;
+type ContributorFormValues = z.infer<
+  ReturnType<typeof createContributorSchema>
+>;
 
 export default function ContributorForm() {
   const [isEditing, setIsEditing] = useState(false);
   const { data: profileData, isLoading } = useProfile();
   const updateProfile = useUpdateProfile();
+  const t = useTranslations("contributors");
+
+  // Create schema using the translation function
+  const contributorFormSchema = createContributorSchema(t);
 
   const form = useForm<ContributorFormValues>({
     resolver: zodResolver(contributorFormSchema),
@@ -63,7 +71,7 @@ export default function ContributorForm() {
       name: data.name,
       email: data.email,
       phone: data.phone,
-      backupPhone: data.backupPhone,
+      backupPhone: data.backupPhone || undefined,
     };
 
     updateProfile.mutate(updateData, {
@@ -89,11 +97,11 @@ export default function ContributorForm() {
     return (
       <div className="lg:w-1/2 px-8">
         <h3 className="text-lg font-semibold text-[#333333] mb-4">
-          بيانات المساهم
+          {t("page_title")}
         </h3>
         <div className="flex items-center justify-center py-12 border border-gray-200 rounded-xl">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <span className="mr-3 text-gray-600">جاري تحميل البيانات...</span>
+          <span className="mr-3 text-gray-600">{t("loading")}</span>
         </div>
       </div>
     );
@@ -102,7 +110,9 @@ export default function ContributorForm() {
   return (
     <div className="lg:w-1/2 px-8">
       <div className="flex justify-between">
-        <h3 className="text-lg font-semibold text-[#333333]">بيانات المساهم</h3>
+        <h3 className="text-lg font-semibold text-[#333333]">
+          {t("page_title")}
+        </h3>
 
         <div className="flex items-center justify-end mb-2">
           {!isEditing && (
@@ -113,7 +123,7 @@ export default function ContributorForm() {
               className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
             >
               <Pencil className="w-4 h-4 ml-2" />
-              تعديل
+              {t("profile.edit")}
             </Button>
           )}
         </div>
@@ -124,7 +134,7 @@ export default function ContributorForm() {
         <div className="flex gap-8 items-center border border-gray-200 p-4 rounded-xl">
           <div className="w-full space-y-3 mt-6">
             <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
-              <span className="text-sm text-gray-600">اسم المساهم:</span>
+              <span className="text-sm text-gray-600">{t("table_name")}:</span>
               <span
                 className="text-base text-gray-900 font-medium truncate"
                 title={form.getValues("name") || "-"}
@@ -134,7 +144,7 @@ export default function ContributorForm() {
             </div>
 
             <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
-              <span className="text-sm text-gray-600">البريد الالكتروني:</span>
+              <span className="text-sm text-gray-600">{t("table_email")}:</span>
               <span
                 className="text-base text-gray-900 font-medium truncate"
                 title={form.getValues("email") || "-"}
@@ -144,7 +154,7 @@ export default function ContributorForm() {
             </div>
 
             <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
-              <span className="text-sm text-gray-600">رقم الجوال:</span>
+              <span className="text-sm text-gray-600">{t("table_phone")}:</span>
               <span
                 className="text-base text-gray-900 font-medium truncate"
                 title={form.getValues("phone") || "-"}
@@ -155,7 +165,7 @@ export default function ContributorForm() {
 
             <div className="grid grid-cols-2 items-center justify-between border-gray-200 pb-3">
               <span className="text-sm text-gray-600">
-                رقم الجوال الاحتياطي:
+                {t("backup_phone")}:
               </span>
               <span
                 className="text-base text-gray-900 font-medium truncate"
@@ -178,7 +188,7 @@ export default function ContributorForm() {
               className="text-gray-600 hover:text-gray-900"
             >
               <X className="w-4 h-4 ml-2" />
-              إلغاء
+              {t("profile.cancel")}
             </Button>
 
             <Button
@@ -190,12 +200,12 @@ export default function ContributorForm() {
               {updateProfile.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 ml-2 animate-spin" />
-                  جاري الحفظ...
+                  {t("profile.saving")}
                 </>
               ) : (
                 <>
                   <Save className="w-4 h-4 ml-2" />
-                  حفظ
+                  {t("profile.save")}
                 </>
               )}
             </Button>
@@ -207,7 +217,9 @@ export default function ContributorForm() {
               <form className="w-full space-y-3">
                 {/* Name */}
                 <div className="grid grid-cols-2 items-center pb-3 border-b border-gray-200">
-                  <label className="text-sm text-gray-600">اسم المساهم:</label>
+                  <label className="text-sm text-gray-600">
+                    {t("table_name")}:
+                  </label>
                   <FormField
                     control={form.control}
                     name="name"
@@ -217,7 +229,7 @@ export default function ContributorForm() {
                           <Input
                             {...field}
                             className="text-right bg-white border-gray-300"
-                            placeholder="اسم المساهم"
+                            placeholder={t("table_name")}
                           />
                         </FormControl>
                         <FormMessage />
@@ -229,7 +241,7 @@ export default function ContributorForm() {
                 {/* Email */}
                 <div className="grid grid-cols-2 items-center pb-3 border-b border-gray-200">
                   <label className="text-sm text-gray-600">
-                    البريد الإلكتروني:
+                    {t("table_email")}:
                   </label>
                   <FormField
                     control={form.control}
@@ -241,7 +253,7 @@ export default function ContributorForm() {
                             {...field}
                             type="email"
                             className="text-right bg-white border-gray-300"
-                            placeholder="البريد الإلكتروني"
+                            placeholder={t("table_email")}
                           />
                         </FormControl>
                         <FormMessage />
@@ -252,7 +264,9 @@ export default function ContributorForm() {
 
                 {/* Phone */}
                 <div className="grid grid-cols-2 items-center pb-3 border-b border-gray-200">
-                  <label className="text-sm text-gray-600">رقم الجوال:</label>
+                  <label className="text-sm text-gray-600">
+                    {t("table_phone")}:
+                  </label>
                   <FormField
                     control={form.control}
                     name="phone"
@@ -261,7 +275,7 @@ export default function ContributorForm() {
                         <FormControl>
                           <PhoneInput
                             className="[&_input]:text-right [&_input]:bg-white [&_input]:border-gray-300 [&_button]:bg-white [&_button]:border-gray-300"
-                            placeholder="رقم الجوال"
+                            placeholder={t("table_phone")}
                             value={field.value}
                             onChange={field.onChange}
                           />
@@ -275,7 +289,7 @@ export default function ContributorForm() {
                 {/* Backup Phone */}
                 <div className="grid grid-cols-2 items-center pb-3 border-b border-gray-200">
                   <label className="text-sm text-gray-600">
-                    رقم الجوال الاحتياطي:
+                    {t("backup_phone")}:
                   </label>
                   <FormField
                     control={form.control}
@@ -285,7 +299,7 @@ export default function ContributorForm() {
                         <FormControl>
                           <PhoneInput
                             className="[&_input]:text-right [&_input]:bg-white [&_input]:border-gray-300 [&_button]:bg-white [&_button]:border-gray-300"
-                            placeholder="رقم الجوال الاحتياطي"
+                            placeholder={t("backup_phone")}
                             value={field.value || ""}
                             onChange={field.onChange}
                           />

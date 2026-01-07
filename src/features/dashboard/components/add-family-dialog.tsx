@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
@@ -298,10 +299,11 @@ export default function AddFamilyDialog() {
                         {t("phone")}
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          className="bg-white"
+                        <PhoneInput
+                          className="[&_input]:bg-white"
                           placeholder={t("phone")}
-                          {...field}
+                          value={field.value}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage />
@@ -319,11 +321,11 @@ export default function AddFamilyDialog() {
                         {t("backup_phone")}
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          className="bg-white"
+                        <PhoneInput
+                          className="[&_input]:bg-white"
                           placeholder={t("backup_phone")}
-                          {...field}
                           value={field.value || ""}
+                          onChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage />
@@ -506,15 +508,15 @@ export default function AddFamilyDialog() {
                         >
                           <SelectTrigger className="w-full bg-white">
                             {field.value === "other"
-                              ? "أخرى"
+                              ? t("other")
                               : field.value && field.value !== "none"
                               ? medicalConditions.find(
                                   (m) => m.id.toString() === field.value
-                                )?.name || "الحالة الصحية"
-                              : "سليم"}
+                                )?.name || t("medical_condition")
+                              : t("healthy")}
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="none">سليم</SelectItem>
+                            <SelectItem value="none">{t("healthy")}</SelectItem>
                             {medicalConditions.map((condition) => (
                               <SelectItem
                                 key={condition.id}
@@ -523,7 +525,7 @@ export default function AddFamilyDialog() {
                                 {condition.name}
                               </SelectItem>
                             ))}
-                            <SelectItem value="other">أخرى</SelectItem>
+                            <SelectItem value="other">{t("other")}</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -538,7 +540,7 @@ export default function AddFamilyDialog() {
                     <FormControl>
                       <Input
                         className="bg-white"
-                        placeholder="أدخل الحالة الصحية"
+                        placeholder={t("enter_medical_condition")}
                         value={headOtherMedical}
                         onChange={(e) => setHeadOtherMedical(e.target.value)}
                       />
@@ -550,7 +552,9 @@ export default function AddFamilyDialog() {
               {/* FAMILY MEMBERS SECTION */}
               <div className="bg-[#F4F4F4] p-4 rounded-xl space-y-4">
                 <div className="flex justify-between items-center">
-                  <p className="text-sm font-medium">أفراد العائلة</p>
+                  <p className="text-sm font-medium">
+                    {t("family_members_section")}
+                  </p>
                   <Button
                     type="button"
                     variant="outline"
@@ -559,7 +563,7 @@ export default function AddFamilyDialog() {
                     className="bg-primary text-white hover:bg-primary/90"
                   >
                     <UserPlus className="w-4 h-4 ml-2" />
-                    إضافة فرد
+                    {t("add_member_btn")}
                   </Button>
                 </div>
 
@@ -578,7 +582,10 @@ export default function AddFamilyDialog() {
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <Input placeholder="الاسم" {...field} />
+                                <Input
+                                  placeholder={t("name_label")}
+                                  {...field}
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -592,7 +599,10 @@ export default function AddFamilyDialog() {
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <Input placeholder="رقم الهوية" {...field} />
+                                <Input
+                                  placeholder={t("national_id_label")}
+                                  {...field}
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -612,14 +622,18 @@ export default function AddFamilyDialog() {
                                 >
                                   <SelectTrigger className="w-full">
                                     {field.value === "male"
-                                      ? "ذكر"
+                                      ? t("male")
                                       : field.value === "female"
-                                      ? "أنثى"
-                                      : "النوع"}
+                                      ? t("female")
+                                      : t("gender")}
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="male">ذكر</SelectItem>
-                                    <SelectItem value="female">أنثى</SelectItem>
+                                    <SelectItem value="male">
+                                      {t("male")}
+                                    </SelectItem>
+                                    <SelectItem value="female">
+                                      {t("female")}
+                                    </SelectItem>
                                   </SelectContent>
                                 </Select>
                               </FormControl>
@@ -643,8 +657,8 @@ export default function AddFamilyDialog() {
                                     {field.value
                                       ? relationships.find(
                                           (r) => r.id.toString() === field.value
-                                        )?.name || "صلة القرابة"
-                                      : "صلة القرابة"}
+                                        )?.name || t("relationship")
+                                      : t("relationship")}
                                   </SelectTrigger>
                                   <SelectContent>
                                     {relationships.map((rel) => (
@@ -673,7 +687,7 @@ export default function AddFamilyDialog() {
                                 <DatePicker
                                   value={field.value}
                                   onChange={field.onChange}
-                                  placeholder="تاريخ الميلاد"
+                                  placeholder={t("dob_label")}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -703,15 +717,17 @@ export default function AddFamilyDialog() {
                                 >
                                   <SelectTrigger className="w-full">
                                     {field.value === "other"
-                                      ? "أخرى"
+                                      ? t("other")
                                       : field.value && field.value !== "none"
                                       ? medicalConditions.find(
                                           (m) => m.id.toString() === field.value
-                                        )?.name || "الحالة الصحية"
-                                      : "سليم"}
+                                        )?.name || t("medical_condition")
+                                      : t("healthy")}
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value="none">سليم</SelectItem>
+                                    <SelectItem value="none">
+                                      {t("healthy")}
+                                    </SelectItem>
                                     {medicalConditions.map((condition) => (
                                       <SelectItem
                                         key={condition.id}
@@ -720,7 +736,9 @@ export default function AddFamilyDialog() {
                                         {condition.name}
                                       </SelectItem>
                                     ))}
-                                    <SelectItem value="other">أخرى</SelectItem>
+                                    <SelectItem value="other">
+                                      {t("other")}
+                                    </SelectItem>
                                   </SelectContent>
                                 </Select>
                               </FormControl>
@@ -735,7 +753,7 @@ export default function AddFamilyDialog() {
                           <FormItem className="sm:col-span-7 mt-2">
                             <FormControl>
                               <Input
-                                placeholder="أدخل الحالة الصحية"
+                                placeholder={t("enter_medical_condition")}
                                 value={memberOtherMedicals[index] || ""}
                                 onChange={(e) =>
                                   setMemberOtherMedicals((prev) => ({
@@ -769,8 +787,7 @@ export default function AddFamilyDialog() {
 
                 {fields.length === 0 && (
                   <p className="text-sm text-gray-500 text-center py-4">
-                    قم بإدخال عدد الأفراد أو اضغط على "إضافة فرد" لإضافة أفراد
-                    العائلة
+                    {t("add_member_prompt")}
                   </p>
                 )}
               </div>

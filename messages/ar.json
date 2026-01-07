@@ -442,7 +442,12 @@
       "governorate_required": "المحافظة مطلوبة",
       "capacity_min": "السعة يجب أن تكون 0 أو أكبر",
       "camp_img_invalid": "صورة المخيم يجب أن تكون ملف أو رابط صحيح",
-      "occupancy_error": "الإشغال الحالي لا يمكن أن يكون أكبر من السعة الكلية"
+      "occupancy_error": "الإشغال الحالي لا يمكن أن يكون أكبر من السعة الكلية",
+      "name_required": "اسم الإيواء مطلوب",
+      "description_min": "الوصف يجب أن يكون 10 أحرف على الأقل",
+      "occupancy_min": "الإشغال يجب أن يكون 0 أو أكثر",
+      "lat_range": "خط العرض يجب أن يكون بين -90 و 90",
+      "lng_range": "خط الطول يجب أن يكون بين -180 و 180"
     },
     "no_delegate": "لا يوجد مندوب",
     "columns": {
@@ -457,7 +462,8 @@
     "status": {
       "active": "نشط",
       "inactive": "غير نشط"
-    }
+    },
+    "view_details": "عرض التفاصيل"
   },
   "camp_projects": {
     "title": "الإيواءات",
@@ -563,7 +569,13 @@
     "confirm_new_password": "تأكيد كلمة المرور",
     "confirm_password_placeholder": "أعد إدخال كلمة المرور",
     "passwords_not_match": "كلمات المرور غير متطابقة",
-    "save_password": "حفظ كلمة المرور"
+    "save_password": "حفظ كلمة المرور",
+    "validation": {
+      "name_required": "اسم المساهم مطلوب",
+      "email_invalid": "البريد الإلكتروني غير صحيح",
+      "phone_invalid": "رقم الهاتف غير صحيح",
+      "phone_min": "رقم الهاتف غير صحيح"
+    }
   },
   "testimonials": {
     "title": "آراء المستخدمين",
@@ -583,7 +595,18 @@
     "defaultTag": "مشروع إغاثي",
     "goalLabel": "الهدف",
     "donorsLabel": "متبرع",
-    "collectedLabel": "تم جمع"
+    "collectedLabel": "تم جمع",
+    "familyCount": "عدد العائلات",
+    "childrenCount": "عدد الأطفال",
+    "elderlyCount": "عدد المسنين",
+    "location": "الموقع",
+    "governorate": "المحافظة",
+    "description": "الوصف",
+    "coordinates": "الإحداثيات",
+    "latitude": "خط العرض",
+    "longitude": "خط الطول",
+    "createdAt": "تم الإنشاء",
+    "updatedAt": "آخر تحديث"
   },
   "adminCamps": {
     "pageTitle": "إدارة الإيواءات",
@@ -604,6 +627,19 @@
     "campDeletedSuccess": "تم حذف الإيواء بنجاح",
     "campDeleteError": "فشل في حذف الإيواء",
     "error": "خطأ"
+  },
+  "contact_messages": {
+    "page_title": "رسائل التواصل",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "subject": "الموضوع",
+    "message": "الرسالة",
+    "createdAt": "تاريخ الطلب",
+    "status": "الحالة",
+    "new": "جديدة",
+    "read": "مقروءة",
+    "replied": "تم الرد",
+    "actions": "الإجراءات"
   },
   "profile": {
     "representative": "المندوب",

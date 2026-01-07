@@ -46,21 +46,20 @@ interface AdminCampColumnsProps {
   onToggleStatus: (id: string) => void;
 }
 
-export const createAdminCampColumns = ({
-  onEdit,
-  onDelete,
-  onToggleStatus,
-}: AdminCampColumnsProps): ColumnDef<Camp>[] => [
+export const createAdminCampColumns = (
+  { onEdit, onDelete, onToggleStatus }: AdminCampColumnsProps,
+  t: (key: string) => string
+): ColumnDef<Camp>[] => [
   {
     accessorKey: "name",
-    header: "اسم الإيواء",
+    header: t("columns.name"),
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue("name")}</div>
     ),
   },
   {
     accessorKey: "location",
-    header: "الموقع",
+    header: t("columns.location"),
     cell: ({ row }) => (
       <div className="flex items-center gap-1">
         <MapPin className="h-4 w-4 text-gray-500" />
@@ -70,11 +69,11 @@ export const createAdminCampColumns = ({
   },
   {
     accessorKey: "capacity",
-    header: "السعة",
+    header: t("columns.capacity"),
   },
   {
     accessorKey: "currentOccupancy",
-    header: "الإشغال",
+    header: t("columns.occupancy"),
     cell: ({ row }) => {
       const occupancy = row.getValue("currentOccupancy") as number;
       const capacity = row.original.capacity;
@@ -89,7 +88,7 @@ export const createAdminCampColumns = ({
   },
   {
     accessorKey: "status",
-    header: "الحالة",
+    header: t("columns.status"),
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       return (
@@ -98,13 +97,14 @@ export const createAdminCampColumns = ({
           className="cursor-pointer hover:opacity-80"
           onClick={() => onToggleStatus(row.original.id)}
         >
-          {status === "active" ? "نشط" : "غير نشط"}
+          {t(`status.${status}`)}
         </Badge>
       );
     },
   },
   {
     id: "actions",
+    header: t("columns.actions"),
     cell: ({ row }) => {
       const camp = row.original;
       return (

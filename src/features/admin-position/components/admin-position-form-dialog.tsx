@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -41,6 +42,7 @@ export function AdminPositionFormDialog({
   onSubmit,
   isPending,
 }: AdminPositionFormDialogProps) {
+  const t = useTranslations("admin_position_page");
   const form = useForm<AdminPositionFormValues>({
     resolver: zodResolver(adminPositionSchema),
     defaultValues: {
@@ -72,7 +74,7 @@ export function AdminPositionFormDialog({
       <DialogContent className="sm:max-w-[425px]!">
         <DialogHeader>
           <DialogTitle>
-            {initialData ? "تعديل الصفة الإدارية" : "إضافة صفة إدارية جديدة"}
+            {initialData ? t("edit_title") : t("add_title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -86,34 +88,34 @@ export function AdminPositionFormDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>الاسم</FormLabel>
+                  <FormLabel>{t("name_label")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="مثال: مشرف" {...field} />
+                    <Input placeholder={t("placeholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <div className="flex justify-end gap-2">
+            <div className="flex  gap-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={isPending}
               >
-                إلغاء
+                {t("cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                    جاري الحفظ...
+                    {t("save")}
                   </>
                 ) : initialData ? (
-                  "تحديث"
+                  t("update_btn")
                 ) : (
-                  "إضافة"
+                  t("add_btn")
                 )}
               </Button>
             </div>

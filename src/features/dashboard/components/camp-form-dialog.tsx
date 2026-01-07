@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,24 +23,26 @@ import {
 } from "@/components/ui/form";
 import { Camp } from "@/features/dashboard/table-cols/admin-camps-cols";
 
-const campSchema = z
-  .object({
-    name: z.string().min(1, "اسم الإيواء مطلوب"),
-    location: z.string().min(1, "الموقع مطلوب"),
-    description: z.string().min(10, "الوصف يجب أن يكون 10 أحرف على الأقل"),
-    capacity: z.number().min(1, "السعة يجب أن تكون أكبر من 0"),
-    currentOccupancy: z.number().min(0, "الإشغال يجب أن يكون 0 أو أكثر"),
-    coordinates: z.object({
-      lat: z.number().min(-90).max(90, "خط العرض يجب أن يكون بين -90 و 90"),
-      lng: z.number().min(-180).max(180, "خط الطول يجب أن يكون بين -180 و 180"),
-    }),
-  })
-  .refine((data) => data.currentOccupancy <= data.capacity, {
-    message: "الإشغال الحالي لا يمكن أن يكون أكبر من السعة الكلية",
-    path: ["currentOccupancy"],
-  });
+// Create schema function to use translations
+const createCampSchema = (t: (key: string) => string) =>
+  z
+    .object({
+      name: z.string().min(1, t("validation.name_required")),
+      location: z.string().min(1, t("validation.location_required")),
+      description: z.string().min(10, t("validation.description_min")),
+      capacity: z.number().min(0, t("validation.capacity_min")),
+      currentOccupancy: z.number().min(0, t("validation.occupancy_min")),
+      coordinates: z.object({
+        lat: z.number().min(-90).max(90, t("validation.lat_range")),
+        lng: z.number().min(-180).max(180, t("validation.lng_range")),
+      }),
+    })
+    .refine((data) => data.currentOccupancy <= data.capacity, {
+      message: t("validation.occupancy_error"),
+      path: ["currentOccupancy"],
+    });
 
-export type CampFormValues = z.infer<typeof campSchema>;
+export type CampFormValues = z.infer<ReturnType<typeof createCampSchema>>;
 
 interface CampFormDialogProps {
   initialData: Camp | null;
@@ -52,6 +55,9 @@ export default function CampFormDialog({
   onSubmit,
   onCancel,
 }: CampFormDialogProps) {
+  const t = useTranslations("camps");
+  const campSchema = createCampSchema(t);
+
   const form = useForm<CampFormValues>({
     resolver: zodResolver(campSchema),
     defaultValues: {
@@ -94,7 +100,7 @@ export default function CampFormDialog({
     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>
-          {initialData ? "تعديل الإيواء" : "إضافة إيواء جديد"}
+          {initialData ? t("edit_title") : t("add_title")}
         </DialogTitle>
       </DialogHeader>
       <Form {...form}>
@@ -107,9 +113,9 @@ export default function CampFormDialog({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>اسم الإيواء</FormLabel>
+                <FormLabel>{t("columns.name")}</FormLabel>
                 <FormControl>
-                  <Input placeholder="أدخل اسم الإيواء" {...field} />
+                  <Input placeholder={t("columns.name")} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -121,9 +127,9 @@ export default function CampFormDialog({
             name="location"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>الموقع</FormLabel>
+                <FormLabel>{t("columns.location")}</FormLabel>
                 <FormControl>
-                  <Input placeholder="أدخل موقع الإيواء" {...field} />
+                  <Input placeholder={t("columns.location")} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -135,10 +141,10 @@ export default function CampFormDialog({
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>الوصف</FormLabel>
+                <FormLabel>{t("desc_ar")}</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="أدخل وصف الإيواء"
+                    placeholder={t("desc_ar_placeholder")}
                     className="min-h-[100px]"
                     {...field}
                   />
@@ -154,7 +160,7 @@ export default function CampFormDialog({
               name="capacity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>السعة الكلية</FormLabel>
+                  <FormLabel>{t("capacity")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -175,7 +181,7 @@ export default function CampFormDialog({
               name="currentOccupancy"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>الإشغال الحالي</FormLabel>
+                  <FormLabel>{t("current_occupancy")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -198,7 +204,7 @@ export default function CampFormDialog({
               name="coordinates.lat"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>خط العرض (Latitude)</FormLabel>
+                  <FormLabel>{t("latitude")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -220,7 +226,7 @@ export default function CampFormDialog({
               name="coordinates.lng"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>خط الطول (Longitude)</FormLabel>
+                  <FormLabel>{t("longitude")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -238,11 +244,11 @@ export default function CampFormDialog({
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
+          <div className="flex gap-2 pt-4">
             <Button type="button" variant="outline" onClick={onCancel}>
-              إلغاء
+              {t("cancel")}
             </Button>
-            <Button type="submit">حفظ</Button>
+            <Button type="submit">{t("save")}</Button>
           </div>
         </form>
       </Form>

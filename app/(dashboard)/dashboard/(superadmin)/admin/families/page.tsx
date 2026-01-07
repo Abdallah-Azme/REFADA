@@ -21,7 +21,46 @@ import { useTranslations } from "next-intl";
 export default function AdminFamiliesPage() {
   const t = useTranslations("families_page");
   const { data: response, isLoading, error } = useFamilies();
-  // ...
+  const deleteMutation = useDeleteFamily();
+
+  // State
+  const [formOpen, setFormOpen] = useState(false);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [editingFamily, setEditingFamily] = useState<Family | null>(null);
+  const [viewingFamily, setViewingFamily] = useState<Family | null>(null);
+  const [deletingFamily, setDeletingFamily] = useState<Family | null>(null);
+
+  // Extract families data
+  const families = response?.data || [];
+
+  // Handlers
+  const handleView = (family: Family) => {
+    setViewingFamily(family);
+    setViewOpen(true);
+  };
+
+  const handleEdit = (family: Family) => {
+    setEditingFamily(family);
+    setFormOpen(true);
+  };
+
+  const handleDelete = (family: Family) => {
+    setDeletingFamily(family);
+    setDeleteOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deletingFamily?.id) {
+      deleteMutation.mutate(deletingFamily.id, {
+        onSuccess: () => {
+          setDeleteOpen(false);
+          setDeletingFamily(null);
+        },
+      });
+    }
+  };
+
   const columns = createFamilyColumns(handleView, handleEdit, handleDelete, t);
 
   return (

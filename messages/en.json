@@ -448,7 +448,12 @@
       "governorate_required": "Governorate is required",
       "capacity_min": "Capacity must be 0 or greater",
       "camp_img_invalid": "Shelter image must be a valid file or URL",
-      "occupancy_error": "Current occupancy cannot exceed total capacity"
+      "occupancy_error": "Current occupancy cannot exceed total capacity",
+      "name_required": "Shelter name is required",
+      "description_min": "Description must be at least 10 characters",
+      "occupancy_min": "Occupancy must be 0 or greater",
+      "lat_range": "Latitude must be between -90 and 90",
+      "lng_range": "Longitude must be between -180 and 180"
     },
     "no_delegate": "No Delegate",
     "columns": {
@@ -463,7 +468,8 @@
     "status": {
       "active": "Active",
       "inactive": "Inactive"
-    }
+    },
+    "view_details": "View Details"
   },
   "camp_projects": {
     "title": "Shelters",
@@ -559,7 +565,13 @@
     "confirm_new_password": "Confirm Password",
     "confirm_password_placeholder": "Re-enter password",
     "passwords_not_match": "Passwords do not match",
-    "save_password": "Save Password"
+    "save_password": "Save Password",
+    "validation": {
+      "name_required": "Contributor name is required",
+      "email_invalid": "Invalid email address",
+      "phone_invalid": "Invalid phone number",
+      "phone_min": "Invalid phone number"
+    }
   },
   "testimonials": {
     "title": "User Testimonials",
@@ -579,7 +591,18 @@
     "defaultTag": "Relief project",
     "goalLabel": "Goal",
     "donorsLabel": "donors",
-    "collectedLabel": "Collected"
+    "collectedLabel": "Collected",
+    "familyCount": "Family Count",
+    "childrenCount": "Children Count",
+    "elderlyCount": "Elderly Count",
+    "location": "Location",
+    "governorate": "Governorate",
+    "description": "Description",
+    "coordinates": "Coordinates",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "createdAt": "Created At",
+    "updatedAt": "Last Updated"
   },
   "adminCamps": {
     "pageTitle": "Shelters Management",
@@ -600,6 +623,19 @@
     "campDeletedSuccess": "Shelter was deleted successfully",
     "campDeleteError": "Failed to delete shelter",
     "error": "Error"
+  },
+  "contact_messages": {
+    "page_title": "Contact Messages",
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "createdAt": "Date",
+    "status": "Status",
+    "new": "New",
+    "read": "Read",
+    "replied": "Replied",
+    "actions": "Actions"
   },
   "profile": {
     "representative": "Representative",

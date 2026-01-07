@@ -77,8 +77,6 @@ export default function AdminCampsPage() {
   };
 
   const handleToggleStatus = (camp: Camp) => {
-    // Implement status toggle if needed, or use updateMutation
-    // For now logging or no-op as per previous logic
     console.log("Toggle status", camp.slug);
   };
 

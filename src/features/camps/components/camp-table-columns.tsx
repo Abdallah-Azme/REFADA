@@ -61,7 +61,8 @@ export const createAdminCampColumns = (
     accessorKey: "status",
     header: t("columns.status"),
     cell: ({ row }) => {
-      const status = row.getValue("status") as "active" | "inactive";
+      const status =
+        (row.getValue("status") as "active" | "inactive") || "active";
       const camp = row.original;
       return (
         <Badge
@@ -70,7 +71,7 @@ export const createAdminCampColumns = (
           onClick={() => camp.slug && onToggleStatus(camp.slug)}
         >
           {/* Attempt to translate status if possible, otherwise use service label */}
-          {status ? t(`status.${status}`) : t("status.inactive")}
+          {t(`status.${status}`)}
         </Badge>
       );
     },
@@ -81,12 +82,12 @@ export const createAdminCampColumns = (
     cell: ({ row }) => {
       const camp = row.original;
       return (
-        <div className="flex justify-end gap-2">
+        <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => onView(camp)}
-            title="عرض التفاصيل" // Translation needed for title? "View Details"
+            title={t("view_details")}
           >
             <Eye className="h-4 w-4" />
           </Button>

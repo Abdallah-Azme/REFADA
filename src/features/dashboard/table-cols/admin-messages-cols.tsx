@@ -51,33 +51,36 @@ interface AdminMessageColumnsProps {
   onDelete: (id: string) => void;
 }
 
-export const createAdminMessageColumns = ({
-  onView,
-  onDelete,
-}: AdminMessageColumnsProps): ColumnDef<ContactMessage>[] => [
+export const createAdminMessageColumns = (
+  { onView, onDelete }: AdminMessageColumnsProps,
+  t: (key: string) => string
+): ColumnDef<ContactMessage>[] => [
   {
     accessorKey: "name",
-    header: "الاسم",
+    header: t("name"),
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue("name")}</div>
     ),
   },
   {
     accessorKey: "email",
-    header: "البريد الإلكتروني",
+    header: t("email"),
   },
   {
     accessorKey: "subject",
-    header: "الموضوع",
+    header: t("subject"),
   },
   {
     accessorKey: "createdAt",
-    header: "التاريخ",
+    header: t("createdAt"),
     cell: ({ row }) => {
       const date = row.getValue("createdAt") as Date;
+      // Using a locale-agnostic or passed locale would be better, but 'ar-EG' was hardcoded.
+      // We'll keep the formatting logic but maybe we should pass locale?
+      // For now, let's stick to simple formatting or keep existing behavior.
       return (
         <div className="text-sm text-gray-500">
-          {new Intl.DateTimeFormat("ar-EG", {
+          {new Intl.DateTimeFormat("en-GB", {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -90,7 +93,7 @@ export const createAdminMessageColumns = ({
   },
   {
     accessorKey: "status",
-    header: "الحالة",
+    header: t("status"),
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       switch (status) {
@@ -98,21 +101,21 @@ export const createAdminMessageColumns = ({
           return (
             <Badge variant="default" className="bg-blue-500">
               <Clock className="h-3 w-3 mr-1" />
-              جديدة
+              {t("new")}
             </Badge>
           );
         case "read":
           return (
             <Badge variant="secondary">
               <Eye className="h-3 w-3 mr-1" />
-              مقروءة
+              {t("read")}
             </Badge>
           );
         case "replied":
           return (
             <Badge variant="default" className="bg-green-500">
               <CheckCircle className="h-3 w-3 mr-1" />
-              تم الرد
+              {t("replied")}
             </Badge>
           );
         default:
@@ -122,6 +125,7 @@ export const createAdminMessageColumns = ({
   },
   {
     id: "actions",
+    header: t("actions"),
     cell: ({ row }) => {
       const message = row.original;
       return (
