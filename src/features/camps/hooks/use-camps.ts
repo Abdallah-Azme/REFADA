@@ -41,7 +41,13 @@ export function useDeleteCamp() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (slug: string) => campsApi.delete(slug),
+    mutationFn: ({
+      slug,
+      deleteRelated,
+    }: {
+      slug: string;
+      deleteRelated?: boolean;
+    }) => campsApi.delete(slug, deleteRelated),
     onSuccess: (response) => {
       toast.success(response.message || "تم حذف المخيم بنجاح");
       queryClient.invalidateQueries({ queryKey: ["camps"] });

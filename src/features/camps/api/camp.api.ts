@@ -147,9 +147,14 @@ export const campsApi = {
   },
 
   delete: async (
-    slug: string
+    slug: string,
+    deleteRelated?: boolean
   ): Promise<{ success: boolean; message: string }> => {
-    const response = await fetch(`${API_BASE_URL}/camps/${slug}`, {
+    const url = deleteRelated
+      ? `${API_BASE_URL}/camps/${slug}?deleteRelated=true`
+      : `${API_BASE_URL}/camps/${slug}`;
+
+    const response = await fetch(url, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("auth_token")}`,

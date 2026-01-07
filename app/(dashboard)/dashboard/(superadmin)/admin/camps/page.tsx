@@ -19,7 +19,7 @@ import { CampFormDialog } from "@/features/camps/components/camp-form-dialog";
 import { CampsTable } from "@/features/camps/components/camps-table";
 import { CampDetailsDialog } from "@/features/camps/components/camp-details-dialog";
 import { Camp, CampFormValues } from "@/features/camps/types/camp.schema";
-import { DeleteConfirmDialog } from "@/features/marital-status/components/delete-confirm-dialog";
+import { CampDeleteDialog } from "@/features/camps/components/camp-delete-dialog";
 import { createAdminCampColumns } from "@/features/camps/components/camp-table-columns";
 
 export default function AdminCampsPage() {
@@ -152,18 +152,22 @@ export default function AdminCampsPage() {
         isLoading={isLoadingDetails}
       />
 
-      <DeleteConfirmDialog
+      <CampDeleteDialog
         open={!!deleteId}
         onOpenChange={(open) => !open && setDeleteId(null)}
-        onConfirm={() => {
+        onConfirm={(deleteRelated) => {
           if (deleteId) {
-            deleteMutation.mutate(deleteId.toString(), {
-              onSuccess: () => setDeleteId(null),
-            });
+            const camp = campsData?.data.find((c: Camp) => c.id === deleteId);
+            if (camp?.slug) {
+              deleteMutation.mutate(
+                { slug: camp.slug, deleteRelated },
+                {
+                  onSuccess: () => setDeleteId(null),
+                }
+              );
+            }
           }
         }}
-        title={t("delete_title")}
-        description={t("delete_desc")}
         isPending={deleteMutation.isPending}
       />
     </div>
