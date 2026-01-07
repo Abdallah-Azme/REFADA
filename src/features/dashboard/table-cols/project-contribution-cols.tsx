@@ -189,8 +189,12 @@ export const createColumnsForContributor = (
     cell: ({ row }) => (
       <div className="flex">
         <Button
-          className="bg-[#1B2540] hover:bg-[#2c3b60] text-white rounded-full px-4 py-1 h-8 text-xs flex items-center gap-2"
+          className="bg-[#1B2540] hover:bg-[#2c3b60] text-white rounded-full px-4 py-1 h-8 text-xs flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={() => handlers.onContribute(row.original)}
+          disabled={
+            row.original.status === "completed" ||
+            row.original.status === "delivered"
+          }
         >
           <Heart className="w-3 h-3" />
           {t("contribute_now")}

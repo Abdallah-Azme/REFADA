@@ -6,6 +6,7 @@ import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Loader2, Plus, Tent } from "lucide-react";
 import MainHeader from "@/shared/components/main-header";
+import { Dialog } from "@/components/ui/dialog";
 
 import {
   useCamps,
@@ -34,16 +35,17 @@ export default function AdminCampsPage() {
 
   // Queries & Mutations
   const { data: campsData, isLoading: isLoadingCamps } = useCamps();
-  const { data: campDetails, isLoading: isLoadingDetails } =
-    useCampDetails(detailsId);
+  const { data: campDetails, isLoading: isLoadingDetails } = useCampDetails(
+    detailsId ? detailsId.toString() : null
+  );
   const createMutation = useCreateCamp();
   const updateMutation = useUpdateCamp();
   const deleteMutation = useDeleteCamp();
 
   const handleSubmit = (data: CampFormValues) => {
-    if (selectedCamp) {
+    if (selectedCamp && selectedCamp.slug) {
       updateMutation.mutate(
-        { id: selectedCamp.id, data },
+        { slug: selectedCamp.slug, data },
         {
           onSuccess: () => {
             setFormOpen(false);
@@ -81,11 +83,19 @@ export default function AdminCampsPage() {
   };
 
   const columns = createAdminCampColumns(
-    t,
-    handleEdit,
-    handleDelete,
-    handleViewDetails,
-    handleToggleStatus
+    {
+      onEdit: handleEdit,
+      onDelete: (slug: string) => {
+        // Find camp by slug to get its id for deletion
+        const camp = campsData?.data.find((c: Camp) => c.slug === slug);
+        if (camp) setDeleteId(camp.id);
+      },
+      onToggleStatus: (slug: string) => {
+        console.log("Toggle status", slug);
+      },
+      onView: handleViewDetails,
+    },
+    t
   );
 
   return (
@@ -110,21 +120,29 @@ export default function AdminCampsPage() {
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (
-            <CampsTable data={campsData?.data || []} columns={columns} />
+            <CampsTable data={campsData?.data || []} customColumns={columns} />
           )}
         </CardContent>
       </Card>
 
-      <CampFormDialog
+      <Dialog
         open={formOpen}
         onOpenChange={(open) => {
           setFormOpen(open);
           if (!open) setSelectedCamp(null);
         }}
-        initialData={selectedCamp}
-        onSubmit={handleSubmit}
-        isSubmitting={createMutation.isPending || updateMutation.isPending}
-      />
+      >
+        <CampFormDialog
+          initialData={selectedCamp}
+          onSubmit={handleSubmit}
+          onCancel={() => {
+            setFormOpen(false);
+            setSelectedCamp(null);
+          }}
+          role="admin"
+          isLoading={createMutation.isPending || updateMutation.isPending}
+        />
+      </Dialog>
 
       <CampDetailsDialog
         open={detailsOpen}
@@ -141,7 +159,7 @@ export default function AdminCampsPage() {
         onOpenChange={(open) => !open && setDeleteId(null)}
         onConfirm={() => {
           if (deleteId) {
-            deleteMutation.mutate(deleteId, {
+            deleteMutation.mutate(deleteId.toString(), {
               onSuccess: () => setDeleteId(null),
             });
           }

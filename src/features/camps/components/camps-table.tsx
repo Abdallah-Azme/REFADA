@@ -29,9 +29,13 @@ import { CampTableColumn } from "../types/camp-table.types";
 import PaginationControls from "@/src/features/dashboard/components/pagination-controls";
 import { useTranslations } from "next-intl";
 
-interface CampsTableProps extends CampTableColumn {
+interface CampsTableProps {
   data: Camp[];
   customColumns?: ColumnDef<Camp>[];
+  onEdit?: (camp: Camp) => void;
+  onDelete?: (slug: string) => void;
+  onToggleStatus?: (slug: string) => void;
+  onView?: (camp: Camp) => void;
 }
 
 export function CampsTable({
@@ -42,7 +46,7 @@ export function CampsTable({
   onView,
   customColumns,
 }: CampsTableProps) {
-  const t = useTranslations("camps_page");
+  const t = useTranslations("camps");
   const tCommon = useTranslations("common");
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -59,10 +63,10 @@ export function CampsTable({
     customColumns ||
     createAdminCampColumns(
       {
-        onEdit,
-        onDelete,
-        onToggleStatus,
-        onView,
+        onEdit: onEdit || (() => {}),
+        onDelete: onDelete || (() => {}),
+        onToggleStatus: onToggleStatus || (() => {}),
+        onView: onView || (() => {}),
       },
       (key) => key
     );

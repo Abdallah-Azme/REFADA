@@ -70,7 +70,7 @@ export const createAdminCampColumns = (
           onClick={() => camp.slug && onToggleStatus(camp.slug)}
         >
           {/* Attempt to translate status if possible, otherwise use service label */}
-          {t(`status.${status}`) || campService.getStatusLabel(status)}
+          {status ? t(`status.${status}`) : t("status.inactive")}
         </Badge>
       );
     },

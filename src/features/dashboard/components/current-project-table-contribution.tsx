@@ -104,6 +104,8 @@ export default function CurrentProjectsTableContribution({
   const [selectedHistoryFamilies, setSelectedHistoryFamilies] = React.useState<
     ContributorFamily[]
   >([]);
+
+  console.log({ selectedHistoryFamilies });
   const [selectedHistoryProjectName, setSelectedHistoryProjectName] =
     React.useState<string>("");
 
@@ -128,7 +130,14 @@ export default function CurrentProjectsTableContribution({
       filtered = filtered.filter((p) => p.status === watchedStatus);
     }
 
-    return filtered;
+    return filtered.sort((a, b) => {
+      const isACompleted = a.status === "completed" || a.status === "delivered";
+      const isBCompleted = b.status === "completed" || b.status === "delivered";
+
+      if (isACompleted && !isBCompleted) return 1;
+      if (!isACompleted && isBCompleted) return -1;
+      return 0;
+    });
   }, [projects, watchedName, watchedStatus]);
 
   const handleView = (project: Project): void => {

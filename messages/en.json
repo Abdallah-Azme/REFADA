@@ -413,6 +413,11 @@
     }
   },
   "camps": {
+    "admin_title": "Shelters Management",
+    "admin_subtitle": "Manage all registered shelters, view details, edit data, and manage statuses.",
+    "camps_list": "Shelters List",
+    "delete_title": "Delete Shelter",
+    "delete_desc": "Are you sure you want to delete this shelter? This action cannot be undone.",
     "add_camp": "Add New Shelter",
     "edit_camp": "Edit Shelter",
     "camp_img": "Shelter Image",
@@ -444,6 +449,20 @@
       "capacity_min": "Capacity must be 0 or greater",
       "camp_img_invalid": "Shelter image must be a valid file or URL",
       "occupancy_error": "Current occupancy cannot exceed total capacity"
+    },
+    "no_delegate": "No Delegate",
+    "columns": {
+      "name": "Shelter Name",
+      "location": "Location",
+      "delegate": "Delegate",
+      "capacity": "Capacity",
+      "occupancy": "Occupancy",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
     }
   },
   "camp_projects": {
