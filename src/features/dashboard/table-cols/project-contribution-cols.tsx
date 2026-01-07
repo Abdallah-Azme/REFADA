@@ -46,7 +46,8 @@ type ActionHandlers = {
 };
 
 export const createColumnsForContributor = (
-  handlers: ActionHandlers
+  handlers: ActionHandlers,
+  t: any
 ): ColumnDef<Project>[] => [
   {
     id: "select",
@@ -58,7 +59,7 @@ export const createColumnsForContributor = (
             (table.getIsSomePageRowsSelected() && "indeterminate")
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="تحديد الكل"
+          aria-label={t("select_all")}
         />
       </div>
     ),
@@ -67,7 +68,7 @@ export const createColumnsForContributor = (
         className="mx-4"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="تحديد الصف"
+        aria-label={t("select_row")}
       />
     ),
     enableSorting: false,
@@ -75,15 +76,15 @@ export const createColumnsForContributor = (
   },
   {
     accessorKey: "name",
-    header: "المشروع",
+    header: t("project"),
     cell: ({ row }) => (
-      <div className="text-right">
+      <div className="">
         <div className="font-bold text-gray-900">{row.original.name}</div>
         <div className="text-xs text-gray-500">
           {row.original.type === "product"
-            ? "منتج"
+            ? t("type_product")
             : row.original.type === "internal"
-            ? "داخلي"
+            ? t("type_internal")
             : row.original.type}
         </div>
       </div>
@@ -91,35 +92,35 @@ export const createColumnsForContributor = (
   },
   {
     accessorKey: "addedBy",
-    header: "أضيف بواسطة",
+    header: t("added_by"),
     cell: ({ row }) => (
       <div className="text-start text-gray-600">{row.original.addedBy}</div>
     ),
   },
   {
     accessorKey: "status",
-    header: "الحالة",
+    header: t("status"),
     cell: ({ row }) => {
       const status = row.original.status;
       let statusText = status;
       let colorClass = "bg-gray-100 text-gray-700";
 
       if (status === "pending") {
-        statusText = "قيد الانتظار";
+        statusText = t("pending");
         colorClass = "bg-yellow-100 text-yellow-700";
       } else if (status === "approved" || row.original.isApproved) {
-        statusText = "موافق عليه";
+        statusText = t("approved");
         colorClass = "bg-green-100 text-green-700";
       } else if (status === "rejected") {
-        statusText = "مرفوض";
+        statusText = t("rejected");
         colorClass = "bg-red-100 text-red-700";
       } else if (status === "completed") {
-        statusText = "مكتمل";
+        statusText = t("completed");
         colorClass = "bg-blue-100 text-blue-700";
       }
 
       return (
-        <div className="flex justify-center">
+        <div className="flex ">
           <span
             className={`px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}
           >
@@ -131,7 +132,7 @@ export const createColumnsForContributor = (
   },
   {
     accessorKey: "indicator",
-    header: "المؤشر",
+    header: t("indicator"),
     cell: ({ row }) => {
       const total = row.original.beneficiaryCount || 1;
       const received = row.original.totalReceived || 0;
@@ -153,7 +154,7 @@ export const createColumnsForContributor = (
   },
   {
     accessorKey: "beneficiaryCount",
-    header: "المستفيدين",
+    header: t("beneficiaries"),
     cell: ({ row }) => (
       <div className="text-start text-gray-600">
         {row.original.beneficiaryCount}
@@ -162,7 +163,7 @@ export const createColumnsForContributor = (
   },
   {
     accessorKey: "totalReceived",
-    header: "تم استلام",
+    header: t("received"),
     cell: ({ row }) => (
       <div className="text-start text-gray-600">
         {row.original.totalReceived}
@@ -171,7 +172,7 @@ export const createColumnsForContributor = (
   },
   {
     accessorKey: "totalRemaining",
-    header: "المتبقي",
+    header: t("remaining"),
     cell: ({ row }) => (
       <div className="text-start text-gray-600">
         {row.original.totalRemaining}
@@ -180,13 +181,13 @@ export const createColumnsForContributor = (
   },
   {
     id: "view",
-    header: "عرض",
+    header: t("view"),
     cell: ({ row }) => (
-      <div className="flex justify-center">
+      <div className="flex">
         <Button
           variant="ghost"
           size="icon"
-          className="text-green-600 hover:text-green-700 hover:bg-green-50"
+          className="text-green-600 hover:text-green-700 hover:bgذ-green-50"
           onClick={() => handlers.onView(row.original)}
         >
           <Eye className="w-5 h-5" />
@@ -196,15 +197,15 @@ export const createColumnsForContributor = (
   },
   {
     id: "contribute",
-    header: "مساهمة",
+    header: t("contribute"),
     cell: ({ row }) => (
-      <div className="flex justify-center">
+      <div className="flex">
         <Button
           className="bg-[#1B2540] hover:bg-[#2c3b60] text-white rounded-full px-4 py-1 h-8 text-xs flex items-center gap-2"
           onClick={() => handlers.onContribute(row.original)}
         >
           <Heart className="w-3 h-3" />
-          ساهم الان
+          {t("contribute_now")}
         </Button>
       </div>
     ),

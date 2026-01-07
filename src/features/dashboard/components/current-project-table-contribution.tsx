@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import {
   Table,
   TableBody,
@@ -76,6 +77,8 @@ export default function CurrentProjectsTableContribution({
       family: "",
     },
   });
+
+  const t = useTranslations("project_columns");
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -174,10 +177,13 @@ export default function CurrentProjectsTableContribution({
 
   const table = useReactTable<Project>({
     data: filteredProjects,
-    columns: createColumnsForContributor({
-      onView: handleViewHistory, // Use handleViewHistory for the eye icon
-      onContribute: handleContribute,
-    }),
+    columns: createColumnsForContributor(
+      {
+        onView: handleViewHistory, // Use handleViewHistory for the eye icon
+        onContribute: handleContribute,
+      },
+      t
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -202,27 +208,6 @@ export default function CurrentProjectsTableContribution({
     <div className="rounded-lg bg-white">
       <div className="p-6">
         <div className="flex justify-between items-center gap-2">
-          {/* Buttons */}
-          <div className="flex gap-2">
-            <Button
-              size="lg"
-              variant="outline"
-              className="px-6 py-2 rounded-xl flex items-center gap-2"
-              onClick={() => form.reset()}
-            >
-              <RotateCcw className="w-4 h-4 text-primary" />
-              إعادة البحث
-            </Button>
-
-            <Button
-              className="bg-[#1B2540] text-white px-6 py-2 rounded-xl flex items-center gap-2 text-sm font-medium hover:bg-[#2c3b60]"
-              size="lg"
-            >
-              <SearchCheck className="w-4 h-4" />
-              بحث
-            </Button>
-          </div>
-
           {/* FORM */}
           <Form {...form}>
             <form
@@ -237,7 +222,7 @@ export default function CurrentProjectsTableContribution({
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="اسم المشروع"
+                        placeholder={t("search_project")}
                         {...field}
                         className="w-[200px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700"
                       />
@@ -258,13 +243,21 @@ export default function CurrentProjectsTableContribution({
                         value={field.value}
                       >
                         <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                          <SelectValue placeholder="حالة المشروع" />
+                          <SelectValue placeholder={t("project_status")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="pending">قيد الانتظار</SelectItem>
-                          <SelectItem value="approved">موافق عليه</SelectItem>
-                          <SelectItem value="completed">مكتمل</SelectItem>
-                          <SelectItem value="rejected">مرفوض</SelectItem>
+                          <SelectItem value="pending">
+                            {t("pending")}
+                          </SelectItem>
+                          <SelectItem value="approved">
+                            {t("approved")}
+                          </SelectItem>
+                          <SelectItem value="completed">
+                            {t("completed")}
+                          </SelectItem>
+                          <SelectItem value="rejected">
+                            {t("rejected")}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -273,6 +266,18 @@ export default function CurrentProjectsTableContribution({
               />
             </form>
           </Form>
+          {/* Buttons */}
+          <div className="flex gap-2">
+            <Button
+              size="lg"
+              variant="outline"
+              className="px-6 py-2 rounded-xl flex items-center gap-2"
+              onClick={() => form.reset()}
+            >
+              <RotateCcw className="w-4 h-4 text-primary" />
+              {t("reset_search")}
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -318,16 +323,17 @@ export default function CurrentProjectsTableContribution({
               <TableRow>
                 <TableCell
                   colSpan={
-                    createColumnsForContributor({
-                      onView: handleView,
-                      onContribute: handleContribute,
-                    }).length
+                    createColumnsForContributor(
+                      {
+                        onView: handleView,
+                        onContribute: handleContribute,
+                      },
+                      t
+                    ).length
                   }
                   className="h-24 text-center"
                 >
-                  {projects.length === 0
-                    ? "لا توجد مشاريع في هذا الإيواء"
-                    : "لا توجد نتائج."}
+                  {projects.length === 0 ? t("no_projects") : t("no_results")}
                 </TableCell>
               </TableRow>
             )}

@@ -1371,7 +1371,7 @@
     "error_title": "حدث خطأ أثناء تحميل النشاطات",
     "unknown_error": "خطأ غير معروف",
     "id": "الرقم",
-    "description": "الوصف",
+
     "type": "النوع",
     "date": "التاريخ",
     "type_camp": "مخيم",
@@ -1406,5 +1406,31 @@
     "view": "عرض",
     "fetch_error": "فشل في جلب سجل المساهمات",
     "loading_history": "جاري تحميل سجل المساهمات..."
+  },
+  "project_columns": {
+    "project": "المشروع",
+    "added_by": "أضيف بواسطة",
+    "status": "الحالة",
+    "indicator": "المؤشر",
+    "beneficiaries": "المستفيدين",
+    "received": "تم استلام",
+    "remaining": "المتبقي",
+    "view": "عرض",
+    "contribute": "مساهمة",
+    "contribute_now": "ساهم الان",
+    "type_product": "منتج",
+    "type_internal": "داخلي",
+    "pending": "قيد الانتظار",
+    "approved": "موافق عليه",
+    "rejected": "مرفوض",
+    "completed": "مكتمل",
+    "select_all": "تحديد الكل",
+    "select_row": "تحديد الصف",
+    "search_project": "اسم المشروع",
+    "project_status": "حالة المشروع",
+    "search": "بحث",
+    "reset_search": "إعادة البحث",
+    "no_projects": "لا توجد مشاريع في هذا الإيواء",
+    "no_results": "لا توجد نتائج."
   }
 }

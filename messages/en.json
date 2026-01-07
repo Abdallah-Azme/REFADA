@@ -1351,7 +1351,7 @@
     "error_title": "Error loading activities",
     "unknown_error": "Unknown error",
     "id": "ID",
-    "description": "Description",
+
     "type": "Type",
     "date": "Date",
     "type_camp": "Camp",
@@ -1386,5 +1386,31 @@
     "view": "View",
     "fetch_error": "Failed to fetch contribution history",
     "loading_history": "Loading contribution history..."
+  },
+  "project_columns": {
+    "project": "Project",
+    "added_by": "Added By",
+    "status": "Status",
+    "indicator": "Indicator",
+    "beneficiaries": "Beneficiaries",
+    "received": "Received",
+    "remaining": "Remaining",
+    "view": "View",
+    "contribute": "Contribute",
+    "contribute_now": "Contribute Now",
+    "type_product": "Product",
+    "type_internal": "Internal",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "completed": "Completed",
+    "select_all": "Select All",
+    "select_row": "Select Row",
+    "search_project": "Project Name",
+    "project_status": "Project Status",
+    "search": "Search",
+    "reset_search": "Reset Search",
+    "no_projects": "No projects in this shelter",
+    "no_results": "No results."
   }
 }
