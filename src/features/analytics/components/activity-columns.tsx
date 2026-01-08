@@ -29,7 +29,7 @@ export const createActivityColumns = (
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        {t("description")} <ArrowUpDown className="ms-2 h-4 w-4" />
+        {t("column_description")} <ArrowUpDown className="ms-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {

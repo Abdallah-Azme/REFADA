@@ -285,43 +285,43 @@ export default function DashboardSidebar() {
     //   href: "/dashboard/admin/home-control/projects",
     // },
     {
-      label: "آراء المستفيدين",
+      label: tHome("testimonials"),
       icon: Users,
       href: "/dashboard/admin/home-control/testimonials",
     },
     {
-      label: "صور الصفحات",
+      label: tHome("page_images"),
       icon: ImageIcon,
       href: "/dashboard/admin/home-control/page-images",
     },
     {
-      label: "الصفحات",
+      label: tHome("pages"),
       icon: FileText,
       // href is optional for parents
       href: "#",
       children: [
         {
-          label: "شروط الاستخدام",
+          label: tHome("terms_item"),
           href: "/dashboard/admin/home-control/pages/terms",
         },
         {
-          label: "سياسة الخصوصية",
+          label: tHome("privacy_item"),
           href: "/dashboard/admin/home-control/pages/privacy",
         },
         {
-          label: "الشفافية",
+          label: tHome("transparency_item"),
           href: "/dashboard/admin/home-control/pages/transparency",
         },
         {
-          label: "حقوق الملكية",
+          label: tHome("mission_item"),
           href: "/dashboard/admin/home-control/pages/mission",
         },
         {
-          label: "حدود دور المنصة",
+          label: tHome("vision_item"),
           href: "/dashboard/admin/home-control/pages/vision",
         },
         {
-          label: "حماية الفئات الهشة",
+          label: tHome("goals_item"),
           href: "/dashboard/admin/home-control/pages/goals",
         },
       ],
@@ -332,7 +332,7 @@ export default function DashboardSidebar() {
     //   href: "/dashboard/admin/home-control/contact",
     // },
     {
-      label: "إعدادات الموقع",
+      label: tHome("website_settings"),
       icon: Settings,
       href: "/dashboard/admin/home-control/website-settings",
     },
@@ -415,7 +415,9 @@ export default function DashboardSidebar() {
               <SidebarGroup>
                 <SidebarGroupLabel asChild>
                   <CollapsibleTrigger className="flex w-full items-center justify-between text-white/70 mb-2 px-2 hover:text-white transition-colors">
-                    {isAdmin ? "لوحة الإدارة" : "لوحة التحكم"}
+                    {isAdmin
+                      ? tAdminMenu("admin_panel")
+                      : tRepMenu("control_panel")}
                     <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                   </CollapsibleTrigger>
                 </SidebarGroupLabel>
@@ -467,7 +469,7 @@ export default function DashboardSidebar() {
                 <SidebarGroup>
                   <SidebarGroupLabel asChild>
                     <CollapsibleTrigger className="flex w-full items-center justify-between text-white/70 mb-2 px-2 hover:text-white transition-colors">
-                      إدارة النظام
+                      {tAdminMenu("system_administration")}
                       <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                     </CollapsibleTrigger>
                   </SidebarGroupLabel>
@@ -515,7 +517,7 @@ export default function DashboardSidebar() {
                 <SidebarGroup>
                   <SidebarGroupLabel asChild>
                     <CollapsibleTrigger className="flex w-full items-center justify-between text-white/70 mb-2 px-2 hover:text-white transition-colors">
-                      التحكم في الرئيسية
+                      {tAdminMenu("home_control_title")}
                       <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                     </CollapsibleTrigger>
                   </SidebarGroupLabel>
@@ -626,7 +628,9 @@ export default function DashboardSidebar() {
                   className="w-full flex items-center gap-3 text-white hover:bg-white/10 rounded-xl px-4 py-3"
                 >
                   <LogOut className="size-4" />
-                  <span className="text-sm font-medium">تسجيل خروج</span>
+                  <span className="text-sm font-medium">
+                    {tAdminMenu("logout")}
+                  </span>
                 </SidebarMenuButton>
               </AlertDialogTrigger>
               <AlertDialogContent>

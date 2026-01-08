@@ -58,7 +58,7 @@ export default function RepresentativeFamiliesPage() {
     }
   };
 
-  const columns = createFamilyColumns(handleView, handleEdit, handleDelete, {
+  const columns = createFamilyColumns(handleView, handleEdit, handleDelete, t, {
     hideDelete: true,
   });
 

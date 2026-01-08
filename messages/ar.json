@@ -41,7 +41,13 @@
       "logout_cancel": "إلغاء",
       "logging_out": "جاري..."
     },
-    "no_results": "لا توجد نتائج"
+    "no_results": "لا توجد نتائج",
+    "save_changes": "حفظ التغييرات",
+    "date_range_placeholder": "اختر نطاق التاريخ",
+    "languages": {
+      "ar": "العربية",
+      "en": "English"
+    }
   },
   "home": "الرئيسية",
   "about": "من نحن",
@@ -155,7 +161,12 @@
     "time_now": "الآن",
     "time_minutes_ago": "منذ {count} دقيقة",
     "time_hours_ago": "منذ {count} ساعة",
-    "time_days_ago": "منذ {count} يوم"
+    "time_days_ago": "منذ {count} يوم",
+    "logout_title": "تسجيل الخروج",
+    "logout_description": "هل أنت متأكد من رغبتك في تسجيل الخروج؟",
+    "logout_confirm": "تسجيل خروج",
+    "logout_cancel": "إلغاء",
+    "logging_out": "جاري تسجيل الخروج..."
   },
   "sidebar": {
     "representative_menu": {
@@ -165,19 +176,26 @@
       "projects": "المشاريع",
       "contributions": "المساهمات",
       "reports": "التقارير",
-      "settings": "الإعدادات"
+      "settings": "الإعدادات",
+      "control_panel": "لوحة التحكم"
     },
     "contributor_menu": {
       "contributor_info": "معلومات المساهم",
       "shelters": "الإيواءات",
-      "settings": "الإعدادات"
+      "settings": "الإعدادات",
+      "reports": "التقارير",
+      "control_panel": "لوحة التحكم"
     },
     "admin_menu": {
       "home": "الرئيسية",
       "shelters": "الإيواءات",
       "messages": "الرسائل",
       "complaints_suggestions": "الشكاوى والاقتراحات",
-      "settings": "الإعدادات"
+      "settings": "الإعدادات",
+      "admin_panel": "لوحة الإدارة",
+      "system_administration": "إدارة النظام",
+      "home_control_title": "التحكم في الرئيسية",
+      "logout": "تسجيل خروج"
     },
     "entity_management": {
       "title": "إدارة النظام",
@@ -211,6 +229,12 @@
       "testimonials": "آراء المستفيدين",
       "page_images": "صور الصفحات",
       "pages": "الصفحات",
+      "terms_item": "شروط الاستخدام",
+      "privacy_item": "سياسة الخصوصية",
+      "transparency_item": "الشفافية",
+      "mission_item": "حقوق الملكية",
+      "vision_item": "حدود دور المنصة",
+      "goals_item": "حماية الفئات الهشة",
       "website_settings": "إعدادات الموقع"
     },
     "dashboard_control": "لوحة التحكم",
@@ -752,7 +776,11 @@
     "december": "ديسمبر",
     "registered_families": "عدد العائلات المسجلة",
     "current_projects_count": "عدد المشاريع الحالية",
-    "completion_percentage": "نسبة الإنجاز"
+    "completion_percentage": "نسبة الإنجاز",
+    "title": "التقارير"
+  },
+  "policy_page": {
+    "title": "السياسات"
   },
 
   "campStats": {
@@ -805,7 +833,10 @@
     "update_btn": "تحديث",
     "add_btn": "إضافة",
     "cancel": "إلغاء",
-    "save": "جاري الحفظ..."
+    "save": "جاري الحفظ...",
+    "id": "الرقم",
+    "name": "الاسم",
+    "actions": "الإجراءات"
   },
   "medical_condition_page": {
     "title": "إدارة الحالات الطبية",
@@ -820,7 +851,10 @@
     "update_btn": "تحديث",
     "add_btn": "إضافة",
     "cancel": "إلغاء",
-    "save": "جاري الحفظ..."
+    "save": "جاري الحفظ...",
+    "id": "الرقم",
+    "name": "الاسم",
+    "actions": "الإجراءات"
   },
   "relationship_page": {
     "title": "إدارة العلاقات",
@@ -835,7 +869,10 @@
     "update_btn": "تحديث",
     "add_btn": "إضافة",
     "cancel": "إلغاء",
-    "save": "جاري الحفظ..."
+    "save": "جاري الحفظ...",
+    "id": "الرقم",
+    "name": "الاسم",
+    "actions": "الإجراءات"
   },
   "admin_position_page": {
     "title": "إدارة الصفات الإدارية",
@@ -850,7 +887,10 @@
     "update_btn": "تحديث",
     "add_btn": "إضافة",
     "cancel": "إلغاء",
-    "save": "جاري الحفظ..."
+    "save": "جاري الحفظ...",
+    "id": "الرقم",
+    "name": "الاسم",
+    "actions": "الإجراءات"
   },
   "dashboard_stats": {
     "quick_stats": "احصائيات سريعة",
@@ -1413,6 +1453,7 @@
     "select_family": "يرجى اختيار عائلة واحدة على الأقل",
     "invalid_family_quantity": "يرجى إدخال كمية صالحة لكل عائلة",
     "create_project_error": "لا يمكن إنشاء المشروع",
+    "suggested": "مقترح",
     "contribute_dialog": {
       "quantity_validation": "يرجى إدخال كمية صالحة",
       "quantity_label": "من فضلك ادخل الكمية التي تريد المساهمة بها",
@@ -1455,6 +1496,7 @@
     "page_title": "سجل النشاطات",
     "all_activities": "جميع النشاطات",
     "description": "سجل كامل بجميع الأنشطة والعمليات التي تمت في النظام",
+    "column_description": "النشاط",
     "loading": "جاري تحميل النشاطات...",
     "error_title": "حدث خطأ أثناء تحميل النشاطات",
     "unknown_error": "خطأ غير معروف",
@@ -1523,5 +1565,36 @@
     "reset_search": "إعادة البحث",
     "no_projects": "لا توجد مشاريع في هذا الإيواء",
     "no_results": "لا توجد نتائج."
+  },
+  "hero_settings": {
+    "page_title": "إعدادات القسم الرئيسي (Hero)",
+    "add_slide": "إضافة شريحة جديدة",
+    "edit_slide": "تعديل الشريحة",
+    "slides_list": "قائمة الشرائح",
+    "delete_confirm_title": "تأكيد حذف الشريحة",
+    "delete_confirm_desc": "هل أنت متأكد من حذف هذه الشريحة؟ لا يمكن التراجع عن هذا الإجراء.",
+    "cancel": "إلغاء",
+    "deleting": "جاري الحذف...",
+    "delete": "حذف",
+    "no_slides": "لا توجد شرائح مضافة حالياً",
+    "back_to_list": "العودة للقائمة",
+    "create_slide": "إنشاء الشريحة",
+    "save_edits": "حفظ التعديلات",
+    "cards": {
+      "main_image": "الصورة الرئيسية",
+      "main_image_desc": "هذه الصورة تظهر كخلفية للشريحة",
+      "small_image": "الصورة الصغيرة",
+      "small_image_desc": "هذه الصورة تظهر بجانب النص",
+      "main_texts": "النصوص الرئيسية",
+      "slide_num": "شريحة رقم ",
+      "texts_desc": "أدخل النصوص باللغتين العربية والإنجليزية"
+    },
+    "form": {
+      "upload_banner": "ارفع صورة البانر",
+      "upload_small": "ارفع الصورة الصغيرة",
+      "main_title": "العنوان الرئيسي",
+      "subtitle": "العنوان الفرعي",
+      "description": "الوصف"
+    }
   }
 }

@@ -131,7 +131,7 @@ export default function StatsCards({
           >
             {/* Label */}
             <p className="text-sm font-semibold text-[#828282]">
-              {t(stat.labelKey)}
+              {stat.labelKey ? t(stat.labelKey) : ""}
             </p>
 
             {/* Value + Icon */}

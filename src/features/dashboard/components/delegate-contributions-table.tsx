@@ -52,10 +52,12 @@ import {
   ContributorFamily,
   confirmDelegateContributionApi,
   addFamiliesToContributionApi,
-  FamilyQuantity,
+  getRepresentativeCampFamiliesApi,
+  CampFamily,
 } from "@/features/contributors/api/contributors.api";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -393,8 +395,52 @@ export default function DelegateContributionsTable() {
     new Map()
   );
   const [isAddingFamilies, setIsAddingFamilies] = useState(false);
+  const [campFamilies, setCampFamilies] = useState<CampFamily[]>([]);
+  const [isLoadingCampFamilies, setIsLoadingCampFamilies] = useState(false);
+
   const t = useTranslations("contributions");
   const tCommon = useTranslations("common");
+
+  // Fetch camp families when stepping into family selection (Step 2)
+  useEffect(() => {
+    if (confirmStep === 2 && campFamilies.length === 0) {
+      fetchCampFamilies();
+    }
+  }, [confirmStep, campFamilies.length]);
+
+  const fetchCampFamilies = async () => {
+    setIsLoadingCampFamilies(true);
+    try {
+      const response = await getRepresentativeCampFamiliesApi();
+      if (response.success) {
+        setCampFamilies(response.data.families);
+      }
+    } catch (error) {
+      console.error("Failed to fetch camp families:", error);
+      toast.error(t("fetch_families_error"));
+    } finally {
+      setIsLoadingCampFamilies(false);
+    }
+  };
+
+  // Merge and sort families for display in Step 2
+  const displayFamilies = React.useMemo(() => {
+    if (!confirmingContribution) return [];
+
+    const backendFamilies = confirmingContribution.contributorFamilies;
+    const backendIds = new Set(backendFamilies.map((f) => f.id));
+
+    // Map backend families to a compatible structure if needed, or just use them
+    // We want to flag them as "suggested"
+    const suggested = backendFamilies.map((f) => ({ ...f, isSuggested: true }));
+
+    // Filter other camp families that are NOT in the backend list
+    const others = campFamilies
+      .filter((f) => !backendIds.has(f.id))
+      .map((f) => ({ ...f, isSuggested: false }));
+
+    return [...suggested, ...others];
+  }, [confirmingContribution, campFamilies]);
 
   // Fetch contributions
   useEffect(() => {
@@ -782,52 +828,82 @@ export default function DelegateContributionsTable() {
               // Step 2: Family Selection
               <div className="space-y-4 text-right">
                 {t("select_beneficiaries_desc")}:
-                <div className="space-y-3 max-h-[300px] overflow-y-auto">
-                  {confirmingContribution?.contributorFamilies.map((family) => (
-                    <div
-                      key={family.id}
-                      onClick={() => handleToggleFamily(family.id)}
-                      className={`flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer ${
-                        selectedFamilies.has(family.id)
-                          ? "bg-blue-50 border-blue-200"
-                          : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-                      }`}
-                    >
-                      <Checkbox
-                        id={`family-${family.id}`}
-                        checked={selectedFamilies.has(family.id)}
-                        onCheckedChange={() => handleToggleFamily(family.id)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                      <div className="flex-1">
-                        <label
-                          htmlFor={`family-${family.id}`}
-                          className="font-medium cursor-pointer"
-                        >
-                          {family.familyName}
-                        </label>
-                        <p className="text-xs text-gray-500">
-                          {family.totalMembers} أفراد - {family.camp}
-                        </p>
-                      </div>
-                      {selectedFamilies.has(family.id) && (
-                        <Input
-                          type="number"
-                          placeholder={t("quantity_placeholder")}
-                          value={selectedFamilies.get(family.id) || ""}
-                          onChange={(e) =>
-                            handleFamilyQuantityChange(
-                              family.id,
-                              e.target.value
-                            )
-                          }
-                          onClick={(e) => e.stopPropagation()}
-                          className="w-20 h-9 text-center"
-                          min={1}
-                        />
-                      )}
+                <div className="space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar p-1">
+                  {isLoadingCampFamilies && campFamilies.length === 0 ? (
+                    <div className="flex justify-center p-4">
+                      <Loader2 className="h-6 w-6 animate-spin text-primary" />
                     </div>
-                  ))}
+                  ) : (
+                    displayFamilies.map((family) => {
+                      // @ts-ignore - Handle potential type mismatch if CampFamily and ContributorFamily differ slightly
+                      const isSuggested = family.isSuggested;
+                      return (
+                        <div
+                          key={family.id}
+                          onClick={() => handleToggleFamily(family.id)}
+                          className={`flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer ${
+                            selectedFamilies.has(family.id)
+                              ? "bg-blue-50 border-blue-200"
+                              : isSuggested
+                              ? "bg-green-50/50 border-green-100/50 hover:bg-green-50"
+                              : "bg-gray-50 border-gray-200 hover:bg-gray-100"
+                          }`}
+                        >
+                          <Checkbox
+                            id={`family-${family.id}`}
+                            checked={selectedFamilies.has(family.id)}
+                            onCheckedChange={() =>
+                              handleToggleFamily(family.id)
+                            }
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <label
+                                htmlFor={`family-${family.id}`}
+                                className="font-medium cursor-pointer"
+                              >
+                                {family.familyName}
+                              </label>
+                              {isSuggested && (
+                                <Badge
+                                  className="text-xs bg-green-100 text-green-700 hover:bg-green-100 border-green-200 shadow-none"
+                                  variant="outline"
+                                >
+                                  {t("suggested")}
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {family.nationalId} - {family.totalMembers}{" "}
+                              {t("individuals")}
+                            </p>
+                          </div>
+                          {selectedFamilies.has(family.id) && (
+                            <div className="flex items-center gap-2 animate-in fade-in zoom-in-95">
+                              <span className="text-xs text-gray-500 whitespace-nowrap">
+                                {t("quantity")}:
+                              </span>
+                              <Input
+                                type="number"
+                                placeholder={t("quantity_placeholder")}
+                                value={selectedFamilies.get(family.id) || ""}
+                                onChange={(e) =>
+                                  handleFamilyQuantityChange(
+                                    family.id,
+                                    e.target.value
+                                  )
+                                }
+                                onClick={(e) => e.stopPropagation()}
+                                className="w-20 h-9 text-center bg-white"
+                                min={1}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
                 <div className="flex gap-3 justify-end mt-6">
                   <Button

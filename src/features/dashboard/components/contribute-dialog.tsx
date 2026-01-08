@@ -330,6 +330,7 @@ export default function ContributeDialog({
                       <Popover
                         open={openFamilySearch}
                         onOpenChange={setOpenFamilySearch}
+                        modal={true}
                       >
                         <PopoverTrigger asChild>
                           <div className="relative w-full">
