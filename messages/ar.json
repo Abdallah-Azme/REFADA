@@ -166,7 +166,9 @@
     "logout_description": "هل أنت متأكد من رغبتك في تسجيل الخروج؟",
     "logout_confirm": "تسجيل خروج",
     "logout_cancel": "إلغاء",
-    "logging_out": "جاري تسجيل الخروج..."
+    "logging_out": "جاري تسجيل الخروج...",
+    "footer_rights": "جميع الحقوق محفوظة لشركة رفاد",
+    "developed_by": "مطور من قبل شركة"
   },
   "sidebar": {
     "representative_menu": {

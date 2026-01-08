@@ -412,7 +412,7 @@ export default function ContributeDialog({
 
                     {/* Age Groups Filter */}
                     <div className="flex items-center gap-1">
-                      <Popover>
+                      <Popover modal={true}>
                         <PopoverTrigger asChild>
                           <Button
                             type="button"
@@ -475,7 +475,7 @@ export default function ContributeDialog({
 
                     {/* Medical Conditions Filter */}
                     <div className="flex items-center gap-1">
-                      <Popover>
+                      <Popover modal={true}>
                         <PopoverTrigger asChild>
                           <Button
                             type="button"

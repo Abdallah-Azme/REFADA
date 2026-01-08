@@ -173,7 +173,9 @@
     "logout_description": "Are you sure you want to log out?",
     "logout_confirm": "Logout",
     "logout_cancel": "Cancel",
-    "logging_out": "Logging out..."
+    "logging_out": "Logging out...",
+    "footer_rights": "All rights reserved to Refad Company",
+    "developed_by": "Developed by"
   },
   "sidebar": {
     "representative_menu": {
