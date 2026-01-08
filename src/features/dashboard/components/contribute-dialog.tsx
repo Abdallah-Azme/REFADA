@@ -285,14 +285,16 @@ export default function ContributeDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-[500px] p-0 overflow-hidden bg-white rounded-3xl">
-        <div className="p-6">
+      <DialogContent className="max-w-[500px] p-0 bg-white rounded-3xl max-h-[90vh] flex flex-col">
+        <div className="shrink-0 p-6 pb-0">
           <DialogHeader className="flex flex-row items-center justify-between mb-6">
             <DialogTitle className="text-xl font-bold text-center w-full text-gray-800">
               {project.name}
             </DialogTitle>
           </DialogHeader>
+        </div>
 
+        <div className="flex-1 overflow-y-auto px-6 pb-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-6 bg-gray-50/50 p-6 rounded-xl">
@@ -354,7 +356,7 @@ export default function ContributeDialog({
                               placeholder={t("search_family_placeholder")}
                               className="text-right"
                             />
-                            <CommandList>
+                            <CommandList className="max-h-[300px] overflow-y-auto">
                               {isLoadingFamilies ? (
                                 <div className="flex items-center justify-center py-6">
                                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
