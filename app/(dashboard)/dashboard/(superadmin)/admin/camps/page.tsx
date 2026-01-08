@@ -97,7 +97,7 @@ export default function AdminCampsPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-8 ">
       <MainHeader header={t("admin_title")} subheader={t("admin_subtitle")}>
         <Tent className="h-6 w-6 text-primary" />
       </MainHeader>

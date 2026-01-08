@@ -18,7 +18,7 @@ import { useTranslations } from "next-intl";
 // ... imports
 
 export default function ContactMessagesPage() {
-  const t = useTranslations("messages_page");
+  const t = useTranslations("contact_messages");
   const tCommon = useTranslations("common");
   const { data, isLoading, error } = useContactMessages();
   const deleteMutation = useDeleteContactMessage();

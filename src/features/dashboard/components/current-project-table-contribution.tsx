@@ -146,33 +146,34 @@ export default function CurrentProjectsTableContribution({
   };
 
   const handleViewHistory = (project: Project): void => {
-    // Find the contribution history for this project
+    // Find ALL contribution history items for this project
     // Note: The history API returns items with a 'project' object inside.
-    // We need to match the project ID.
-    const historyItem = historyItems.find(
+    // We need to match the project ID and collect ALL families from ALL contributions.
+    const projectHistoryItems = historyItems.filter(
       (item: { project: { id: number } }) => item.project.id === project.id
     );
 
-    if (
-      historyItem &&
-      historyItem.contributorFamilies &&
-      historyItem.contributorFamilies.length > 0
-    ) {
-      setSelectedHistoryFamilies(historyItem.contributorFamilies);
+    // Collect all families from all contributions for this project
+    const allFamilies = projectHistoryItems.reduce((acc: any[], item: any) => {
+      if (item.contributorFamilies && item.contributorFamilies.length > 0) {
+        return [...acc, ...item.contributorFamilies];
+      }
+      return acc;
+    }, []);
+
+    if (allFamilies.length > 0) {
+      setSelectedHistoryFamilies(allFamilies);
       setSelectedHistoryProjectName(project.name);
       setIsHistoryDialogOpen(true);
     } else {
-      // If no history found or no families, show toast or just open project details?
-      // User request specifically asked to "show the data of the families i contributed to".
-      // If not found, maybe just show info toast.
-      // Or fallback to standard project view if no families found?
-      // Let's fallback to standard view if no history, but toast might be better if they expect families.
-      // But for now, let's try to show the families dialog if we have data, otherwise fallback to project details.
-      if (historyItem) {
+      // If no families found across all contributions
+      if (projectHistoryItems.length > 0) {
+        // Has contributions but no families assigned yet
         setSelectedHistoryFamilies([]);
         setSelectedHistoryProjectName(project.name);
         setIsHistoryDialogOpen(true);
       } else {
+        // No contribution history at all
         toast.info("لم يتم العثور على سجل مساهمات لهذا المشروع");
       }
     }
@@ -260,6 +261,9 @@ export default function CurrentProjectsTableContribution({
                           </SelectItem>
                           <SelectItem value="delivered">
                             {t("delivered")}
+                          </SelectItem>
+                          <SelectItem value="not_completed">
+                            {t("not_completed")}
                           </SelectItem>
                         </SelectContent>
                       </Select>

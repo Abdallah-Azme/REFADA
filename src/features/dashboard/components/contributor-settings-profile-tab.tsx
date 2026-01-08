@@ -36,6 +36,7 @@ export default function ContributorSettingsProfileTab() {
       idNumber: "",
       phone: "",
       backupPhone: "",
+      adminPosition: "",
       licenseNumber: "",
     },
   });
@@ -49,6 +50,7 @@ export default function ContributorSettingsProfileTab() {
         idNumber: profileData.data.idNumber || "",
         phone: profileData.data.phone || "",
         backupPhone: profileData.data.backupPhone || "",
+        adminPosition: profileData.data.adminPosition || "",
         licenseNumber: profileData.data.licenseNumber || "",
       });
     }
@@ -228,26 +230,55 @@ export default function ContributorSettingsProfileTab() {
               )}
             />
 
-            {/* LICENSE NUMBER */}
-            <FormField
-              control={profileForm.control}
-              name="licenseNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-medium text-gray-700">
-                    رقم الترخيص
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={!isEditing}
-                      className="h-11 text-base bg-gray-50 border-gray-200"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* ADMIN POSITION - Only show if exists */}
+            {profileData?.data?.adminPosition && (
+              <FormField
+                control={profileForm.control}
+                name="adminPosition"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-gray-700">
+                      الصفة الإدارية
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={true}
+                        className="h-11 text-base bg-gray-100 border-gray-200"
+                        value={
+                          profileData?.data?.adminPosition || field.value || ""
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {/* LICENSE NUMBER - Only show if admin position is association or if it exists */}
+            {(profileData?.data?.adminPosition === "جمعية" ||
+              profileData?.data?.licenseNumber) && (
+              <FormField
+                control={profileForm.control}
+                name="licenseNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-gray-700">
+                      رقم الترخيص
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={!isEditing}
+                        className="h-11 text-base bg-gray-50 border-gray-200"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </div>
 
           {isEditing && (

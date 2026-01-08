@@ -651,6 +651,18 @@
   },
   "contact_messages": {
     "page_title": "رسائل التواصل",
+    "all_messages": "جميع الرسائل",
+    "new_messages": "{count} رسالة جديدة",
+    "delete_title": "حذف الرسالة",
+    "delete_description": "هل أنت متأكد من حذف هذه الرسالة؟ لا يمكن التراجع عن هذا الإجراء.",
+    "columns": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "subject": "الموضوع",
+      "date": "التاريخ",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
     "name": "الاسم",
     "email": "البريد الإلكتروني",
     "subject": "الموضوع",
@@ -1501,7 +1513,8 @@
     "approved": "موافق عليه",
     "rejected": "مرفوض",
     "completed": "مكتمل",
-    "delivered": "تم التسليم",
+    "delivered": "اكتمل",
+    "not_completed": "لم يكتمل",
     "select_all": "تحديد الكل",
     "select_row": "تحديد الصف",
     "search_project": "اسم المشروع",

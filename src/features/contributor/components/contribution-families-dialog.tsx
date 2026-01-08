@@ -87,7 +87,9 @@ export default function ContributionFamiliesDialog({
                         {family.camp}
                       </TableCell>
                       <TableCell className="text-right">
-                        {family.location}
+                        {family.location && family.location !== "undefined"
+                          ? family.location
+                          : "-"}
                       </TableCell>
                     </TableRow>
                   ))}

@@ -101,7 +101,10 @@ export default function FamilyDetailsDialog({
                   {family.camp || ""}
                 </span>
                 <span className="text-xs text-green-600">
-                  {t("tent")}: {family.tentNumber || ""}
+                  {t("tent")}:{" "}
+                  {family.tentNumber && family.tentNumber !== "undefined"
+                    ? family.tentNumber
+                    : "-"}
                 </span>
               </div>
 
@@ -146,7 +149,9 @@ export default function FamilyDetailsDialog({
                   <MapPin className="h-4 w-4 text-gray-500" />
                   <span className="text-sm text-gray-600">{t("address")}</span>
                   <span className="text-sm font-medium">
-                    {family.location || ""}
+                    {family.location && family.location !== "undefined"
+                      ? family.location
+                      : "-"}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
