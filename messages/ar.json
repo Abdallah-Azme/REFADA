@@ -123,12 +123,30 @@
     "welcome_message": "مرحباً بك في لوحة تحكم المسؤول. يمكنك من هنا إدارة محتوى الموقع وتخصيص الأقسام المختلفة.",
     "projects": "المشاريع",
     "total_projects": "إجمالي المشاريع",
-    "families": "العائلات",
     "total_families": "إجمالي العائلات",
     "contributors": "المساهمين",
     "total_contributors": "إجمالي المساهمين",
     "camps": "الإيواءات",
     "total_camps": "إجمالي الإيواءات",
+    "families": {
+      "select_all": "تحديد الكل",
+      "select_row": "تحديد الصف",
+      "columns": {
+        "familyName": "اسم العائلة",
+        "nationalId": "رقم الهوية",
+        "phone": "رقم الهاتف",
+        "totalMembers": "عدد الأفراد",
+        "camp": "المخيم",
+        "tentNumber": "رقم الخيمة",
+        "location": "الموقع"
+      },
+      "actions_menu": {
+        "open_menu": "فتح القائمة",
+        "view_details": "عرض التفاصيل",
+        "edit": "تعديل",
+        "delete": "حذف"
+      }
+    },
     "system_management": "إدارة النظام",
     "manage_projects": "إدارة المشاريع",
     "manage_projects_desc": "قبول أو رفض المشاريع الجديدة",
@@ -139,6 +157,18 @@
     "home_control": "التحكم في الرئيسية",
     "hero_section": "الرئيسية (Hero)",
     "hero_section_desc": "تعديل العنوان والصورة الرئيسية",
+    "representative_dashboard": {
+      "stats_header": "إحصائيات المخيم",
+      "contributions": "المساهمات",
+      "completed_contributions_total": "مجموع المساهمات المنتهية",
+      "current_projects_count": "عدد المشاريع الحالية",
+      "total_projects": "إجمالي المشاريع: {count}",
+      "executed_projects_count": "عدد المشاريع المنفذة",
+      "of_total": "{percentage}% من الإجمالي",
+      "families_count": "عدد العائلات",
+      "camp": "المخيم",
+      "loading": "جاري التحميل..."
+    },
     "stats_section": "الإحصائيات",
     "stats_section_desc": "تعديل الأرقام والإحصائيات",
     "about_section": "من نحن",
@@ -429,6 +459,7 @@
     "camp_name": "اسم المخيم",
     "id_number": "رقم الهوية",
     "license_number": "رقم الترخيص",
+    "admin_position": "الصفة الإدارية",
     "status": "الحالة",
     "created_at": "تاريخ التسجيل",
     "actions": "الإجراءات",
@@ -1596,7 +1627,10 @@
       "upload_small": "ارفع الصورة الصغيرة",
       "main_title": "العنوان الرئيسي",
       "subtitle": "العنوان الفرعي",
-      "description": "الوصف"
+      "description": "الوصف",
+      "english_title_placeholder": "العنوان بالإنجليزية",
+      "english_subtitle_placeholder": "العنوان الفرعي بالإنجليزية",
+      "english_description_placeholder": "الوصف بالإنجليزية"
     }
   }
 }

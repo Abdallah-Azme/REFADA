@@ -97,14 +97,24 @@ export const createPendingDelegatesColumns = (
   },
 
   {
-    accessorKey: "licenseNumber",
+    accessorKey: "campName",
+    header: () => (
+      <div className="text-center font-semibold">{t("table.camp_name")}</div>
+    ),
+    cell: ({ row }) => (
+      <div className="text-center">{row.original.campName || "-"}</div>
+    ),
+  },
+
+  {
+    accessorKey: "adminPositionName",
     header: () => (
       <div className="text-center font-semibold">
-        {t("table.license_number")}
+        {t("table.admin_position")}
       </div>
     ),
     cell: ({ row }) => (
-      <div className="text-center">{row.original.licenseNumber || "-"}</div>
+      <div className="text-center">{row.original.adminPositionName || "-"}</div>
     ),
   },
 

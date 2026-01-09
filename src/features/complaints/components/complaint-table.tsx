@@ -125,8 +125,6 @@ export function ComplaintTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  import {useTranslations} from "next-intl"; // ... (keep
-                  earlier imports) // ... // ...
                   {tCommon("no_results")}
                 </TableCell>
               </TableRow>

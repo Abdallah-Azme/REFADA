@@ -470,7 +470,9 @@ export default function HeroSettingsPage() {
                               <Input
                                 {...field}
                                 className="direction-ltr bg-gray-50/50"
-                                placeholder="English Title"
+                                placeholder={t(
+                                  "form.english_title_placeholder"
+                                )}
                                 dir="ltr"
                               />
                             </FormControl>
@@ -493,7 +495,9 @@ export default function HeroSettingsPage() {
                               <Input
                                 {...field}
                                 className="direction-ltr bg-gray-50/50"
-                                placeholder="English Subtitle"
+                                placeholder={t(
+                                  "form.english_subtitle_placeholder"
+                                )}
                                 dir="ltr"
                               />
                             </FormControl>
@@ -516,7 +520,9 @@ export default function HeroSettingsPage() {
                               <Textarea
                                 {...field}
                                 className="direction-ltr min-h-[120px] bg-gray-50/50 resize-none"
-                                placeholder="English Description"
+                                placeholder={t(
+                                  "form.english_description_placeholder"
+                                )}
                                 dir="ltr"
                               />
                             </FormControl>

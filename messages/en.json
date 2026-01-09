@@ -120,7 +120,25 @@
     "welcome_message": "Welcome to the Admin Dashboard. Here you can manage site content and customize various sections.",
     "projects": "Projects",
     "total_projects": "Total Projects",
-    "families": "Families",
+    "families": {
+      "select_all": "Select All",
+      "select_row": "Select Row",
+      "columns": {
+        "familyName": "Family Name",
+        "nationalId": "National ID",
+        "phone": "Phone Number",
+        "totalMembers": "Members Count",
+        "camp": "Shelter",
+        "tentNumber": "Tent Number",
+        "location": "Location"
+      },
+      "actions_menu": {
+        "open_menu": "Open Menu",
+        "view_details": "View Details",
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
     "total_families": "Total Families",
     "contributors": "Contributors",
     "total_contributors": "Total Contributors",
@@ -136,6 +154,18 @@
     "home_control": "Home Control",
     "hero_section": "Hero Section",
     "hero_section_desc": "Edit title and main image",
+    "representative_dashboard": {
+      "stats_header": "Shelter Statistics",
+      "contributions": "Contributions",
+      "completed_contributions_total": "Total Completed Contributions",
+      "current_projects_count": "Current Projects",
+      "total_projects": "Total Projects: {count}",
+      "executed_projects_count": "Executed Projects",
+      "of_total": "{percentage}% of Total",
+      "families_count": "Families Count",
+      "camp": "Shelter",
+      "loading": "Loading..."
+    },
     "stats_section": "Statistics",
     "stats_section_desc": "Edit numbers and statistics",
     "about_section": "About Us",
@@ -435,6 +465,7 @@
     "camp_name": "Shelter Name",
     "id_number": "ID Number",
     "license_number": "License Number",
+    "admin_position": "Admin Position",
     "status": "Status",
     "created_at": "Registration Date",
     "actions": "Actions",
@@ -1576,7 +1607,10 @@
       "upload_small": "Upload Small Image",
       "main_title": "Main Title",
       "subtitle": "Subtitle",
-      "description": "Description"
+      "description": "Description",
+      "english_title_placeholder": "English Title",
+      "english_subtitle_placeholder": "English Subtitle",
+      "english_description_placeholder": "English Description"
     }
   }
 }

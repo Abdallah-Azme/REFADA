@@ -244,67 +244,114 @@ export function CampFormDialog({
           />
 
           {role !== "admin" && (
-            <>
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="capacity"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("capacity")}</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="0"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(parseInt(e.target.value) || 0)
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="capacity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("capacity")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value) || 0)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name="currentOccupancy"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("current_occupancy")}</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="0"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(parseInt(e.target.value) || 0)
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <FormLabel>{t("location_on_map")}</FormLabel>
-                <LocationPickerMap
-                  value={{
-                    lat: form.watch("coordinates.lat") || 31.4,
-                    lng: form.watch("coordinates.lng") || 34.4,
-                  }}
-                  onChange={(coords) => {
-                    form.setValue("coordinates.lat", coords.lat);
-                    form.setValue("coordinates.lng", coords.lng);
-                  }}
-                  height="250px"
-                />
-              </div>
-            </>
+              <FormField
+                control={form.control}
+                name="currentOccupancy"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("current_occupancy")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value) || 0)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           )}
+
+          {/* Latitude and Longitude inputs with Map Picker - visible for all roles */}
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="coordinates.lat"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("latitude")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.000001"
+                        placeholder="31.4"
+                        value={field.value || ""}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value) || 0)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="coordinates.lng"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("longitude")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.000001"
+                        placeholder="34.4"
+                        value={field.value || ""}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value) || 0)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <FormLabel>{t("location_on_map")}</FormLabel>
+              <LocationPickerMap
+                value={{
+                  lat: form.watch("coordinates.lat") || 31.4,
+                  lng: form.watch("coordinates.lng") || 34.4,
+                }}
+                onChange={(coords) => {
+                  form.setValue("coordinates.lat", coords.lat);
+                  form.setValue("coordinates.lng", coords.lng);
+                }}
+                height="250px"
+              />
+            </div>
+          </div>
 
           <div className="flex   gap-2 pt-4">
             <Button

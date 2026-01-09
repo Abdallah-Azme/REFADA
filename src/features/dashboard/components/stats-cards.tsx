@@ -82,13 +82,15 @@ export const stats4 = [
 
 type StatItem = {
   icon: LucideIcon;
-  labelKey: string;
+  labelKey?: string;
+  label?: string;
   value: string | number;
   subtitleKey?: string;
   subtitle?: string;
   subColor?: string;
   color: string;
   iconColor: string;
+  // Allow simple strings when translation is done in parent
 };
 
 interface StatsCardsProps {
@@ -97,6 +99,7 @@ interface StatsCardsProps {
   itemClassName?: string;
   secondary?: boolean;
   showTitle?: boolean;
+  title?: string;
 }
 
 export default function StatsCards({
@@ -104,6 +107,7 @@ export default function StatsCards({
   className,
   itemClassName,
   showTitle = true,
+  title,
   secondary = false,
 }: StatsCardsProps) {
   const t = useTranslations("dashboard_stats");
@@ -111,7 +115,9 @@ export default function StatsCards({
   return (
     <section className="flex flex-col gap-2 ">
       {showTitle && (
-        <h2 className="text-[#333333] font-bold text-lg">{t("quick_stats")}</h2>
+        <h2 className="text-[#333333] font-bold text-lg">
+          {title || t("quick_stats")}
+        </h2>
       )}
       <div
         className={cn(
@@ -131,7 +137,7 @@ export default function StatsCards({
           >
             {/* Label */}
             <p className="text-sm font-semibold text-[#828282]">
-              {stat.labelKey ? t(stat.labelKey) : ""}
+              {stat.label || (stat.labelKey ? t(stat.labelKey) : "")}
             </p>
 
             {/* Value + Icon */}
@@ -153,7 +159,7 @@ export default function StatsCards({
                 stat.subColor ? stat.subColor : "text-[#828282]"
               }`}
             >
-              {stat.subtitleKey ? t(stat.subtitleKey) : stat.subtitle}
+              {stat.subtitle || (stat.subtitleKey ? t(stat.subtitleKey) : "")}
             </p>
           </div>
         ))}

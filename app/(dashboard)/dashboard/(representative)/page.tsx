@@ -1,6 +1,7 @@
 "use client";
 
 import { useProfile } from "@/features/profile";
+import { useTranslations } from "next-intl";
 import { useCampDetails } from "@/features/camps/hooks/use-camps";
 import { useProjects } from "@/features/projects/hooks/use-projects";
 import Analytics from "@/features/dashboard/components/analytics";
@@ -9,6 +10,7 @@ import StatsCards from "@/features/dashboard/components/stats-cards";
 import { Heart, Zap, CheckCircle, Users, Loader2 } from "lucide-react";
 
 export default function DashboardPage() {
+  const t = useTranslations("admin.representative_dashboard");
   const { data: profileData, isLoading: profileLoading } = useProfile();
   const { data: projectsData, isLoading: projectsLoading } = useProjects();
 
@@ -52,30 +54,30 @@ export default function DashboardPage() {
   const dynamicStats = [
     {
       icon: Heart,
-      label: "المساهمات",
+      label: t("contributions"),
       value: totalContributions.toLocaleString("ar-EG"),
-      subtitle: "مجموع المساهمات المنتهية",
+      subtitle: t("completed_contributions_total"),
       color: "bg-green-50",
       iconColor: "text-green-500",
     },
     {
       icon: Zap,
-      label: "عدد المشاريع الحالية",
+      label: t("current_projects_count"),
       value: pendingProjects.toString(),
-      subtitle: `إجمالي المشاريع: ${totalProjects}`,
+      subtitle: t("total_projects", { count: totalProjects }),
       subColor: "text-orange-500",
       color: "bg-orange-50",
       iconColor: "text-orange-500",
     },
     {
       icon: CheckCircle,
-      label: "عدد المشاريع المنفذة",
+      label: t("executed_projects_count"),
       value: completedProjects.toString(),
       subtitle:
         totalProjects > 0
-          ? `${Math.round(
-              (completedProjects / totalProjects) * 100
-            )}% من الإجمالي`
+          ? t("of_total", {
+              percentage: Math.round((completedProjects / totalProjects) * 100),
+            })
           : "0%",
       subColor: "text-green-500",
       color: "bg-green-50",
@@ -83,9 +85,9 @@ export default function DashboardPage() {
     },
     {
       icon: Users,
-      label: "عدد العائلات",
+      label: t("families_count"),
       value: familyCount.toLocaleString("ar-EG"),
-      subtitle: userCamp?.name || "المخيم",
+      subtitle: userCamp?.name || t("camp"),
       subColor: "text-blue-500",
       color: "bg-blue-50",
       iconColor: "text-blue-500",
@@ -96,14 +98,18 @@ export default function DashboardPage() {
     return (
       <div className="p-6 flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="mr-2">جاري التحميل...</span>
+        <span className="mr-2">{t("loading")}</span>
       </div>
     );
   }
 
   return (
     <div className="p-6 space-y-6">
-      <StatsCards stats={dynamicStats} showTitle={false} />
+      <StatsCards
+        title={t("stats_header")}
+        stats={dynamicStats}
+        showTitle={true}
+      />
       <Analytics />
       <ProjectsTable hideApproveDelete />
     </div>

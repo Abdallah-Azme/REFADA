@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/src/shared/ui/dropdown-menu";
+import { useTranslations } from "next-intl";
 
 // Helper to sanitize undefined values (both JS undefined and string "undefined")
 const sanitizeValue = (value: unknown): string => {
@@ -31,28 +32,39 @@ export const createFamilyColumns = (
 ): ColumnDef<Family>[] => [
   {
     id: "select",
-    header: ({ table }) => (
-      <div className="ps-2">
-        <Checkbox
-          className=""
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="ps-2">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
+    header: ({ table }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const t = useTranslations("admin.families");
+      return (
+        <div className="ps-2">
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label={t("select_all")}
+            className="translate-y-[2px]"
+          />
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const t = useTranslations("admin.families");
+      return (
+        <div className="ps-2">
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label={t("select_row")}
+            className="translate-y-[2px]"
+          />
+        </div>
+      );
+    },
     enableSorting: false,
     enableHiding: false,
     meta: {
