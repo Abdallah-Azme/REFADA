@@ -64,6 +64,8 @@ export default function AdminPendingUsersTable() {
 
   // Fetch all pending users (delegates and contributors)
   const { data: response, isLoading, error } = usePendingUsers();
+
+  console.log({ response });
   const { mutate: approveUser } = useApproveUser();
   const { mutate: rejectUser } = useRejectUser();
 
@@ -87,6 +89,8 @@ export default function AdminPendingUsersTable() {
   const [selectedCampId, setSelectedCampId] = React.useState<string>("");
   const [selectedAdminPositionId, setSelectedAdminPositionId] =
     React.useState<string>("");
+  const [campSuggestionMessage, setCampSuggestionMessage] =
+    React.useState<string>("");
 
   const handleApprove = (user: PendingUser): void => {
     // Contributors don't need camp assignment
@@ -97,8 +101,33 @@ export default function AdminPendingUsersTable() {
 
     // Delegates need camp and admin position assignment - open selection dialog
     setPendingUserToApprove(user);
-    setSelectedCampId("");
     setSelectedAdminPositionId("");
+    setCampSuggestionMessage("");
+
+    // Check if user has a campName and try to match it with existing camps
+    if (user.campName && camps.length > 0) {
+      const matchingCamp = camps.find((camp: any) => {
+        const campName =
+          typeof camp.name === "string"
+            ? camp.name
+            : camp.name?.ar || camp.name?.en || "";
+        return campName.toLowerCase() === user.campName?.toLowerCase();
+      });
+
+      if (matchingCamp) {
+        // Camp found - pre-select it
+        setSelectedCampId(matchingCamp.id.toString());
+      } else {
+        // Camp not found - show suggestion message
+        setSelectedCampId("");
+        setCampSuggestionMessage(
+          `المستخدم أدخل اسم مخيم "${user.campName}" غير موجود في القائمة. قد تحتاج إلى إنشاء مخيم جديد بهذا الاسم.`
+        );
+      }
+    } else {
+      setSelectedCampId("");
+    }
+
     setIsCampDialogOpen(true);
   };
 
@@ -115,6 +144,7 @@ export default function AdminPendingUsersTable() {
       setPendingUserToApprove(null);
       setSelectedCampId("");
       setSelectedAdminPositionId("");
+      setCampSuggestionMessage("");
     }
   };
 
@@ -262,6 +292,14 @@ export default function AdminPendingUsersTable() {
                   })}
                 </SelectContent>
               </Select>
+              {/* Camp Suggestion Message */}
+              {campSuggestionMessage && (
+                <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                  <p className="text-sm text-amber-700">
+                    ⚠️ {campSuggestionMessage}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Admin Position Select */}

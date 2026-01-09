@@ -110,6 +110,7 @@ export interface CampFamily {
   ageGroups: string[];
   medicalConditions: string[];
   hasBenefit?: boolean;
+  addedByContributor?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -142,6 +143,26 @@ export async function getRepresentativeCampFamiliesApi(): Promise<CampFamiliesRe
   return apiRequest<CampFamiliesResponse>(`/contributor/camps/families`, {
     method: "GET",
   });
+}
+
+// Get families for a specific contribution (includes addedByContributor flag)
+export interface DelegateFamiliesResponse {
+  success: boolean;
+  message: string;
+  data: {
+    families: CampFamily[];
+  };
+}
+
+export async function getDelegateFamiliesForContributionApi(
+  contributionId: number
+): Promise<DelegateFamiliesResponse> {
+  return apiRequest<DelegateFamiliesResponse>(
+    `/delegate/families/contribution/${contributionId}`,
+    {
+      method: "GET",
+    }
+  );
 }
 
 // ============================================================================
@@ -364,16 +385,14 @@ export async function confirmDelegateContributionApi(
   contributionId: number,
   confirmedQuantity: number
 ): Promise<ConfirmDelegateContributionResponse> {
+  const formData = new FormData();
+  formData.append("confirmed_quantity", confirmedQuantity.toString());
+
   return apiRequest<ConfirmDelegateContributionResponse>(
     `/delegate/contributions/${contributionId}/confirm`,
     {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        confirmed_quantity: confirmedQuantity,
-      }),
+      body: formData,
     }
   );
 }
@@ -405,6 +424,29 @@ export async function addFamiliesToContributionApi(
 
   return apiRequest<AddFamiliesToContributionResponse>(
     `/delegate/contributions/${contributionId}/add-families`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+}
+
+// ============================================================================
+// Complete Delegate Contribution API
+// ============================================================================
+
+export interface CompleteDelegateContributionResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function completeDelegateContributionApi(
+  contributionId: number
+): Promise<CompleteDelegateContributionResponse> {
+  const formData = new FormData();
+
+  return apiRequest<CompleteDelegateContributionResponse>(
+    `/delegate/contributions/${contributionId}/complete`,
     {
       method: "POST",
       body: formData,

@@ -11,26 +11,21 @@ import {
 import {
   ColumnDef,
   ColumnFiltersState,
+  PaginationState,
+  RowSelectionState,
+  SortingState,
+  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  PaginationState,
-  RowSelectionState,
-  SortingState,
   useReactTable,
-  VisibilityState,
 } from "@tanstack/react-table";
 import React, { useEffect, useState } from "react";
+import FamilySelectionDialog from "./family-selection-dialog";
 
-import {
-  Loader2,
-  RotateCcw,
-  SearchCheck,
-  Eye,
-  CheckCircle,
-} from "lucide-react";
+import { Eye, Loader2, RotateCcw, SearchCheck } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -39,50 +34,40 @@ import { z } from "zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import PaginationControls from "./pagination-controls";
-import {
-  getDelegateContributionsApi,
-  DelegateContribution,
-  ContributorFamily,
-  confirmDelegateContributionApi,
-  addFamiliesToContributionApi,
-  getRepresentativeCampFamiliesApi,
-  CampFamily,
-} from "@/features/contributors/api/contributors.api";
-import { toast } from "sonner";
-import { useTranslations } from "next-intl";
-import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/shared/ui/alert-dialog";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import {
+  CampFamily,
+  DelegateContribution,
+  FamilyQuantity,
+  addFamiliesToContributionApi,
+  completeDelegateContributionApi,
+  confirmDelegateContributionApi,
+  getDelegateContributionsApi,
+  getDelegateFamiliesForContributionApi,
+  getRepresentativeCampFamiliesApi,
+} from "@/features/contributors/api/contributors.api";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import PaginationControls from "./pagination-controls";
 
 const formSchema = z.object({
   status: z.string().optional(),
@@ -95,17 +80,16 @@ const createDelegateContributionColumns = (
   handlers: {
     onView: (item: DelegateContribution) => void;
     onConfirm: (item: DelegateContribution) => void;
+    setConfirmingContribution: (item: DelegateContribution | null) => void;
+    setConfirmStep: (step: number) => void;
+    fetchCampFamilies: (contributionId?: number) => void;
   },
   t: (key: string) => string
 ): ColumnDef<DelegateContribution>[] => [
   {
     accessorKey: "id",
     header: "#",
-    cell: ({ row }) => (
-      <div className="text-center font-medium text-gray-500">
-        {row.original.id}
-      </div>
-    ),
+    cell: ({ row }) => <div className="text-center">{row.original.id}</div>,
   },
   {
     accessorKey: "status",
@@ -149,27 +133,19 @@ const createDelegateContributionColumns = (
         return <div className="text-center text-gray-400">-</div>;
       }
 
-      const displayCount = Math.min(families.length, 2);
-      const remaining = families.length - displayCount;
+      // Calculate total quantity from all families
+      const totalQuantity = families.reduce(
+        (sum, f) => sum + (f.quantity || 0),
+        0
+      );
 
       return (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="text-center cursor-pointer">
-                <div className="text-gray-600">
-                  {families.slice(0, displayCount).map((f, i) => (
-                    <span key={f.id}>
-                      {f.familyName}
-                      {i < displayCount - 1 ? "، " : ""}
-                    </span>
-                  ))}
-                  {remaining > 0 && (
-                    <span className="text-primary font-medium">
-                      {" "}
-                      +{remaining} {t("others")}
-                    </span>
-                  )}
+                <div className="text-gray-600 font-semibold">
+                  {totalQuantity}
                 </div>
               </div>
             </TooltipTrigger>
@@ -179,7 +155,7 @@ const createDelegateContributionColumns = (
                   <div key={f.id} className="text-sm">
                     <span className="font-medium">{f.familyName}</span>
                     <span className="text-gray-400 text-xs mr-2">
-                      ({f.totalMembers} أفراد)
+                      ({f.quantity || 0} وحدة)
                     </span>
                   </div>
                 ))}
@@ -216,30 +192,82 @@ const createDelegateContributionColumns = (
     },
   },
   {
+    header: t("actions"),
     id: "actions",
-    header: t("view"),
-    cell: ({ row }) => (
-      <div className="flex justify-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-green-600 hover:text-green-700 hover:bg-green-50"
-          onClick={() => handlers.onView(row.original)}
-        >
-          <Eye className="w-5 h-5" />
-        </Button>
-        {row.original.status === "pending" && (
+    cell: ({ row }) => {
+      const contribution = row.original;
+
+      // Disable "Families" if quantity is not confirmed (pending status usually implies not confirmed yet)
+      // Adjust logic based on real "confirmed" status if available
+      const isQuantityConfirmed = contribution.status !== "pending";
+
+      return (
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              handlers.setConfirmingContribution(contribution);
+              handlers.setConfirmStep(1); // Set to Quantity step
+            }}
+            // specific requirements regarding disabling the button after entry is a bit tricky without specific backend state
+            // Assuming 'status' changes after confirmation, we can use that.
+            disabled={isQuantityConfirmed}
+            title={t("received_quantity")}
+          >
+            📋 {t("quantity")}
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              handlers.setConfirmingContribution(contribution);
+              handlers.setConfirmStep(2); // Set to Families step (opens family dialog)
+              handlers.fetchCampFamilies(contribution.id);
+            }}
+            // Enable only if quantity is confirmed, or if specifically requested to allow independent flow
+            // User said "button be disabled after [quantity entered] the second one be the select family" which implies sequential
+            // But also "select family it will be a table...". Let's enable it always for now for testing or if status is not pending.
+            // Actually, user said "first one enter quantity ... and then the button be disabled after ... the second one be the select family"
+            // Stick to enabling Families button always for flexibility unless explicitly restricted.
+          >
+            👥 {t("families_benefited")}
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              // Placeholder for finish action
+              // Could open a confirmation dialog or just trigger an API
+              // For now, simpler to just treat it as a final confirmation step if needed
+              // But user asked for a button named 'complete it' or 'finish it'
+              // Let's add a simple alert/toast for now as backend is missing
+              // Or we could reuse the confirmation dialog with a new step?
+              // Let's try to add a 3rd step in the dialog to confirm finish?
+              // Or just a separate confirmation alert.
+              // Let's stick to the pattern: open a dialog or call a handler.
+              handlers.setConfirmingContribution(contribution);
+              handlers.setConfirmStep(3); // 3 for Finish Confirmation
+            }}
+            className="border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700"
+            title={t("finish")}
+          >
+            ✅ {t("finish")}
+          </Button>
+
           <Button
             variant="ghost"
             size="icon"
-            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-            onClick={() => handlers.onConfirm(row.original)}
+            onClick={() => handlers.onView(contribution)}
+            title={t("view_details")}
           >
-            <CheckCircle className="w-5 h-5" />
+            <Eye className="h-4 w-4 text-gray-500" />
           </Button>
-        )}
-      </div>
-    ),
+        </div>
+      );
+    },
   },
 ];
 
@@ -378,6 +406,9 @@ export default function DelegateContributionsTable() {
   const [globalFilter, setGlobalFilter] = useState("");
 
   const [data, setData] = useState<DelegateContribution[]>([]);
+
+  console.log({ data });
+
   const [isLoading, setIsLoading] = useState(true);
   const [selectedContribution, setSelectedContribution] =
     useState<DelegateContribution | null>(null);
@@ -390,13 +421,14 @@ export default function DelegateContributionsTable() {
   const [confirmedQuantity, setConfirmedQuantity] = useState<string>("");
 
   // Step 2: Family selection state
-  const [confirmStep, setConfirmStep] = useState<1 | 2>(1);
+  const [confirmStep, setConfirmStep] = useState<number>(1);
   const [selectedFamilies, setSelectedFamilies] = useState<Map<number, string>>(
     new Map()
   );
   const [isAddingFamilies, setIsAddingFamilies] = useState(false);
   const [campFamilies, setCampFamilies] = useState<CampFamily[]>([]);
   const [isLoadingCampFamilies, setIsLoadingCampFamilies] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false);
 
   const t = useTranslations("contributions");
   const tCommon = useTranslations("common");
@@ -408,12 +440,28 @@ export default function DelegateContributionsTable() {
     }
   }, [confirmStep, campFamilies.length]);
 
-  const fetchCampFamilies = async () => {
+  const fetchCampFamilies = async (contributionId?: number) => {
     setIsLoadingCampFamilies(true);
     try {
-      const response = await getRepresentativeCampFamiliesApi();
-      if (response.success) {
-        setCampFamilies(response.data.families);
+      // Use the new endpoint that includes addedByContributor flag
+      if (contributionId) {
+        const response = await getDelegateFamiliesForContributionApi(
+          contributionId
+        );
+        if (response.success) {
+          // Sort families: suggested (addedByContributor) first
+          const sortedFamilies = [...response.data.families].sort((a, b) => {
+            if (a.addedByContributor && !b.addedByContributor) return -1;
+            if (!a.addedByContributor && b.addedByContributor) return 1;
+            return 0;
+          });
+          setCampFamilies(sortedFamilies);
+        }
+      } else {
+        const response = await getRepresentativeCampFamiliesApi();
+        if (response.success) {
+          setCampFamilies(response.data.families);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch camp families:", error);
@@ -423,24 +471,13 @@ export default function DelegateContributionsTable() {
     }
   };
 
-  // Merge and sort families for display in Step 2
+  // Display families directly from campFamilies (already sorted)
   const displayFamilies = React.useMemo(() => {
-    if (!confirmingContribution) return [];
-
-    const backendFamilies = confirmingContribution.contributorFamilies;
-    const backendIds = new Set(backendFamilies.map((f) => f.id));
-
-    // Map backend families to a compatible structure if needed, or just use them
-    // We want to flag them as "suggested"
-    const suggested = backendFamilies.map((f) => ({ ...f, isSuggested: true }));
-
-    // Filter other camp families that are NOT in the backend list
-    const others = campFamilies
-      .filter((f) => !backendIds.has(f.id))
-      .map((f) => ({ ...f, isSuggested: false }));
-
-    return [...suggested, ...others];
-  }, [confirmingContribution, campFamilies]);
+    return campFamilies.map((f) => ({
+      ...f,
+      addedByContributor: f.addedByContributor || false,
+    }));
+  }, [campFamilies]);
 
   // Fetch contributions
   useEffect(() => {
@@ -472,8 +509,41 @@ export default function DelegateContributionsTable() {
     setIsDialogOpen(true);
   };
 
-  const handleConfirmClick = (item: DelegateContribution): void => {
-    setConfirmingContribution(item);
+  // Wrapper for existing handleAddFamilies to work with new dialog
+  const handleAddFamiliesWrapper = async (selected: Map<number, string>) => {
+    if (!confirmingContribution) return;
+
+    setIsAddingFamilies(true);
+    try {
+      const familiesData = Array.from(selected.entries()).map(
+        ([familyId, quantity]) => ({
+          id: familyId,
+          quantity: parseInt(quantity) || 1,
+        })
+      );
+
+      const response = await addFamiliesToContributionApi(
+        confirmingContribution.id,
+        familiesData
+      );
+
+      if (response.success) {
+        toast.success(t("add_families_success"));
+        handleCloseConfirmDialog();
+        fetchContributions();
+      } else {
+        toast.error(response.message || t("add_families_error"));
+      }
+    } catch (error) {
+      console.error("Error adding families:", error);
+      toast.error(t("add_families_error"));
+    } finally {
+      setIsAddingFamilies(false);
+    }
+  };
+
+  const handleConfirmClick = (contribution: DelegateContribution) => {
+    setConfirmingContribution(contribution);
     setConfirmedQuantity("");
     setConfirmStep(1);
     setSelectedFamilies(new Map());
@@ -569,6 +639,29 @@ export default function DelegateContributionsTable() {
     setSelectedFamilies(new Map());
   };
 
+  const handleCompleteContribution = async () => {
+    if (!confirmingContribution) return;
+
+    setIsCompleting(true);
+    try {
+      const response = await completeDelegateContributionApi(
+        confirmingContribution.id
+      );
+      if (response.success) {
+        toast.success(response.message || t("finish_confirm_title"));
+        handleCloseConfirmDialog();
+        fetchContributions();
+      } else {
+        toast.error(response.message || "فشل في إنهاء المساهمة");
+      }
+    } catch (error: any) {
+      console.error("Failed to complete contribution:", error);
+      toast.error(error?.message || "فشل في إنهاء المساهمة");
+    } finally {
+      setIsCompleting(false);
+    }
+  };
+
   // Filter data based on form values
   const watchedStatus = form.watch("status");
 
@@ -588,6 +681,9 @@ export default function DelegateContributionsTable() {
       {
         onView: handleView,
         onConfirm: handleConfirmClick,
+        setConfirmingContribution,
+        setConfirmStep,
+        fetchCampFamilies,
       },
       t
     ),
@@ -742,6 +838,9 @@ export default function DelegateContributionsTable() {
                         {
                           onView: handleView,
                           onConfirm: handleConfirmClick,
+                          setConfirmingContribution,
+                          setConfirmStep,
+                          fetchCampFamilies,
                         },
                         t
                       ).length
@@ -768,22 +867,25 @@ export default function DelegateContributionsTable() {
           contribution={selectedContribution}
         />
 
+        {/* Confirm Contribution Dialog - Step 1 Only (Quantity) */}
         {/* Confirm Contribution Dialog */}
         <Dialog
           open={!!confirmingContribution}
-          onOpenChange={handleCloseConfirmDialog}
+          onOpenChange={(open) => {
+            if (!open) handleCloseConfirmDialog();
+          }}
         >
           <DialogContent className="max-w-lg" dir="rtl">
             <DialogHeader>
               <DialogTitle className="text-right">
-                {confirmStep === 1
-                  ? t("confirm_receipt_title")
-                  : t("select_beneficiaries_title")}
+                {confirmStep === 3
+                  ? t("finish_confirm_title")
+                  : t("confirm_receipt_title")}
               </DialogTitle>
             </DialogHeader>
 
             {confirmStep === 1 ? (
-              // Step 1: Quantity Input
+              // Step 1: Quantity
               <div className="space-y-4 text-right">
                 <p className="text-gray-600">
                   {t("confirm_receipt_desc")}{" "}
@@ -807,136 +909,74 @@ export default function DelegateContributionsTable() {
                     placeholder={t("received_quantity_placeholder")}
                     value={confirmedQuantity}
                     onChange={(e) => setConfirmedQuantity(e.target.value)}
-                    className="text-right h-12 rounded-xl"
-                    min={1}
+                    className="text-right"
                   />
                 </div>
 
-                <div className="flex gap-3 justify-end mt-6">
+                <div className="flex justify-end gap-2 mt-4">
                   <Button
                     variant="outline"
                     onClick={handleCloseConfirmDialog}
                     disabled={isConfirming}
                   >
-                    {tCommon("cancel")}
+                    {t("cancel")}
                   </Button>
                   <Button
                     onClick={handleConfirmContribution}
-                    disabled={isConfirming || !confirmedQuantity}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    disabled={!confirmedQuantity || isConfirming}
+                    className="bg-primary text-white hover:bg-primary/90"
                   >
-                    {isConfirming ? <>{t("confirming")}</> : t("next")}
+                    {isConfirming ? (
+                      <>
+                        <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                        {t("confirming")}
+                      </>
+                    ) : (
+                      t("confirm_receipt")
+                    )}
                   </Button>
                 </div>
               </div>
+            ) : confirmStep === 2 ? (
+              // Step 2: Family Selection Active (Placeholder)
+              <div className="py-8 text-center text-gray-500">
+                {t("families_selection_active")}
+              </div>
             ) : (
-              // Step 2: Family Selection
+              // Step 3: Finish Confirmation
               <div className="space-y-4 text-right">
-                {t("select_beneficiaries_desc")}:
-                <div className="space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar p-1">
-                  {isLoadingCampFamilies && campFamilies.length === 0 ? (
-                    <div className="flex justify-center p-4">
-                      <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                    </div>
-                  ) : (
-                    displayFamilies.map((family) => {
-                      // @ts-ignore - Handle potential type mismatch if CampFamily and ContributorFamily differ slightly
-                      const isSuggested = family.isSuggested;
-                      return (
-                        <div
-                          key={family.id}
-                          onClick={() => handleToggleFamily(family.id)}
-                          className={`flex items-center gap-3 p-3 rounded-lg border transition-colors cursor-pointer ${
-                            selectedFamilies.has(family.id)
-                              ? "bg-blue-50 border-blue-200"
-                              : isSuggested
-                              ? "bg-green-50/50 border-green-100/50 hover:bg-green-50"
-                              : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-                          }`}
-                        >
-                          <Checkbox
-                            id={`family-${family.id}`}
-                            checked={selectedFamilies.has(family.id)}
-                            onCheckedChange={() =>
-                              handleToggleFamily(family.id)
-                            }
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <label
-                                htmlFor={`family-${family.id}`}
-                                className="font-medium cursor-pointer"
-                              >
-                                {family.familyName}
-                              </label>
-                              {isSuggested && (
-                                <Badge
-                                  className="text-xs bg-green-100 text-green-700 hover:bg-green-100 border-green-200 shadow-none"
-                                  variant="outline"
-                                >
-                                  {t("suggested")}
-                                </Badge>
-                              )}
-                            </div>
-                            <p className="text-xs text-gray-500 mt-1">
-                              {family.nationalId} - {family.totalMembers}{" "}
-                              {t("individuals")}
-                            </p>
-                          </div>
-                          {selectedFamilies.has(family.id) && (
-                            <div className="flex items-center gap-2 animate-in fade-in zoom-in-95">
-                              <span className="text-xs text-gray-500 whitespace-nowrap">
-                                {t("quantity")}:
-                              </span>
-                              <Input
-                                type="number"
-                                placeholder={t("quantity_placeholder")}
-                                value={selectedFamilies.get(family.id) || ""}
-                                onChange={(e) =>
-                                  handleFamilyQuantityChange(
-                                    family.id,
-                                    e.target.value
-                                  )
-                                }
-                                onClick={(e) => e.stopPropagation()}
-                                className="w-20 h-9 text-center bg-white"
-                                min={1}
-                              />
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-                <div className="flex gap-3 justify-end mt-6">
-                  <Button
-                    variant="outline"
-                    onClick={() => setConfirmStep(1)}
-                    disabled={isAddingFamilies}
-                  >
-                    {t("prev")}
+                <p className="text-gray-600">{t("finish_confirm_desc")}</p>
+                <div className="flex justify-end gap-2 mt-4">
+                  <Button variant="outline" onClick={handleCloseConfirmDialog}>
+                    {tCommon("cancel")}
                   </Button>
                   <Button
-                    onClick={handleAddFamilies}
-                    disabled={isAddingFamilies || selectedFamilies.size === 0}
+                    onClick={() => {
+                      toast.success(t("finish_confirm_title"));
+                      handleCloseConfirmDialog();
+                    }}
                     className="bg-green-600 hover:bg-green-700 text-white"
                   >
-                    {isAddingFamilies ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                        {t("adding_families")}
-                      </>
-                    ) : (
-                      "إضافة العائلات"
-                    )}
+                    {t("finish")}
                   </Button>
                 </div>
               </div>
             )}
           </DialogContent>
         </Dialog>
+
+        {/* Family Selection Dialog */}
+        <FamilySelectionDialog
+          isOpen={confirmStep === 2}
+          onClose={handleCloseConfirmDialog}
+          onConfirm={(selected) => {
+            setSelectedFamilies(selected);
+            handleAddFamiliesWrapper(selected);
+          }}
+          families={displayFamilies}
+          isLoading={isLoadingCampFamilies}
+          initialSelection={selectedFamilies}
+        />
       </div>
     </div>
   );

@@ -36,12 +36,12 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "sara",
+									"value": "abdallahazme",
 									"type": "text"
 								},
 								{
 									"key": "email",
-									"value": "takwanassar1@gmail.com",
+									"value": "abdallahazme19974@gmail.com",
 									"type": "text"
 								},
 								{
@@ -56,7 +56,7 @@
 								},
 								{
 									"key": "id_number",
-									"value": "555666777",
+									"value": "555666777888",
 									"type": "text"
 								},
 								{
@@ -77,7 +77,7 @@
 								},
 								{
 									"key": "admin_position_id",
-									"value": "1",
+									"value": "2",
 									"type": "text"
 								},
 								{
@@ -3536,7 +3536,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{token}}",
+									"value": "188|Q4yWejgonQ9Z62QzYN92v4cM17ORfKN5wXY9Ubxeec84cc15",
 									"type": "string"
 								}
 							]
@@ -3587,7 +3587,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{token}}",
+									"value": "188|Q4yWejgonQ9Z62QzYN92v4cM17ORfKN5wXY9Ubxeec84cc15",
 									"type": "string"
 								}
 							]
@@ -3615,7 +3615,7 @@
 							"formdata": [
 								{
 									"key": "confirmed_quantity",
-									"value": "20",
+									"value": "25",
 									"type": "text"
 								}
 							]
@@ -3634,7 +3634,7 @@
 							"variable": [
 								{
 									"key": "contribution",
-									"value": "10"
+									"value": "14"
 								}
 							]
 						}
@@ -3649,7 +3649,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{token}}",
+									"value": "188|Q4yWejgonQ9Z62QzYN92v4cM17ORfKN5wXY9Ubxeec84cc15",
 									"type": "string"
 								}
 							]
@@ -3677,12 +3677,32 @@
 							"formdata": [
 								{
 									"key": "families[0][id]",
-									"value": "17",
+									"value": "22",
 									"type": "text"
 								},
 								{
 									"key": "families[0][quantity]",
 									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "families[1][id]",
+									"value": "23",
+									"type": "text"
+								},
+								{
+									"key": "families[1][quantity]",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "families[2][id]",
+									"value": "24",
+									"type": "text"
+								},
+								{
+									"key": "families[2][quantity]",
+									"value": "2",
 									"type": "text"
 								}
 							]
@@ -3701,7 +3721,7 @@
 							"variable": [
 								{
 									"key": "contribution",
-									"value": "10"
+									"value": "14"
 								}
 							]
 						}
@@ -3760,6 +3780,117 @@
 								"families",
 								"3",
 								"quantity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "complete contribution",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "188|Q4yWejgonQ9Z62QzYN92v4cM17ORfKN5wXY9Ubxeec84cc15",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{url}}/delegate/contributions/:contribution/complete",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"delegate",
+								"contributions",
+								":contribution",
+								"complete"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending",
+									"description": "'pending', 'approved'",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "contribution",
+									"value": "14"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delegateFamilies",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "190|oszN84hUYPSUU6DFLziwbTP1IHQIYd03n9wXPyyB0b387510",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/delegate/families/contribution/:contribution",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"delegate",
+								"families",
+								"contribution",
+								":contribution"
+							],
+							"variable": [
+								{
+									"key": "contribution",
+									"value": "18"
+								}
 							]
 						}
 					},
@@ -3894,7 +4025,7 @@
 							"formdata": [
 								{
 									"key": "contributedQuantity",
-									"value": "10",
+									"value": "25",
 									"type": "text"
 								},
 								{
@@ -3904,14 +4035,25 @@
 								},
 								{
 									"key": "families[]",
-									"value": "",
+									"value": "16",
+									"type": "text"
+								},
+								{
+									"key": "families[]",
+									"value": "17",
 									"type": "text",
 									"disabled": true
 								},
 								{
 									"key": "families[]",
-									"value": "16",
+									"value": "20",
 									"type": "text"
+								},
+								{
+									"key": "families[]",
+									"value": "21",
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
@@ -3944,7 +4086,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "93|9iKNrjGjrIvFTTzhZeigfnISyQbKyzQGII5GiA8j487f9ae4",
+									"value": "186|BunZ07D1Y7WCwy1g5EgDnSe0owcdPcsPMp7Rxiz4cfc9141a",
 									"type": "string"
 								}
 							]
@@ -5642,7 +5784,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "159|LbDfsV5eH2JJG3C6GPpYLIk4W1512xSJbP6Nyur3962e740d",
+									"value": "188|Q4yWejgonQ9Z62QzYN92v4cM17ORfKN5wXY9Ubxeec84cc15",
 									"type": "string"
 								}
 							]
@@ -6963,6 +7105,106 @@
 							"path": [
 								"admin-positions",
 								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Counts",
+			"item": [
+				{
+					"name": "admin count",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "192|lHioV2SUXBxnjWj0cdk713JEc3zX8gbX4m0g59sT7f4af4cf",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "ar",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/admin/counts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"admin",
+								"counts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delegateCount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/delegate/counts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"delegate",
+								"counts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contributorCounts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/contributor/counts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contributor",
+								"counts"
 							]
 						}
 					},

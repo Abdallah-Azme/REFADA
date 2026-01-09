@@ -33,6 +33,7 @@ import {
   MessageSquareWarning,
   FileText,
   ImageIcon,
+  Bell,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -89,6 +90,11 @@ export default function DashboardSidebar() {
       icon: HeartHandshake,
       href: "/dashboard/contributions",
     },
+    {
+      label: tRepMenu("notifications"),
+      icon: Bell,
+      href: "/dashboard/notification",
+    },
     { label: tRepMenu("reports"), icon: BarChart3, href: "/dashboard/reports" },
     {
       label: tRepMenu("settings"),
@@ -108,6 +114,11 @@ export default function DashboardSidebar() {
       label: tContMenu("shelters"),
       icon: Tent,
       href: "/dashboard/contributor/camps",
+    },
+    {
+      label: tContMenu("notifications"),
+      icon: Bell,
+      href: "/dashboard/contributor/notification",
     },
     {
       label: tContMenu("settings"),
@@ -133,6 +144,11 @@ export default function DashboardSidebar() {
       label: tAdminMenu("complaints_suggestions"),
       icon: MessageSquareWarning,
       href: "/dashboard/admin/complaints",
+    },
+    {
+      label: tAdminMenu("notifications"),
+      icon: Bell,
+      href: "/dashboard/admin/notification",
     },
     {
       label: tAdminMenu("settings"),

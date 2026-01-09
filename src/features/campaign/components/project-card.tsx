@@ -114,7 +114,7 @@ export function ProjectCard({
         <div className="flex justify-between items-center text-sm">
           <div className="text-gray-500">
             <span>
-              {donors} {t("donorsLabel")}
+              {t("requiredLabel")}: {donors}
             </span>
           </div>
           <div className="text-gray-700 text-end">

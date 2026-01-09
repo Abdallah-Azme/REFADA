@@ -35,6 +35,7 @@ export default function Notification() {
 
   const { data: notificationsData, isLoading } = useNotifications();
 
+  console.log({ notificationsData });
   // FCM real-time messages (foreground)
   const fcmNotifications = messages.map((msg: any) => ({
     type: "info" as const,
