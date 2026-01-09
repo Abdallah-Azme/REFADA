@@ -22,6 +22,7 @@ import { useTranslations } from "next-intl";
 export default function AdminFamiliesPage() {
   const t = useTranslations("families");
   const { data: response, isLoading, error } = useFamilies();
+  console.log("families", { response });
   const deleteMutation = useDeleteFamily();
 
   // State

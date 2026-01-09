@@ -59,6 +59,54 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useLogout } from "@/features/auth";
 import { useTranslations } from "next-intl";
+import { useCounts } from "../hooks/use-counts";
+
+// Count Badge Component with animation
+function CountBadge({
+  count,
+  isActive,
+}: {
+  count?: number;
+  isActive?: boolean;
+}) {
+  const [displayCount, setDisplayCount] = useState(0);
+
+  useEffect(() => {
+    if (count === undefined || count === 0) return;
+
+    // Animate count up
+    const duration = 500;
+    const steps = 20;
+    const increment = count / steps;
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= count) {
+        setDisplayCount(count);
+        clearInterval(timer);
+      } else {
+        setDisplayCount(Math.floor(current));
+      }
+    }, duration / steps);
+
+    return () => clearInterval(timer);
+  }, [count]);
+
+  if (count === undefined || count === 0) return null;
+
+  return (
+    <span
+      className={`
+        ms-auto px-2 py-0.5 text-xs font-semibold rounded-full min-w-[24px] text-center
+        transition-all duration-300
+        ${isActive ? "bg-primary/20 text-primary" : "bg-white/20 text-white"}
+      `}
+    >
+      {displayCount.toLocaleString()}
+    </span>
+  );
+}
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
@@ -66,6 +114,7 @@ export default function DashboardSidebar() {
   const [open, setOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
+  const { counts } = useCounts();
   const t = useTranslations("common.dialog");
   const tRepMenu = useTranslations("sidebar.representative_menu");
   const tContMenu = useTranslations("sidebar.contributor_menu");
@@ -75,20 +124,33 @@ export default function DashboardSidebar() {
 
   useEffect(() => setOpen(false), [pathname]);
 
-  // REPRESENTATIVE MENU (default dashboard menu)
+  // Helper to get count value
+  const getCount = (key: string): number | undefined => {
+    if (!counts) return undefined;
+    return (counts as unknown as Record<string, number>)[key];
+  };
+
+  // REPRESENTATIVE MENU (default dashboard menu) - uses delegate counts
   const representativeMenu = [
     { label: tRepMenu("home"), icon: Home, href: "/dashboard" },
     { label: tRepMenu("shelter_data"), icon: Tent, href: "/dashboard/camps" },
-    { label: tRepMenu("families"), icon: Users, href: "/dashboard/families" },
+    {
+      label: tRepMenu("families"),
+      icon: Users,
+      href: "/dashboard/families",
+      countKey: "familiesCount",
+    },
     {
       label: tRepMenu("projects"),
       icon: FolderOpen,
       href: "/dashboard/projects",
+      countKey: "projectsCount",
     },
     {
       label: tRepMenu("contributions"),
       icon: HeartHandshake,
       href: "/dashboard/contributions",
+      countKey: "contributionsCount",
     },
     {
       label: tRepMenu("notifications"),
@@ -114,6 +176,7 @@ export default function DashboardSidebar() {
       label: tContMenu("shelters"),
       icon: Tent,
       href: "/dashboard/contributor/camps",
+      countKey: "campsCount",
     },
     {
       label: tContMenu("notifications"),
@@ -134,16 +197,19 @@ export default function DashboardSidebar() {
       label: tAdminMenu("shelters"),
       icon: Tent,
       href: "/dashboard/admin/camps",
+      countKey: "campsCount",
     },
     {
       label: tAdminMenu("messages"),
       icon: Mail,
       href: "/dashboard/admin/messages",
+      countKey: "contactUsCount",
     },
     {
       label: tAdminMenu("complaints_suggestions"),
       icon: MessageSquareWarning,
       href: "/dashboard/admin/complaints",
+      countKey: "complaintsCount",
     },
     {
       label: tAdminMenu("notifications"),
@@ -163,6 +229,7 @@ export default function DashboardSidebar() {
       label: tEntity("manage_projects"),
       icon: FolderOpen,
       href: "/dashboard/admin/projects",
+      countKey: "projectsCount",
     },
     {
       label: tEntity("manage_families"),
@@ -173,41 +240,49 @@ export default function DashboardSidebar() {
       label: tEntity("manage_representatives"),
       icon: UserCog,
       href: "/dashboard/admin/representatives",
+      countKey: "delegatesCount",
     },
     {
       label: tEntity("pending_users"),
       icon: Users,
       href: "/dashboard/admin/pending-users",
+      countKey: "pendingUsersCount",
     },
     {
       label: tEntity("manage_contributors"),
       icon: HeartHandshake,
       href: "/dashboard/admin/contributors",
+      countKey: "contributorsCount",
     },
     {
       label: tEntity("activity_log"),
       icon: Activity,
       href: "/dashboard/admin/activities",
+      countKey: "activityLogsCount",
     },
     {
       label: tEntity("manage_governorates"),
       icon: Landmark,
       href: "/dashboard/admin/governorates",
+      countKey: "governoratesCount",
     },
     {
       label: tEntity("marital_status"),
       icon: HeartHandshake,
       href: "/dashboard/admin/marital-status",
+      countKey: "maritalStatusesCount",
     },
     {
       label: tEntity("medical_conditions"),
       icon: Activity,
       href: "/dashboard/admin/medical-condition",
+      countKey: "medicalConditionsCount",
     },
     {
       label: tEntity("relationships"),
       icon: Users2,
       href: "/dashboard/admin/relationship",
+      countKey: "relationsCount",
     },
     {
       label: tEntity("admin_positions"),
@@ -218,6 +293,7 @@ export default function DashboardSidebar() {
       label: tEntity("contributions"),
       icon: HeartHandshake,
       href: "/dashboard/admin/contributions",
+      countKey: "contributionsCount",
     },
   ];
 
@@ -304,6 +380,7 @@ export default function DashboardSidebar() {
       label: tHome("testimonials"),
       icon: Users,
       href: "/dashboard/admin/home-control/testimonials",
+      countKey: "testimonialCount",
     },
     {
       label: tHome("page_images"),
@@ -393,7 +470,7 @@ export default function DashboardSidebar() {
       {/* SIDEBAR WRAPPER */}
       <div
         className={`
-          fixed top-0 bottom-0 z-99 start-0 w-[220px] sm:static transform transition-transform duration-300
+          fixed top-0 bottom-0 z-99 start-0 w-[260px] sm:static transform transition-transform duration-300
           ${
             open
               ? "translate-x-0"
@@ -406,7 +483,7 @@ export default function DashboardSidebar() {
         <Sidebar
           side={side}
           collapsible="none"
-          className="relative w-[220px] h-full bg-primary text-white flex flex-col border-none overflow-hidden"
+          className="relative w-[260px] h-full bg-primary text-white flex flex-col border-none overflow-hidden"
         >
           {/* CLOSE BUTTON */}
           <button
@@ -468,6 +545,12 @@ export default function DashboardSidebar() {
                                   }`}
                                 />
                                 <span>{item.label}</span>
+                                {(item as any).countKey && (
+                                  <CountBadge
+                                    count={getCount((item as any).countKey)}
+                                    isActive={isActive}
+                                  />
+                                )}
                               </SidebarMenuButton>
                             </Link>
                           </SidebarMenuItem>
@@ -515,6 +598,12 @@ export default function DashboardSidebar() {
                                     }`}
                                   />
                                   <span>{item.label}</span>
+                                  {(item as any).countKey && (
+                                    <CountBadge
+                                      count={getCount((item as any).countKey)}
+                                      isActive={isActive}
+                                    />
+                                  )}
                                 </SidebarMenuButton>
                               </Link>
                             </SidebarMenuItem>
@@ -619,6 +708,12 @@ export default function DashboardSidebar() {
                                     }`}
                                   />
                                   <span>{item.label}</span>
+                                  {(item as any).countKey && (
+                                    <CountBadge
+                                      count={getCount((item as any).countKey)}
+                                      isActive={isActive}
+                                    />
+                                  )}
                                 </SidebarMenuButton>
                               </Link>
                             </SidebarMenuItem>
