@@ -91,7 +91,6 @@ export default function AdminRepresentativesTable() {
   // Fetch all delegates - API already filters by role=delegate
   const { data: response, isLoading, error } = useRepresentatives();
 
-  console.log({ response });
   const deleteMutation = useDeleteRepresentative();
   const approveMutation = useApproveRepresentative();
   const rejectMutation = useRejectRepresentative();

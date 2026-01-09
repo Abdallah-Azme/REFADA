@@ -76,9 +76,7 @@ export default function AdminCampsPage() {
     setDetailsOpen(true);
   };
 
-  const handleToggleStatus = (camp: Camp) => {
-    console.log("Toggle status", camp.slug);
-  };
+  const handleToggleStatus = (camp: Camp) => {};
 
   const columns = createAdminCampColumns(
     {
@@ -88,9 +86,7 @@ export default function AdminCampsPage() {
         const camp = campsData?.data.find((c: Camp) => c.slug === slug);
         if (camp) setDeleteId(camp.id);
       },
-      onToggleStatus: (slug: string) => {
-        console.log("Toggle status", slug);
-      },
+      onToggleStatus: (slug: string) => {},
       onView: handleViewDetails,
     },
     t

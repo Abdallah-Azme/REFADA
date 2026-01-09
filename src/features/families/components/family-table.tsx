@@ -27,6 +27,13 @@ import {
 import PaginationControls from "@/features/dashboard/components/pagination-controls";
 import { Search } from "lucide-react";
 import { Family } from "../types/family.schema";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/src/shared/ui/select";
 
 interface FamilyTableProps {
   data: Family[];
@@ -41,7 +48,7 @@ export function FamilyTable({
 }: FamilyTableProps) {
   const t = useTranslations("families_page");
   const tCommon = useTranslations("common");
-  console.log("data", data, { columns });
+  // console.log("data", data, { columns });
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -87,6 +94,15 @@ export function FamilyTable({
     }
   }, [rowSelection, onSelectionChange, table]);
 
+  // Derive unique camps for the filter
+  const uniqueCamps = React.useMemo(() => {
+    // Filter out undefined, null or empty strings if necessary
+    const camps = data
+      .map((family) => family.camp)
+      .filter((camp): camp is string => !!camp && camp !== "undefined");
+    return Array.from(new Set(camps));
+  }, [data]);
+
   return (
     <div className="w-full">
       <div className="flex items-center gap-4 py-4 bg-white p-4 rounded-t-lg border-b">
@@ -103,6 +119,32 @@ export function FamilyTable({
             }
             className="pr-8"
           />
+        </div>
+
+        {/* Filter by Camp */}
+        <div className="w-[200px]">
+          <Select
+            value={
+              (table.getColumn("camp")?.getFilterValue() as string) ?? "all"
+            }
+            onValueChange={(value) =>
+              table
+                .getColumn("camp")
+                ?.setFilterValue(value === "all" ? "" : value)
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder={t("columns.camp")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{tCommon("all")}</SelectItem>
+              {uniqueCamps.map((camp) => (
+                <SelectItem key={camp} value={camp}>
+                  {camp}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <div className="rounded-md border bg-white">

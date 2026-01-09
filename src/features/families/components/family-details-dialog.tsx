@@ -39,8 +39,6 @@ export default function FamilyDetailsDialog({
   const { data: response, isLoading } = useFamily(initialFamily?.id || null);
   const family = response?.data || initialFamily;
 
-  console.log("family", family);
-
   // Fetch statistics for male/female counts
   const { data: statisticsResponse, isLoading: isLoadingStats } =
     useFamilyStatistics(initialFamily?.id || null);

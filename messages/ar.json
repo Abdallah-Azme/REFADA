@@ -47,7 +47,8 @@
     "languages": {
       "ar": "العربية",
       "en": "English"
-    }
+    },
+    "all": "الكل"
   },
   "home": "الرئيسية",
   "about": "من نحن",
@@ -672,6 +673,30 @@
     "title": "آراء المستخدمين",
     "description": "نفخر بكل من شاركنا الرحلة وساهم في تحقيق الأثر الإنساني. هنا بعض الكلمات التي نعتز بها وتشجعنا على الاستمرار في العطاء.",
     "slide_aria": "الشريحة {index}"
+  },
+  "contributor_history": {
+    "title": "تفاصيل العائلات المساهم بها",
+    "family_name": "اسم العائلة",
+    "national_id": "رقم الهوية",
+    "phone": "رقم الهاتف",
+    "total_members": "عدد الأفراد",
+    "camp": "المخيم",
+    "location": "الموقع",
+    "no_families_found": "لم يتم العثور على أسر",
+    "page_title": "سجل المساهمات",
+    "page_subtitle": "عرض تفاصيل مساهماتك السابقة وتتبع حالتها",
+    "project_name": "اسم المشروع",
+    "project_type": "نوع المشروع",
+    "total_quantity": "الكمية الكلية",
+    "confirmed_quantity": "الكمية المؤكدة",
+    "status": "الحالة",
+    "date": "التاريخ",
+    "content": "عرض",
+    "no_results": "لاتوجد مساهمات",
+    "status_pending": "قيد الانتظار",
+    "status_approved": "مقبول",
+    "status_rejected": "مرفوض",
+    "error_loading": "حدث خطأ أثناء تحميل البيانات"
   },
   "campDetails": {
     "showMore": "عرض المزيد",

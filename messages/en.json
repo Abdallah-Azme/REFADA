@@ -45,7 +45,8 @@
     "languages": {
       "ar": "Arabic",
       "en": "English"
-    }
+    },
+    "all": "All"
   },
   "home": "Home",
   "about": "About Us",
@@ -668,6 +669,30 @@
     "title": "User Testimonials",
     "description": "We are proud of everyone who shared the journey with us and contributed to achieving humanitarian impact. Here are some words we cherish that encourage us to continue giving.",
     "slide_aria": "Slide {index}"
+  },
+  "contributor_history": {
+    "title": "Contributed Families Details",
+    "family_name": "Family Name",
+    "national_id": "National ID",
+    "phone": "Phone Number",
+    "total_members": "Total Members",
+    "camp": "Camp",
+    "location": "Location",
+    "no_families_found": "No families found",
+    "page_title": "Contribution History",
+    "page_subtitle": "View details of your past contributions and track their status",
+    "project_name": "Project Name",
+    "project_type": "Project Type",
+    "total_quantity": "Total Quantity",
+    "confirmed_quantity": "Confirmed Quantity",
+    "status": "Status",
+    "date": "Date",
+    "content": "View",
+    "no_results": "No contributions found",
+    "status_pending": "Pending",
+    "status_approved": "Approved",
+    "status_rejected": "Rejected",
+    "error_loading": "Error loading data"
   },
   "campDetails": {
     "showMore": "Show More",

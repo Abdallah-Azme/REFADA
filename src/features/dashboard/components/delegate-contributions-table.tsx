@@ -407,8 +407,6 @@ export default function DelegateContributionsTable() {
 
   const [data, setData] = useState<DelegateContribution[]>([]);
 
-  console.log({ data });
-
   const [isLoading, setIsLoading] = useState(true);
   const [selectedContribution, setSelectedContribution] =
     useState<DelegateContribution | null>(null);

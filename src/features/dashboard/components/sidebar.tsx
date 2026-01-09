@@ -34,6 +34,7 @@ import {
   FileText,
   ImageIcon,
   Bell,
+  History as HistoryIcon,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -121,6 +122,7 @@ export default function DashboardSidebar() {
   const tAdminMenu = useTranslations("sidebar.admin_menu");
   const tEntity = useTranslations("sidebar.entity_management");
   const tHome = useTranslations("sidebar.home_control");
+  const tHistory = useTranslations("contributor_history");
 
   useEffect(() => setOpen(false), [pathname]);
 
@@ -177,6 +179,11 @@ export default function DashboardSidebar() {
       icon: Tent,
       href: "/dashboard/contributor/camps",
       countKey: "campsCount",
+    },
+    {
+      label: tHistory("page_title"),
+      icon: HistoryIcon,
+      href: "/dashboard/contributor/contribution",
     },
     {
       label: tContMenu("notifications"),

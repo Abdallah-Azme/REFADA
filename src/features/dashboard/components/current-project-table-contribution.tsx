@@ -105,7 +105,6 @@ export default function CurrentProjectsTableContribution({
     ContributorFamily[]
   >([]);
 
-  console.log({ selectedHistoryFamilies });
   const [selectedHistoryProjectName, setSelectedHistoryProjectName] =
     React.useState<string>("");
 

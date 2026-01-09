@@ -18,8 +18,6 @@ export default function ActivitiesPage() {
   const { data, isLoading, error, page, setPage } = useActivities();
   const t = useTranslations("activities");
 
-  console.log({ data });
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-200px)]">

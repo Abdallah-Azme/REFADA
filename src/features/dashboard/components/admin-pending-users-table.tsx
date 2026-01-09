@@ -65,7 +65,6 @@ export default function AdminPendingUsersTable() {
   // Fetch all pending users (delegates and contributors)
   const { data: response, isLoading, error } = usePendingUsers();
 
-  console.log({ response });
   const { mutate: approveUser } = useApproveUser();
   const { mutate: rejectUser } = useRejectUser();
 
