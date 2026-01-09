@@ -452,7 +452,12 @@ export default function DelegateContributionsTable() {
     try {
       const response = await getDelegateContributionsApi();
       if (response.success) {
-        setData(response.data);
+        // Sort by id descending (latest first) or createdAt
+        const sortedData = [...response.data].sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setData(sortedData);
       }
     } catch (error) {
       console.error("Failed to fetch contributions:", error);
@@ -649,7 +654,7 @@ export default function DelegateContributionsTable() {
                             <SelectContent>
                               <SelectItem value="all">الكل</SelectItem>
                               <SelectItem value="pending">
-                                قيد الانتظار
+                                قيد التنفيذ
                               </SelectItem>
                               <SelectItem value="approved">
                                 موافق عليه
