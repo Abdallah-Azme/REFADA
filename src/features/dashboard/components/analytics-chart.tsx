@@ -41,7 +41,7 @@ export default function AnalyticsChart({
               </li>
 
               <li className=" flex items-center justify-between">
-                <span>{t("current_projects_count")}</span>
+                <span>{t("executed_projects_count")}</span>
                 <span className="font-semibold">
                   {projectCount.toLocaleString()}
                 </span>

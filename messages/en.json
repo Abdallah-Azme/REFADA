@@ -115,6 +115,7 @@
   "invalid_phone": "Invalid phone number",
   "required_subject": "Subject is required",
   "required_message": "Message is required",
+
   "admin": {
     "dashboard": "Dashboard",
     "welcome_message": "Welcome to the Admin Dashboard. Here you can manage site content and customize various sections.",
@@ -649,6 +650,12 @@
       "email_invalid": "Invalid email address",
       "phone_invalid": "Invalid phone number",
       "phone_min": "Invalid phone number"
+    },
+    "profile": {
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
     }
   },
   "testimonials": {
@@ -787,6 +794,7 @@
     "current_projects": "Current Projects",
     "total_projects": "Total Projects",
     "completed_projects": "Completed Projects",
+    "executed_projects_count": "Executed Projects",
     "of_total": "of total",
     "families_count": "Families Count",
     "camp": "Camp",

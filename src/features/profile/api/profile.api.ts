@@ -49,18 +49,18 @@ export const profileApi = {
     const formDataToSend = new FormData();
 
     // Append all fields to FormData with snake_case names as expected by the API
+    // Always send required fields to match registration validation
     formDataToSend.append("name", formData.name);
     formDataToSend.append("email", formData.email);
+    formDataToSend.append("id_number", formData.idNumber || "");
+    formDataToSend.append("phone", formData.phone || "");
 
-    if (formData.idNumber)
-      formDataToSend.append("id_number", formData.idNumber);
-    if (formData.phone) formDataToSend.append("phone", formData.phone);
-    if (formData.backupPhone)
+    // Optional fields
+    if (formData.backupPhone) {
       formDataToSend.append("backup_phone", formData.backupPhone);
-    if (formData.adminPosition)
-      formDataToSend.append("admin_position", formData.adminPosition);
-    if (formData.licenseNumber)
-      formDataToSend.append("license_number", formData.licenseNumber);
+    }
+    // Note: admin_position and license_number are set during registration and are read-only
+    // They should not be updated via profile update
 
     // Handle file upload
     if (formData.profile_image instanceof File) {

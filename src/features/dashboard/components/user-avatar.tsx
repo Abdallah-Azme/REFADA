@@ -47,7 +47,7 @@ export default function UserAvatar() {
           </span>
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-48">
+      <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuLabel className="flex items-center gap-2">
           <User className="size-4" />
           {user?.name || t("user")}

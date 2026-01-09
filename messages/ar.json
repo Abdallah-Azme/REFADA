@@ -118,6 +118,7 @@
   "invalid_phone": "رقم الجوال غير صالح",
   "required_subject": "الموضوع مطلوب",
   "required_message": "الرسالة مطلوبة",
+
   "admin": {
     "dashboard": "لوحة التحكم",
     "welcome_message": "مرحباً بك في لوحة تحكم المسؤول. يمكنك من هنا إدارة محتوى الموقع وتخصيص الأقسام المختلفة.",
@@ -653,6 +654,12 @@
       "email_invalid": "البريد الإلكتروني غير صحيح",
       "phone_invalid": "رقم الهاتف غير صحيح",
       "phone_min": "رقم الهاتف غير صحيح"
+    },
+    "profile": {
+      "edit": "تعديل",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "saving": "جاري الحفظ..."
     }
   },
   "testimonials": {
@@ -791,6 +798,10 @@
     "current_projects": "عدد المشاريع الحالية",
     "total_projects": "إجمالي المشاريع",
     "completed_projects": "عدد المشاريع المنفذة",
+    "executed_projects_count": "المشاريع المكتملة",
+    "current_projects_count": "المشاريع الحالية",
+    "registered_families": "العائلات المسجلة",
+    "completion_percentage": "نسبة الإنجاز",
     "of_total": "من الإجمالي",
     "families_count": "عدد العائلات",
     "camp": "المخيم",
@@ -807,9 +818,7 @@
     "october": "أكتوبر",
     "november": "نوفمبر",
     "december": "ديسمبر",
-    "registered_families": "عدد العائلات المسجلة",
-    "current_projects_count": "عدد المشاريع الحالية",
-    "completion_percentage": "نسبة الإنجاز",
+
     "title": "التقارير"
   },
   "policy_page": {

@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Pencil, Loader2 } from "lucide-react";
 import {
   useProfile,
@@ -50,6 +51,7 @@ export default function SettingsProfileTab() {
         idNumber: profileData.data.idNumber || "",
         phone: profileData.data.phone || "",
         backupPhone: profileData.data.backupPhone || "",
+        profile_image: profileData.data.profileImageUrl,
       });
     }
   }, [profileData, profileForm]);
@@ -105,9 +107,7 @@ export default function SettingsProfileTab() {
                   <FormControl>
                     <div className="flex justify-center">
                       <ImageUpload
-                        value={
-                          field.value || profileData?.data?.profileImageUrl
-                        }
+                        value={field.value}
                         onChange={field.onChange}
                         disabled={!isEditing}
                         placeholder={t("upload_placeholder")}
@@ -196,8 +196,9 @@ export default function SettingsProfileTab() {
                     {t("phone")}
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
+                    <PhoneInput
+                      value={field.value}
+                      onChange={field.onChange}
                       disabled={!isEditing}
                       className="h-11 text-base bg-gray-50 border-gray-200"
                     />
@@ -217,8 +218,9 @@ export default function SettingsProfileTab() {
                     {t("backup_phone")}
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
+                    <PhoneInput
+                      value={field.value || ""}
+                      onChange={field.onChange}
                       disabled={!isEditing}
                       className="h-11 text-base bg-gray-50 border-gray-200"
                     />

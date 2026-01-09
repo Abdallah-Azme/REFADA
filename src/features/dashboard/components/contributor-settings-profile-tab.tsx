@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { Pencil, Loader2 } from "lucide-react";
 import {
   useProfile,
@@ -52,6 +53,7 @@ export default function ContributorSettingsProfileTab() {
         backupPhone: profileData.data.backupPhone || "",
         adminPosition: profileData.data.adminPosition || "",
         licenseNumber: profileData.data.licenseNumber || "",
+        profile_image: profileData.data.profileImageUrl,
       });
     }
   }, [profileData, profileForm]);
@@ -107,9 +109,7 @@ export default function ContributorSettingsProfileTab() {
                   <FormControl>
                     <div className="flex justify-center">
                       <ImageUpload
-                        value={
-                          field.value || profileData?.data?.profileImageUrl
-                        }
+                        value={field.value}
                         onChange={field.onChange}
                         disabled={!isEditing}
                         placeholder="اضغط لرفع صورة الملف الشخصي"
@@ -198,8 +198,9 @@ export default function ContributorSettingsProfileTab() {
                     رقم الجوال
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
+                    <PhoneInput
+                      value={field.value}
+                      onChange={field.onChange}
                       disabled={!isEditing}
                       className="h-11 text-base bg-gray-50 border-gray-200"
                     />
@@ -219,8 +220,9 @@ export default function ContributorSettingsProfileTab() {
                     الرقم الاحتياطي
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
+                    <PhoneInput
+                      value={field.value || ""}
+                      onChange={field.onChange}
                       disabled={!isEditing}
                       className="h-11 text-base bg-gray-50 border-gray-200"
                     />

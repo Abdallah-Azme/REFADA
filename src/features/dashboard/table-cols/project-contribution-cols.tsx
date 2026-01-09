@@ -91,7 +91,7 @@ export const createColumnsForContributor = (
       let colorClass = "bg-gray-100 text-gray-700";
 
       if (status === "pending") {
-        statusText = t("pending");
+        statusText = "قيد التنفيذ"; // In Progress/Under Execution
         colorClass = "bg-yellow-100 text-yellow-700";
       } else if (status === "approved" || row.original.isApproved) {
         statusText = t("approved");

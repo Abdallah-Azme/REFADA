@@ -68,7 +68,9 @@ export default function AdminPendingUsersTable() {
   const { mutate: rejectUser } = useRejectUser();
 
   const data = React.useMemo(() => {
-    return response?.data || [];
+    const users = response?.data || [];
+    // Show latest first (reverse chronological order)
+    return [...users].reverse();
   }, [response]);
 
   // Camp Assignment Logic

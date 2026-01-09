@@ -371,7 +371,7 @@ export default function ContributeDialog({
                                         key={family.id}
                                         value={`${family.familyName} ${family.nationalId}`}
                                         onSelect={() => toggleFamily(family.id)}
-                                        className="flex items-center justify-between cursor-pointer"
+                                        className="flex items-center justify-between cursor-pointer data-[selected=true]:text-white hover:text-white [&[data-selected=true]_.text-gray-500]:text-white/90"
                                       >
                                         <div className="flex flex-col text-right flex-1">
                                           <div className="flex items-center gap-2">

@@ -126,7 +126,7 @@ export default function CurrentProjectsTableContribution({
       );
     }
 
-    if (watchedStatus) {
+    if (watchedStatus && watchedStatus !== "all") {
       filtered = filtered.filter((p) => p.status === watchedStatus);
     }
 
@@ -256,15 +256,9 @@ export default function CurrentProjectsTableContribution({
                           <SelectValue placeholder={t("project_status")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="approved">
-                            {t("approved")}
-                          </SelectItem>
-                          <SelectItem value="delivered">
-                            {t("delivered")}
-                          </SelectItem>
-                          <SelectItem value="not_completed">
-                            {t("not_completed")}
-                          </SelectItem>
+                          <SelectItem value="all">الكل</SelectItem>
+                          <SelectItem value="pending">قيد التنفيذ</SelectItem>
+                          <SelectItem value="completed">مكتمل</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
