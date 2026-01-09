@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, Dispatch, SetStateAction, useEffect } from "react";
+import { useState, useMemo } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -35,15 +35,11 @@ import { useTranslations } from "next-intl";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  page?: number;
-  onPageChange?: Dispatch<SetStateAction<number>>;
 }
 
 export function ActivityTable<TData, TValue>({
   columns,
   data,
-  page,
-  onPageChange,
 }: DataTableProps<TData, TValue>) {
   const tCommon = useTranslations("common");
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -55,32 +51,9 @@ export function ActivityTable<TData, TValue>({
   }>({ from: undefined, to: undefined });
 
   const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: page ? page - 1 : 0,
+    pageIndex: 0,
     pageSize: 15,
   });
-
-  // Sync internal pagination state with external page prop
-  useEffect(() => {
-    if (page !== undefined) {
-      setPagination((prev) => ({ ...prev, pageIndex: page - 1 }));
-    }
-  }, [page]);
-
-  // Handle pagination changes
-  const handlePaginationChange = (updater: any) => {
-    if (typeof updater === "function") {
-      const newPagination = updater(pagination);
-      setPagination(newPagination);
-      if (onPageChange) {
-        onPageChange(newPagination.pageIndex + 1);
-      }
-    } else {
-      setPagination(updater);
-      if (onPageChange) {
-        onPageChange(updater.pageIndex + 1);
-      }
-    }
-  };
 
   // Filter data by date range
   const filteredData = useMemo(() => {
@@ -114,8 +87,7 @@ export function ActivityTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onGlobalFilterChange: setGlobalFilter,
-    onPaginationChange: handlePaginationChange,
-    manualPagination: !!onPageChange, // Enable manual pagination if onPageChange is provided
+    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,

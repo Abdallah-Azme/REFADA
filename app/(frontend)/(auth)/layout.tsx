@@ -2,15 +2,18 @@
 
 import Logo from "@/components/logo";
 import ImageFallback from "@/components/shared/image-fallback";
+import { useTranslations } from "next-intl";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("auth");
+
   return (
     <section className="flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden my-10">
       {/* Image Section */}
       <div className="hidden lg:block flex-1 relative bg-gray-100 h-[700px]">
         <ImageFallback
           src="/pages/auth/auth-image.webp"
-          alt="أهل غزة"
+          alt={t("auth_image_alt")}
           fill
           className="object-cover brightness-75"
         />
@@ -22,10 +25,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex  items-center gap-2">
             <Logo />
             <div className="flex flex-col gap-2 text-start">
-              <p className="text-primary font-bold ">
-                المنظومة الإنسانية الرشيدة
-              </p>
-              <p className="text-primary font-bold ">قطـــــــاع غـــزة</p>
+              <p className="text-primary font-bold ">{t("header_title")}</p>
+              <p className="text-primary font-bold ">{t("header_subtitle")}</p>
             </div>
           </div>
 

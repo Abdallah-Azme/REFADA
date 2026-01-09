@@ -330,7 +330,10 @@
       "id_must_be_9_digits": "ID Number must be exactly 9 digits",
       "admin_position_required": "Administrative position is required",
       "license_required_for_association": "License number is required for associations"
-    }
+    },
+    "header_title": "The Rational Humanitarian System",
+    "header_subtitle": "Gaza Strip",
+    "auth_image_alt": "People of Gaza"
   },
   "contributor_history_title": "Contributed Families",
   "contributor_history_family_name": "Family Name",

@@ -18,6 +18,8 @@ export default function ActivitiesPage() {
   const { data, isLoading, error, page, setPage } = useActivities();
   const t = useTranslations("activities");
 
+  console.log({ data });
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-200px)]">
@@ -56,12 +58,7 @@ export default function ActivitiesPage() {
           <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <ActivityTable
-            columns={columns}
-            data={activities}
-            page={page}
-            onPageChange={setPage}
-          />
+          <ActivityTable columns={columns} data={activities} />
         </CardContent>
       </Card>
     </div>

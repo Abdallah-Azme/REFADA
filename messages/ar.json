@@ -323,7 +323,10 @@
       "id_must_be_9_digits": "رقم الهوية يجب أن يكون 9 أرقام",
       "admin_position_required": "الصفة الإدارية مطلوبة",
       "license_required_for_association": "رقم الترخيص مطلوب للجمعيات"
-    }
+    },
+    "header_title": "المنظومة الإنسانية الرشيدة",
+    "header_subtitle": "قطـــــــاع غـــزة",
+    "auth_image_alt": "أهل غزة"
   },
   "contributor_history_title": "الأسر المساهم بها",
   "contributor_history_family_name": "اسم الأسرة",
