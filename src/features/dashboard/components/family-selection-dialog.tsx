@@ -163,6 +163,12 @@ export default function FamilySelectionDialog({
   }, [isOpen, families, initialSelection]);
 
   const handleToggleFamily = (familyId: number) => {
+    // Find the family to check if it's disabled
+    const family = families.find((f) => f.id === familyId);
+    if (family?.hasBenefit || family?.addedByContributor) {
+      return; // Don't allow toggling if already benefited or chosen by contributor
+    }
+
     const newMap = new Map(selectedFamilies);
     if (newMap.has(familyId)) {
       newMap.delete(familyId);
@@ -188,13 +194,22 @@ export default function FamilySelectionDialog({
       ),
       cell: ({ row }) => {
         const isSelected = selectedFamilies.has(row.original.id);
+        const isDisabled =
+          row.original.hasBenefit === true ||
+          row.original.addedByContributor === true;
+
         return (
           <div className="flex justify-center">
             <Checkbox
               checked={isSelected}
-              onCheckedChange={() => handleToggleFamily(row.original.id)}
+              disabled={isDisabled}
+              onCheckedChange={() =>
+                !isDisabled && handleToggleFamily(row.original.id)
+              }
               className={`h-5 w-5 rounded-md border-2 transition-all ${
-                isSelected
+                isDisabled
+                  ? "border-gray-200 bg-gray-100 cursor-not-allowed opacity-50"
+                  : isSelected
                   ? "border-primary bg-primary text-white"
                   : "border-gray-300 hover:border-primary/50"
               }`}
@@ -210,15 +225,26 @@ export default function FamilySelectionDialog({
       ),
       cell: ({ row }) => {
         const isChosen = row.original.addedByContributor;
+        const hasBenefited = row.original.hasBenefit;
+
         return (
           <div className="flex items-center gap-2">
-            <span className="font-medium text-gray-800">
+            <span
+              className={`font-medium ${
+                hasBenefited ? "text-gray-400" : "text-gray-800"
+              }`}
+            >
               {row.original.familyName}
             </span>
             {isChosen && (
               <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs px-2 py-0.5 shadow-sm">
                 <CheckCircle2 className="w-3 h-3 ml-1" />
-                {t("suggested")}
+                {t("chosen_by_contributor")}
+              </Badge>
+            )}
+            {hasBenefited && (
+              <Badge className="bg-gray-400 text-white text-xs px-2 py-0.5">
+                {t("already_benefited")}
               </Badge>
             )}
           </div>
@@ -421,24 +447,39 @@ export default function FamilySelectionDialog({
                     table.getRowModel().rows.map((row, index) => {
                       const isSelected = selectedFamilies.has(row.original.id);
                       const isChosen = row.original.addedByContributor;
+                      const hasBenefited = row.original.hasBenefit;
+                      const isDisabled = hasBenefited || isChosen;
                       return (
                         <TableRow
                           key={row.id}
                           className={`
-                            transition-all duration-200 cursor-pointer
+                            transition-all duration-200
+                            ${
+                              isDisabled
+                                ? "cursor-not-allowed opacity-60"
+                                : "cursor-pointer"
+                            }
                             ${
                               isSelected
                                 ? "bg-primary/5 hover:bg-primary/10"
+                                : isDisabled
+                                ? "bg-gray-50"
                                 : "hover:bg-gray-50"
                             }
-                            ${isChosen && !isSelected ? "bg-green-50/50" : ""}
+                            ${
+                              isChosen && !isSelected && !hasBenefited
+                                ? "bg-green-50/50"
+                                : ""
+                            }
                             ${
                               index !== table.getRowModel().rows.length - 1
                                 ? "border-b border-gray-100"
                                 : ""
                             }
                           `}
-                          onClick={() => handleToggleFamily(row.original.id)}
+                          onClick={() =>
+                            !isDisabled && handleToggleFamily(row.original.id)
+                          }
                         >
                           {row.getVisibleCells().map((cell) => (
                             <TableCell

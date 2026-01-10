@@ -210,9 +210,7 @@ const createDelegateContributionColumns = (
               handlers.setConfirmingContribution(contribution);
               handlers.setConfirmStep(1); // Set to Quantity step
             }}
-            // specific requirements regarding disabling the button after entry is a bit tricky without specific backend state
-            // Assuming 'status' changes after confirmation, we can use that.
-            disabled={isQuantityConfirmed}
+            disabled={contribution.alreadyConfirmed}
             title={t("received_quantity")}
           >
             📋 {t("quantity")}
@@ -406,6 +404,8 @@ export default function DelegateContributionsTable() {
   const [globalFilter, setGlobalFilter] = useState("");
 
   const [data, setData] = useState<DelegateContribution[]>([]);
+
+  console.log({ data });
 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedContribution, setSelectedContribution] =
@@ -663,6 +663,7 @@ export default function DelegateContributionsTable() {
   // Filter data based on form values
   const watchedStatus = form.watch("status");
 
+  console.log({ watchedStatus });
   const filteredData = React.useMemo(() => {
     let filtered = [...data];
 
@@ -673,6 +674,7 @@ export default function DelegateContributionsTable() {
     return filtered;
   }, [data, watchedStatus]);
 
+  console.log({ displayFamilies });
   const table = useReactTable<DelegateContribution>({
     data: filteredData,
     columns: createDelegateContributionColumns(
