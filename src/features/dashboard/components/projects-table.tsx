@@ -63,8 +63,8 @@ export default function ProjectsTable({
       {/* Search and Filters */}
       <div
         className={cn(
-          "flex items-center justify-between",
-          main ? "p-2" : "p-6 "
+          "flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4",
+          main ? "p-2" : "p-6"
         )}
       >
         {/* HEADER & BUTTONS */}

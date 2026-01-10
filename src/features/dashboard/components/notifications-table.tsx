@@ -123,7 +123,7 @@ export default function NotificationsTable() {
       cell: ({ row }) => {
         const isRead = row.original.isRead;
         return (
-          <div className="flex justify-center">
+          <div className="flex justify-center min-w-[100px]">
             {isRead ? (
               <Badge className="bg-gray-100 text-gray-500">{t("read")}</Badge>
             ) : (
@@ -144,7 +144,7 @@ export default function NotificationsTable() {
         const style = getNotificationStyle(row.original.type);
         const Icon = style.icon;
         return (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-[140px]">
             <div className={`p-1.5 rounded-lg ${style.bgColor}`}>
               <Icon className={`w-4 h-4 ${style.textColor}`} />
             </div>
@@ -159,7 +159,7 @@ export default function NotificationsTable() {
         <span className="text-gray-600 font-semibold">{t("title")}</span>
       ),
       cell: ({ row }) => (
-        <span className="font-medium text-gray-800">
+        <span className="font-medium text-gray-800 block min-w-[150px]">
           {row.original.notificationTitle}
         </span>
       ),
@@ -170,7 +170,7 @@ export default function NotificationsTable() {
         <span className="text-gray-600 font-semibold">{t("message")}</span>
       ),
       cell: ({ row }) => (
-        <div className="max-w-[300px]">
+        <div className="min-w-[300px] max-w-[400px]">
           <p className="text-gray-600 text-sm whitespace-normal">
             {row.original.message}
           </p>
@@ -183,7 +183,9 @@ export default function NotificationsTable() {
         <span className="text-gray-600 font-semibold">{t("time")}</span>
       ),
       cell: ({ row }) => (
-        <span className="text-gray-500 text-sm">{row.original.timeAgo}</span>
+        <span className="text-gray-500 text-sm whitespace-nowrap min-w-[120px] block">
+          {row.original.timeAgo}
+        </span>
       ),
     },
     {
@@ -194,7 +196,7 @@ export default function NotificationsTable() {
       cell: ({ row }) => {
         const isRead = row.original.isRead;
         return (
-          <div className="flex items-center gap-2 justify-center">
+          <div className="flex items-center gap-2 justify-center min-w-[120px]">
             {/* View Button */}
             <Button
               variant="ghost"
@@ -308,7 +310,7 @@ export default function NotificationsTable() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border shadow-sm overflow-x-auto">
         <Table>
           <TableHeader className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (

@@ -29,7 +29,7 @@ export default function AnalyticsChart({
         className="mb-2"
       />
       <div className="bg-white rounded-lg border border-gray-100 p-4 flex flex-col">
-        <div className="flex items-center justify-evenly gap-4">
+        <div className="flex flex-col md:flex-row items-center justify-evenly gap-4">
           {/* Stats Section */}
           <div className="space-y-2 text-sm text-gray-700">
             <ul className="list-disc marker:text-[#0682E6] text-[#4F4F4F] font-semibold text-sm space-y-2 min-w-40">

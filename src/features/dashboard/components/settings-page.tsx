@@ -20,28 +20,28 @@ export default function SettingsPage() {
       </div>
       <Tabs
         defaultValue="profile"
-        className="flex flex-row gap-6 w-full items-start"
+        className="flex flex-col md:flex-row gap-6 w-full items-start"
       >
         {/* SIDEBAR */}
-        <TabsList className="items-start flex-col justify-start gap-3 rounded-xl border border-gray-200 shadow-sm bg-white rounded-md p-3 h-auto md:self-stretch md:w-56 shrink-0">
+        <TabsList className="flex flex-row md:flex-col items-center md:items-start justify-start gap-3 rounded-xl border border-gray-200 shadow-sm bg-white p-3 h-auto w-full md:self-stretch md:w-56 shrink-0 overflow-x-auto">
           <TabsTrigger
             value="profile"
-            className="flex-none gap-2 flex items-center justify-start w-full rounded-lg py-2 px-3 h-auto data-[state=active]:text-[#4F4F4F] data-[state=active]:bg-[#F5F5F5]  "
+            className="flex-none gap-2 flex items-center justify-center md:justify-start w-auto md:w-full rounded-lg py-2 px-3 h-auto data-[state=active]:text-[#4F4F4F] data-[state=active]:bg-[#F5F5F5]"
           >
             <User2 className="h-5 w-5" />
 
-            <span className="text-base font-medium hidden md:block">
+            <span className="text-base font-medium block">
               {t("profile_tab")}
             </span>
           </TabsTrigger>
 
           <TabsTrigger
             value="password"
-            className="flex-none gap-2 flex items-center justify-start w-full rounded-lg py-2 px-3 h-auto data-[state=active]:text-[#4F4F4F] data-[state=active]:bg-[#F5F5F5]  "
+            className="flex-none gap-2 flex items-center justify-center md:justify-start w-auto md:w-full rounded-lg py-2 px-3 h-auto data-[state=active]:text-[#4F4F4F] data-[state=active]:bg-[#F5F5F5]"
           >
             <Lock className="h-5 w-5" />
 
-            <span className="text-base font-medium hidden md:block">
+            <span className="text-base font-medium block">
               {t("password_tab")}
             </span>
           </TabsTrigger>

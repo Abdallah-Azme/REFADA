@@ -151,7 +151,7 @@ export default function EditCampFormData() {
 
       {/* ================= VIEW MODE ================= */}
       {!isEditing ? (
-        <div className="flex gap-8 items-center border border-gray-200 p-4 rounded-xl">
+        <div className="flex flex-col md:flex-row gap-8 items-center border border-gray-200 p-4 rounded-xl">
           <div>
             <Avatar className="w-24 h-24 mb-6 bg-[#C4A962]">
               <AvatarImage
@@ -216,7 +216,7 @@ export default function EditCampFormData() {
       ) : (
         // ================= EDIT MODE =================
         <div className="w-full  border border-gray-200 rounded-md p-2">
-          <div className="flex gap-8 items-center">
+          <div className="flex flex-col md:flex-row gap-8 items-center">
             {/* Avatar */}
             <div>
               <Avatar className="w-24 h-24 mb-4 bg-[#C4A962]">

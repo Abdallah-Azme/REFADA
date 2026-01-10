@@ -7,9 +7,11 @@ import Analytics from "@/features/dashboard/components/analytics";
 import CampsData from "@/features/dashboard/components/camps-data";
 import MainHeader from "@/features/dashboard/components/main-header";
 import StatsCards from "@/features/dashboard/components/stats-cards";
+import { useTranslations } from "next-intl";
 import { Tent, Heart, Zap, CheckCircle, Users, Loader2 } from "lucide-react";
 
 export default function Page() {
+  const t = useTranslations("reportsPage");
   const { data: profileData, isLoading: profileLoading } = useProfile();
 
   // Get user's camp slug from profile
@@ -118,8 +120,10 @@ export default function Page() {
         </div>
 
         {/* Map - right side */}
-        <div className="w-full lg:w-1/2">
-          <h2 className="text-[#333333] font-bold text-lg mb-2">الموقع </h2>
+        <div className="w-full lg:w-1/2 h-[400px] lg:h-auto">
+          <h2 className="text-[#333333] font-bold text-lg mb-2">
+            {t("location")}
+          </h2>
           <CampsMapSection secondary dashboard />
         </div>
       </div>

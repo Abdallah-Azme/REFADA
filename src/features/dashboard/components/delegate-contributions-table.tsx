@@ -213,7 +213,10 @@ const createDelegateContributionColumns = (
             disabled={contribution.alreadyConfirmed}
             title={t("received_quantity")}
           >
-            📋 {t("quantity")}
+            📋{" "}
+            {contribution.alreadyConfirmed
+              ? t("quantity_matched")
+              : t("match_quantity")}
           </Button>
 
           <Button
@@ -513,12 +516,23 @@ export default function DelegateContributionsTable() {
 
     setIsAddingFamilies(true);
     try {
-      const familiesData = Array.from(selected.entries()).map(
-        ([familyId, quantity]) => ({
+      // Filter out families that are already addedByContributor or hasBenefit (they're already true on backend)
+      const familiesData = Array.from(selected.entries())
+        .filter(([familyId]) => {
+          const family = campFamilies.find((f) => f.id === familyId);
+          return !family?.addedByContributor && !family?.hasBenefit;
+        })
+        .map(([familyId, quantity]) => ({
           id: familyId,
           quantity: parseInt(quantity) || 1,
-        })
-      );
+        }));
+
+      // If all selected families were already added, just close the dialog
+      if (familiesData.length === 0) {
+        toast.success(t("add_families_success"));
+        handleCloseConfirmDialog();
+        return;
+      }
 
       const response = await addFamiliesToContributionApi(
         confirmingContribution.id,
@@ -563,15 +577,15 @@ export default function DelegateContributionsTable() {
         quantity
       );
       if (response.success) {
-        toast.success(response.message || "تم تأكيد المساهمة بنجاح");
+        toast.success(response.message || t("confirm_success"));
         // Move to step 2 for family selection
         setConfirmStep(2);
       } else {
-        toast.error(response.message || "فشل في تأكيد المساهمة");
+        toast.error(response.message || t("confirm_error"));
       }
     } catch (error: any) {
       console.error("Failed to confirm contribution:", error);
-      toast.error(error?.message || "فشل في تأكيد المساهمة");
+      toast.error(error?.message || t("confirm_error"));
     } finally {
       setIsConfirming(false);
     }
@@ -616,15 +630,15 @@ export default function DelegateContributionsTable() {
         families
       );
       if (response.success) {
-        toast.success(response.message || "تم إضافة العائلات بنجاح");
+        toast.success(response.message || t("add_families_success"));
         handleCloseConfirmDialog();
         fetchContributions();
       } else {
-        toast.error(response.message || "فشل في إضافة العائلات");
+        toast.error(response.message || t("add_families_error"));
       }
     } catch (error: any) {
       console.error("Failed to add families:", error);
-      toast.error(error?.message || "فشل في إضافة العائلات");
+      toast.error(error?.message || t("add_families_error"));
     } finally {
       setIsAddingFamilies(false);
     }
@@ -650,11 +664,11 @@ export default function DelegateContributionsTable() {
         handleCloseConfirmDialog();
         fetchContributions();
       } else {
-        toast.error(response.message || "فشل في إنهاء المساهمة");
+        toast.error(response.message || t("confirm_error"));
       }
     } catch (error: any) {
       console.error("Failed to complete contribution:", error);
-      toast.error(error?.message || "فشل في إنهاء المساهمة");
+      toast.error(error?.message || t("confirm_error"));
     } finally {
       setIsCompleting(false);
     }
@@ -713,25 +727,27 @@ export default function DelegateContributionsTable() {
     return (
       <div className="w-full p-6 bg-white rounded-lg min-h-[400px] flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="mr-3 text-gray-600">جاري تحميل المساهمات...</span>
+        <span className="mr-3 text-gray-600">{t("loading")}</span>
       </div>
     );
   }
 
   return (
-    <div className="w-full p-6 bg-white rounded-lg min-h-screen bg" dir="rtl">
+    <div className="w-full p-6 bg-white rounded-lg min-h-screen bg">
       <div className="space-y-4">
         {/* Header with Title and Search */}
         <div className=" mb-2">
-          <h2 className="text-2xl font-bold text-gray-800">المساهمات</h2>
+          <h2 className="text-2xl font-bold text-gray-800">
+            {t("page_title")}
+          </h2>
 
           <div className="p-6  ">
-            <div className="flex justify-between items-center gap-2">
+            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
               {/* FORM */}
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="flex items-center gap-3 self-end"
+                  className="w-full sm:w-auto"
                 >
                   {/* الحالة */}
                   <FormField
@@ -744,19 +760,25 @@ export default function DelegateContributionsTable() {
                             onValueChange={field.onChange}
                             value={field.value}
                           >
-                            <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                              <SelectValue placeholder="الحالة" />
+                            <SelectTrigger className="w-full sm:w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
+                              <SelectValue placeholder={t("filter_status")} />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="all">الكل</SelectItem>
+                              <SelectItem value="all">
+                                {t("filter_all")}
+                              </SelectItem>
                               <SelectItem value="pending">
-                                قيد التنفيذ
+                                {t("status_pending")}
                               </SelectItem>
                               <SelectItem value="approved">
-                                موافق عليه
+                                {t("status_approved")}
                               </SelectItem>
-                              <SelectItem value="rejected">مرفوض</SelectItem>
-                              <SelectItem value="completed">مكتمل</SelectItem>
+                              <SelectItem value="rejected">
+                                {t("status_rejected")}
+                              </SelectItem>
+                              <SelectItem value="completed">
+                                {t("status_completed")}
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -766,27 +788,25 @@ export default function DelegateContributionsTable() {
                 </form>
               </Form>
 
-              <div className="flex flex-col gap-2">
-                <div className="flex gap-1">
-                  <Button
-                    className="bg-primary w-1/2 text-white px-6 flex-1 py-2 rounded-xl flex items-center gap-2 text-sm font-medium"
-                    size="lg"
-                    onClick={fetchContributions}
-                  >
-                    <SearchCheck className="w-4 h-4" />
-                    تحديث
-                  </Button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <Button
+                  className="bg-primary text-white px-6 flex-1 sm:flex-none py-2 rounded-xl flex items-center justify-center gap-2 text-sm font-medium"
+                  size="lg"
+                  onClick={fetchContributions}
+                >
+                  <SearchCheck className="w-4 h-4" />
+                  {t("update")}
+                </Button>
 
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="px-6 flex-1 shrink-0 w-1/2 py-2 rounded-xl"
-                    onClick={() => form.reset()}
-                  >
-                    <RotateCcw className="w-4 h-4 text-primary" />
-                    إعادة البحث
-                  </Button>
-                </div>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="px-6 flex-1 sm:flex-none py-2 rounded-xl shrink-0"
+                  onClick={() => form.reset()}
+                >
+                  <RotateCcw className="w-4 h-4 text-primary" />
+                  {t("reset")}
+                </Button>
               </div>
             </div>
           </div>

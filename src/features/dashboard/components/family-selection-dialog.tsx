@@ -100,6 +100,24 @@ export default function FamilySelectionDialog({
     return result;
   }, [families, chosenFilter, benefitFilter]);
 
+  // Auto-select all filtered families when a filter is applied
+  useEffect(() => {
+    const hasActiveFilter =
+      chosenFilter !== "all" ||
+      benefitFilter !== "all" ||
+      globalFilter.trim() !== "";
+
+    if (hasActiveFilter && filteredFamilies.length > 0) {
+      const newSelection = new Map(selectedFamilies);
+      filteredFamilies.forEach((family) => {
+        if (!newSelection.has(family.id)) {
+          newSelection.set(family.id, "1");
+        }
+      });
+      setSelectedFamilies(newSelection);
+    }
+  }, [chosenFilter, benefitFilter, globalFilter, filteredFamilies]);
+
   // Export to Excel function - only exports selected (checked) families
   const handleExportExcel = () => {
     // Get only selected families
@@ -149,12 +167,16 @@ export default function FamilySelectionDialog({
     document.body.removeChild(link);
   };
 
-  // Auto-select suggested families when dialog opens
+  // Auto-select suggested families and benefited families when dialog opens
   useEffect(() => {
     if (isOpen && families.length > 0) {
       const newSelection = new Map(initialSelection);
       families.forEach((family) => {
-        if (family.addedByContributor && !newSelection.has(family.id)) {
+        // Auto-select families that are addedByContributor or have already benefited
+        if (
+          (family.addedByContributor || family.hasBenefit) &&
+          !newSelection.has(family.id)
+        ) {
           newSelection.set(family.id, "1");
         }
       });
@@ -199,7 +221,7 @@ export default function FamilySelectionDialog({
           row.original.addedByContributor === true;
 
         return (
-          <div className="flex justify-center">
+          <div className="flex justify-center w-[50px]">
             <Checkbox
               checked={isSelected}
               disabled={isDisabled}
@@ -257,7 +279,7 @@ export default function FamilySelectionDialog({
         <span className="text-gray-600 font-semibold">{t("national_id")}</span>
       ),
       cell: ({ row }) => (
-        <span className="text-gray-600 font-mono text-sm">
+        <span className="text-gray-600 font-mono text-sm whitespace-nowrap">
           {row.original.nationalId}
         </span>
       ),
@@ -328,75 +350,78 @@ export default function FamilySelectionDialog({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="max-w-4xl bg-gradient-to-br from-white to-gray-50 border-0 shadow-2xl"
+        className="w-[95vw] sm:w-full max-w-4xl max-h-[90vh] bg-gradient-to-br from-white to-gray-50 border-0 shadow-2xl overflow-hidden flex flex-col"
         dir="rtl"
       >
-        <DialogHeader className="pb-4 border-b border-gray-100">
-          <DialogTitle className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-xl">
-              <Users className="w-6 h-6 text-primary" />
+        <DialogHeader className="pb-4 border-b border-gray-100 shrink-0">
+          <DialogTitle className="text-lg sm:text-2xl font-bold text-gray-800 flex items-center gap-2 sm:gap-3">
+            <div className="p-1.5 sm:p-2 bg-primary/10 rounded-xl">
+              <Users className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
             </div>
-            {t("select_beneficiaries_title")}
+            <span className="truncate">{t("select_beneficiaries_title")}</span>
           </DialogTitle>
-          <DialogDescription className="text-gray-500 mt-2">
+          <DialogDescription className="text-gray-500 mt-2 text-sm sm:text-base">
             {t("select_beneficiaries_desc")}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 pt-4">
+        <div className="flex-1 overflow-y-auto space-y-4 pt-4">
           {/* Search and Filters Row */}
-          <div className="flex flex-wrap gap-3 items-center">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 items-stretch sm:items-center px-1">
             {/* Search Input */}
-            <div className="relative flex-1 min-w-[200px]">
+            <div className="relative w-full sm:flex-1 sm:min-w-[200px]">
               <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <Input
                 placeholder={t("search_family")}
                 value={globalFilter ?? ""}
                 onChange={(e) => setGlobalFilter(e.target.value)}
-                className="pr-12 h-11 border-2 border-gray-200 focus:border-primary rounded-xl bg-white shadow-sm placeholder:text-gray-400"
+                className="pr-12 h-11 border-2 border-gray-200 focus:border-primary rounded-xl bg-white shadow-sm placeholder:text-gray-400 w-full"
               />
             </div>
 
-            {/* Chosen Filter */}
-            <Select value={chosenFilter} onValueChange={setChosenFilter}>
-              <SelectTrigger className="w-[160px] h-11 rounded-xl border-2 border-gray-200 bg-white">
-                <Filter className="w-4 h-4 ml-2 text-gray-500" />
-                <SelectValue placeholder={t("filter_chosen")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("filter_all")}</SelectItem>
-                <SelectItem value="yes">{t("filter_chosen")}</SelectItem>
-                <SelectItem value="no">غير مختار</SelectItem>
-              </SelectContent>
-            </Select>
+            {/* Filters Container */}
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              {/* Chosen Filter */}
+              <Select value={chosenFilter} onValueChange={setChosenFilter}>
+                <SelectTrigger className="w-full sm:w-[140px] h-11 rounded-xl border-2 border-gray-200 bg-white">
+                  <Filter className="w-4 h-4 ml-2 text-gray-500" />
+                  <SelectValue placeholder={t("filter_chosen")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t("filter_all")}</SelectItem>
+                  <SelectItem value="yes">{t("filter_chosen")}</SelectItem>
+                  <SelectItem value="no">غير مختار</SelectItem>
+                </SelectContent>
+              </Select>
 
-            {/* Benefit Filter */}
-            <Select value={benefitFilter} onValueChange={setBenefitFilter}>
-              <SelectTrigger className="w-[160px] h-11 rounded-xl border-2 border-gray-200 bg-white">
-                <Filter className="w-4 h-4 ml-2 text-gray-500" />
-                <SelectValue placeholder={t("filter_benefited")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("filter_all")}</SelectItem>
-                <SelectItem value="yes">{t("filter_benefited")}</SelectItem>
-                <SelectItem value="no">لم يستفد</SelectItem>
-              </SelectContent>
-            </Select>
+              {/* Benefit Filter */}
+              <Select value={benefitFilter} onValueChange={setBenefitFilter}>
+                <SelectTrigger className="w-full sm:w-[140px] h-11 rounded-xl border-2 border-gray-200 bg-white">
+                  <Filter className="w-4 h-4 ml-2 text-gray-500" />
+                  <SelectValue placeholder={t("filter_benefited")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t("filter_all")}</SelectItem>
+                  <SelectItem value="yes">{t("filter_benefited")}</SelectItem>
+                  <SelectItem value="no">لم يستفد</SelectItem>
+                </SelectContent>
+              </Select>
 
-            {/* Export Button */}
-            <Button
-              variant="outline"
-              onClick={handleExportExcel}
-              className="h-11 px-4 rounded-xl border-2 border-green-500 text-green-600 hover:bg-green-50 hover:text-green-700"
-            >
-              <Download className="w-4 h-4 ml-2" />
-              {t("export_excel")}
-            </Button>
+              {/* Export Button */}
+              <Button
+                variant="outline"
+                onClick={handleExportExcel}
+                className="h-11 px-4 rounded-xl border-2 border-green-500 text-green-600 hover:bg-green-50 hover:text-green-700 w-full sm:w-auto"
+              >
+                <Download className="w-4 h-4 ml-2" />
+                {t("export_excel")}
+              </Button>
+            </div>
           </div>
 
           {/* Selected Count Badge */}
           {selectedFamilies.size > 0 && (
-            <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-xl border border-primary/20">
+            <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-xl border border-primary/20 mx-1">
               <CheckCircle2 className="w-5 h-5 text-primary" />
               <span className="text-primary font-semibold">
                 {selectedFamilies.size} {t("families_benefited")}
@@ -405,9 +430,9 @@ export default function FamilySelectionDialog({
           )}
 
           {/* Table */}
-          <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
-            <div className="max-h-[350px] overflow-y-auto">
-              <Table>
+          <div className="border border-gray-200 rounded-xl shadow-sm bg-white overflow-hidden mx-1">
+            <div className="overflow-x-auto">
+              <Table className="min-w-[600px]">
                 <TableHeader className="bg-gray-50/80 sticky top-0 z-10">
                   {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow

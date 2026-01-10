@@ -846,7 +846,8 @@
     "registered_families": "Registered Families",
     "current_projects_count": "Current Projects",
     "completion_percentage": "Completion Rate",
-    "title": "Reports"
+    "title": "Reports",
+    "location": "Location"
   },
   "policy_page": {
     "title": "Policies"
@@ -1489,6 +1490,8 @@
     "confirm_receipt_title": "Confirm Contribution Receipt",
     "select_beneficiaries_title": "Select Beneficiary Families",
     "confirm_receipt_desc": "Are you sure you want to confirm receipt of contribution #",
+    "match_quantity": "Match Quantity",
+    "quantity_matched": "Quantity Matched",
     "received_quantity": "Received Quantity",
     "cancel": "Cancel",
     "confirm_receipt": "Confirm Receipt",
@@ -1536,6 +1539,12 @@
     "select_family": "Please select at least one family",
     "invalid_family_quantity": "Please enter a valid quantity for each family",
     "create_project_error": "Cannot create project",
+    "confirming": "Confirming...",
+    "adding_families": "Adding...",
+    "confirm_success": "Contribution confirmed successfully",
+    "confirm_error": "Failed to confirm contribution",
+    "add_families_success": "Families added successfully",
+    "add_families_error": "Failed to add families",
     "contribute_dialog": {
       "quantity_validation": "Please enter a valid quantity",
       "quantity_label": "Please enter the quantity you want to contribute",

@@ -34,19 +34,19 @@ export default function ProjectFilteringForm({
 
   return (
     <Form {...form}>
-      <div className="flex items-center gap-3 self-end">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 w-full md:w-auto">
         {/* Search by name */}
         <FormField
           control={form.control}
           name="search"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full md:w-auto">
               <FormControl>
-                <div className="relative">
+                <div className="relative w-full md:w-auto">
                   <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
                     placeholder={t("search_placeholder")}
-                    className="w-[200px] h-10 pr-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700"
+                    className="w-full md:w-[200px] h-10 pr-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700"
                     {...field}
                   />
                 </div>
@@ -60,10 +60,10 @@ export default function ProjectFilteringForm({
           control={form.control}
           name="type"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full md:w-auto">
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
+                  <SelectTrigger className="w-full md:w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
                     <SelectValue placeholder={t("type_filter")} />
                   </SelectTrigger>
                   <SelectContent>
@@ -85,10 +85,10 @@ export default function ProjectFilteringForm({
           control={form.control}
           name="status"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full md:w-auto">
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
+                  <SelectTrigger className="w-full md:w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
                     <SelectValue placeholder={t("status_filter")} />
                   </SelectTrigger>
                   <SelectContent>

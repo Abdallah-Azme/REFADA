@@ -89,7 +89,7 @@ export default function Hero({ slides = [] }: HeroProps) {
             loop: true,
             direction: isRTL ? "rtl" : "ltr",
           }}
-          plugins={[Autoplay({ delay: 5000, stopOnInteraction: false })] as any}
+          plugins={[Autoplay({ delay: 8000, stopOnInteraction: false })] as any}
         >
           <CarouselContent className="py-5">
             {activeSlides.map((slide) => (

@@ -21,16 +21,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {/* Scrollable content */}
             <main className="flex-1 min-h-0 overflow-y-auto">{children}</main>
 
-            <footer className="shrink-0 bg-[#1B2540] flex items-center justify-center text-white py-3 font-semibold text-sm">
-              {t("footer_rights")} — {t("developed_by")}{" "}
-              <a
-                href="https://www.subcodeco.com/ar"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-secondary hover:underline mr-1"
-              >
-                SubCode
-              </a>
+            <footer className="shrink-0 bg-[#1B2540] flex flex-col md:flex-row items-center justify-center gap-2 text-white py-4 px-4 font-semibold text-sm text-center">
+              <span>{t("footer_rights")}</span>
+              <span className="hidden md:inline">—</span>
+              <div className="flex items-center gap-1 justify-center">
+                <span>{t("developed_by")}</span>
+                <a
+                  href="https://www.subcodeco.com/ar"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-secondary hover:underline mr-1"
+                >
+                  SubCode
+                </a>
+              </div>
             </footer>
           </div>
         </SidebarProvider>

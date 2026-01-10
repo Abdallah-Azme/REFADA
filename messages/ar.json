@@ -850,7 +850,7 @@
     "october": "أكتوبر",
     "november": "نوفمبر",
     "december": "ديسمبر",
-
+    "location": "الموقع",
     "title": "التقارير"
   },
   "policy_page": {
@@ -1513,6 +1513,8 @@
     "finish_confirm_desc": "هل أنت متأكد من إنهاء هذه المساهمة؟",
     "confirm_receipt_title": "تأكيد استلام المساهمة",
     "confirm_receipt_desc": "هل أنت متأكد من رغبتك في تأكيد استلام المساهمة رقم",
+    "match_quantity": "تطابق الكمية",
+    "quantity_matched": "تم تطابق الكمية من قبل",
     "received_quantity": "الكمية المستلمة",
     "received_quantity_placeholder": "أدخل الكمية المستلمة",
     "select_beneficiaries_title": "اختيار العائلات المستفيدة",

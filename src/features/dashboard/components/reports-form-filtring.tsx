@@ -49,21 +49,21 @@ export default function ReportsFormFiltring({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex items-center gap-3 self-end"
+        className="flex flex-col w-full sm:flex-row sm:w-auto items-center gap-3 self-end"
       >
         {/* من التاريخ */}
         <FormField
           control={form.control}
           name="fromDate"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full sm:w-auto">
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
                       variant="outline"
                       className={cn(
-                        "w-[180px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700 font-normal justify-start text-right",
+                        "w-full sm:w-[180px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700 font-normal justify-start text-right",
                         !field.value && "text-muted-foreground"
                       )}
                     >
@@ -96,14 +96,14 @@ export default function ReportsFormFiltring({
           control={form.control}
           name="toDate"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full sm:w-auto">
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
                       variant="outline"
                       className={cn(
-                        "w-[180px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700 font-normal justify-start text-right",
+                        "w-full sm:w-[180px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700 font-normal justify-start text-right",
                         !field.value && "text-muted-foreground"
                       )}
                     >
@@ -136,10 +136,10 @@ export default function ReportsFormFiltring({
           control={form.control}
           name="reportType"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full sm:w-auto">
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
+                  <SelectTrigger className="w-full sm:w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
                     <SelectValue placeholder="نوع التقرير" />
                   </SelectTrigger>
                   <SelectContent>

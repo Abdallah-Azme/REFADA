@@ -190,7 +190,7 @@ export function FamilyTable({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  لا توجد نتائج.
+                  {tCommon("no_results" as any)}
                 </TableCell>
               </TableRow>
             )}

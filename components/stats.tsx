@@ -117,7 +117,7 @@ export default function Stats({
     // Auto-flip every 3 seconds
     const interval = setInterval(() => {
       setFlipCount((prev) => prev + 1);
-    }, 3000);
+    }, 6000);
 
     return () => clearInterval(interval);
   }, [isInView, totalPages]);

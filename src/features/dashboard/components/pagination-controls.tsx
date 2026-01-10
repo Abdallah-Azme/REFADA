@@ -22,7 +22,7 @@ export default function PaginationControls<T>({ table }: { table: Table<T> }) {
   const pageCount = table.getPageCount();
 
   return (
-    <div className="flex w-fit gap-3 items-center justify-between rounded-xl border bg-white px-4 py-3 shadow-sm">
+    <div className="flex flex-col sm:flex-row w-full sm:w-fit gap-3 items-center justify-between rounded-xl border bg-white px-4 py-3 shadow-sm">
       {/* ----- Rows per page ----- */}
       <div className="flex items-center gap-3">
         <p className="text-sm text-gray-600 font-medium">الصفوف لكل صفحة</p>

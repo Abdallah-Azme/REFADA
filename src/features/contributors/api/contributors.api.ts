@@ -355,6 +355,9 @@ export interface DelegateContribution {
   id: number;
   notes: string | null;
   status: string;
+  alreadyConfirmed?: boolean;
+  delegate?: string;
+  project?: ContributionHistoryProject | null;
   contributorFamilies: ContributorFamily[];
   createdAt: string;
   updatedAt: string;
