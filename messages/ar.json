@@ -619,6 +619,7 @@
   "contributors": {
     "page_title": "إدارة المساهمين",
     "list_title": "قائمة المساهمين",
+    "contributor_data": "بيانات المساهم",
     "add_contributor": "إضافة مساهم",
     "name": "الاسم",
     "email": "البريد الإلكتروني",
@@ -1474,6 +1475,7 @@
   },
 
   "contributions": {
+    "project_name": "اسم المشروع",
     "page_title": "مساهمات المندوبين",
     "all_contributions": "جميع المساهمات",
     "details_title": "تفاصيل المساهمة",

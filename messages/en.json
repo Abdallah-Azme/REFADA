@@ -615,6 +615,7 @@
   "contributors": {
     "page_title": "Manage Contributors",
     "list_title": "Contributors List",
+    "contributor_data": "Contributor Data",
     "add_contributor": "Add Contributor",
     "name": "Name",
     "email": "Email",
@@ -1470,6 +1471,7 @@
   },
 
   "contributions": {
+    "project_name": "Project Name",
     "page_title": "Delegate Contributions",
     "all_contributions": "All Contributions",
     "details_title": "Contribution Details",

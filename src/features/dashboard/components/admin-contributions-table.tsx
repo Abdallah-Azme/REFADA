@@ -327,6 +327,7 @@ export default function AdminContributionsTable() {
     setIsLoading(true);
     try {
       const response = await getAdminContributionsApi();
+      console.log("response", response);
       if (response.success) {
         setData(response.data);
       }

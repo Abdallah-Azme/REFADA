@@ -38,7 +38,7 @@ export default function Page() {
   } = useCampDetails(campSlug || null);
   const camp = campData?.data;
   const projects = camp?.projects || [];
-
+  console.log({ projects });
   const families = camp?.families || [];
 
   // Use statistics object as primary source (most accurate), fallback to calculated values

@@ -92,6 +92,15 @@ const createDelegateContributionColumns = (
     cell: ({ row }) => <div className="text-center">{row.original.id}</div>,
   },
   {
+    accessorKey: "project.name",
+    header: t("project_name"),
+    cell: ({ row }) => (
+      <div className="text-center text-gray-700 font-medium max-w-[200px] truncate">
+        {row.original.project?.name || "-"}
+      </div>
+    ),
+  },
+  {
     accessorKey: "status",
     header: t("status"),
     cell: ({ row }) => {
@@ -429,7 +438,6 @@ export default function DelegateContributionsTable() {
   const [isAddingFamilies, setIsAddingFamilies] = useState(false);
   const [campFamilies, setCampFamilies] = useState<CampFamily[]>([]);
   const [isLoadingCampFamilies, setIsLoadingCampFamilies] = useState(false);
-  const [isCompleting, setIsCompleting] = useState(false);
 
   const t = useTranslations("contributions");
   const tCommon = useTranslations("common");
@@ -578,6 +586,8 @@ export default function DelegateContributionsTable() {
       );
       if (response.success) {
         toast.success(response.message || t("confirm_success"));
+        // Fetch families with contribution ID to get addedByContributor and hasBenefit flags
+        await fetchCampFamilies(confirmingContribution.id);
         // Move to step 2 for family selection
         setConfirmStep(2);
       } else {
@@ -591,87 +601,11 @@ export default function DelegateContributionsTable() {
     }
   };
 
-  const handleToggleFamily = (familyId: number) => {
-    const newMap = new Map(selectedFamilies);
-    if (newMap.has(familyId)) {
-      newMap.delete(familyId);
-    } else {
-      newMap.set(familyId, "1"); // Default quantity of 1
-    }
-    setSelectedFamilies(newMap);
-  };
-
-  const handleFamilyQuantityChange = (familyId: number, quantity: string) => {
-    const newMap = new Map(selectedFamilies);
-    newMap.set(familyId, quantity);
-    setSelectedFamilies(newMap);
-  };
-
-  const handleAddFamilies = async () => {
-    if (!confirmingContribution || selectedFamilies.size === 0) {
-      toast.error(t("select_family"));
-      return;
-    }
-
-    const families: FamilyQuantity[] = [];
-    for (const [id, qty] of selectedFamilies) {
-      const quantity = parseInt(qty);
-      if (isNaN(quantity) || quantity <= 0) {
-        toast.error(t("invalid_family_quantity"));
-        return;
-      }
-      families.push({ id, quantity });
-    }
-
-    setIsAddingFamilies(true);
-    try {
-      const response = await addFamiliesToContributionApi(
-        confirmingContribution.id,
-        families
-      );
-      if (response.success) {
-        toast.success(response.message || t("add_families_success"));
-        handleCloseConfirmDialog();
-        fetchContributions();
-      } else {
-        toast.error(response.message || t("add_families_error"));
-      }
-    } catch (error: any) {
-      console.error("Failed to add families:", error);
-      toast.error(error?.message || t("add_families_error"));
-    } finally {
-      setIsAddingFamilies(false);
-    }
-  };
-
   const handleCloseConfirmDialog = () => {
     setConfirmingContribution(null);
     setConfirmedQuantity("");
     setConfirmStep(1);
     setSelectedFamilies(new Map());
-  };
-
-  const handleCompleteContribution = async () => {
-    if (!confirmingContribution) return;
-
-    setIsCompleting(true);
-    try {
-      const response = await completeDelegateContributionApi(
-        confirmingContribution.id
-      );
-      if (response.success) {
-        toast.success(response.message || t("finish_confirm_title"));
-        handleCloseConfirmDialog();
-        fetchContributions();
-      } else {
-        toast.error(response.message || t("confirm_error"));
-      }
-    } catch (error: any) {
-      console.error("Failed to complete contribution:", error);
-      toast.error(error?.message || t("confirm_error"));
-    } finally {
-      setIsCompleting(false);
-    }
   };
 
   // Filter data based on form values
@@ -688,7 +622,7 @@ export default function DelegateContributionsTable() {
     return filtered;
   }, [data, watchedStatus]);
 
-  console.log({ displayFamilies });
+  console.log("filteredData", { filteredData });
   const table = useReactTable<DelegateContribution>({
     data: filteredData,
     columns: createDelegateContributionColumns(

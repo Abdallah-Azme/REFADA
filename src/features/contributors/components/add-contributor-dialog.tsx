@@ -24,6 +24,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { CirclePlus, PlusCircle, Users, Eye, EyeOff } from "lucide-react";
 
@@ -32,6 +39,7 @@ import { useCreateContributor } from "../hooks/use-create-contributor";
 
 export default function AddContributorDialog() {
   const t = useTranslations("contributors");
+  const tAuth = useTranslations("auth");
   const [open, setOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -47,9 +55,13 @@ export default function AddContributorDialog() {
       password: "",
       password_confirmation: "",
       backup_phone: "",
+      admin_position: "",
       license_number: "",
     },
   });
+
+  // Watch admin_position to detect "جمعية" selection
+  const watchedAdminPosition = form.watch("admin_position");
 
   const onSubmit = async (values: z.infer<typeof createContributorSchema>) => {
     try {
@@ -179,24 +191,60 @@ export default function AddContributorDialog() {
                   )}
                 />
 
-                {/* رقم الترخيص */}
+                {/* الصفة الإدارية */}
                 <FormField
                   control={form.control}
-                  name="license_number"
+                  name="admin_position"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input
-                          className="bg-white"
-                          placeholder={t("license_number")}
-                          {...field}
-                          value={field.value || ""}
-                        />
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <SelectTrigger className="bg-white">
+                            <SelectValue
+                              placeholder={tAuth("admin_position_placeholder")}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="مبادر">
+                              {tAuth("admin_position_initiator")}
+                            </SelectItem>
+                            <SelectItem value="فريق">
+                              {tAuth("admin_position_team")}
+                            </SelectItem>
+                            <SelectItem value="جمعية">
+                              {tAuth("admin_position_association")}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
+                {/* رقم الترخيص - يظهر فقط عند اختيار جمعية */}
+                {watchedAdminPosition === "جمعية" && (
+                  <FormField
+                    control={form.control}
+                    name="license_number"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            className="bg-white"
+                            placeholder={tAuth("enter_license_number")}
+                            {...field}
+                            value={field.value || ""}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
               </div>
 
               {/* PASSWORD SECTION */}

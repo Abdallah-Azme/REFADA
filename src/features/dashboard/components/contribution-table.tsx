@@ -255,6 +255,7 @@ export default function ContributionTable() {
     return filtered;
   }, [data, watchedProject, watchedStatus]);
 
+  console.log({ filteredData });
   // Get unique projects for filter dropdown
   const uniqueProjects = React.useMemo(() => {
     const projectMap = new Map<number, string>();
@@ -266,6 +267,29 @@ export default function ContributionTable() {
       name,
     }));
   }, [data]);
+
+  // Get unique statuses for filter dropdown
+  const uniqueStatuses = React.useMemo(() => {
+    const statusSet = new Set<string>();
+    data.forEach((item) => {
+      if (item.status) {
+        statusSet.add(item.status);
+      }
+    });
+    return Array.from(statusSet).map((status) => ({
+      value: status,
+      label:
+        status === "pending"
+          ? t("pending")
+          : status === "approved"
+          ? t("approved")
+          : status === "rejected"
+          ? t("rejected")
+          : status === "completed"
+          ? t("completed")
+          : status,
+    }));
+  }, [data, t]);
 
   const table = useReactTable<ContributionHistoryItem>({
     data: filteredData,
@@ -365,18 +389,14 @@ export default function ContributionTable() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="all">{t("all")}</SelectItem>
-                              <SelectItem value="pending">
-                                {t("pending")}
-                              </SelectItem>
-                              <SelectItem value="approved">
-                                {t("approved")}
-                              </SelectItem>
-                              <SelectItem value="rejected">
-                                {t("rejected")}
-                              </SelectItem>
-                              <SelectItem value="completed">
-                                {t("completed")}
-                              </SelectItem>
+                              {uniqueStatuses.map((status) => (
+                                <SelectItem
+                                  key={status.value}
+                                  value={status.value}
+                                >
+                                  {status.label}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         </FormControl>

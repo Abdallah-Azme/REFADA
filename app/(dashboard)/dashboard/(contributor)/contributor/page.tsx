@@ -7,11 +7,14 @@ import CampFamilyStats from "@/features/dashboard/components/camp-family-stats";
 import { Tangent, Tent, User } from "lucide-react";
 import MainHeader from "@/features/dashboard/components/main-header";
 
+import { useTranslations } from "next-intl";
+
 export default function Page() {
+  const t = useTranslations("contributors");
   return (
     <main className="w-full flex flex-col  gap-6 p-8 bg-gray-50  ">
       <div className="flex items-center justify-between mb-5">
-        <MainHeader header="بيانات المساهم">
+        <MainHeader header={t("contributor_data")}>
           <User />
         </MainHeader>
       </div>

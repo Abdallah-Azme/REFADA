@@ -4,6 +4,7 @@ import { useProfile } from "@/features/profile";
 import { useTranslations } from "next-intl";
 import { useCampDetails } from "@/features/camps/hooks/use-camps";
 import { useProjects } from "@/features/projects/hooks/use-projects";
+import { useDelegateContributions } from "@/features/contributors/hooks/use-delegate-contributions";
 import Analytics from "@/features/dashboard/components/analytics";
 import ProjectsTable from "@/features/dashboard/components/projects-table";
 import StatsCards from "@/features/dashboard/components/stats-cards";
@@ -13,17 +14,27 @@ export default function DashboardPage() {
   const t = useTranslations("admin.representative_dashboard");
   const { data: profileData, isLoading: profileLoading } = useProfile();
   const { data: projectsData, isLoading: projectsLoading } = useProjects();
+  const { data: contributionsData, isLoading: contributionsLoading } =
+    useDelegateContributions();
 
   // Get user's camp slug from profile
   const campSlug = profileData?.data?.camp?.slug;
+  console.log("profileData", profileData);
+  console.log("campSlug", campSlug);
   const { data: campData } = useCampDetails(campSlug || null);
 
-  const isLoading = profileLoading || projectsLoading;
+  console.log("campData", campData);
+
+  const isLoading = profileLoading || projectsLoading || contributionsLoading;
 
   // Build dynamic stats from API data
   const userCamp = profileData?.data?.camp;
   const campDetails = campData?.data;
   const projects = projectsData?.data || [];
+  const contributions = contributionsData?.data || [];
+
+  console.log("projectsData", { projectsData });
+  console.log("contributionsData", { contributionsData });
 
   // Count projects by status
   const pendingProjects = projects.filter(
@@ -45,11 +56,8 @@ export default function DashboardPage() {
     userCamp?.familyCount ||
     0;
 
-  // Calculate total contributions (sum of totalReceived from all projects)
-  const totalContributions = projects.reduce(
-    (sum, p) => sum + (p.totalReceived || 0),
-    0
-  );
+  // Get total contributions count from the contributions API
+  const totalContributions = contributions.length;
 
   const dynamicStats = [
     {
@@ -93,6 +101,8 @@ export default function DashboardPage() {
       iconColor: "text-blue-500",
     },
   ];
+
+  console.log("dynamicStats", dynamicStats);
 
   if (isLoading) {
     return (

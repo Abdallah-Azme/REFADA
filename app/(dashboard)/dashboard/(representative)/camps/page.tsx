@@ -2,6 +2,7 @@
 
 import { useProfile } from "@/features/profile";
 import { useCampDetails } from "@/features/camps/hooks/use-camps";
+import { useDelegateContributions } from "@/features/contributors/hooks/use-delegate-contributions";
 import CampsMapSection from "@/components/pages/home/camps-map-section";
 import Analytics from "@/features/dashboard/components/analytics";
 import CampsData from "@/features/dashboard/components/camps-data";
@@ -13,6 +14,8 @@ import { Tent, Heart, Zap, CheckCircle, Users, Loader2 } from "lucide-react";
 export default function Page() {
   const t = useTranslations("reportsPage");
   const { data: profileData, isLoading: profileLoading } = useProfile();
+  const { data: contributionsData, isLoading: contributionsLoading } =
+    useDelegateContributions();
 
   // Get user's camp slug from profile
   const campSlug = profileData?.data?.camp?.slug;
@@ -20,12 +23,13 @@ export default function Page() {
     campSlug || null
   );
 
-  const isLoading = profileLoading || campLoading;
+  const isLoading = profileLoading || campLoading || contributionsLoading;
 
   // Build dynamic stats from API data
   const userCamp = profileData?.data?.camp;
   const campDetails = campData?.data;
   const projects = campDetails?.projects || [];
+  const contributions = contributionsData?.data || [];
 
   // Count projects by status
   const pendingProjects = projects.filter(
@@ -39,14 +43,16 @@ export default function Page() {
   ).length;
   const totalProjects = projects.length;
 
-  // Get stats from camp
-  const familyCount = campDetails?.familyCount || userCamp?.familyCount || 0;
+  // Get family count from camp - use statistics object first (most accurate)
+  const familyCount =
+    campDetails?.statistics?.familyCount ||
+    campDetails?.families?.length ||
+    campDetails?.familyCount ||
+    userCamp?.familyCount ||
+    0;
 
-  // Calculate total contributions (sum of totalReceived from all projects)
-  const totalContributions = projects.reduce(
-    (sum: number, p: any) => sum + (p.totalReceived || 0),
-    0
-  );
+  // Get total contributions count from the contributions API
+  const totalContributions = contributions.length;
 
   const dynamicStats = [
     {
