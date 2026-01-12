@@ -715,6 +715,8 @@
     "requiredLabel": "المطلوب",
     "collectedLabel": "تم جمع",
     "familyCount": "عدد العائلات",
+    "memberCount": "عدد الأفراد",
+    "projectCount": "عدد المشاريع",
     "childrenCount": "عدد الأطفال",
     "elderlyCount": "عدد المسنين",
     "location": "الموقع",

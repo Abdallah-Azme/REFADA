@@ -711,6 +711,8 @@
     "requiredLabel": "Required",
     "collectedLabel": "Collected",
     "familyCount": "Family Count",
+    "memberCount": "Members Count",
+    "projectCount": "Projects Count",
     "childrenCount": "Children Count",
     "elderlyCount": "Elderly Count",
     "location": "Location",

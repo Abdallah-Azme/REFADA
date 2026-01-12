@@ -116,33 +116,33 @@ export function CampDetailsDialog({
             )}
 
             {/* Statistics Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-4 border-t">
+            <div className="grid grid-cols-3 gap-4 pt-4 border-t">
               <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                 <Users className="h-5 w-5 text-blue-600" />
                 <div>
                   <p className="text-sm text-gray-600">{t("familyCount")}</p>
                   <p className="text-lg font-bold text-gray-900">
-                    {camp.familyCount || 0}
+                    {camp.statistics?.familyCount || camp.familyCount || 0}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <Baby className="h-5 w-5 text-green-600" />
+                <Users className="h-5 w-5 text-indigo-600" />
                 <div>
-                  <p className="text-sm text-gray-600">{t("childrenCount")}</p>
+                  <p className="text-sm text-gray-600">{t("memberCount")}</p>
                   <p className="text-lg font-bold text-gray-900">
-                    {camp.childrenCount || 0}
+                    {camp.statistics?.memberCount || 0}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <User className="h-5 w-5 text-purple-600" />
+                <Users className="h-5 w-5 text-green-600" />
                 <div>
-                  <p className="text-sm text-gray-600">{t("elderlyCount")}</p>
+                  <p className="text-sm text-gray-600">{t("projectCount")}</p>
                   <p className="text-lg font-bold text-gray-900">
-                    {camp.elderlyCount || 0}
+                    {camp.statistics?.projectCount || 0}
                   </p>
                 </div>
               </div>

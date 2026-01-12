@@ -110,6 +110,7 @@ export default function CurrentProjectsTableContribution({
 
   // Fetch contributor history
   const { data: historyData } = useContributorHistory();
+  console.log({ historyData });
   const historyItems = historyData?.data || [];
 
   // Filter projects based on search
@@ -145,9 +146,6 @@ export default function CurrentProjectsTableContribution({
   };
 
   const handleViewHistory = (project: Project): void => {
-    // Find ALL contribution history items for this project
-    // Note: The history API returns items with a 'project' object inside.
-    // We need to match the project ID and collect ALL families from ALL contributions.
     const projectHistoryItems = historyItems.filter(
       (item: { project: { id: number } }) => item.project.id === project.id
     );
@@ -184,12 +182,22 @@ export default function CurrentProjectsTableContribution({
     setIsDialogOpen(false);
   };
 
+  // Create a Set of project IDs that have contribution history
+  const projectIdsWithHistory = React.useMemo(() => {
+    const ids = new Set<number>();
+    historyItems.forEach((item: { project: { id: number } }) => {
+      ids.add(item.project.id);
+    });
+    return ids;
+  }, [historyItems]);
+
   const table = useReactTable<Project>({
     data: filteredProjects,
     columns: createColumnsForContributor(
       {
-        onView: handleViewHistory, // Use handleViewHistory for the eye icon
+        onView: handleViewHistory,
         onContribute: handleContribute,
+        projectIdsWithHistory,
       },
       t
     ),

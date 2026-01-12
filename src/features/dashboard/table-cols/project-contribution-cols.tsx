@@ -44,6 +44,7 @@ export const dummyData: LegacyProject[] = [];
 type ActionHandlers = {
   onView: (project: Project) => void;
   onContribute: (project: Project) => void;
+  projectIdsWithHistory?: Set<number>;
 };
 
 export const createColumnsForContributor = (
@@ -170,18 +171,26 @@ export const createColumnsForContributor = (
   {
     id: "view",
     header: t("view"),
-    cell: ({ row }) => (
-      <div className="flex">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-green-600 hover:text-green-700 hover:bgذ-green-50"
-          onClick={() => handlers.onView(row.original)}
-        >
-          <Eye className="w-5 h-5" />
-        </Button>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const hasHistory = handlers.projectIdsWithHistory?.has(row.original.id);
+
+      if (!hasHistory) {
+        return <div className="flex justify-center">-</div>;
+      }
+
+      return (
+        <div className="flex">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-green-600 hover:text-green-700 hover:bg-green-50"
+            onClick={() => handlers.onView(row.original)}
+          >
+            <Eye className="w-5 h-5" />
+          </Button>
+        </div>
+      );
+    },
   },
   {
     id: "contribute",

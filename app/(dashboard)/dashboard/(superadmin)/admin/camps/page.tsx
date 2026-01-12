@@ -31,13 +31,17 @@ export default function AdminCampsPage() {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [selectedCamp, setSelectedCamp] = useState<Camp | null>(null);
-  const [detailsId, setDetailsId] = useState<number | null>(null);
+  const [detailsSlug, setDetailsSlug] = useState<string | null>(null);
 
   // Queries & Mutations
   const { data: campsData, isLoading: isLoadingCamps } = useCamps();
-  const { data: campDetails, isLoading: isLoadingDetails } = useCampDetails(
-    detailsId ? detailsId.toString() : null
-  );
+
+  console.log({ campsData });
+  const { data: campDetails, isLoading: isLoadingDetails } =
+    useCampDetails(detailsSlug);
+
+  console.log({ campDetails });
+
   const createMutation = useCreateCamp();
   const updateMutation = useUpdateCamp();
   const deleteMutation = useDeleteCamp();
@@ -67,16 +71,13 @@ export default function AdminCampsPage() {
     setFormOpen(true);
   };
 
-  const handleDelete = (camp: Camp) => {
-    setDeleteId(camp.id);
-  };
+  console.log({ detailsSlug });
 
   const handleViewDetails = (camp: Camp) => {
-    setDetailsId(camp.id);
+    console.log({ camp });
+    setDetailsSlug(camp.slug ?? null);
     setDetailsOpen(true);
   };
-
-  const handleToggleStatus = (camp: Camp) => {};
 
   const columns = createAdminCampColumns(
     {
@@ -142,7 +143,7 @@ export default function AdminCampsPage() {
         open={detailsOpen}
         onOpenChange={(open) => {
           setDetailsOpen(open);
-          if (!open) setDetailsId(null);
+          if (!open) setDetailsSlug(null);
         }}
         camp={campDetails?.data}
         isLoading={isLoadingDetails}

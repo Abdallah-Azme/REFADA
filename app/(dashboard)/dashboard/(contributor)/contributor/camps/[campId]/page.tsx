@@ -36,7 +36,12 @@ export default function Page() {
     isLoading,
     isError,
   } = useCampDetails(campSlug || null);
+
+  console.log({ campData });
   const camp = campData?.data;
+
+  console.log({ camp });
+
   const projects = camp?.projects || [];
   console.log({ projects });
   const families = camp?.families || [];
