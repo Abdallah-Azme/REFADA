@@ -50,6 +50,21 @@
     },
     "all": "الكل"
   },
+  "signin": {
+    "contributor": "مساهم",
+    "delegate": "مندوب",
+    "email_placeholder": "البريد الإلكتروني",
+    "password_placeholder": "كلمة المرور",
+    "forgot_password": "نسيت كلمة المرور؟",
+    "login": "دخول",
+    "logging_in": "جاري تسجيل الدخول...",
+    "no_account": "ليس لديك حساب؟",
+    "register": "تسجيل حساب جديد",
+    "email_required": "البريد الإلكتروني مطلوب",
+    "email_invalid": "البريد الإلكتروني غير صالح",
+    "password_required": "كلمة المرور مطلوبة",
+    "password_min": "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
+  },
   "home": "الرئيسية",
   "about": "من نحن",
   "reports": "الإيبوءات",
@@ -867,6 +882,16 @@
     "member": "فرد",
     "projects_count": "عدد المشاريع:",
     "project": "مشروع"
+  },
+  "camps_data": {
+    "shelter_name": "اسم الإيواء",
+    "families_count": "عدد العائلات",
+    "members_count": "عدد الأفراد",
+    "camp": "المخيم",
+    "family": "عائلة",
+    "member": "فرد",
+    "not_specified": "غير محدد",
+    "loading": "جاري التحميل..."
   },
   "messages": {
     "page_title": "رسائل التواصل",

@@ -57,30 +57,30 @@ export default function Page() {
   const dynamicStats = [
     {
       icon: Heart,
-      label: "المساهمات",
-      value: totalContributions.toLocaleString("ar-EG"),
-      subtitle: "مجموع المساهمات المنتهية",
+      label: t("contributions"),
+      value: totalContributions.toLocaleString(),
+      subtitle: t("total_contributions"),
       color: "bg-green-50",
       iconColor: "text-green-500",
     },
     {
       icon: Zap,
-      label: "عدد المشاريع الحالية",
+      label: t("current_projects"),
       value: pendingProjects.toString(),
-      subtitle: `إجمالي المشاريع: ${totalProjects}`,
+      subtitle: `${t("total_projects")}: ${totalProjects}`,
       subColor: "text-orange-500",
       color: "bg-orange-50",
       iconColor: "text-orange-500",
     },
     {
       icon: CheckCircle,
-      label: "عدد المشاريع المنفذة",
+      label: t("completed_projects"),
       value: completedProjects.toString(),
       subtitle:
         totalProjects > 0
-          ? `${Math.round(
-              (completedProjects / totalProjects) * 100
-            )}% من الإجمالي`
+          ? `${Math.round((completedProjects / totalProjects) * 100)}% ${t(
+              "of_total"
+            )}`
           : "0%",
       subColor: "text-green-500",
       color: "bg-green-50",
@@ -88,9 +88,9 @@ export default function Page() {
     },
     {
       icon: Users,
-      label: "عدد العائلات",
-      value: familyCount.toLocaleString("ar-EG"),
-      subtitle: userCamp?.name || "المخيم",
+      label: t("families_count"),
+      value: familyCount.toLocaleString(),
+      subtitle: userCamp?.name || t("camp"),
       subColor: "text-blue-500",
       color: "bg-blue-50",
       iconColor: "text-blue-500",
@@ -101,7 +101,7 @@ export default function Page() {
     return (
       <div className="w-full gap-6 p-8 flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="mr-2">جاري التحميل...</span>
+        <span className="mr-2">{t("loading")}</span>
       </div>
     );
   }

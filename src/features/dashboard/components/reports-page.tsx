@@ -84,8 +84,12 @@ export default function ReportsPage() {
   ).length;
   const totalProjects = projects.length;
 
-  // Get family count from camp
-  const familyCount = campDetails?.familyCount || userCamp?.familyCount || 0;
+  // Get family count from camp (statistics.familyCount has the actual count)
+  const familyCount =
+    campDetails?.statistics?.familyCount ||
+    campDetails?.familyCount ||
+    userCamp?.familyCount ||
+    0;
 
   // Calculate total contributions (sum of totalReceived from all projects)
   const totalContributions = projects.reduce(

@@ -39,12 +39,14 @@ interface FamilyTableProps {
   data: Family[];
   columns: ColumnDef<Family>[];
   onSelectionChange?: (selectedRows: Family[]) => void;
+  showCampFilter?: boolean;
 }
 
 export function FamilyTable({
   data,
   columns,
   onSelectionChange,
+  showCampFilter = true,
 }: FamilyTableProps) {
   const t = useTranslations("families_page");
   const tCommon = useTranslations("common");
@@ -121,31 +123,33 @@ export function FamilyTable({
           />
         </div>
 
-        {/* Filter by Camp */}
-        <div className="w-[200px]">
-          <Select
-            value={
-              (table.getColumn("camp")?.getFilterValue() as string) ?? "all"
-            }
-            onValueChange={(value) =>
-              table
-                .getColumn("camp")
-                ?.setFilterValue(value === "all" ? "" : value)
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder={t("columns.camp")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{tCommon("all")}</SelectItem>
-              {uniqueCamps.map((camp) => (
-                <SelectItem key={camp} value={camp}>
-                  {camp}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {/* Filter by Camp - only show for admin */}
+        {showCampFilter && (
+          <div className="w-[200px]">
+            <Select
+              value={
+                (table.getColumn("camp")?.getFilterValue() as string) ?? "all"
+              }
+              onValueChange={(value) =>
+                table
+                  .getColumn("camp")
+                  ?.setFilterValue(value === "all" ? "" : value)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={t("columns.camp")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{tCommon("all")}</SelectItem>
+                {uniqueCamps.map((camp) => (
+                  <SelectItem key={camp} value={camp}>
+                    {camp}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </div>
       <div className="rounded-md border bg-white">
         <Table>

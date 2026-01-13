@@ -1,7 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 
 export default function DateTime() {
+  const locale = useLocale();
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
@@ -22,9 +24,20 @@ export default function DateTime() {
     "السبت",
   ];
 
-  const dayName = daysArabic[now.getDay()];
+  const daysEnglish = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
-  const date = now.toLocaleDateString("ar-EG", {
+  const dayName =
+    locale === "ar" ? daysArabic[now.getDay()] : daysEnglish[now.getDay()];
+
+  const date = now.toLocaleDateString(locale === "ar" ? "ar-EG" : "en-US", {
     timeZone: "Asia/Gaza",
   });
 

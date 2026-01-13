@@ -68,6 +68,7 @@ export default function EditCampFormData() {
         email: data.email,
         phone: data.phoneNumber,
         backupPhone: data.whatsappNumber,
+        idNumber: user?.idNumber?.toString() || "", // Include existing idNumber
       },
       {
         onSuccess: () => {

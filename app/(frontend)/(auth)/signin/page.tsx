@@ -16,8 +16,10 @@ import { Lock, Mail, Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { loginSchema, useLogin, type LoginFormValues } from "@/features/auth";
+import { useTranslations } from "next-intl";
 
 export default function RefadLogin() {
+  const t = useTranslations("signin");
   const { mutate: login, isPending } = useLogin();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -41,13 +43,13 @@ export default function RefadLogin() {
             value="contributor"
             className="data-[state=active]:bg-[#c8b78a] data-[state=active]:text-white rounded-full px-4 py-1 text-sm"
           >
-            مساهم
+            {t("contributor")}
           </TabsTrigger>
           <TabsTrigger
             value="delegate"
             className="data-[state=active]:bg-[#c8b78a] data-[state=active]:text-white rounded-full px-4 py-1 text-sm"
           >
-            مندوب
+            {t("delegate")}
           </TabsTrigger>
         </TabsList>
         <TabsContent value="contributor" className="w-full  ">
@@ -63,7 +65,7 @@ export default function RefadLogin() {
                       <div className="relative ">
                         <Mail className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
                         <Input
-                          placeholder="البريد الإلكتروني"
+                          placeholder={t("email_placeholder")}
                           className="ps-9 h-[50px] bg-[#EEEADD]"
                           disabled={isPending}
                           {...field}
@@ -85,7 +87,7 @@ export default function RefadLogin() {
                         <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
                         <Input
                           type={showPassword ? "text" : "password"}
-                          placeholder="كلمة المرور"
+                          placeholder={t("password_placeholder")}
                           className="ps-9 pe-10 h-[50px] bg-[#EEEADD]"
                           disabled={isPending}
                           {...field}
@@ -110,7 +112,7 @@ export default function RefadLogin() {
 
               <div className=" text-sm text-gray-600">
                 <Link href="/forgot-password" className="hover:underline">
-                  نسيت كلمة المرور؟
+                  {t("forgot_password")}
                 </Link>
               </div>
 
@@ -122,10 +124,10 @@ export default function RefadLogin() {
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    جاري تسجيل الدخول...
+                    {t("logging_in")}
                   </>
                 ) : (
-                  "دخول"
+                  t("login")
                 )}
               </Button>
             </form>
@@ -144,7 +146,7 @@ export default function RefadLogin() {
                       <div className="relative">
                         <Mail className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
                         <Input
-                          placeholder="البريد الإلكتروني"
+                          placeholder={t("email_placeholder")}
                           className="ps-9 h-[50px] bg-[#EEEADD]"
                           disabled={isPending}
                           {...field}
@@ -166,7 +168,7 @@ export default function RefadLogin() {
                         <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
                         <Input
                           type={showPassword ? "text" : "password"}
-                          placeholder="كلمة المرور"
+                          placeholder={t("password_placeholder")}
                           className="ps-9 pe-10 h-[50px] bg-[#EEEADD]"
                           disabled={isPending}
                           {...field}
@@ -191,7 +193,7 @@ export default function RefadLogin() {
 
               <div className=" text-sm text-gray-600">
                 <Link href="/forgot-password" className="hover:underline">
-                  نسيت كلمة المرور؟
+                  {t("forgot_password")}
                 </Link>
               </div>
 
@@ -203,10 +205,10 @@ export default function RefadLogin() {
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    جاري تسجيل الدخول...
+                    {t("logging_in")}
                   </>
                 ) : (
-                  "دخول"
+                  t("login")
                 )}
               </Button>
             </form>
@@ -214,12 +216,12 @@ export default function RefadLogin() {
         </TabsContent>
       </Tabs>
       <p className="text-center text-sm mt-4 text-gray-600">
-        ليس لديك حساب؟{" "}
+        {t("no_account")}{" "}
         <Link
           href="/signup"
           className="text-[#c8b78a] font-semibold hover:underline"
         >
-          تسجيل حساب جديد
+          {t("register")}
         </Link>
       </p>
     </div>

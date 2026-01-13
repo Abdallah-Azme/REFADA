@@ -89,7 +89,11 @@ export default function RepresentativeFamiliesPage() {
             <p className="text-red-600">{t("error_loading")}</p>
           </div>
         ) : (
-          <FamilyTable data={families} columns={columns} />
+          <FamilyTable
+            data={families}
+            columns={columns}
+            showCampFilter={false}
+          />
         )}
       </div>
 

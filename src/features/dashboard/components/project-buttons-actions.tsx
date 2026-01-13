@@ -3,6 +3,7 @@ import AddProjectDialog from "./add-project-project";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
+import { useTranslations } from "next-intl";
 
 export default function ProjectButtonsActions({
   form,
@@ -23,6 +24,8 @@ export default function ProjectButtonsActions({
   >;
   showAddProject: boolean;
 }) {
+  const t = useTranslations("common");
+
   return (
     <div className="flex justify-between items-start gap-2">
       <div className="flex flex-col gap-2">
@@ -35,7 +38,7 @@ export default function ProjectButtonsActions({
             onClick={() => form.reset()}
           >
             <RotateCcw className="w-4 h-4 text-primary" />
-            إعادة ضبط
+            {t("reset")}
           </Button>
         </div>
       </div>

@@ -32,7 +32,7 @@ export default function Header() {
         <LangSwitcher />
 
         {/* Search Box */}
-        <SearchForm />
+        {/* <SearchForm /> */}
 
         {/* add family */}
         {shouldShowFamilyDialog ? <AddFamilyDialog /> : <div className="" />}
