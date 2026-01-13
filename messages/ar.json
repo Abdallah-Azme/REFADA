@@ -441,7 +441,8 @@
       "view_details": "عرض التفاصيل",
       "edit": "تعديل",
       "delete": "حذف"
-    }
+    },
+    "validation_error": "يرجى التحقق من البيانات المدخلة"
   },
   "projects": {
     "add_project": "إضافة مشروع",

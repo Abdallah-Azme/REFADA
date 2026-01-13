@@ -43,7 +43,18 @@ export default function ContributorHistoryPage() {
         </div>
       </div>
 
-      <ContributionHistoryTable data={response?.data || []} />
+      {/* Sort by date descending (latest first) */}
+      <ContributionHistoryTable
+        data={[...(response?.data || [])].sort((a, b) => {
+          // Sort by createdAt if available, otherwise by id
+          if (a.createdAt && b.createdAt) {
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          }
+          return (b.id || 0) - (a.id || 0);
+        })}
+      />
     </div>
   );
 }

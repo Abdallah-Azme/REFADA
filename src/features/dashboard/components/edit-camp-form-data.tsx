@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ImageUpload } from "@/components/ui/image-upload";
 import { useProfile, useUpdateProfile } from "@/features/profile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Image, ImageIcon, Pencil, Save, X, Loader2 } from "lucide-react";
@@ -24,6 +25,7 @@ const campSchema = z.object({
   phoneNumber: z.string().min(10),
   whatsappNumber: z.string().optional(),
   representativeName: z.string().min(1),
+  profile_image: z.any().optional(),
 });
 
 type CampFormValues = z.infer<typeof campSchema>;
@@ -45,6 +47,7 @@ export default function EditCampFormData() {
       phoneNumber: "",
       whatsappNumber: "",
       representativeName: "",
+      profile_image: undefined,
     },
   });
 
@@ -57,6 +60,7 @@ export default function EditCampFormData() {
         phoneNumber: user.phone || "",
         whatsappNumber: user.backupPhone || "",
         representativeName: user.name || "",
+        profile_image: user.profileImageUrl,
       });
     }
   }, [user, userCamp, form]);
@@ -69,6 +73,7 @@ export default function EditCampFormData() {
         phone: data.phoneNumber,
         backupPhone: data.whatsappNumber,
         idNumber: user?.idNumber?.toString() || "", // Include existing idNumber
+        profile_image: data.profile_image,
       },
       {
         onSuccess: () => {
@@ -152,7 +157,7 @@ export default function EditCampFormData() {
 
       {/* ================= VIEW MODE ================= */}
       {!isEditing ? (
-        <div className="flex flex-col md:flex-row gap-8 items-center border border-gray-200 p-4 rounded-xl">
+        <div className="flex flex-col md:flex-row   md:gap-8 items-center border border-gray-200 p-4 rounded-xl">
           <div>
             <Avatar className="w-24 h-24 mb-6 bg-[#C4A962]">
               <AvatarImage
@@ -169,7 +174,7 @@ export default function EditCampFormData() {
           </div>
 
           <div className="w-full space-y-1.5 mt-6">
-            <div className="grid grid-cols-2 items-center pb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 items-center pb-3">
               <span className="text-sm text-gray-600">
                 {t("representative_name")}:
               </span>
@@ -181,7 +186,7 @@ export default function EditCampFormData() {
               </span>
             </div>
 
-            <div className="grid grid-cols-2 items-center pb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 items-center pb-3">
               <span className="text-sm text-gray-600">{t("email")}:</span>
               <span
                 className="text-base text-gray-900 font-medium truncate"
@@ -191,7 +196,7 @@ export default function EditCampFormData() {
               </span>
             </div>
 
-            <div className="grid grid-cols-2 items-center pb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 items-center pb-3">
               <span className="text-sm text-gray-600">{t("phone")}:</span>
               <span
                 className="text-base text-gray-900 font-medium truncate"
@@ -201,7 +206,7 @@ export default function EditCampFormData() {
               </span>
             </div>
 
-            <div className="grid grid-cols-2 items-center pb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 items-center pb-3">
               <span className="text-sm text-gray-600">
                 {t("backup_phone")}:
               </span>
@@ -215,29 +220,34 @@ export default function EditCampFormData() {
           </div>
         </div>
       ) : (
-        // ================= EDIT MODE =================
         <div className="w-full  border border-gray-200 rounded-md p-2">
-          <div className="flex flex-col md:flex-row gap-8 items-center">
-            {/* Avatar */}
-            <div>
-              <Avatar className="w-24 h-24 mb-4 bg-[#C4A962]">
-                <AvatarImage
-                  src={user?.profileImageUrl || ""}
-                  alt="Camp Representative"
+          <Form {...form}>
+            <div className="flex flex-col md:flex-row gap-8 items-center">
+              {/* Profile Image Upload */}
+              <div>
+                <FormField
+                  control={form.control}
+                  name="profile_image"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <ImageUpload
+                          value={field.value}
+                          onChange={field.onChange}
+                          disabled={false}
+                          placeholder={t("add_image")}
+                          imageClassName="h-24 w-24 rounded-full"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <AvatarFallback className="bg-[#C4A962] text-white">
-                  <ImageIcon className="w-10 h-10" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="text-center mb-2 text-sm text-gray-500">
-                {t("add_image")}
               </div>
-            </div>
 
-            {/* Inputs */}
-            <Form {...form}>
+              {/* Inputs */}
               <form className="w-full space-y-1">
-                <div className="grid grid-cols-2 items-center pb-3 ">
+                <div className="grid grid-cols-1 sm:grid-cols-2 items-center pb-3 ">
                   <label className="text-sm text-gray-600">
                     {t("representative_name")}:
                   </label>
@@ -258,7 +268,7 @@ export default function EditCampFormData() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 items-center pb-3 ">
+                <div className="grid grid-cols-1 sm:grid-cols-2 items-center pb-3 ">
                   <label className="text-sm text-gray-600">{t("email")}:</label>
                   <FormField
                     control={form.control}
@@ -277,7 +287,7 @@ export default function EditCampFormData() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 items-center pb-3 ">
+                <div className="grid grid-cols-1 sm:grid-cols-2 items-center pb-3 ">
                   <label className="text-sm text-gray-600">{t("phone")}:</label>
                   <FormField
                     control={form.control}
@@ -296,7 +306,7 @@ export default function EditCampFormData() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 items-center pb-3 ">
+                <div className="grid grid-cols-1 sm:grid-cols-2 items-center pb-3 ">
                   <label className="text-sm text-gray-600">
                     {t("backup_phone")}:
                   </label>
@@ -317,8 +327,8 @@ export default function EditCampFormData() {
                   />
                 </div>
               </form>
-            </Form>
-          </div>
+            </div>
+          </Form>
         </div>
       )}
     </div>

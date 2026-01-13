@@ -93,7 +93,7 @@ export default function MedicalConditionPage() {
   const columns = createMedicalConditionColumns(handleEdit, handleDelete, t);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-4 py-8">
       <div className="flex items-center justify-between">
         <MainHeader header={t("title")} subheader={t("list_title")}>
           {/* Activity icon removed or imported from lucide if needed, using Plus for now or generic icon */}

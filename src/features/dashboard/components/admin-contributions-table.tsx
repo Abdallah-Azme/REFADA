@@ -434,26 +434,26 @@ export default function AdminContributionsTable() {
             {t("all_contributions")}
           </h2>
 
-          <div className="p-6  ">
-            <div className="flex justify-between items-center gap-2">
+          <div className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
               {/* FORM */}
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="flex items-center gap-3 self-end"
+                  className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto"
                 >
                   {/* المشروع */}
                   <FormField
                     control={form.control}
                     name="project"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="w-full sm:w-auto">
                         <FormControl>
                           <Select
                             onValueChange={field.onChange}
                             value={field.value}
                           >
-                            <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
+                            <SelectTrigger className="w-full sm:w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
                               <SelectValue placeholder={t("filter_project")} />
                             </SelectTrigger>
                             <SelectContent>
@@ -477,13 +477,13 @@ export default function AdminContributionsTable() {
                     control={form.control}
                     name="status"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="w-full sm:w-auto">
                         <FormControl>
                           <Select
                             onValueChange={field.onChange}
                             value={field.value}
                           >
-                            <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
+                            <SelectTrigger className="w-full sm:w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
                               <SelectValue placeholder={t("filter_status")} />
                             </SelectTrigger>
                             <SelectContent>
@@ -511,27 +511,25 @@ export default function AdminContributionsTable() {
                 </form>
               </Form>
 
-              <div className="flex flex-col gap-2">
-                <div className="flex gap-1">
-                  <Button
-                    className="bg-primary w-1/2 text-white px-6 flex-1 py-2 rounded-xl flex items-center gap-2 text-sm font-medium"
-                    size="lg"
-                    onClick={fetchContributions}
-                  >
-                    <SearchCheck className="w-4 h-4" />
-                    {t("update")}
-                  </Button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <Button
+                  className="bg-primary text-white px-4 sm:px-6 flex-1 sm:flex-none py-2 rounded-xl flex items-center justify-center gap-2 text-sm font-medium"
+                  size="lg"
+                  onClick={fetchContributions}
+                >
+                  <SearchCheck className="w-4 h-4" />
+                  {t("update")}
+                </Button>
 
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="px-6 flex-1 shrink-0 w-1/2 py-2 rounded-xl"
-                    onClick={() => form.reset()}
-                  >
-                    <RotateCcw className="w-4 h-4 text-primary" />
-                    {t("reset")}
-                  </Button>
-                </div>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="px-4 sm:px-6 flex-1 sm:flex-none py-2 rounded-xl"
+                  onClick={() => form.reset()}
+                >
+                  <RotateCcw className="w-4 h-4 text-primary" />
+                  {t("reset")}
+                </Button>
               </div>
             </div>
           </div>

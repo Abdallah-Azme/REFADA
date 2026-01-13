@@ -305,6 +305,10 @@ export default function FamilySelectionDialog({
       ),
       cell: ({ row }) => {
         const isSelected = selectedFamilies.has(row.original.id);
+        const isAlreadyBenefited = row.original.hasBenefit === true;
+        const isChosenByContributor = row.original.addedByContributor === true;
+        const isDisabled = isAlreadyBenefited || isChosenByContributor;
+
         if (!isSelected) {
           return (
             <div className="flex justify-center">
@@ -318,7 +322,10 @@ export default function FamilySelectionDialog({
             <Input
               type="number"
               min="1"
-              className="w-20 h-9 text-center font-semibold border-2 border-primary/30 focus:border-primary rounded-lg shadow-sm"
+              disabled={isDisabled}
+              className={`w-20 h-9 text-center font-semibold border-2 border-primary/30 focus:border-primary rounded-lg shadow-sm ${
+                isDisabled ? "bg-gray-100 cursor-not-allowed opacity-50" : ""
+              }`}
               value={selectedFamilies.get(row.original.id) || ""}
               onChange={(e) =>
                 handleQuantityChange(row.original.id, e.target.value)
@@ -419,15 +426,26 @@ export default function FamilySelectionDialog({
             </div>
           </div>
 
-          {/* Selected Count Badge */}
-          {selectedFamilies.size > 0 && (
-            <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-xl border border-primary/20 mx-1">
-              <CheckCircle2 className="w-5 h-5 text-primary" />
-              <span className="text-primary font-semibold">
-                {selectedFamilies.size} {t("families_benefited")}
-              </span>
-            </div>
-          )}
+          {/* Selected Count Badge - Only count NEW families (not already benefited) */}
+          {(() => {
+            const newFamiliesCount = Array.from(selectedFamilies.keys()).filter(
+              (id) => {
+                const family = families.find((f) => f.id === id);
+                return (
+                  family && !family.hasBenefit && !family.addedByContributor
+                );
+              }
+            ).length;
+
+            return newFamiliesCount > 0 ? (
+              <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-xl border border-primary/20 mx-1">
+                <CheckCircle2 className="w-5 h-5 text-primary" />
+                <span className="text-primary font-semibold">
+                  {newFamiliesCount} {t("families_benefited")}
+                </span>
+              </div>
+            ) : null;
+          })()}
 
           {/* Table */}
           <div className="border border-gray-200 rounded-xl shadow-sm bg-white overflow-hidden mx-1">
@@ -581,14 +599,28 @@ export default function FamilySelectionDialog({
             >
               {t("cancel")}
             </Button>
-            <Button
-              onClick={handleConfirm}
-              disabled={selectedFamilies.size === 0}
-              className="px-8 h-11 rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-semibold shadow-lg shadow-primary/25 disabled:opacity-50 disabled:shadow-none"
-            >
-              <CheckCircle2 className="w-5 h-5 ml-2" />
-              {t("add_families")} ({selectedFamilies.size})
-            </Button>
+            {(() => {
+              // Count only NEW families (not already benefited or added by contributor)
+              const newFamiliesCount = Array.from(
+                selectedFamilies.keys()
+              ).filter((id) => {
+                const family = families.find((f) => f.id === id);
+                return (
+                  family && !family.hasBenefit && !family.addedByContributor
+                );
+              }).length;
+
+              return (
+                <Button
+                  onClick={handleConfirm}
+                  disabled={newFamiliesCount === 0}
+                  className="px-8 h-11 rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-semibold shadow-lg shadow-primary/25 disabled:opacity-50 disabled:shadow-none"
+                >
+                  <CheckCircle2 className="w-5 h-5 ml-2" />
+                  {t("add_families")} ({newFamiliesCount})
+                </Button>
+              );
+            })()}
           </div>
         </div>
       </DialogContent>

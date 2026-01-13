@@ -88,7 +88,7 @@ export default function RelationshipPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-4 py-8">
       <MainHeader header={t("title")} subheader={t("list_title")}>
         <Users2 className="h-6 w-6 text-primary" />
       </MainHeader>

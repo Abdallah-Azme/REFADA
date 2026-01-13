@@ -448,7 +448,8 @@
     "healthy": "Healthy",
     "other": "Other",
     "choose_camp": "Select Camp",
-    "choose_status": "Select Status"
+    "choose_status": "Select Status",
+    "validation_error": "Please check the entered data"
   },
   "projects": {
     "add_project": "Add Project",

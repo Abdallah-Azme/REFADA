@@ -222,7 +222,40 @@ export default function AddFamilyDialog() {
         {/* FORM */}
         <div className="px-6 py-5 max-h-[75vh] overflow-y-auto bg-white">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form
+              onSubmit={form.handleSubmit(onSubmit, (errors) => {
+                // Get the first error message to show in the toast
+                const errorMessages = Object.entries(errors)
+                  .map(([key, error]) => {
+                    if (error?.message) return error.message;
+                    // Handle nested errors (like members array)
+                    if (Array.isArray(error)) {
+                      return error
+                        .map((e, i) =>
+                          e
+                            ? Object.values(e)
+                                .map((v: any) => v?.message)
+                                .filter(Boolean)
+                                .join(", ")
+                            : null
+                        )
+                        .filter(Boolean)
+                        .join(" | ");
+                    }
+                    return null;
+                  })
+                  .filter(Boolean);
+
+                if (errorMessages.length > 0) {
+                  toast.error(t("validation_error"), {
+                    description: errorMessages[0],
+                  });
+                } else {
+                  toast.error(t("validation_error"));
+                }
+              })}
+              className="space-y-6"
+            >
               {/* MAIN GRID */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 bg-[#F4F4F4] gap-4 p-4 rounded-xl">
                 {/* الاسم الرباعي */}
