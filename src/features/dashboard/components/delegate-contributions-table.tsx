@@ -210,6 +210,11 @@ const createDelegateContributionColumns = (
       // Adjust logic based on real "confirmed" status if available
       const isQuantityConfirmed = contribution.status !== "pending";
 
+      // Disable all action buttons if status is "approved" or "completed"
+      const isApprovedOrCompleted =
+        contribution.status === "approved" ||
+        contribution.status === "completed";
+
       return (
         <div className="flex items-center gap-2">
           <Button
@@ -219,7 +224,7 @@ const createDelegateContributionColumns = (
               handlers.setConfirmingContribution(contribution);
               handlers.setConfirmStep(1); // Set to Quantity step
             }}
-            disabled={contribution.alreadyConfirmed}
+            disabled={contribution.alreadyConfirmed || isApprovedOrCompleted}
             title={t("received_quantity")}
           >
             📋{" "}
@@ -236,7 +241,7 @@ const createDelegateContributionColumns = (
               handlers.setConfirmStep(2); // Set to Families step (opens family dialog)
               handlers.fetchCampFamilies(contribution.id);
             }}
-            disabled={contribution.status === "completed"}
+            disabled={isApprovedOrCompleted}
           >
             👥 {t("families_benefited")}
           </Button>
@@ -248,7 +253,7 @@ const createDelegateContributionColumns = (
               handlers.setConfirmingContribution(contribution);
               handlers.setConfirmStep(3); // 3 for Finish Confirmation
             }}
-            disabled={contribution.status === "completed"}
+            disabled={isApprovedOrCompleted}
             className="border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700"
             title={t("finish")}
           >
@@ -405,7 +410,6 @@ export default function DelegateContributionsTable() {
 
   const [data, setData] = useState<DelegateContribution[]>([]);
 
- 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedContribution, setSelectedContribution] =
     useState<DelegateContribution | null>(null);
@@ -636,7 +640,7 @@ export default function DelegateContributionsTable() {
   // Filter data based on form values
   const watchedStatus = form.watch("status");
 
-   const filteredData = React.useMemo(() => {
+  const filteredData = React.useMemo(() => {
     let filtered = [...data];
 
     if (watchedStatus && watchedStatus !== "all") {
@@ -646,7 +650,9 @@ export default function DelegateContributionsTable() {
     return filtered;
   }, [data, watchedStatus]);
 
-   const table = useReactTable<DelegateContribution>({
+  console.log("filteredData", { filteredData });
+
+  const table = useReactTable<DelegateContribution>({
     data: filteredData,
     columns: createDelegateContributionColumns(
       {
