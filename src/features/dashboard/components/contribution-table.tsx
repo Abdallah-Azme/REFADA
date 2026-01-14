@@ -255,8 +255,7 @@ export default function ContributionTable() {
     return filtered;
   }, [data, watchedProject, watchedStatus]);
 
-  console.log({ filteredData });
-  // Get unique projects for filter dropdown
+   // Get unique projects for filter dropdown
   const uniqueProjects = React.useMemo(() => {
     const projectMap = new Map<number, string>();
     data.forEach((item) => {

@@ -36,11 +36,8 @@ export default function AdminCampsPage() {
   // Queries & Mutations
   const { data: campsData, isLoading: isLoadingCamps } = useCamps();
 
-  console.log({ campsData });
   const { data: campDetails, isLoading: isLoadingDetails } =
     useCampDetails(detailsSlug);
-
-  console.log({ campDetails });
 
   const createMutation = useCreateCamp();
   const updateMutation = useUpdateCamp();
@@ -71,10 +68,7 @@ export default function AdminCampsPage() {
     setFormOpen(true);
   };
 
-  console.log({ detailsSlug });
-
   const handleViewDetails = (camp: Camp) => {
-    console.log({ camp });
     setDetailsSlug(camp.slug ?? null);
     setDetailsOpen(true);
   };

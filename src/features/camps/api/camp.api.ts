@@ -173,10 +173,8 @@ export const campsApi = {
   },
 
   getCampBySlug: async (slug: string): Promise<CampResponse> => {
-    console.log("slug", slug);
-    const response = await apiRequest<CampResponse>(`/camps/${slug}`);
-    console.log("response", response);
-    return response;
+     const response = await apiRequest<CampResponse>(`/camps/${slug}`);
+     return response;
   },
 
   getStatistics: async (): Promise<CampStatisticsResponse> => {

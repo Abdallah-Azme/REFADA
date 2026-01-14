@@ -70,7 +70,6 @@ export default function AdminContributorsTable() {
   // Fetch contributors
   const { data: response, isLoading, error } = useContributors();
 
-  console.log("response", response);
   const deleteMutation = useDeleteContributor();
   const changePasswordMutation = useChangeRepresentativePassword();
 

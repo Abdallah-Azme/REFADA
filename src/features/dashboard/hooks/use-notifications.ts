@@ -33,9 +33,13 @@ export interface NotificationsResponse {
 }
 
 async function getNotifications(): Promise<NotificationsResponse> {
+  const locale =
+    typeof window !== "undefined" ? document.documentElement.lang : "ar";
+
   const headers: Record<string, string> = {
     Accept: "application/json",
     "Content-Type": "application/json",
+    "Accept-Language": locale || "ar",
   };
 
   if (typeof window !== "undefined") {

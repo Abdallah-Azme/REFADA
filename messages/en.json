@@ -1578,6 +1578,9 @@
     "adding_families": "Adding...",
     "confirm_success": "Contribution confirmed successfully",
     "confirm_error": "Failed to confirm contribution",
+    "complete_success": "Contribution completed successfully",
+    "complete_error": "Failed to complete contribution",
+    "sending": "Sending...",
     "add_families_success": "Families added successfully",
     "add_families_error": "Failed to add families",
     "contribute_dialog": {
@@ -1751,5 +1754,10 @@
       "english_subtitle_placeholder": "English Subtitle",
       "english_description_placeholder": "English Description"
     }
+  },
+  "camps_section_home": {
+    "title": "Shelters",
+    "description": "Documented shelters enable better planning and fairer response.",
+    "more_camps": "More Shelters"
   }
 }

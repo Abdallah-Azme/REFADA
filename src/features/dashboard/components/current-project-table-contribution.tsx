@@ -110,7 +110,6 @@ export default function CurrentProjectsTableContribution({
 
   // Fetch contributor history
   const { data: historyData } = useContributorHistory();
-  console.log({ historyData });
   const historyItems = historyData?.data || [];
 
   // Filter projects based on search

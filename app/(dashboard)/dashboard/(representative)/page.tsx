@@ -19,12 +19,9 @@ export default function DashboardPage() {
 
   // Get user's camp slug from profile
   const campSlug = profileData?.data?.camp?.slug;
-  console.log("profileData", profileData);
-  console.log("campSlug", campSlug);
-  const { data: campData } = useCampDetails(campSlug || null);
+   const { data: campData } = useCampDetails(campSlug || null);
 
-  console.log("campData", campData);
-
+ 
   const isLoading = profileLoading || projectsLoading || contributionsLoading;
 
   // Build dynamic stats from API data
@@ -33,9 +30,7 @@ export default function DashboardPage() {
   const projects = projectsData?.data || [];
   const contributions = contributionsData?.data || [];
 
-  console.log("projectsData", { projectsData });
-  console.log("contributionsData", { contributionsData });
-
+ 
   // Count projects by status
   const pendingProjects = projects.filter(
     (p) => p.status === "pending" || p.status === "في الانتظار"
@@ -102,8 +97,7 @@ export default function DashboardPage() {
     },
   ];
 
-  console.log("dynamicStats", dynamicStats);
-
+ 
   if (isLoading) {
     return (
       <div className="p-6 flex items-center justify-center min-h-[400px]">

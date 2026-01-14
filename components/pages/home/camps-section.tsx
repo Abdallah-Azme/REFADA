@@ -18,12 +18,14 @@ import { MoveLeft, MoveRight } from "lucide-react";
 import { CampCard } from "@/features/campaign/components/camp-card";
 import Link from "next/link";
 import { Camp } from "@/features/camps/types/camp.schema";
+import { useTranslations } from "next-intl";
 
 interface CampsSectionProps {
   camps?: Camp[];
 }
 
 export default function CampsSection({ camps = [] }: CampsSectionProps) {
+  const t = useTranslations("camps_section_home");
   const { isRTL } = useDirection();
 
   const autoplay = React.useRef(
@@ -100,10 +102,8 @@ export default function CampsSection({ camps = [] }: CampsSectionProps) {
         viewport={{ once: true }}
         className="mb-10"
       >
-        <h2 className="text-2xl md:text-3xl font-bold mb-2">الإيواءات</h2>
-        <p className="text-gray-600">
-          الإيواءات الموثّقة تُمكّن من التخطيط الأفضل والاستجابة الأعدل.
-        </p>
+        <h2 className="text-2xl md:text-3xl font-bold mb-2">{t("title")}</h2>
+        <p className="text-gray-600">{t("description")}</p>
       </motion.div>
 
       {/* ✅ Simplified Carousel */}
@@ -166,7 +166,7 @@ export default function CampsSection({ camps = [] }: CampsSectionProps) {
       >
         <Link href="/camps">
           {!isRTL && <MoveRight />}
-          المزيد من الإيواءات
+          {t("more_camps")}
           {isRTL && <MoveLeft />}
         </Link>
       </Button>

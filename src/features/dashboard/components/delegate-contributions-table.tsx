@@ -236,11 +236,7 @@ const createDelegateContributionColumns = (
               handlers.setConfirmStep(2); // Set to Families step (opens family dialog)
               handlers.fetchCampFamilies(contribution.id);
             }}
-            // Enable only if quantity is confirmed, or if specifically requested to allow independent flow
-            // User said "button be disabled after [quantity entered] the second one be the select family" which implies sequential
-            // But also "select family it will be a table...". Let's enable it always for now for testing or if status is not pending.
-            // Actually, user said "first one enter quantity ... and then the button be disabled after ... the second one be the select family"
-            // Stick to enabling Families button always for flexibility unless explicitly restricted.
+            disabled={contribution.status === "completed"}
           >
             👥 {t("families_benefited")}
           </Button>
@@ -249,18 +245,10 @@ const createDelegateContributionColumns = (
             variant="outline"
             size="sm"
             onClick={() => {
-              // Placeholder for finish action
-              // Could open a confirmation dialog or just trigger an API
-              // For now, simpler to just treat it as a final confirmation step if needed
-              // But user asked for a button named 'complete it' or 'finish it'
-              // Let's add a simple alert/toast for now as backend is missing
-              // Or we could reuse the confirmation dialog with a new step?
-              // Let's try to add a 3rd step in the dialog to confirm finish?
-              // Or just a separate confirmation alert.
-              // Let's stick to the pattern: open a dialog or call a handler.
               handlers.setConfirmingContribution(contribution);
               handlers.setConfirmStep(3); // 3 for Finish Confirmation
             }}
+            disabled={contribution.status === "completed"}
             className="border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700"
             title={t("finish")}
           >
@@ -417,8 +405,7 @@ export default function DelegateContributionsTable() {
 
   const [data, setData] = useState<DelegateContribution[]>([]);
 
-  console.log({ data });
-
+ 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedContribution, setSelectedContribution] =
     useState<DelegateContribution | null>(null);
@@ -586,6 +573,14 @@ export default function DelegateContributionsTable() {
       );
       if (response.success) {
         toast.success(response.message || t("confirm_success"));
+        // Update local state to mark this contribution as already confirmed
+        setData((prevData) =>
+          prevData.map((item) =>
+            item.id === confirmingContribution.id
+              ? { ...item, alreadyConfirmed: true }
+              : item
+          )
+        );
         // Fetch families with contribution ID to get addedByContributor and hasBenefit flags
         await fetchCampFamilies(confirmingContribution.id);
         // Move to step 2 for family selection
@@ -601,6 +596,36 @@ export default function DelegateContributionsTable() {
     }
   };
 
+  const handleCompleteContribution = async () => {
+    if (!confirmingContribution) return;
+
+    setIsConfirming(true);
+    try {
+      const response = await completeDelegateContributionApi(
+        confirmingContribution.id
+      );
+      if (response.success) {
+        toast.success(response.message || t("complete_success"));
+        // Update local state to mark this contribution as completed
+        setData((prevData) =>
+          prevData.map((item) =>
+            item.id === confirmingContribution.id
+              ? { ...item, status: "completed" }
+              : item
+          )
+        );
+        handleCloseConfirmDialog();
+      } else {
+        toast.error(response.message || t("complete_error"));
+      }
+    } catch (error: any) {
+      console.error("Failed to complete contribution:", error);
+      toast.error(error?.message || t("complete_error"));
+    } finally {
+      setIsConfirming(false);
+    }
+  };
+
   const handleCloseConfirmDialog = () => {
     setConfirmingContribution(null);
     setConfirmedQuantity("");
@@ -611,8 +636,7 @@ export default function DelegateContributionsTable() {
   // Filter data based on form values
   const watchedStatus = form.watch("status");
 
-  console.log({ watchedStatus });
-  const filteredData = React.useMemo(() => {
+   const filteredData = React.useMemo(() => {
     let filtered = [...data];
 
     if (watchedStatus && watchedStatus !== "all") {
@@ -622,8 +646,7 @@ export default function DelegateContributionsTable() {
     return filtered;
   }, [data, watchedStatus]);
 
-  console.log("filteredData", { filteredData });
-  const table = useReactTable<DelegateContribution>({
+   const table = useReactTable<DelegateContribution>({
     data: filteredData,
     columns: createDelegateContributionColumns(
       {
@@ -905,13 +928,18 @@ export default function DelegateContributionsTable() {
                     {tCommon("cancel")}
                   </Button>
                   <Button
-                    onClick={() => {
-                      toast.success(t("finish_confirm_title"));
-                      handleCloseConfirmDialog();
-                    }}
+                    onClick={handleCompleteContribution}
+                    disabled={isConfirming}
                     className="bg-green-600 hover:bg-green-700 text-white"
                   >
-                    {t("finish")}
+                    {isConfirming ? (
+                      <>
+                        <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                        {t("sending")}
+                      </>
+                    ) : (
+                      t("finish")
+                    )}
                   </Button>
                 </div>
               </div>

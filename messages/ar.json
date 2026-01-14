@@ -1574,6 +1574,9 @@
     "adding_families": "جاري الإضافة...",
     "confirm_success": "تم تأكيد المساهمة بنجاح",
     "confirm_error": "فشل في تأكيد المساهمة",
+    "complete_success": "تم إكمال المساهمة بنجاح",
+    "complete_error": "فشل في إكمال المساهمة",
+    "sending": "جاري الإرسال...",
     "add_families_success": "تم إضافة العائلات بنجاح",
     "add_families_error": "فشل في إضافة العائلات",
     "individuals": "أفراد",
@@ -1754,5 +1757,10 @@
       "english_subtitle_placeholder": "العنوان الفرعي بالإنجليزية",
       "english_description_placeholder": "الوصف بالإنجليزية"
     }
+  },
+  "camps_section_home": {
+    "title": "الإيواءات",
+    "description": "الإيواءات الموثّقة تُمكّن من التخطيط الأفضل والاستجابة الأعدل.",
+    "more_camps": "المزيد من الإيواءات"
   }
 }
