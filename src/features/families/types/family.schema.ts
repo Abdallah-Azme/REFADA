@@ -92,3 +92,15 @@ export interface FamilyResponse {
   message: string;
   data: Family;
 }
+
+export interface DeletedFamily extends Family {
+  deleteReason: string;
+  deletedBy: string;
+  deletedAt: string;
+}
+
+export interface DeletedFamiliesResponse {
+  success: boolean;
+  message: string;
+  data: DeletedFamily[];
+}

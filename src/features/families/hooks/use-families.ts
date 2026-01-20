@@ -110,3 +110,31 @@ export function useBulkDeleteFamilies() {
     },
   });
 }
+
+export function useDeletedFamilies() {
+  return useQuery({
+    queryKey: ["deletedFamilies"],
+    queryFn: async () => {
+      const { getDeletedFamiliesApi } = await import("../api/families.api");
+      return getDeletedFamiliesApi();
+    },
+  });
+}
+
+export function useForceDeleteFamily() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (familyId: number) => {
+      const { forceDeleteFamilyApi } = await import("../api/families.api");
+      return forceDeleteFamilyApi(familyId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["deletedFamilies"] });
+      toast.success("تم حذف العائلة نهائياً بنجاح");
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "حدث خطأ أثناء حذف العائلة");
+    },
+  });
+}

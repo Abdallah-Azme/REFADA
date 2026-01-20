@@ -253,6 +253,7 @@
       "title": "إدارة النظام",
       "manage_projects": "إدارة المشاريع",
       "manage_families": "إدارة العائلات",
+      "deleted_families": "العائلات المحذوفة",
       "manage_representatives": "إدارة المندوبين",
       "pending_users": "المعلقين",
       "manage_contributors": "إدارة المساهمين",
@@ -362,7 +363,10 @@
       "tentNumber": "رقم الخيمة",
       "location": "الموقع",
       "medicalConditions": "الحالات الطبية",
-      "ageGroups": "الفئات العمرية"
+      "ageGroups": "الفئات العمرية",
+      "deletedBy": "حذفت بواسطة",
+      "deleteReason": "سبب الحذف",
+      "deletedAt": "تاريخ الحذف"
     },
     "add_family": "إضافة عائلة",
     "family_name": "اسم العائلة",
@@ -1449,6 +1453,17 @@
   "families_page": {
     "page_title": "إدارة العائلات",
     "list_title": "قائمة العائلات",
+    "deleted_families_page": {
+      "title": "العائلات المحذوفة",
+      "list_title": "قائمة العائلات المحذوفة",
+      "no_results": "لا توجد عائلات محذوفة"
+    },
+    "force_delete": {
+      "title": "حذف نهائي",
+      "description": "هل أنت متأكد من حذف العائلة {name} نهائياً؟ هذا الإجراء لا يمكن التراجع عنه.",
+      "confirm": "حذف نهائي",
+      "button": "حذف نهائي"
+    },
     "add_button": "إضافة عائلة",
     "loading_data": "جارٍ تحميل البيانات...",
     "error_loading": "خطأ في تحميل البيانات",
@@ -1464,6 +1479,9 @@
       "location": "الموقع",
       "medicalConditions": "الحالات الطبية",
       "ageGroups": "الفئات العمرية",
+      "deletedBy": "حذفت بواسطة",
+      "deleteReason": "سبب الحذف",
+      "deletedAt": "تاريخ الحذف",
       "actions": "الإجراءات"
     },
     "filters": {

@@ -260,6 +260,7 @@
       "title": "System Management",
       "manage_projects": "Manage Projects",
       "manage_families": "Manage Families",
+      "deleted_families": "Deleted Families",
       "manage_representatives": "Manage Representatives",
       "pending_users": "Pending Users",
       "manage_contributors": "Manage Contributors",
@@ -1460,6 +1461,9 @@
       "location": "Location",
       "medicalConditions": "Medical Conditions",
       "ageGroups": "Age Groups",
+      "deletedBy": "Deleted By",
+      "deleteReason": "Delete Reason",
+      "deletedAt": "Deleted At",
       "actions": "Actions"
     },
     "filters": {

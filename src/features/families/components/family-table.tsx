@@ -149,6 +149,15 @@ export function FamilyTable({
     [tAge],
   );
 
+  // Check for column existence safely to avoid console errors
+  const hasCampColumn = table.getAllColumns().some((col) => col.id === "camp");
+  const hasMedicalConditionsColumn = table
+    .getAllColumns()
+    .some((col) => col.id === "medicalConditions");
+  const hasAgeGroupsColumn = table
+    .getAllColumns()
+    .some((col) => col.id === "ageGroups");
+
   return (
     <div className="w-full">
       <div className="flex gap-4 py-4 items-center bg-white p-4 rounded-t-lg border-b">
@@ -178,7 +187,7 @@ export function FamilyTable({
         {/* Filters Grid */}
         <div className="flex flex-wrap gap-4">
           {/* Filter by Camp - only show for admin */}
-          {showCampFilter && (
+          {showCampFilter && hasCampColumn && (
             <div className="space-y-2 min-w-[200px]">
               <label className="text-sm font-medium text-gray-700">
                 {t("columns.camp")}
@@ -209,65 +218,69 @@ export function FamilyTable({
           )}
 
           {/* Filter by Medical Conditions */}
-          <div className="space-y-2 min-w-[200px]">
-            <label className="text-sm font-medium text-gray-700">
-              {t("filters.medicalConditions")}
-            </label>
-            <Select
-              value={
-                (table
-                  .getColumn("medicalConditions")
-                  ?.getFilterValue() as string) || "all"
-              }
-              onValueChange={(value) =>
-                table
-                  .getColumn("medicalConditions")
-                  ?.setFilterValue(value === "all" ? "" : value)
-              }
-            >
-              <SelectTrigger className="h-11 w-full">
-                <SelectValue placeholder={t("filters.medicalConditions")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{tCommon("all")}</SelectItem>
-                {medicalConditions.map((condition) => (
-                  <SelectItem key={condition.id} value={condition.name}>
-                    {condition.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {hasMedicalConditionsColumn && (
+            <div className="space-y-2 min-w-[200px]">
+              <label className="text-sm font-medium text-gray-700">
+                {t("filters.medicalConditions")}
+              </label>
+              <Select
+                value={
+                  (table
+                    .getColumn("medicalConditions")
+                    ?.getFilterValue() as string) || "all"
+                }
+                onValueChange={(value) =>
+                  table
+                    .getColumn("medicalConditions")
+                    ?.setFilterValue(value === "all" ? "" : value)
+                }
+              >
+                <SelectTrigger className="h-11 w-full">
+                  <SelectValue placeholder={t("filters.medicalConditions")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{tCommon("all")}</SelectItem>
+                  {medicalConditions.map((condition) => (
+                    <SelectItem key={condition.id} value={condition.name}>
+                      {condition.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {/* Filter by Age Groups */}
-          <div className="space-y-2 min-w-[200px]">
-            <label className="text-sm font-medium text-gray-700">
-              {t("filters.ageGroups")}
-            </label>
-            <Select
-              value={
-                (table.getColumn("ageGroups")?.getFilterValue() as string) ||
-                "all"
-              }
-              onValueChange={(value) =>
-                table
-                  .getColumn("ageGroups")
-                  ?.setFilterValue(value === "all" ? "" : value)
-              }
-            >
-              <SelectTrigger className="h-11">
-                <SelectValue placeholder={t("filters.ageGroups")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{tCommon("all")}</SelectItem>
-                {ageGroupOptions.map((ageGroup) => (
-                  <SelectItem key={ageGroup.id} value={ageGroup.id}>
-                    {ageGroup.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {hasAgeGroupsColumn && (
+            <div className="space-y-2 min-w-[200px]">
+              <label className="text-sm font-medium text-gray-700">
+                {t("filters.ageGroups")}
+              </label>
+              <Select
+                value={
+                  (table.getColumn("ageGroups")?.getFilterValue() as string) ||
+                  "all"
+                }
+                onValueChange={(value) =>
+                  table
+                    .getColumn("ageGroups")
+                    ?.setFilterValue(value === "all" ? "" : value)
+                }
+              >
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder={t("filters.ageGroups")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{tCommon("all")}</SelectItem>
+                  {ageGroupOptions.map((ageGroup) => (
+                    <SelectItem key={ageGroup.id} value={ageGroup.id}>
+                      {ageGroup.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {/* Bulk Delete Button */}
           {selectedFamilyIds.length > 0 && (

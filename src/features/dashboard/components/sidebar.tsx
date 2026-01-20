@@ -34,6 +34,7 @@ import {
   FileText,
   ImageIcon,
   Bell,
+  Trash2,
   History as HistoryIcon,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -242,6 +243,11 @@ export default function DashboardSidebar() {
       label: tEntity("manage_families"),
       icon: Users,
       href: "/dashboard/admin/families",
+    },
+    {
+      label: tEntity("deleted_families"),
+      icon: Trash2,
+      href: "/dashboard/admin/deleted-families",
     },
     {
       label: tEntity("manage_representatives"),
@@ -482,8 +488,8 @@ export default function DashboardSidebar() {
             open
               ? "translate-x-0"
               : isRTL
-              ? "translate-x-full sm:translate-x-0"
-              : "-translate-x-full sm:translate-x-0"
+                ? "translate-x-full sm:translate-x-0"
+                : "-translate-x-full sm:translate-x-0"
           }
         `}
       >
@@ -641,7 +647,7 @@ export default function DashboardSidebar() {
                           if ((item as any).children) {
                             const children = (item as any).children;
                             const isChildActive = children.some(
-                              (child: any) => pathname === child.href
+                              (child: any) => pathname === child.href,
                             );
 
                             return (
@@ -685,7 +691,7 @@ export default function DashboardSidebar() {
                                               </div>
                                             </Link>
                                           );
-                                        }
+                                        },
                                       )}
                                     </div>
                                   </CollapsibleContent>

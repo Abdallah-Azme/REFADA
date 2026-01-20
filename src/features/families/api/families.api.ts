@@ -3,6 +3,7 @@ import {
   Family,
   FamilyFormValues,
   FamilyResponse,
+  DeletedFamiliesResponse,
 } from "../types/family.schema";
 
 const API_BASE_URL =
@@ -396,5 +397,23 @@ export async function bulkDeleteFamiliesApi(
   return apiRequest("/family/bulk-delete", {
     method: "POST",
     body: formData,
+  });
+}
+
+export async function getDeletedFamiliesApi(): Promise<DeletedFamiliesResponse> {
+  // Need to import DeletedFamiliesResponse type if it wasn't automatically imported
+  // But wait, it's in the same file as FamiliesResponse usually?
+  // Ah, families.api.ts imports from family.schema.ts
+  return apiRequest<DeletedFamiliesResponse>("/families/deleted", {
+    method: "GET",
+  });
+  return apiRequest<DeletedFamiliesResponse>("/families/deleted", {
+    method: "GET",
+  });
+}
+
+export async function forceDeleteFamilyApi(familyId: number): Promise<void> {
+  return apiRequest<void>(`/families/${familyId}/force-delete`, {
+    method: "DELETE",
   });
 }
