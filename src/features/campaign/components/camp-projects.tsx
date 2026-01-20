@@ -56,7 +56,7 @@ export default function CampProjects({
     // Combine and deduplicate by name
     const allGovernorates = [...apiGovernorates, ...campGovernorates];
     const uniqueGovernorates = Array.from(
-      new Map(allGovernorates.map((gov) => [gov.name, gov])).values()
+      new Map(allGovernorates.map((gov) => [gov.name, gov])).values(),
     );
     return uniqueGovernorates;
   }, [governoratesData, camps]);
@@ -89,7 +89,7 @@ export default function CampProjects({
     // Filter by camp name (shelterName)
     if (watchedValues.shelterName) {
       filtered = filtered.filter(
-        (camp) => camp.name === watchedValues.shelterName
+        (camp) => camp.name === watchedValues.shelterName,
       );
     }
 
@@ -141,7 +141,7 @@ export default function CampProjects({
             control={form.control}
             name="region"
             render={({ field }) => (
-              <FormItem className="flex-1 min-w-[150px]">
+              <FormItem className="flex-1 min-w-[150px] max-w-[300px]">
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 focus:ring-0">
@@ -178,7 +178,7 @@ export default function CampProjects({
             control={form.control}
             name="shelterName"
             render={({ field }) => (
-              <FormItem className="flex-1 min-w-[150px]">
+              <FormItem className="flex-1 min-w-[150px] max-w-[300px]">
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 focus:ring-0">
@@ -203,34 +203,11 @@ export default function CampProjects({
             )}
           />
 
-          {/* Camp Title */}
-          <FormField
-            control={form.control}
-            name="campTitle"
-            render={({ field }) => (
-              <FormItem className="flex-1 min-w-[150px]">
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 focus:ring-0">
-                      <SelectValue placeholder={t("shelter_title")} />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="reconstruction">
-                      {t("reconstruction")}
-                    </SelectItem>
-                    <SelectItem value="relief">{t("relief")}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
-          />
-
           {/* Search Button */}
           <Button
             type="button"
             onClick={form.handleSubmit(onSubmit)}
-            className="flex items-center gap-1 bg-[#CBBF8C] text-gray-800 hover:bg-[#b2a672] transition-colors h-10 px-4"
+            className="flex items-center gap-1 bg-[#CBBF8C] text-gray-800 hover:bg-[#b2a672] transition-colors h-10 px-4 mr-auto"
           >
             <Search className="w-4 h-4" />
             {t("search")}

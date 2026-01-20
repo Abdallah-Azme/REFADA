@@ -10,7 +10,7 @@ const API_BASE_URL =
 
 async function apiRequest<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> {
   const headers: Record<string, string> = {
     Accept: "application/json",
@@ -47,7 +47,7 @@ async function apiRequest<T>(
 }
 
 export async function getFamiliesApi(
-  params?: string
+  params?: string,
 ): Promise<FamiliesResponse> {
   const queryString = params ? `?${params}` : "";
   return apiRequest<FamiliesResponse>(`/families${queryString}`, {
@@ -62,7 +62,7 @@ export async function getFamilyApi(id: number): Promise<FamilyResponse> {
 }
 
 export async function createFamilyApi(
-  data: FamilyFormValues
+  data: FamilyFormValues,
 ): Promise<{ success: boolean; message: string }> {
   const formData = new FormData();
   formData.append("family_name", data.familyName);
@@ -95,12 +95,12 @@ export async function createFamilyApi(
     if (data.medicalConditionId === "other" && data.medicalConditionText) {
       formData.append(
         "members[0][medical_condition]",
-        data.medicalConditionText
+        data.medicalConditionText,
       );
     } else {
       formData.append(
         "members[0][medical_condition_id]",
-        data.medicalConditionId
+        data.medicalConditionId,
       );
     }
   }
@@ -114,11 +114,11 @@ export async function createFamilyApi(
       formData.append(`members[${memberIndex}][dob]`, member.dob);
       formData.append(
         `members[${memberIndex}][national_id]`,
-        member.nationalId
+        member.nationalId,
       );
       formData.append(
         `members[${memberIndex}][relationship_id]`,
-        member.relationshipId
+        member.relationshipId,
       );
       if (member.medicalConditionId && member.medicalConditionId !== "none") {
         if (
@@ -127,12 +127,12 @@ export async function createFamilyApi(
         ) {
           formData.append(
             `members[${memberIndex}][medical_condition]`,
-            member.medicalConditionText
+            member.medicalConditionText,
           );
         } else {
           formData.append(
             `members[${memberIndex}][medical_condition_id]`,
-            member.medicalConditionId
+            member.medicalConditionId,
           );
         }
       }
@@ -148,7 +148,7 @@ export async function createFamilyApi(
 export async function updateFamilyApi(
   id: number,
   data: FamilyFormValues,
-  originalNationalId?: string
+  originalNationalId?: string,
 ): Promise<{ success: boolean; message: string }> {
   const formData = new FormData();
   formData.append("family_name", data.familyName);
@@ -176,7 +176,7 @@ export async function updateFamilyApi(
 }
 
 export async function deleteFamilyApi(
-  id: number
+  id: number,
 ): Promise<{ success: boolean; message: string }> {
   return apiRequest(`/families/${id}`, {
     method: "DELETE",
@@ -195,7 +195,7 @@ export interface CreateFamilyMemberPayload {
 
 export async function createFamilyMemberApi(
   familyId: number,
-  data: CreateFamilyMemberPayload
+  data: CreateFamilyMemberPayload,
 ): Promise<{ success: boolean; message: string; data?: any }> {
   const formData = new FormData();
   formData.append("name", data.name);
@@ -300,7 +300,7 @@ export interface FamilyMembersResponse {
 
 // Get Family Members API
 export async function getFamilyMembersApi(
-  familyId: number
+  familyId: number,
 ): Promise<FamilyMembersResponse> {
   return apiRequest<FamilyMembersResponse>(`/families/${familyId}/members`, {
     method: "GET",
@@ -312,7 +312,7 @@ export async function updateFamilyMemberApi(
   familyId: number,
   memberId: number,
   data: CreateFamilyMemberPayload,
-  originalNationalId?: string
+  originalNationalId?: string,
 ): Promise<{ success: boolean; message: string; data?: any }> {
   const formData = new FormData();
   formData.append("name", data.name);
@@ -342,7 +342,7 @@ export async function updateFamilyMemberApi(
 // Delete Family Member API
 export async function deleteFamilyMemberApi(
   familyId: number,
-  memberId: number
+  memberId: number,
 ): Promise<{ success: boolean; message: string }> {
   return apiRequest(`/families/${familyId}/members/${memberId}`, {
     method: "DELETE",
@@ -365,12 +365,36 @@ export interface FamilyStatisticsResponse {
 }
 
 export async function getFamilyStatisticsApi(
-  familyId: number
+  familyId: number,
 ): Promise<FamilyStatisticsResponse> {
   return apiRequest<FamilyStatisticsResponse>(
     `/families/${familyId}/statistics`,
     {
       method: "GET",
-    }
+    },
   );
+}
+
+// Bulk Delete Families API
+export interface BulkDeleteFamiliesPayload {
+  familyIds: number[];
+  deleteReason: string;
+}
+
+export async function bulkDeleteFamiliesApi(
+  payload: BulkDeleteFamiliesPayload,
+): Promise<{ success: boolean; message: string }> {
+  const formData = new FormData();
+
+  // Append each family ID as family_ids[]
+  payload.familyIds.forEach((id) => {
+    formData.append("family_ids[]", id.toString());
+  });
+
+  formData.append("delete_reason", payload.deleteReason);
+
+  return apiRequest("/family/bulk-delete", {
+    method: "POST",
+    body: formData,
+  });
 }

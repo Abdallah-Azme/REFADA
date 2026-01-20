@@ -89,3 +89,24 @@ export function useFamilyStatistics(familyId: number | null) {
     enabled: !!familyId,
   });
 }
+
+export function useBulkDeleteFamilies() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: {
+      familyIds: number[];
+      deleteReason: string;
+    }) => {
+      const { bulkDeleteFamiliesApi } = await import("../api/families.api");
+      return bulkDeleteFamiliesApi(payload);
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["families"] });
+      toast.success(response?.message || "تم حذف العائلات بنجاح");
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "حدث خطأ أثناء حذف العائلات");
+    },
+  });
+}

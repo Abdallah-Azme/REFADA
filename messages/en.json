@@ -367,7 +367,9 @@
       "totalMembers": "Total Members",
       "camp": "Shelter",
       "tentNumber": "Tent Number",
-      "location": "Location"
+      "location": "Location",
+      "medicalConditions": "Medical Conditions",
+      "ageGroups": "Age Groups"
     },
     "add_family": "Add Family",
     "family_name": "Family Name",
@@ -418,6 +420,7 @@
     "full_name": "Full Name",
     "dob_label": "Date of Birth",
     "gender": "Gender",
+    "choose_gender": "Choose Gender",
     "camp": "Shelter",
     "optional": "optional",
     "delete_title": "Delete Family",
@@ -1455,13 +1458,31 @@
       "camp": "Camp",
       "tentNumber": "Tent Number",
       "location": "Location",
+      "medicalConditions": "Medical Conditions",
+      "ageGroups": "Age Groups",
       "actions": "Actions"
+    },
+    "filters": {
+      "medicalConditions": "Medical Conditions",
+      "ageGroups": "Age Groups"
     },
     "actions_menu": {
       "open_menu": "Open menu",
       "view_details": "View details",
       "edit": "Edit",
       "delete": "Delete"
+    },
+    "bulk_delete": {
+      "button": "Delete Selected",
+      "title": "Confirm Delete Families",
+      "description": "You are about to delete {count} families. This action cannot be undone.",
+      "reason_label": "Delete Reason",
+      "reason_placeholder": "Please enter the reason for deleting these families...",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "deleting": "Deleting...",
+      "success": "Families deleted successfully",
+      "error": "Error deleting families"
     }
   },
   "projects_page": {

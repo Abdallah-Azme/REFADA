@@ -56,6 +56,9 @@ export interface Family {
   quantity: number | null;
   createdAt: string;
   updatedAt: string;
+  // New array fields from API
+  ageGroups?: string[]; // Array of age group categories
+  medicalConditions?: string[]; // Array of medical condition names
   // Detail fields
   femalesCount?: number;
   malesCount?: number;

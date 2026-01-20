@@ -68,6 +68,7 @@ export function FamilyFormDialog({
       dob: "",
       phone: "",
       backupPhone: "",
+      gender: undefined,
       totalMembers: 1,
       tentNumber: "",
       location: "",
@@ -82,7 +83,7 @@ export function FamilyFormDialog({
       // We need to map the initial data (which has names for camp/maritalStatus) to IDs
       const foundCamp = camps.find((c) => c.name === initialData.camp);
       const foundMS = maritalStatuses.find(
-        (m) => m.name === initialData.maritalStatus
+        (m) => m.name === initialData.maritalStatus,
       );
 
       form.reset({
@@ -91,6 +92,7 @@ export function FamilyFormDialog({
         dob: initialData.dob,
         phone: initialData.phone,
         backupPhone: initialData.backupPhone,
+        gender: "male", // Default to male for existing families since it wasn't captured before
         totalMembers: initialData.totalMembers,
         tentNumber: initialData.tentNumber,
         location: initialData.location,
@@ -105,6 +107,7 @@ export function FamilyFormDialog({
         dob: "",
         phone: "",
         backupPhone: "",
+        gender: undefined,
         totalMembers: 1,
         tentNumber: "",
         location: "",
@@ -121,7 +124,7 @@ export function FamilyFormDialog({
         { id: initialData.id, data },
         {
           onSuccess: () => onOpenChange(false),
-        }
+        },
       );
     } else {
       createMutation.mutate(data, {
@@ -185,6 +188,28 @@ export function FamilyFormDialog({
                     <FormControl>
                       <Input {...field} type="date" />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("gender")}</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t("choose_gender")} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="male">{t("male")}</SelectItem>
+                        <SelectItem value="female">{t("female")}</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -334,7 +359,7 @@ export function FamilyFormDialog({
                           type="file"
                           onChange={(event) => {
                             onChange(
-                              event.target.files && event.target.files[0]
+                              event.target.files && event.target.files[0],
                             );
                           }}
                         />

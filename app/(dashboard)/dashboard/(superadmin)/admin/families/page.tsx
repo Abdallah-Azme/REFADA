@@ -75,6 +75,8 @@ export default function AdminFamiliesPage() {
     exportToExcel(formattedData, filename, "Families");
   };
 
+  console.log({ families });
+
   const columns = createFamilyColumns(handleView, handleEdit, handleDelete, t);
 
   return (

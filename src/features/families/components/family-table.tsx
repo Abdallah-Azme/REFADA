@@ -25,7 +25,7 @@ import {
   TableRow,
 } from "@/src/shared/ui/table";
 import PaginationControls from "@/features/dashboard/components/pagination-controls";
-import { Search } from "lucide-react";
+import { Search, Trash2 } from "lucide-react";
 import { Family } from "../types/family.schema";
 import {
   Select,
@@ -34,6 +34,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/shared/ui/select";
+import { useMedicalConditions } from "@/features/medical-condition/hooks/use-medical-condition";
+import { Button } from "@/src/shared/ui/button";
+import { BulkDeleteDialog } from "./bulk-delete-dialog";
 
 interface FamilyTableProps {
   data: Family[];
@@ -53,7 +56,7 @@ export function FamilyTable({
   // console.log("data", data, { columns });
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -96,6 +99,21 @@ export function FamilyTable({
     }
   }, [rowSelection, onSelectionChange, table]);
 
+  // Bulk delete dialog state
+  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = React.useState(false);
+
+  // Get selected family IDs
+  const selectedFamilyIds = React.useMemo(() => {
+    return table
+      .getFilteredSelectedRowModel()
+      .rows.map((row) => row.original.id);
+  }, [table, rowSelection]);
+
+  const handleBulkDeleteSuccess = () => {
+    // Clear row selection after successful delete
+    setRowSelection({});
+  };
+
   // Derive unique camps for the filter
   const uniqueCamps = React.useMemo(() => {
     // Filter out undefined, null or empty strings if necessary
@@ -105,51 +123,167 @@ export function FamilyTable({
     return Array.from(new Set(camps));
   }, [data]);
 
+  // Fetch medical conditions from API
+  const { data: medicalConditionsData } = useMedicalConditions();
+  const medicalConditions = medicalConditionsData?.data || [];
+
+  // Use translations for age groups
+  const tAge = useTranslations("contributions.age_groups");
+
+  // Static age group options (same as contribute-dialog)
+  const ageGroupOptions = React.useMemo(
+    () => [
+      { id: "newborns", name: tAge("newborns") },
+      { id: "infants", name: tAge("infants") },
+      { id: "veryEarlyChildhood", name: tAge("veryEarlyChildhood") },
+      { id: "toddlers", name: tAge("toddlers") },
+      { id: "earlyChildhood", name: tAge("earlyChildhood") },
+      { id: "children", name: tAge("children") },
+      { id: "adolescents", name: tAge("adolescents") },
+      { id: "youth", name: tAge("youth") },
+      { id: "youngAdults", name: tAge("youngAdults") },
+      { id: "middleAgeAdults", name: tAge("middleAgeAdults") },
+      { id: "lateMiddleAge", name: tAge("lateMiddleAge") },
+      { id: "seniors", name: tAge("seniors") },
+    ],
+    [tAge],
+  );
+
   return (
     <div className="w-full">
-      <div className="flex items-center gap-4 py-4 bg-white p-4 rounded-t-lg border-b">
+      <div className="flex gap-4 py-4 items-center bg-white p-4 rounded-t-lg border-b">
         {/* Search by family name */}
-        <div className="relative w-full max-w-sm">
-          <Search className="absolute right-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder={t("columns.familyName") + "..."}
-            value={
-              (table.getColumn("familyName")?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn("familyName")?.setFilterValue(event.target.value)
-            }
-            className="pr-8"
-          />
+        <div className="space-y-2 min-w-[200px]">
+          <label className="text-sm font-medium text-gray-700">
+            {t("columns.familyName")}
+          </label>
+          <div className="relative w-full">
+            <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder={t("columns.familyName") + "..."}
+              value={
+                (table.getColumn("familyName")?.getFilterValue() as string) ??
+                ""
+              }
+              onChange={(event) =>
+                table
+                  .getColumn("familyName")
+                  ?.setFilterValue(event.target.value)
+              }
+              className="pr-10 h-11"
+            />
+          </div>
         </div>
 
-        {/* Filter by Camp - only show for admin */}
-        {showCampFilter && (
-          <div className="w-[200px]">
+        {/* Filters Grid */}
+        <div className="flex flex-wrap gap-4">
+          {/* Filter by Camp - only show for admin */}
+          {showCampFilter && (
+            <div className="space-y-2 min-w-[200px]">
+              <label className="text-sm font-medium text-gray-700">
+                {t("columns.camp")}
+              </label>
+              <Select
+                value={
+                  (table.getColumn("camp")?.getFilterValue() as string) || "all"
+                }
+                onValueChange={(value) =>
+                  table
+                    .getColumn("camp")
+                    ?.setFilterValue(value === "all" ? "" : value)
+                }
+              >
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder={t("columns.camp")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{tCommon("all")}</SelectItem>
+                  {uniqueCamps.map((camp) => (
+                    <SelectItem key={camp} value={camp}>
+                      {camp}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {/* Filter by Medical Conditions */}
+          <div className="space-y-2 min-w-[200px]">
+            <label className="text-sm font-medium text-gray-700">
+              {t("filters.medicalConditions")}
+            </label>
             <Select
               value={
-                (table.getColumn("camp")?.getFilterValue() as string) ?? "all"
+                (table
+                  .getColumn("medicalConditions")
+                  ?.getFilterValue() as string) || "all"
               }
               onValueChange={(value) =>
                 table
-                  .getColumn("camp")
+                  .getColumn("medicalConditions")
                   ?.setFilterValue(value === "all" ? "" : value)
               }
             >
-              <SelectTrigger>
-                <SelectValue placeholder={t("columns.camp")} />
+              <SelectTrigger className="h-11 w-full">
+                <SelectValue placeholder={t("filters.medicalConditions")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{tCommon("all")}</SelectItem>
-                {uniqueCamps.map((camp) => (
-                  <SelectItem key={camp} value={camp}>
-                    {camp}
+                {medicalConditions.map((condition) => (
+                  <SelectItem key={condition.id} value={condition.name}>
+                    {condition.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-        )}
+
+          {/* Filter by Age Groups */}
+          <div className="space-y-2 min-w-[200px]">
+            <label className="text-sm font-medium text-gray-700">
+              {t("filters.ageGroups")}
+            </label>
+            <Select
+              value={
+                (table.getColumn("ageGroups")?.getFilterValue() as string) ||
+                "all"
+              }
+              onValueChange={(value) =>
+                table
+                  .getColumn("ageGroups")
+                  ?.setFilterValue(value === "all" ? "" : value)
+              }
+            >
+              <SelectTrigger className="h-11">
+                <SelectValue placeholder={t("filters.ageGroups")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{tCommon("all")}</SelectItem>
+                {ageGroupOptions.map((ageGroup) => (
+                  <SelectItem key={ageGroup.id} value={ageGroup.id}>
+                    {ageGroup.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Bulk Delete Button */}
+          {selectedFamilyIds.length > 0 && (
+            <div className="flex items-end">
+              <Button
+                variant="destructive"
+                size="default"
+                onClick={() => setIsBulkDeleteOpen(true)}
+                className="h-11"
+              >
+                <Trash2 className="h-4 w-4 me-2" />
+                {t("bulk_delete.button")} ({selectedFamilyIds.length})
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
       <div className="rounded-md border bg-white">
         <Table>
@@ -163,7 +297,7 @@ export function FamilyTable({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -182,7 +316,7 @@ export function FamilyTable({
                     <TableCell key={cell.id} className="text-right">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -206,6 +340,14 @@ export function FamilyTable({
       <div className="flex justify-center mt-4">
         <PaginationControls table={table} />
       </div>
+
+      {/* Bulk Delete Dialog */}
+      <BulkDeleteDialog
+        isOpen={isBulkDeleteOpen}
+        onClose={() => setIsBulkDeleteOpen(false)}
+        selectedFamilyIds={selectedFamilyIds}
+        onSuccess={handleBulkDeleteSuccess}
+      />
     </div>
   );
 }

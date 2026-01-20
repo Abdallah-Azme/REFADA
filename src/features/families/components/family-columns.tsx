@@ -28,7 +28,7 @@ export const createFamilyColumns = (
   onEdit: (family: Family) => void,
   onDelete: (family: Family) => void,
   t: (key: string) => string,
-  options?: { hideDelete?: boolean }
+  options?: { hideDelete?: boolean },
 ): ColumnDef<Family>[] => [
   {
     id: "select",
@@ -105,6 +105,42 @@ export const createFamilyColumns = (
     accessorKey: "location",
     header: t("columns.location"),
     cell: ({ row }) => sanitizeValue(row.getValue("location")),
+  },
+  {
+    accessorKey: "medicalConditions",
+    header: t("columns.medicalConditions"),
+    cell: ({ row }) => {
+      const conditions = row.getValue("medicalConditions") as
+        | string[]
+        | undefined;
+      return (
+        <div className="max-w-[200px] whitespace-normal">
+          {conditions && conditions.length > 0 ? conditions.join(", ") : ""}
+        </div>
+      );
+    },
+    filterFn: (row, columnId, filterValue) => {
+      const conditions = row.getValue(columnId) as string[] | undefined;
+      if (!filterValue || filterValue === "") return true;
+      return conditions?.includes(filterValue) ?? false;
+    },
+  },
+  {
+    accessorKey: "ageGroups",
+    header: t("columns.ageGroups"),
+    cell: ({ row }) => {
+      const ageGroups = row.getValue("ageGroups") as string[] | undefined;
+      return (
+        <div className="max-w-[200px] whitespace-normal">
+          {ageGroups && ageGroups.length > 0 ? ageGroups.join(", ") : ""}
+        </div>
+      );
+    },
+    filterFn: (row, columnId, filterValue) => {
+      const ageGroups = row.getValue(columnId) as string[] | undefined;
+      if (!filterValue || filterValue === "") return true;
+      return ageGroups?.includes(filterValue) ?? false;
+    },
   },
   {
     id: "actions",

@@ -360,7 +360,9 @@
       "totalMembers": "عدد الأفراد",
       "camp": "المخيم",
       "tentNumber": "رقم الخيمة",
-      "location": "الموقع"
+      "location": "الموقع",
+      "medicalConditions": "الحالات الطبية",
+      "ageGroups": "الفئات العمرية"
     },
     "add_family": "إضافة عائلة",
     "family_name": "اسم العائلة",
@@ -405,6 +407,7 @@
     "full_name": "الاسم الرباعي",
     "dob_label": "تاريخ الميلاد",
     "gender": "النوع",
+    "choose_gender": "اختر النوع",
     "camp": "الإيواء",
     "optional": "اختياري",
     "delete_title": "حذف العائلة",
@@ -1459,13 +1462,31 @@
       "camp": "المخيم",
       "tentNumber": "رقم الخيمة",
       "location": "الموقع",
+      "medicalConditions": "الحالات الطبية",
+      "ageGroups": "الفئات العمرية",
       "actions": "الإجراءات"
+    },
+    "filters": {
+      "medicalConditions": "الحالات الطبية",
+      "ageGroups": "الفئات العمرية"
     },
     "actions_menu": {
       "open_menu": "فتح القائمة",
       "view_details": "عرض التفاصيل",
       "edit": "تعديل",
       "delete": "حذف"
+    },
+    "bulk_delete": {
+      "button": "حذف المحدد",
+      "title": "تأكيد حذف العائلات",
+      "description": "أنت على وشك حذف {count} عائلة. هذا الإجراء لا يمكن التراجع عنه.",
+      "reason_label": "سبب الحذف",
+      "reason_placeholder": "يرجى إدخال سبب حذف هذه العائلات...",
+      "confirm": "حذف",
+      "cancel": "إلغاء",
+      "deleting": "جاري الحذف...",
+      "success": "تم حذف العائلات بنجاح",
+      "error": "حدث خطأ أثناء حذف العائلات"
     }
   },
   "projects_page": {
