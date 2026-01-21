@@ -46,7 +46,7 @@ export default function AdminContributorsTable() {
     { id: "createdAt", desc: true },
   ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -69,6 +69,8 @@ export default function AdminContributorsTable() {
 
   // Fetch contributors
   const { data: response, isLoading, error } = useContributors();
+
+  console.log({ response });
 
   const deleteMutation = useDeleteContributor();
   const changePasswordMutation = useChangeRepresentativePassword();
@@ -119,7 +121,7 @@ export default function AdminContributorsTable() {
             setNewPassword("");
             setConfirmPassword("");
           },
-        }
+        },
       );
     }
   };
@@ -131,7 +133,7 @@ export default function AdminContributorsTable() {
         onDelete: handleDelete,
         onChangePassword: handleChangePassword,
       },
-      t
+      t,
     ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -181,7 +183,7 @@ export default function AdminContributorsTable() {
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                       </TableHead>
                     );
@@ -198,7 +200,7 @@ export default function AdminContributorsTable() {
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}
@@ -210,7 +212,7 @@ export default function AdminContributorsTable() {
                     colSpan={
                       createApprovedContributorsColumns(
                         { onDelete: () => {}, onChangePassword: () => {} },
-                        t
+                        t,
                       ).length
                     }
                     className="h-24 text-center"

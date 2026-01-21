@@ -10,7 +10,7 @@ const API_BASE_URL =
 
 async function apiRequest<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> {
   const headers: Record<string, string> = {
     Accept: "application/json",
@@ -48,16 +48,13 @@ export interface ContributorsResponse {
 }
 
 export async function getContributorsApi(): Promise<ContributorsResponse> {
-  return apiRequest<ContributorsResponse>(
-    `/admin/users?role=contributor&status=approved`,
-    {
-      method: "GET",
-    }
-  );
+  return apiRequest<ContributorsResponse>(`/admin/users?role=contributor`, {
+    method: "GET",
+  });
 }
 
 export async function createContributorApi(
-  data: CreateContributorFormValues
+  data: CreateContributorFormValues,
 ): Promise<CreateContributorResponse> {
   const formData = new FormData();
   formData.append("name", data.name);
@@ -79,7 +76,7 @@ export async function createContributorApi(
 }
 
 export async function deleteContributorApi(
-  id: number
+  id: number,
 ): Promise<DeleteContributorResponse> {
   return apiRequest<DeleteContributorResponse>(`/admin/users/${id}`, {
     method: "DELETE",
@@ -128,14 +125,14 @@ export interface CampFamiliesResponse {
 
 export async function getCampFamiliesApi(
   campId: number,
-  projectId?: number
+  projectId?: number,
 ): Promise<CampFamiliesResponse> {
   const queryParams = projectId ? `?project_id=${projectId}` : "";
   return apiRequest<CampFamiliesResponse>(
     `/contributor/camps/families/${campId}${queryParams}`,
     {
       method: "GET",
-    }
+    },
   );
 }
 
@@ -156,13 +153,13 @@ export interface DelegateFamiliesResponse {
 }
 
 export async function getDelegateFamiliesForContributionApi(
-  contributionId: number
+  contributionId: number,
 ): Promise<DelegateFamiliesResponse> {
   return apiRequest<DelegateFamiliesResponse>(
     `/delegate/families/contribution/${contributionId}`,
     {
       method: "GET",
-    }
+    },
   );
 }
 
@@ -184,7 +181,7 @@ export interface ContributeResponse {
 }
 
 export async function submitContributionApi(
-  data: ContributeFormData
+  data: ContributeFormData,
 ): Promise<ContributeResponse> {
   const formData = new FormData();
   formData.append("contributedQuantity", data.contributedQuantity.toString());
@@ -204,7 +201,7 @@ export async function submitContributionApi(
     {
       method: "POST",
       body: formData,
-    }
+    },
   );
 }
 
@@ -316,14 +313,14 @@ export interface AdminContributionsResponse {
 }
 
 export async function getAdminContributionsApi(
-  campId?: number
+  campId?: number,
 ): Promise<AdminContributionsResponse> {
   const queryParams = campId ? `?camp_id=${campId}` : "";
   return apiRequest<AdminContributionsResponse>(
     `/admin/contributions${queryParams}`,
     {
       method: "GET",
-    }
+    },
   );
 }
 
@@ -338,13 +335,13 @@ export interface DeleteFamilyFromContributionResponse {
 
 export async function deleteFamilyFromContributionApi(
   contributionId: number,
-  familyId: number
+  familyId: number,
 ): Promise<DeleteFamilyFromContributionResponse> {
   return apiRequest<DeleteFamilyFromContributionResponse>(
     `/contributions/${contributionId}/families/${familyId}`,
     {
       method: "DELETE",
-    }
+    },
   );
 }
 
@@ -387,7 +384,7 @@ export interface ConfirmDelegateContributionResponse {
 
 export async function confirmDelegateContributionApi(
   contributionId: number,
-  confirmedQuantity: number
+  confirmedQuantity: number,
 ): Promise<ConfirmDelegateContributionResponse> {
   const formData = new FormData();
   formData.append("confirmed_quantity", confirmedQuantity.toString());
@@ -397,7 +394,7 @@ export async function confirmDelegateContributionApi(
     {
       method: "POST",
       body: formData,
-    }
+    },
   );
 }
 
@@ -417,7 +414,7 @@ export interface AddFamiliesToContributionResponse {
 
 export async function addFamiliesToContributionApi(
   contributionId: number,
-  families: FamilyQuantity[]
+  families: FamilyQuantity[],
 ): Promise<AddFamiliesToContributionResponse> {
   const formData = new FormData();
 
@@ -431,7 +428,7 @@ export async function addFamiliesToContributionApi(
     {
       method: "POST",
       body: formData,
-    }
+    },
   );
 }
 
@@ -445,7 +442,7 @@ export interface CompleteDelegateContributionResponse {
 }
 
 export async function completeDelegateContributionApi(
-  contributionId: number
+  contributionId: number,
 ): Promise<CompleteDelegateContributionResponse> {
   const formData = new FormData();
 
@@ -454,6 +451,6 @@ export async function completeDelegateContributionApi(
     {
       method: "POST",
       body: formData,
-    }
+    },
   );
 }

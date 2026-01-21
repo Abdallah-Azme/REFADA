@@ -99,7 +99,7 @@ function AdminContributionDetailsDialog({
     try {
       const response = await deleteFamilyFromContributionApi(
         contribution.id,
-        deletingFamily.id
+        deletingFamily.id,
       );
       if (response.success) {
         toast.success(t("delete_family_success"));
@@ -162,21 +162,21 @@ function AdminContributionDetailsDialog({
                     contribution.status === "pending"
                       ? "text-yellow-600"
                       : contribution.status === "approved"
-                      ? "text-green-600"
-                      : contribution.status === "rejected"
-                      ? "text-red-600"
-                      : "text-blue-600"
+                        ? "text-green-600"
+                        : contribution.status === "rejected"
+                          ? "text-red-600"
+                          : "text-blue-600"
                   }`}
                 >
                   {contribution.status === "pending"
                     ? t("status_pending")
                     : contribution.status === "approved"
-                    ? t("status_approved")
-                    : contribution.status === "rejected"
-                    ? t("status_rejected")
-                    : contribution.status === "completed"
-                    ? t("status_completed")
-                    : contribution.status}
+                      ? t("status_approved")
+                      : contribution.status === "rejected"
+                        ? t("status_rejected")
+                        : contribution.status === "completed"
+                          ? t("status_completed")
+                          : contribution.status}
                 </p>
               </div>
             </div>
@@ -327,7 +327,8 @@ export default function AdminContributionsTable() {
     setIsLoading(true);
     try {
       const response = await getAdminContributionsApi();
-       if (response.success) {
+
+      if (response.success) {
         setData(response.data);
       }
     } catch (error) {
@@ -360,7 +361,7 @@ export default function AdminContributionsTable() {
 
     if (watchedProject && watchedProject !== "all") {
       filtered = filtered.filter(
-        (item) => item.project?.id.toString() === watchedProject
+        (item) => item.project?.id.toString() === watchedProject,
       );
     }
 
@@ -391,7 +392,7 @@ export default function AdminContributionsTable() {
       {
         onView: handleView,
       },
-      t
+      t,
     ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -546,7 +547,7 @@ export default function AdminContributionsTable() {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   ))}
@@ -566,7 +567,7 @@ export default function AdminContributionsTable() {
                       <TableCell key={cell.id} className="text-center">
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}
@@ -580,7 +581,7 @@ export default function AdminContributionsTable() {
                         {
                           onView: handleView,
                         },
-                        t
+                        t,
                       ).length
                     }
                     className="h-24 text-center"
