@@ -10,12 +10,18 @@ import {
   Family,
   useFamilies,
   useDeleteFamily,
+  getFamilyMembersApi,
 } from "@/features/families";
 import EditFamilyDialog from "@/features/families/components/edit-family-dialog";
 import FamilyDetailsDialog from "@/features/families/components/family-details-dialog";
 import { DeleteConfirmDialog } from "@/features/marital-status";
 import AddFamilyDialog from "@/src/features/dashboard/components/add-family-dialog";
-import { exportToExcel, formatFamiliesForExport } from "@/src/lib/export-utils";
+import {
+  exportToExcel,
+  formatFamiliesForExport,
+  formatFamiliesWithMembersForExport,
+} from "@/src/lib/export-utils";
+import { toast } from "sonner";
 
 import { useTranslations } from "next-intl";
 
@@ -32,6 +38,7 @@ export default function AdminFamiliesPage() {
   const [viewingFamily, setViewingFamily] = useState<Family | null>(null);
   const [deletingFamily, setDeletingFamily] = useState<Family | null>(null);
   const [selectedFamilies, setSelectedFamilies] = useState<Family[]>([]);
+  const [isExporting, setIsExporting] = useState(false);
 
   // Extract families data
   const families = response?.data || [];
@@ -63,16 +70,51 @@ export default function AdminFamiliesPage() {
     }
   };
 
-  const handleExportToExcel = () => {
-    // Export selected families if any are selected, otherwise export all
-    const familiesToExport =
-      selectedFamilies.length > 0 ? selectedFamilies : families;
-    const formattedData = formatFamiliesForExport(familiesToExport);
-    const filename =
-      selectedFamilies.length > 0
-        ? `families_export_${selectedFamilies.length}_selected`
-        : "families_export_all";
-    exportToExcel(formattedData, filename, "Families");
+  const handleExportToExcel = async () => {
+    try {
+      setIsExporting(true);
+      // Export selected families if any are selected, otherwise export all
+      const familiesToExport =
+        selectedFamilies.length > 0 ? selectedFamilies : families;
+
+      // Fetch members for each family
+      const familiesWithMembers = await Promise.all(
+        familiesToExport.map(async (family) => {
+          try {
+            const membersResponse = await getFamilyMembersApi(family.id);
+            return {
+              family,
+              members: membersResponse.data || [],
+            };
+          } catch (error) {
+            console.error(
+              `Error fetching members for family ${family.id}:`,
+              error,
+            );
+            return {
+              family,
+              members: [],
+            };
+          }
+        }),
+      );
+
+      const formattedData =
+        formatFamiliesWithMembersForExport(familiesWithMembers);
+
+      const filename =
+        selectedFamilies.length > 0
+          ? `families_members_export_${selectedFamilies.length}_selected`
+          : "families_members_export_all";
+
+      exportToExcel(formattedData, filename, "Families With Members");
+      toast.success(t("toast.export_success") || "تم تصدير البيانات بنجاح");
+    } catch (error) {
+      console.error("Export error:", error);
+      toast.error(t("toast.export_error") || "حدث خطأ أثناء تصدير البيانات");
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   console.log({ families });
@@ -91,13 +133,22 @@ export default function AdminFamiliesPage() {
           <Button
             variant="outline"
             onClick={handleExportToExcel}
-            disabled={families.length === 0}
+            disabled={families.length === 0 || isExporting}
             className="flex items-center gap-2"
           >
-            <Download className="h-4 w-4" />
-            {selectedFamilies.length > 0
-              ? `${t("export_to_excel")} (${selectedFamilies.length})`
-              : t("export_to_excel")}
+            {isExporting ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                {t("exporting") || "جاري التصدير..."}
+              </>
+            ) : (
+              <>
+                <Download className="h-4 w-4" />
+                {selectedFamilies.length > 0
+                  ? `${t("export_to_excel")} (${selectedFamilies.length})`
+                  : t("export_to_excel")}
+              </>
+            )}
           </Button>
           <AddFamilyDialog />
         </div>

@@ -9,7 +9,7 @@ import * as XLSX from "xlsx";
 export function exportToExcel<T extends Record<string, any>>(
   data: T[],
   filename: string,
-  sheetName: string = "Sheet1"
+  sheetName: string = "Sheet1",
 ) {
   // Create a new workbook
   const workbook = XLSX.utils.book_new();
@@ -47,4 +47,60 @@ export function formatFamiliesForExport(families: any[]) {
       ? new Date(family.createdAt).toLocaleDateString()
       : "",
   }));
+}
+
+/**
+ * Format families with their members for Excel export (Flattened)
+ */
+export function formatFamiliesWithMembersForExport(
+  familiesWithMembers: { family: any; members: any[] }[],
+) {
+  const flattenedData: any[] = [];
+
+  familiesWithMembers.forEach(({ family, members }) => {
+    // If no members found (which shouldn't happen usually as head is a member), just add family info
+    if (!members || members.length === 0) {
+      flattenedData.push({
+        "Family ID": family.id,
+        "Family Name": family.familyName || "",
+        "Head National ID": family.nationalId || "",
+        Contact: family.phone || "",
+        Camp:
+          typeof family.camp === "string"
+            ? family.camp
+            : family.camp?.name || "",
+        "Tent Number": family.tentNumber || "",
+        "Member Name": "-",
+        "Member National ID": "-",
+        "Member Gender": "-",
+        "Member DOB": "-",
+        "Member Relationship": "-",
+        "Member Med. Condition": "-",
+      });
+      return;
+    }
+
+    // Add a row for each member
+    members.forEach((member) => {
+      flattenedData.push({
+        "Family ID": family.id,
+        "Family Name": family.familyName || "",
+        "Head National ID": family.nationalId || "",
+        Contact: family.phone || "",
+        Camp:
+          typeof family.camp === "string"
+            ? family.camp
+            : family.camp?.name || "",
+        "Tent Number": family.tentNumber || "",
+        "Member Name": member.name,
+        "Member National ID": member.nationalId,
+        "Member Gender": member.gender,
+        "Member DOB": member.dob,
+        "Member Relationship": member.relationship,
+        "Member Med. Condition": member.medicalCondition || "Healthy",
+      });
+    });
+  });
+
+  return flattenedData;
 }
