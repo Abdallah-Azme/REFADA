@@ -22,7 +22,7 @@ type CampResponse = {
 
 async function apiRequest<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> {
   const headers: Record<string, string> = {
     Accept: "application/json",
@@ -148,7 +148,7 @@ export const campsApi = {
 
   delete: async (
     slug: string,
-    deleteRelated?: boolean
+    deleteRelated?: boolean,
   ): Promise<{ success: boolean; message: string }> => {
     const url = deleteRelated
       ? `${API_BASE_URL}/camps/${slug}?deleteRelated=true`
@@ -173,12 +173,12 @@ export const campsApi = {
   },
 
   getCampBySlug: async (slug: string): Promise<CampResponse> => {
-     const response = await apiRequest<CampResponse>(`/camps/${slug}`);
-     return response;
+    const response = await apiRequest<CampResponse>(`/camps/${slug}`);
+    return response;
   },
 
-  getStatistics: async (): Promise<CampStatisticsResponse> => {
-    return apiRequest<CampStatisticsResponse>("/camps/statistics");
+  getStatistics: async (page: number = 1): Promise<CampStatisticsResponse> => {
+    return apiRequest<CampStatisticsResponse>(`/camps/statistics?page=${page}`);
   },
 
   getFamilyStatistics: async (): Promise<CampFamilyStatisticsResponse> => {

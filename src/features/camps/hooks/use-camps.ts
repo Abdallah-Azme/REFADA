@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
 import { toast } from "sonner";
 import { campsApi } from "../api/camp.api";
 import { CampFormValues } from "../types/camp.schema";
@@ -65,9 +70,16 @@ export function useCampDetails(slug: string | null) {
 }
 
 export function useCampStatistics() {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ["camp-statistics"],
-    queryFn: campsApi.getStatistics,
+    queryFn: ({ pageParam = 1 }) => campsApi.getStatistics(pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.pagination.current_page < lastPage.pagination.last_page) {
+        return lastPage.pagination.current_page + 1;
+      }
+      return undefined;
+    },
   });
 }
 

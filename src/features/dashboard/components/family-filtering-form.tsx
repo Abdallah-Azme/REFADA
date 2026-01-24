@@ -61,17 +61,17 @@ export default function FamilyFilteringForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-wrap items-center gap-3 self-end"
+        className="flex flex-wrap items-center gap-3 w-full sm:w-auto sm:self-end"
       >
         {/* اسم العائلة */}
         <FormField
           control={form.control}
           name="familyName"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full sm:w-auto">
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
+                  <SelectTrigger className="w-full sm:w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
                     <SelectValue placeholder="اسم العائلة" />
                   </SelectTrigger>
                   <SelectContent>
@@ -90,10 +90,10 @@ export default function FamilyFilteringForm({
           control={form.control}
           name="status"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full sm:w-auto">
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
+                  <SelectTrigger className="w-full sm:w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
                     <SelectValue placeholder="الحالات المرضية" />
                   </SelectTrigger>
                   <SelectContent>
@@ -113,10 +113,10 @@ export default function FamilyFilteringForm({
           control={form.control}
           name="caseStatus"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full sm:w-auto">
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-[140px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
+                  <SelectTrigger className="w-full sm:w-[140px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
                     <SelectValue placeholder="الحالة" />
                   </SelectTrigger>
                   <SelectContent>
@@ -134,10 +134,10 @@ export default function FamilyFilteringForm({
           control={form.control}
           name="familySize"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full sm:w-auto">
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
+                  <SelectTrigger className="w-full sm:w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
                     <SelectValue placeholder="حجم العائلة" />
                   </SelectTrigger>
                   <SelectContent>
@@ -159,10 +159,10 @@ export default function FamilyFilteringForm({
           control={form.control}
           name="hasChildren"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full sm:w-auto">
               <FormControl>
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
+                  <SelectTrigger className="w-full sm:w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
                     <SelectValue placeholder="لديهم أطفال" />
                   </SelectTrigger>
                   <SelectContent>
@@ -181,15 +181,15 @@ export default function FamilyFilteringForm({
           control={form.control}
           name="ageFrom"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full sm:w-auto">
               <FormControl>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
                       className={cn(
-                        "w-[160px] h-10 justify-start text-right font-normal bg-white border border-gray-300 text-sm",
-                        !field.value && "text-gray-500"
+                        "w-full sm:w-[160px] h-10 justify-start text-right font-normal bg-white border border-gray-300 text-sm",
+                        !field.value && "text-gray-500",
                       )}
                     >
                       <CalendarIcon className="ml-2 h-4 w-4" />
@@ -219,15 +219,15 @@ export default function FamilyFilteringForm({
           control={form.control}
           name="ageTo"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full sm:w-auto">
               <FormControl>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
                       className={cn(
-                        "w-[160px] h-10 justify-start text-right font-normal bg-white border border-gray-300 text-sm",
-                        !field.value && "text-gray-500"
+                        "w-full sm:w-[160px] h-10 justify-start text-right font-normal bg-white border border-gray-300 text-sm",
+                        !field.value && "text-gray-500",
                       )}
                     >
                       <CalendarIcon className="ml-2 h-4 w-4" />

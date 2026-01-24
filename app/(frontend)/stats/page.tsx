@@ -11,29 +11,41 @@ import type { CampaignCard as CampaignCardType } from "@/features/campaign/compo
 
 export default function CampaignPage() {
   const t = useTranslations();
-  const { data: statisticsData, isLoading } = useCampStatistics();
+  const {
+    data: statisticsData,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useCampStatistics();
 
   // Transform API data to match CampaignCard structure
   const campaigns: CampaignCardType[] =
-    statisticsData?.data?.map((stat) => {
-      const percentage =
-        parseInt(stat.contributionsPercentage.replace("%", "")) || 0;
-      // Determine color based on percentage
-      const color =
-        percentage >= 50 ? "#10b981" : percentage >= 25 ? "#f59e0b" : "#ef4444";
+    statisticsData?.pages
+      .flatMap((page) => page.data)
+      .map((stat) => {
+        const percentage =
+          parseInt(stat.contributionsPercentage.replace("%", "")) || 0;
+        // Determine color based on percentage
+        const color =
+          percentage >= 50
+            ? "#10b981"
+            : percentage >= 25
+              ? "#f59e0b"
+              : "#ef4444";
 
-      return {
-        id: stat.id,
-        manager: stat.name,
-        percentage,
-        color,
-        stats: {
-          cases: stat.registeredFamilies,
-          projects: stat.currentProjects,
-          participation: percentage,
-        },
-      };
-    }) || [];
+        return {
+          id: stat.id,
+          manager: stat.name,
+          percentage,
+          color,
+          stats: {
+            cases: stat.registeredFamilies,
+            projects: stat.currentProjects,
+            participation: percentage,
+          },
+        };
+      }) || [];
   return (
     <div className="bg-gray-50 relative">
       <section className="container mx-auto px-4">
@@ -121,17 +133,18 @@ export default function CampaignPage() {
               </div>
             )}
 
-            {statisticsData?.pagination &&
-              statisticsData.pagination.last_page > 1 && (
-                <div className="flex justify-center mt-12">
-                  <Button
-                    variant={"outline"}
-                    className="px-12! py-6! border-2 rounded-full font-semibold text-primary border-primary transition-colors flex items-center gap-2"
-                  >
-                    المزيد
-                  </Button>
-                </div>
-              )}
+            {hasNextPage && (
+              <div className="flex justify-center mt-12">
+                <Button
+                  variant={"outline"}
+                  onClick={() => fetchNextPage()}
+                  disabled={isFetchingNextPage}
+                  className="px-12! py-6! border-2 rounded-full font-semibold text-primary border-primary transition-colors flex items-center gap-2"
+                >
+                  {isFetchingNextPage ? "جاري التحميل..." : "المزيد"}
+                </Button>
+              </div>
+            )}
           </main>
         </div>
       </section>

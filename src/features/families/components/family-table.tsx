@@ -160,9 +160,9 @@ export function FamilyTable({
 
   return (
     <div className="w-full">
-      <div className="flex gap-4 py-4 items-center bg-white p-4 rounded-t-lg border-b">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-4 py-4 items-start sm:items-center bg-white p-4 rounded-t-lg border-b">
         {/* Search by National ID */}
-        <div className="space-y-2 min-w-[200px]">
+        <div className="space-y-2 w-full sm:min-w-[200px] sm:w-auto">
           <label className="text-sm font-medium text-gray-700">
             {t("columns.nationalId")}
           </label>
@@ -179,13 +179,13 @@ export function FamilyTable({
                   .getColumn("nationalId")
                   ?.setFilterValue(event.target.value)
               }
-              className="pr-10 h-11"
+              className="pr-10 h-11 w-full"
             />
           </div>
         </div>
 
         {/* Search by family name */}
-        <div className="space-y-2 min-w-[200px]">
+        <div className="space-y-2 w-full sm:min-w-[200px] sm:w-auto">
           <label className="text-sm font-medium text-gray-700">
             {t("columns.familyName")}
           </label>
@@ -202,16 +202,16 @@ export function FamilyTable({
                   .getColumn("familyName")
                   ?.setFilterValue(event.target.value)
               }
-              className="pr-10 h-11"
+              className="pr-10 h-11 w-full"
             />
           </div>
         </div>
 
         {/* Filters Grid */}
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-4 w-full sm:w-auto">
           {/* Filter by Camp - only show for admin */}
           {showCampFilter && hasCampColumn && (
-            <div className="space-y-2 min-w-[200px]">
+            <div className="space-y-2 w-full sm:min-w-[200px] sm:w-auto">
               <label className="text-sm font-medium text-gray-700">
                 {t("columns.camp")}
               </label>
@@ -225,7 +225,7 @@ export function FamilyTable({
                     ?.setFilterValue(value === "all" ? "" : value)
                 }
               >
-                <SelectTrigger className="h-11">
+                <SelectTrigger className="h-11 w-full">
                   <SelectValue placeholder={t("columns.camp")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -242,7 +242,7 @@ export function FamilyTable({
 
           {/* Filter by Medical Conditions */}
           {hasMedicalConditionsColumn && (
-            <div className="space-y-2 min-w-[200px]">
+            <div className="space-y-2 w-full sm:min-w-[200px] sm:w-auto">
               <label className="text-sm font-medium text-gray-700">
                 {t("filters.medicalConditions")}
               </label>
@@ -275,7 +275,7 @@ export function FamilyTable({
 
           {/* Filter by Age Groups */}
           {hasAgeGroupsColumn && (
-            <div className="space-y-2 min-w-[200px]">
+            <div className="space-y-2 w-full sm:min-w-[200px] sm:w-auto">
               <label className="text-sm font-medium text-gray-700">
                 {t("filters.ageGroups")}
               </label>
@@ -290,7 +290,7 @@ export function FamilyTable({
                     ?.setFilterValue(value === "all" ? "" : value)
                 }
               >
-                <SelectTrigger className="h-11">
+                <SelectTrigger className="h-11 w-full">
                   <SelectValue placeholder={t("filters.ageGroups")} />
                 </SelectTrigger>
                 <SelectContent>
