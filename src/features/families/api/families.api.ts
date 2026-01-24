@@ -72,8 +72,8 @@ export async function createFamilyApi(
   formData.append("phone", data.phone);
   if (data.backupPhone) formData.append("backup_phone", data.backupPhone);
   formData.append("total_members", data.totalMembers.toString());
-  formData.append("tent_number", data.tentNumber);
-  formData.append("location", data.location);
+  if (data.tentNumber) formData.append("tent_number", data.tentNumber);
+  if (data.location) formData.append("location", data.location);
   if (data.notes) formData.append("notes", data.notes);
   formData.append("camp_id", data.campId);
   formData.append("marital_status_id", data.maritalStatusId);
@@ -162,15 +162,15 @@ export async function updateFamilyApi(
   formData.append("phone", data.phone);
   if (data.backupPhone) formData.append("backup_phone", data.backupPhone);
   formData.append("total_members", data.totalMembers.toString());
-  formData.append("tent_number", data.tentNumber);
-  formData.append("location", data.location);
+  if (data.tentNumber) formData.append("tent_number", data.tentNumber);
+  if (data.location) formData.append("location", data.location);
   if (data.notes) formData.append("notes", data.notes);
   formData.append("camp_id", data.campId);
   formData.append("marital_status_id", data.maritalStatusId);
 
   // Uses POST for update per Postman collection ("edit" request)
   // Note: Members are handled separately via the edit-family-dialog's member update logic
-  return apiRequest(`/families/${id}`, {
+  return apiRequest(`/families/${id}/update`, {
     method: "POST",
     body: formData,
   });
@@ -179,8 +179,12 @@ export async function updateFamilyApi(
 export async function deleteFamilyApi(
   id: number,
 ): Promise<{ success: boolean; message: string }> {
-  return apiRequest(`/families/${id}`, {
-    method: "DELETE",
+  const formData = new FormData();
+  formData.append("delete_reason", "Deleted from dashboard");
+
+  return apiRequest(`/families/${id}/delete`, {
+    method: "POST",
+    body: formData,
   });
 }
 
@@ -407,8 +411,14 @@ export async function getDeletedFamiliesApi(): Promise<DeletedFamiliesResponse> 
   return apiRequest<DeletedFamiliesResponse>("/families/deleted", {
     method: "GET",
   });
-  return apiRequest<DeletedFamiliesResponse>("/families/deleted", {
-    method: "GET",
+}
+
+// Restore family (from deleted/archive)
+export async function restoreFamilyApi(
+  id: number,
+): Promise<{ success: boolean; message: string }> {
+  return apiRequest(`/families/${id}/restore`, {
+    method: "POST",
   });
 }
 

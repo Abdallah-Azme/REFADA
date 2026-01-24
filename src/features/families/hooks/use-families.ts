@@ -138,3 +138,21 @@ export function useForceDeleteFamily() {
     },
   });
 }
+export function useRestoreFamily() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const { restoreFamilyApi } = await import("../api/families.api");
+      return restoreFamilyApi(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["families"] });
+      queryClient.invalidateQueries({ queryKey: ["deletedFamilies"] });
+      toast.success("تم استعادة العائلة بنجاح");
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "حدث خطأ أثناء استعادة العائلة");
+    },
+  });
+}

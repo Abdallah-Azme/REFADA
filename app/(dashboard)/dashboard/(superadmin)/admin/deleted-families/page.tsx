@@ -7,6 +7,7 @@ import {
   useDeletedFamilies,
   Family,
   useForceDeleteFamily,
+  useRestoreFamily,
 } from "@/features/families";
 import { createDeletedFamilyColumns } from "@/features/families/components/deleted-family-columns";
 import { useTranslations } from "next-intl";
@@ -18,14 +19,21 @@ export default function DeletedFamiliesPage() {
   const t = useTranslations("families_page");
   const { data: response, isLoading, error } = useDeletedFamilies();
   const { mutate: forceDelete, isPending: isDeleting } = useForceDeleteFamily();
+  const { mutate: restoreFamily, isPending: isRestoring } = useRestoreFamily();
   const [selectedFamily, setSelectedFamily] = useState<Family | null>(null);
 
   // Extract deleted families data
   const families = response?.data || [];
 
-  const columns = createDeletedFamilyColumns(t, (family) => {
-    setSelectedFamily(family as unknown as Family);
-  }) as unknown as ColumnDef<Family>[];
+  const columns = createDeletedFamilyColumns(
+    t,
+    (family) => {
+      setSelectedFamily(family as unknown as Family);
+    },
+    (family) => {
+      restoreFamily(family.id);
+    },
+  ) as unknown as ColumnDef<Family>[];
 
   return (
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">

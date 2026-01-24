@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
       icons: {
         icon: settings.favicon || "/favicon.ico",
       },
-      description: "جمعية رفاد الخيرية - غزة",
+      description: "منظومة الحوكمة الإنسانية الرشيدة - غزة",
     };
   } catch (error) {
     return {

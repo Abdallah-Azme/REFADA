@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DeletedFamily } from "../types/family.schema";
 import { useTranslations } from "next-intl";
 import { Button } from "@/src/shared/ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, RefreshCcw } from "lucide-react";
 
 const sanitizeValue = (value: unknown): string => {
   if (value === null || value === undefined || value === "undefined") {
@@ -16,6 +16,7 @@ const sanitizeValue = (value: unknown): string => {
 export const createDeletedFamilyColumns = (
   t: (key: string) => string,
   onDelete: (family: DeletedFamily) => void,
+  onRestore: (family: DeletedFamily) => void,
 ): ColumnDef<DeletedFamily>[] => [
   {
     accessorKey: "familyName",
@@ -54,14 +55,25 @@ export const createDeletedFamilyColumns = (
   {
     id: "actions",
     cell: ({ row }) => (
-      <Button
-        variant="destructive"
-        size="sm"
-        onClick={() => onDelete(row.original)}
-        title={t("force_delete.button")}
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
+      <div className="flex gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onRestore(row.original)}
+          title={t("restore.button") || "استعادة"}
+          className="text-green-600 hover:text-green-700 hover:bg-green-50"
+        >
+          <RefreshCcw className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => onDelete(row.original)}
+          title={t("force_delete.button")}
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
     ),
   },
 ];

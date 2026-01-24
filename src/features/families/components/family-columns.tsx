@@ -71,6 +71,7 @@ export const createFamilyColumns = (
       className: "ps-2",
     },
   },
+
   {
     accessorKey: "familyName",
     header: t("columns.familyName"),

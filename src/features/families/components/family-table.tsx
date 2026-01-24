@@ -161,6 +161,29 @@ export function FamilyTable({
   return (
     <div className="w-full">
       <div className="flex gap-4 py-4 items-center bg-white p-4 rounded-t-lg border-b">
+        {/* Search by National ID */}
+        <div className="space-y-2 min-w-[200px]">
+          <label className="text-sm font-medium text-gray-700">
+            {t("columns.nationalId")}
+          </label>
+          <div className="relative w-full">
+            <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder={t("columns.nationalId")}
+              value={
+                (table.getColumn("nationalId")?.getFilterValue() as string) ??
+                ""
+              }
+              onChange={(event) =>
+                table
+                  .getColumn("nationalId")
+                  ?.setFilterValue(event.target.value)
+              }
+              className="pr-10 h-11"
+            />
+          </div>
+        </div>
+
         {/* Search by family name */}
         <div className="space-y-2 min-w-[200px]">
           <label className="text-sm font-medium text-gray-700">

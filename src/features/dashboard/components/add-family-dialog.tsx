@@ -237,7 +237,7 @@ export default function AddFamilyDialog() {
                                 .map((v: any) => v?.message)
                                 .filter(Boolean)
                                 .join(", ")
-                            : null
+                            : null,
                         )
                         .filter(Boolean)
                         .join(" | ");
@@ -378,14 +378,14 @@ export default function AddFamilyDialog() {
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value}
                         >
                           <SelectTrigger className="w-full bg-white">
                             {field.value === "male"
                               ? t("male")
                               : field.value === "female"
-                              ? t("female")
-                              : t("gender")}
+                                ? t("female")
+                                : t("gender")}
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="male">{t("male")}</SelectItem>
@@ -412,12 +412,12 @@ export default function AddFamilyDialog() {
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value}
                         >
                           <SelectTrigger className="w-full bg-white">
                             {field.value
                               ? maritalStatuses.find(
-                                  (s) => s.id.toString() === field.value
+                                  (s) => s.id.toString() === field.value,
                                 )?.name || t("marital_status")
                               : t("marital_status")}
                           </SelectTrigger>
@@ -451,13 +451,13 @@ export default function AddFamilyDialog() {
                         <FormControl>
                           <Select
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
+                            value={field.value}
                           >
                             <SelectTrigger className="w-full bg-white">
                               {field.value
                                 ? (() => {
                                     const camp = camps.find(
-                                      (c) => c.id.toString() === field.value
+                                      (c) => c.id.toString() === field.value,
                                     );
                                     if (!camp) return t("camp_placeholder");
                                     const name = camp.name;
@@ -537,16 +537,16 @@ export default function AddFamilyDialog() {
                               setHeadOtherMedical("");
                             }
                           }}
-                          defaultValue={field.value || "none"}
+                          value={field.value || "none"}
                         >
                           <SelectTrigger className="w-full bg-white">
                             {field.value === "other"
                               ? t("other")
                               : field.value && field.value !== "none"
-                              ? medicalConditions.find(
-                                  (m) => m.id.toString() === field.value
-                                )?.name || t("medical_condition")
-                              : t("healthy")}
+                                ? medicalConditions.find(
+                                    (m) => m.id.toString() === field.value,
+                                  )?.name || t("medical_condition")
+                                : t("healthy")}
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="none">{t("healthy")}</SelectItem>
@@ -588,16 +588,6 @@ export default function AddFamilyDialog() {
                   <p className="text-sm font-medium">
                     {t("family_members_section")}
                   </p>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={addMember}
-                    className="bg-primary text-white hover:bg-primary/90"
-                  >
-                    <UserPlus className="w-4 h-4 ml-2" />
-                    {t("add_member_btn")}
-                  </Button>
                 </div>
 
                 {/* Member Rows */}
@@ -651,14 +641,14 @@ export default function AddFamilyDialog() {
                               <FormControl>
                                 <Select
                                   onValueChange={field.onChange}
-                                  defaultValue={field.value}
+                                  value={field.value}
                                 >
                                   <SelectTrigger className="w-full">
                                     {field.value === "male"
                                       ? t("male")
                                       : field.value === "female"
-                                      ? t("female")
-                                      : t("gender")}
+                                        ? t("female")
+                                        : t("gender")}
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="male">
@@ -684,12 +674,13 @@ export default function AddFamilyDialog() {
                               <FormControl>
                                 <Select
                                   onValueChange={field.onChange}
-                                  defaultValue={field.value}
+                                  value={field.value}
                                 >
                                   <SelectTrigger className="w-full">
                                     {field.value
                                       ? relationships.find(
-                                          (r) => r.id.toString() === field.value
+                                          (r) =>
+                                            r.id.toString() === field.value,
                                         )?.name || t("relationship")
                                       : t("relationship")}
                                   </SelectTrigger>
@@ -746,16 +737,17 @@ export default function AddFamilyDialog() {
                                       });
                                     }
                                   }}
-                                  defaultValue={field.value || "none"}
+                                  value={field.value || "none"}
                                 >
                                   <SelectTrigger className="w-full">
                                     {field.value === "other"
                                       ? t("other")
                                       : field.value && field.value !== "none"
-                                      ? medicalConditions.find(
-                                          (m) => m.id.toString() === field.value
-                                        )?.name || t("medical_condition")
-                                      : t("healthy")}
+                                        ? medicalConditions.find(
+                                            (m) =>
+                                              m.id.toString() === field.value,
+                                          )?.name || t("medical_condition")
+                                        : t("healthy")}
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="none">
@@ -823,6 +815,19 @@ export default function AddFamilyDialog() {
                     {t("add_member_prompt")}
                   </p>
                 )}
+
+                <div className="flex justify-end">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addMember}
+                    className="bg-primary text-white hover:bg-primary/90 w-fit"
+                  >
+                    <UserPlus className="w-4 h-4 ml-2" />
+                    {t("add_member_btn")}
+                  </Button>
+                </div>
               </div>
 
               {/* LOCATION */}

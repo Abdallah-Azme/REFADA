@@ -102,6 +102,7 @@ export default function RepresentativeFamiliesPage() {
         open={formOpen}
         onOpenChange={setFormOpen}
         family={editingFamily}
+        hideCamp={true}
       />
 
       <FamilyDetailsDialog

@@ -12,7 +12,7 @@ export function useVerifyResetCode() {
     mutationFn: (data: VerifyResetCodeRequest) => verifyResetCodeApi(data),
     onSuccess: (response) => {
       // Store reset token for next step
-      authService.storeResetToken(response.data.reset_token);
+      authService.storeResetToken(response.data.resetToken);
 
       // Show success message
       toast.success(response.message || "تم التحقق من الرمز بنجاح");

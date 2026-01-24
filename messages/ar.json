@@ -355,6 +355,7 @@
   "contributor_history_no_families_found": "لم يتم العثور على أسر",
   "families": {
     "columns": {
+      "id": "الرقم",
       "familyName": "اسم العائلة",
       "nationalId": "رقم الهوية",
       "phone": "رقم الهاتف",
@@ -1470,6 +1471,7 @@
     "delete_title": "حذف العائلة",
     "delete_description": "هل أنت متأكد من حذف العائلة {name}؟ لا يمكن التراجع عن هذا الإجراء.",
     "columns": {
+      "id": "الرقم",
       "familyName": "اسم العائلة",
       "nationalId": "رقم الهوية",
       "phone": "رقم الهاتف",

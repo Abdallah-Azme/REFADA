@@ -48,11 +48,12 @@ interface EditFamilyDialogProps {
   family: Family | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  hideCamp?: boolean;
 }
 
 // Extended member type to track existing members
 interface MemberFormData {
-  id?: number; // If present, it's an existing member
+  memberId?: number; // If present, it's an existing member (database ID)
   name: string;
   nationalId: string;
   originalNationalId?: string; // Track original national_id for existing members
@@ -62,14 +63,19 @@ interface MemberFormData {
   medicalConditionId?: string;
 }
 
+// ... existing interfaces ...
+
 export default function EditFamilyDialog({
   family,
   open,
   onOpenChange,
+  hideCamp = false,
 }: EditFamilyDialogProps) {
+  // ... existing code ...
+
   const t = useTranslations("families");
   const tCommon = useTranslations("common");
-  const [membersToDelete, setMembersToDelete] = useState<number[]>([]);
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [memberToDelete, setMemberToDelete] = useState<{
     index: number;
@@ -95,7 +101,7 @@ export default function EditFamilyDialog({
 
   // Fetch existing members when family changes
   const { data: membersData, isLoading: isLoadingMembers } = useFamilyMembers(
-    open && family ? family.id : null
+    open && family ? family.id : null,
   );
 
   // Load camps for the select
@@ -140,7 +146,7 @@ export default function EditFamilyDialog({
       // Find IDs by matching names
       const foundCamp = camps.find((c) => c.name === family.camp);
       const foundMS = maritalStatuses.find(
-        (m) => m.name === family.maritalStatus
+        (m) => m.name === family.maritalStatus,
       );
 
       // Store the original national_id for the family
@@ -154,17 +160,15 @@ export default function EditFamilyDialog({
         backupPhone: family.backupPhone || "",
         gender: "male", // Default to male for head of family when editing
         totalMembers: family.totalMembers || 1,
-        tentNumber: family.tentNumber || "",
-        location: family.location || "",
-        notes: family.notes || "",
+        tentNumber:
+          family.tentNumber === "undefined" ? "" : family.tentNumber || "",
+        location: family.location === "undefined" ? "" : family.location || "",
+        notes: family.notes === "undefined" ? "" : family.notes || "",
         campId: foundCamp ? foundCamp.id.toString() : "",
         maritalStatusId: foundMS ? foundMS.id.toString() : "",
         medicalConditionId: "none",
         members: [],
       });
-
-      // Clear members to delete when dialog opens
-      setMembersToDelete([]);
     }
   }, [family, open, camps, maritalStatuses, form]);
 
@@ -179,7 +183,7 @@ export default function EditFamilyDialog({
       // Filter out head of family (relationship "أب" or id 1) since they're already in the main form
       const nonHeadMembers = membersData.data.filter((member) => {
         const foundRelationship = relationships.find(
-          (r) => r.name === member.relationship
+          (r) => r.name === member.relationship,
         );
         // Skip if this is the head of family (relationship_id = 1)
         return foundRelationship?.id !== 1;
@@ -188,7 +192,7 @@ export default function EditFamilyDialog({
       const existingMembers = nonHeadMembers.map((member) => {
         // Find relationship ID by matching name
         const foundRelationship = relationships.find(
-          (r) => r.name === member.relationship
+          (r) => r.name === member.relationship,
         );
         // Find medical condition ID by matching name
         const foundMedicalCondition = member.medicalCondition
@@ -196,7 +200,7 @@ export default function EditFamilyDialog({
           : null;
 
         return {
-          id: member.id, // Track existing member ID
+          memberId: member.id, // Track existing member database ID
           name: member.name,
           nationalId: member.nationalId,
           originalNationalId: member.nationalId, // Store original for comparison
@@ -228,12 +232,7 @@ export default function EditFamilyDialog({
         originalNationalId: originalFamilyNationalId,
       });
 
-      // 2. Delete members marked for deletion
-      for (const memberId of membersToDelete) {
-        await deleteFamilyMember({ familyId: family.id, memberId });
-      }
-
-      // 3. Process members (create new, update existing)
+      // 2. Process members (create new, update existing)
       if (values.members && values.members.length > 0) {
         for (const member of values.members as MemberFormData[]) {
           if (member.name && member.nationalId) {
@@ -253,11 +252,11 @@ export default function EditFamilyDialog({
                   : undefined,
             };
 
-            if (member.id) {
+            if (member.memberId) {
               // Update existing member - pass original national_id to avoid unique validation error
               await updateFamilyMember({
                 familyId: family.id,
-                memberId: member.id,
+                memberId: member.memberId,
                 data: memberData,
                 originalNationalId: member.originalNationalId,
               });
@@ -275,7 +274,6 @@ export default function EditFamilyDialog({
       toast.success(t("toast.update_success"));
       onOpenChange(false);
       form.reset();
-      setMembersToDelete([]);
       setHeadOtherMedical("");
       setMemberOtherMedicals({});
     } catch (error: any) {
@@ -298,9 +296,9 @@ export default function EditFamilyDialog({
 
   const handleDeleteMember = (index: number) => {
     const member = fields[index] as any;
-    if (member.id) {
+    if (member.memberId) {
       // Existing member - show confirmation dialog
-      setMemberToDelete({ index, id: member.id });
+      setMemberToDelete({ index, id: member.memberId });
       setDeleteDialogOpen(true);
     } else {
       // New member - just remove from form
@@ -309,11 +307,21 @@ export default function EditFamilyDialog({
     }
   };
 
-  const confirmDeleteMember = () => {
+  const confirmDeleteMember = async () => {
     if (memberToDelete) {
       if (memberToDelete.id) {
-        // Add to delete list (will be deleted on save)
-        setMembersToDelete((prev) => [...prev, memberToDelete.id!]);
+        // Immediately delete via API
+        try {
+          await deleteFamilyMember({
+            familyId: family!.id,
+            memberId: memberToDelete.id,
+          });
+        } catch (error) {
+          toast.error(t("toast.member_delete_error"));
+          setDeleteDialogOpen(false);
+          setMemberToDelete(null);
+          return; // Don't remove from form if API call failed
+        }
       }
       remove(memberToDelete.index);
       form.setValue("totalMembers", fields.length - 1);
@@ -471,8 +479,8 @@ export default function EditFamilyDialog({
                             {field.value === "male"
                               ? t("male")
                               : field.value === "female"
-                              ? t("female")
-                              : t("gender")}
+                                ? t("female")
+                                : t("gender")}
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="male">{t("male")}</SelectItem>
@@ -504,7 +512,7 @@ export default function EditFamilyDialog({
                           <SelectTrigger className="w-full bg-white">
                             {field.value
                               ? maritalStatuses.find(
-                                  (s) => s.id.toString() === field.value
+                                  (s) => s.id.toString() === field.value,
                                 )?.name || t("marital_status")
                               : t("marital_status")}
                           </SelectTrigger>
@@ -526,55 +534,57 @@ export default function EditFamilyDialog({
                 />
 
                 {/* المعسكر */}
-                <FormField
-                  control={form.control}
-                  name="campId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs text-gray-600">
-                        {t("camp")}
-                      </FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <SelectTrigger className="w-full bg-white">
-                            {field.value
-                              ? (() => {
-                                  const camp = camps.find(
-                                    (c) => c.id.toString() === field.value
-                                  );
-                                  if (!camp) return t("camp");
-                                  const name = camp.name;
-                                  return typeof name === "string"
-                                    ? name
-                                    : name?.ar || name?.en || t("camp");
-                                })()
-                              : t("camp")}
-                          </SelectTrigger>
-                          <SelectContent>
-                            {camps.map((camp) => {
-                              const displayName =
-                                typeof camp.name === "string"
-                                  ? camp.name
-                                  : camp.name?.ar || camp.name?.en || "";
-                              return (
-                                <SelectItem
-                                  key={camp.id}
-                                  value={camp.id.toString()}
-                                >
-                                  {displayName}
-                                </SelectItem>
-                              );
-                            })}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {!hideCamp && (
+                  <FormField
+                    control={form.control}
+                    name="campId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs text-gray-600">
+                          {t("camp")}
+                        </FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <SelectTrigger className="w-full bg-white">
+                              {field.value
+                                ? (() => {
+                                    const camp = camps.find(
+                                      (c) => c.id.toString() === field.value,
+                                    );
+                                    if (!camp) return t("camp");
+                                    const name = camp.name;
+                                    return typeof name === "string"
+                                      ? name
+                                      : name?.ar || name?.en || t("camp");
+                                  })()
+                                : t("camp")}
+                            </SelectTrigger>
+                            <SelectContent>
+                              {camps.map((camp) => {
+                                const displayName =
+                                  typeof camp.name === "string"
+                                    ? camp.name
+                                    : camp.name?.ar || camp.name?.en || "";
+                                return (
+                                  <SelectItem
+                                    key={camp.id}
+                                    value={camp.id.toString()}
+                                  >
+                                    {displayName}
+                                  </SelectItem>
+                                );
+                              })}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
                 {/* عدد الأفراد */}
                 <FormField
@@ -596,7 +606,6 @@ export default function EditFamilyDialog({
                             field.onChange(parseInt(e.target.value) || 1)
                           }
                           value={field.value || ""}
-                          disabled
                         />
                       </FormControl>
                       <FormMessage />
@@ -627,10 +636,10 @@ export default function EditFamilyDialog({
                             {field.value === "other"
                               ? t("other")
                               : field.value && field.value !== "none"
-                              ? medicalConditions.find(
-                                  (m) => m.id.toString() === field.value
-                                )?.name || t("medical_condition")
-                              : t("healthy")}
+                                ? medicalConditions.find(
+                                    (m) => m.id.toString() === field.value,
+                                  )?.name || t("medical_condition")
+                                : t("healthy")}
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="none">{t("healthy")}</SelectItem>
@@ -744,16 +753,6 @@ export default function EditFamilyDialog({
                   <p className="text-sm font-medium">
                     {t("family_members_section")}
                   </p>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={addMember}
-                    className="bg-primary text-white hover:bg-primary/90"
-                  >
-                    <UserPlus className="w-4 h-4 ml-2" />
-                    {t("add_member_btn")}
-                  </Button>
                 </div>
 
                 {/* Loading State */}
@@ -770,7 +769,7 @@ export default function EditFamilyDialog({
                 {!isLoadingMembers && fields.length > 0 && (
                   <div className="space-y-3">
                     {fields.map((field, index) => {
-                      const isExisting = !!(field as any).id;
+                      const isExisting = !!(field as any).memberId;
                       return (
                         <div
                           key={field.id}
@@ -827,8 +826,8 @@ export default function EditFamilyDialog({
                                       {field.value === "male"
                                         ? t("male")
                                         : field.value === "female"
-                                        ? t("female")
-                                        : t("gender")}
+                                          ? t("female")
+                                          : t("gender")}
                                     </SelectTrigger>
                                     <SelectContent>
                                       <SelectItem value="male">
@@ -860,7 +859,7 @@ export default function EditFamilyDialog({
                                       {field.value
                                         ? relationships.find(
                                             (r) =>
-                                              r.id.toString() === field.value
+                                              r.id.toString() === field.value,
                                           )?.name || t("relationship")
                                         : t("relationship")}
                                     </SelectTrigger>
@@ -923,11 +922,11 @@ export default function EditFamilyDialog({
                                       {field.value === "other"
                                         ? t("other")
                                         : field.value && field.value !== "none"
-                                        ? medicalConditions.find(
-                                            (m) =>
-                                              m.id.toString() === field.value
-                                          )?.name || t("medical_condition")
-                                        : t("healthy")}
+                                          ? medicalConditions.find(
+                                              (m) =>
+                                                m.id.toString() === field.value,
+                                            )?.name || t("medical_condition")
+                                          : t("healthy")}
                                     </SelectTrigger>
                                     <SelectContent>
                                       <SelectItem value="none">
@@ -992,14 +991,18 @@ export default function EditFamilyDialog({
                     {t("add_member_prompt")}
                   </p>
                 )}
-
-                {membersToDelete.length > 0 && (
-                  <p className="text-sm text-amber-600 text-center">
-                    {t("members_delete_warning", {
-                      count: membersToDelete.length,
-                    })}
-                  </p>
-                )}
+                <div className="flex justify-end">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addMember}
+                    className="bg-primary text-white hover:bg-primary/90"
+                  >
+                    <UserPlus className="w-4 h-4 ml-2" />
+                    {t("add_member_btn")}
+                  </Button>
+                </div>
               </div>
 
               {/* FOOTER BUTTONS */}

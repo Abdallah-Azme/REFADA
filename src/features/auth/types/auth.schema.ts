@@ -48,7 +48,7 @@ export const createRegisterSchema = (t: (key: string) => string) =>
       {
         message: t("validation.admin_position_required"),
         path: ["admin_position"],
-      }
+      },
     )
     .refine(
       (data) => {
@@ -61,7 +61,7 @@ export const createRegisterSchema = (t: (key: string) => string) =>
       {
         message: t("validation.license_required_for_association"),
         path: ["license_number"],
-      }
+      },
     );
 
 export const forgotPasswordSchema = z.object({
@@ -197,7 +197,7 @@ export interface VerifyResetCodeResponse {
   success: boolean;
   message: string;
   data: {
-    reset_token: string;
+    resetToken: string;
   };
 }
 
