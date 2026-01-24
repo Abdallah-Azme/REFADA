@@ -453,7 +453,20 @@
     "other": "Other",
     "choose_camp": "Select Camp",
     "choose_status": "Select Status",
-    "validation_error": "Please check the entered data"
+    "validation_error": "Please check the entered data",
+    "age_groups": {
+      "lateMiddleAge": "Late Middle Age",
+      "youth": "Youth",
+      "adolescents": "Adolescents",
+      "children": "Children",
+      "middleAgeAdults": "Middle Age Adults",
+      "youngAdults": "Young Adults",
+      "veryEarlyChildhood": "Very Early Childhood",
+      "earlyChildhood": "Early Childhood",
+      "toddlers": "Toddlers",
+      "newborns": "Newborns",
+      "seniors": "Seniors"
+    }
   },
   "projects": {
     "add_project": "Add Project",

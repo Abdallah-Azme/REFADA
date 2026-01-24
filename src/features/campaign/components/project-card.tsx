@@ -67,14 +67,14 @@ export function ProjectCard({
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-bold text-gray-900">{title}</h3>
 
-          <Link
-            href={`https://www.google.com/search?q=${encodeURIComponent(
-              title
-            )}`}
+          <p
+            // href={`https://www.google.com/search?q=${encodeURIComponent(
+            //   title,
+            // )}`}
             className="bg-[#D2EBFF] text-blue-500 rounded-md text-xs px-2 py-1"
           >
             {camp}
-          </Link>
+          </p>
         </div>
 
         <p className="text-sm text-gray-600 mb-3 line-clamp-2">{description}</p>
@@ -102,8 +102,8 @@ export function ProjectCard({
                 formattedPercentage < 40
                   ? "bg-red-500"
                   : formattedPercentage < 90
-                  ? "bg-yellow-400"
-                  : "bg-green-500"
+                    ? "bg-yellow-400"
+                    : "bg-green-500",
               )}
               style={{ direction: "ltr" }}
             />

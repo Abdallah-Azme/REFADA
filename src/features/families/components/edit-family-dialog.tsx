@@ -86,10 +86,6 @@ export default function EditFamilyDialog({
     useState<string>("");
   // Track "Other" medical condition selection for head of family
   const [headOtherMedical, setHeadOtherMedical] = useState("");
-  // Track "Other" medical condition selection for each member (by index)
-  const [memberOtherMedicals, setMemberOtherMedicals] = useState<
-    Record<number, string>
-  >({});
 
   const { mutateAsync: updateFamily, isPending } = useUpdateFamily();
   const { mutateAsync: createFamilyMember, isPending: isCreatingMember } =
@@ -212,12 +208,18 @@ export default function EditFamilyDialog({
           medicalConditionId: foundMedicalCondition
             ? foundMedicalCondition.id.toString()
             : "none",
+          medicalConditionText: member.medicalCondition
+            ? foundMedicalCondition
+              ? undefined
+              : member.medicalCondition
+            : undefined,
         };
       });
 
       // Use replace from useFieldArray for proper synchronization
       replace(existingMembers as any);
-      form.setValue("totalMembers", existingMembers.length);
+      replace(existingMembers as any);
+      form.setValue("totalMembers", existingMembers.length + 1);
     }
   }, [membersData, relationships, medicalConditions, open, replace, form]);
 
@@ -245,10 +247,7 @@ export default function EditFamilyDialog({
               medicalConditionId: member.medicalConditionId,
               medicalConditionText:
                 member.medicalConditionId === "other"
-                  ? (member as any).medicalConditionText ||
-                    memberOtherMedicals[
-                      (values.members as any[]).indexOf(member)
-                    ]
+                  ? (member as any).medicalConditionText
                   : undefined,
             };
 
@@ -275,7 +274,6 @@ export default function EditFamilyDialog({
       onOpenChange(false);
       form.reset();
       setHeadOtherMedical("");
-      setMemberOtherMedicals({});
     } catch (error: any) {
       console.error("Error updating family:", error);
       toast.error(t("toast.update_error"));
@@ -291,7 +289,7 @@ export default function EditFamilyDialog({
       relationshipId: "",
       medicalConditionId: "none",
     });
-    form.setValue("totalMembers", fields.length + 1);
+    form.setValue("totalMembers", fields.length + 2);
   };
 
   const handleDeleteMember = (index: number) => {
@@ -303,7 +301,7 @@ export default function EditFamilyDialog({
     } else {
       // New member - just remove from form
       remove(index);
-      form.setValue("totalMembers", fields.length - 1);
+      form.setValue("totalMembers", fields.length);
     }
   };
 
@@ -324,7 +322,7 @@ export default function EditFamilyDialog({
         }
       }
       remove(memberToDelete.index);
-      form.setValue("totalMembers", fields.length - 1);
+      form.setValue("totalMembers", fields.length);
       setDeleteDialogOpen(false);
       setMemberToDelete(null);
     }
@@ -909,11 +907,10 @@ export default function EditFamilyDialog({
                                     onValueChange={(value) => {
                                       field.onChange(value);
                                       if (value !== "other") {
-                                        setMemberOtherMedicals((prev) => {
-                                          const updated = { ...prev };
-                                          delete updated[index];
-                                          return updated;
-                                        });
+                                        form.setValue(
+                                          `members.${index}.medicalConditionText`,
+                                          undefined,
+                                        );
                                       }
                                     }}
                                     value={field.value || "none"}
@@ -954,20 +951,20 @@ export default function EditFamilyDialog({
                           {/* Custom medical condition input for "Other" selection for members */}
                           {form.watch(`members.${index}.medicalConditionId`) ===
                             "other" && (
-                            <FormItem className="sm:col-span-7 mt-2">
-                              <FormControl>
-                                <Input
-                                  placeholder={t("enter_medical_condition")}
-                                  value={memberOtherMedicals[index] || ""}
-                                  onChange={(e) =>
-                                    setMemberOtherMedicals((prev) => ({
-                                      ...prev,
-                                      [index]: e.target.value,
-                                    }))
-                                  }
-                                />
-                              </FormControl>
-                            </FormItem>
+                            <FormField
+                              control={form.control}
+                              name={`members.${index}.medicalConditionText`}
+                              render={({ field }) => (
+                                <FormItem className="sm:col-span-7 mt-2">
+                                  <FormControl>
+                                    <Input
+                                      placeholder={t("enter_medical_condition")}
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
                           )}
 
                           {/* Delete Button */}

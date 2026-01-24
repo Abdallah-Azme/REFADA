@@ -130,10 +130,14 @@ export const createFamilyColumns = (
     accessorKey: "ageGroups",
     header: t("columns.ageGroups"),
     cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const t = useTranslations("families");
       const ageGroups = row.getValue("ageGroups") as string[] | undefined;
       return (
         <div className="max-w-[200px] whitespace-normal">
-          {ageGroups && ageGroups.length > 0 ? ageGroups.join(", ") : ""}
+          {ageGroups && ageGroups.length > 0
+            ? ageGroups.map((g) => t(`age_groups.${g}`)).join(", ")
+            : ""}
         </div>
       );
     },

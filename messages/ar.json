@@ -450,7 +450,20 @@
       "edit": "تعديل",
       "delete": "حذف"
     },
-    "validation_error": "يرجى التحقق من البيانات المدخلة"
+    "validation_error": "يرجى التحقق من البيانات المدخلة",
+    "age_groups": {
+      "lateMiddleAge": "كهولة متأخرة",
+      "youth": "شباب",
+      "adolescents": "مراهقين",
+      "children": "أطفال",
+      "middleAgeAdults": "كهولة",
+      "youngAdults": "شباب بالغين",
+      "veryEarlyChildhood": "طفولة مبكرة جداً",
+      "earlyChildhood": "طفولة مبكرة",
+      "toddlers": "رضع",
+      "newborns": "حديثي الولادة",
+      "seniors": "كبار السن"
+    }
   },
   "projects": {
     "add_project": "إضافة مشروع",
