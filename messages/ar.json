@@ -764,7 +764,8 @@
     "latitude": "خط العرض",
     "longitude": "خط الطول",
     "createdAt": "تم الإنشاء",
-    "updatedAt": "آخر تحديث"
+    "updatedAt": "آخر تحديث",
+    "delegates": "المندوبين"
   },
   "adminCamps": {
     "pageTitle": "إدارة الإيواءات",

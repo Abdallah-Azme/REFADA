@@ -53,8 +53,8 @@ export const campService = {
       capacity: camp.capacity || 0,
       currentOccupancy: camp.currentOccupancy || 0,
       coordinates: {
-        lat: camp.latitude || 0,
-        lng: camp.longitude || 0,
+        lat: parseFloat(String(camp.latitude || 0)),
+        lng: parseFloat(String(camp.longitude || 0)),
       },
       governorate_id: governorateId,
       camp_img: camp.campImg || undefined,

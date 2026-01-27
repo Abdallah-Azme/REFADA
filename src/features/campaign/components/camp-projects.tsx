@@ -19,6 +19,16 @@ import { useGovernorates } from "@/features/dashboard/hooks/use-governorates";
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 
+// Helper function to get camp name as string
+function getCampNameString(
+  name: string | { ar?: string; en?: string },
+): string {
+  if (typeof name === "string") {
+    return name;
+  }
+  return name.ar || name.en || "";
+}
+
 export default function CampProjects({
   camps = [],
   dashboard = false,
@@ -65,7 +75,7 @@ export default function CampProjects({
   const campNames = useMemo(() => {
     return camps.map((camp) => ({
       id: camp.id,
-      name: camp.name,
+      name: getCampNameString(camp.name),
       slug: camp.slug,
     }));
   }, [camps]);
@@ -89,7 +99,7 @@ export default function CampProjects({
     // Filter by camp name (shelterName)
     if (watchedValues.shelterName) {
       filtered = filtered.filter(
-        (camp) => camp.name === watchedValues.shelterName,
+        (camp) => getCampNameString(camp.name) === watchedValues.shelterName,
       );
     }
 
@@ -246,7 +256,7 @@ export default function CampProjects({
             <CampCard
               key={camp.id}
               id={camp.id}
-              title={camp.name}
+              title={getCampNameString(camp.name)}
               location={camp.location || ""}
               families={
                 camp.statistics?.familyCount ||

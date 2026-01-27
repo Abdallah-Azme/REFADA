@@ -14,6 +14,18 @@ type CampsResponse = {
   data: Camp[];
 };
 
+type PaginatedCampsResponse = {
+  success: boolean;
+  message: string;
+  data: Camp[];
+  meta: {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+  };
+};
+
 type CampResponse = {
   success: boolean;
   message: string;
@@ -55,7 +67,21 @@ async function apiRequest<T>(
 
 export const campsApi = {
   getAll: async (): Promise<CampsResponse> => {
-    return apiRequest<CampsResponse>("/camps");
+    return apiRequest<CampsResponse>("/camps?per_page=1000");
+  },
+
+  getPaginated: async (
+    page: number = 1,
+    perPage: number = 10,
+    searchName?: string,
+  ): Promise<PaginatedCampsResponse> => {
+    const params = new URLSearchParams();
+    params.append("page", String(page));
+    params.append("per_page", String(perPage));
+    if (searchName && searchName.trim()) {
+      params.append("name", searchName.trim());
+    }
+    return apiRequest<PaginatedCampsResponse>(`/camps?${params.toString()}`);
   },
 
   create: async (data: CampFormValues): Promise<CampResponse> => {

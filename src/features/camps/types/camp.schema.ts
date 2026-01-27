@@ -26,7 +26,7 @@ export const createCampSchema = (t: any) =>
             val instanceof File ||
             typeof val === "string" ||
             val === undefined,
-          t("validation.camp_img_invalid")
+          t("validation.camp_img_invalid"),
         )
         .optional(),
     })
@@ -54,6 +54,31 @@ export interface Project {
   updatedAt: string;
 }
 
+// Delegate associated with a camp
+export interface CampDelegate {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  backupPhone?: string | null;
+  campName: string;
+  idNumber: string;
+  role: string;
+  adminPositionName?: string | null;
+  adminPosition?: string | null;
+  licenseNumber?: string | null;
+  acceptTerms: boolean;
+  status: string; // "approved" | "rejected" | "pending"
+  profileImageUrl?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  camp?: {
+    id: number;
+    name: string;
+    slug: string;
+  };
+}
+
 export interface CampFamilyMember {
   id: number;
   name: string;
@@ -61,6 +86,9 @@ export interface CampFamilyMember {
   dob: string;
   nationalId: string;
   relationship?: string;
+  medicalConditions?: string[]; // Array of medical condition names from backend
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface CampFamily {
@@ -69,18 +97,20 @@ export interface CampFamily {
   nationalId: string;
   dob: string;
   phone: string;
-  backupPhone?: string;
-  totalMembers: number;
-  membersCount: number;
-  malesCount: number;
-  femalesCount: number;
+  backupPhone?: string | null;
+  totalMembers?: number | null;
+  membersCount?: number | null;
+  malesCount?: number | null;
+  femalesCount?: number | null;
   maritalStatus: string;
-  tentNumber?: string;
-  location?: string;
-  notes?: string;
+  tentNumber?: string | null;
+  location?: string | null;
+  notes?: string | null;
   camp: string;
   quantity?: number | null;
   members?: CampFamilyMember[];
+  medicalConditions?: string[]; // Array of medical conditions for the family
+  ageGroups?: string[]; // Array of age group identifiers from backend
   createdAt: string;
   updatedAt: string;
 }
@@ -95,13 +125,14 @@ export interface Camp {
   familyCount?: number;
   childrenCount?: number;
   elderlyCount?: number;
-  latitude?: number | null;
-  longitude?: number | null;
+  latitude?: number | string | null;
+  longitude?: number | string | null;
   location?: string;
   bankAccount?: string | null;
   campImg?: string;
   projects?: Project[];
   families?: CampFamily[];
+  delegates?: CampDelegate[]; // Array of delegates associated with the camp
   statistics?: {
     familyCount: number;
     memberCount: number;
@@ -112,7 +143,7 @@ export interface Camp {
   status?: "active" | "inactive";
   capacity?: number;
   currentOccupancy?: number;
-  delegate?: string | null;
+  delegate?: string | null; // Legacy single delegate name field
   // Form-specific coordinates (for backward compatibility)
   coordinates?: {
     lat: number;

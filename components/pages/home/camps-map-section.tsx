@@ -14,15 +14,15 @@ import Link from "next/link";
 // Dynamically import Leaflet components to prevent SSR issues with CSS
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
-  { ssr: false }
+  { ssr: false },
 );
 const TileLayer = dynamic(
   () => import("react-leaflet").then((mod) => mod.TileLayer),
-  { ssr: false }
+  { ssr: false },
 );
 const Marker = dynamic(
   () => import("react-leaflet").then((mod) => mod.Marker),
-  { ssr: false }
+  { ssr: false },
 );
 const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
   ssr: false,
@@ -70,7 +70,7 @@ export default function CampsMapSection({
           iconUrl: "/pages/pages/camping.webp",
           iconSize: [24, 24],
           iconAnchor: [16, 40],
-        })
+        }),
       );
     });
   }, []);
@@ -84,14 +84,14 @@ export default function CampsMapSection({
   }, [camps]);
 
   const [selected, setSelected] = useState<Camp | null>(
-    validCamps.length > 0 ? validCamps[0] : null
+    validCamps.length > 0 ? validCamps[0] : null,
   );
 
   return (
     <section
       className={cn(
         "bg-[#E6F0EC] h-full px-6",
-        secondary ? "py-4 rounded-2xl" : "py-16"
+        secondary ? "py-4 rounded-2xl" : "py-16",
       )}
     >
       {/* Title */}
@@ -114,7 +114,7 @@ export default function CampsMapSection({
       <div
         className={cn(
           "max-w-5xl mx-auto relative h-full bg-white rounded-2xl overflow-hidden shadow",
-          secondary ? "" : "h-[400px]"
+          secondary ? "" : "h-[400px]",
         )}
       >
         <MapContainer
@@ -177,14 +177,14 @@ export default function CampsMapSection({
             animate={{ opacity: 1, y: 0 }}
             className={cn(
               "absolute bottom-1 right-1 bg-white rounded-xl shadow-md flex items-center gap-3 p-3  z-[1000] pointer-events-auto",
-              dashboard ? "w-[99%]" : "w-[90%] sm:w-[400px]"
+              dashboard ? "w-[99%]" : "w-[90%] sm:w-[400px]",
             )}
             style={{ zIndex: 1000 }}
           >
             <div className="relative w-16 h-16 rounded-lg overflow-hidden">
               <ImageFallback
                 src={selected.campImg}
-                alt={selected.name}
+                alt={getLocalizedName(selected.name)}
                 fill
                 className="object-cover"
               />

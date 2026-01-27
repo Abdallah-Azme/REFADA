@@ -169,12 +169,20 @@ export async function updateFamilyApi(
   id: number,
   data: FamilyFormValues,
   originalNationalId?: string,
+  headMemberId?: number, // The database ID of the head of family member
 ): Promise<{ success: boolean; message: string }> {
   const formData = new FormData();
   formData.append("family_name", data.familyName);
+
+  // Check if national_id has actually changed (with trim for safety)
+  // Use explicit undefined check - empty string is a valid original value
+  const nationalIdChanged =
+    originalNationalId === undefined ||
+    data.nationalId.trim() !== originalNationalId.trim();
+
   // Only send national_id if it has changed from the original
   // This avoids the backend unique validation issue when national_id hasn't changed
-  if (!originalNationalId || data.nationalId !== originalNationalId) {
+  if (nationalIdChanged) {
     formData.append("national_id", data.nationalId);
   }
   formData.append("dob", data.dob);
@@ -187,8 +195,109 @@ export async function updateFamilyApi(
   formData.append("camp_id", data.campId);
   formData.append("marital_status_id", data.maritalStatusId);
 
+  // Track member index for FormData
+  let memberIndex = 0;
+
+  // Add head of family as members[0] with their medical conditions
+  // The head of family is relationship_id = 1
+  if (headMemberId) {
+    formData.append(`members[${memberIndex}][id]`, headMemberId.toString());
+    // For existing head member, only send national_id if changed
+    if (nationalIdChanged) {
+      formData.append(`members[${memberIndex}][national_id]`, data.nationalId);
+    }
+  } else {
+    // New head member - always send national_id
+    formData.append(`members[${memberIndex}][national_id]`, data.nationalId);
+  }
+  formData.append(`members[${memberIndex}][name]`, data.familyName);
+  formData.append(`members[${memberIndex}][gender]`, data.gender);
+  formData.append(`members[${memberIndex}][dob]`, data.dob);
+  formData.append(`members[${memberIndex}][relationship_id]`, "1"); // Head of family
+
+  // Add head's medical conditions
+  if (data.medicalConditionIds && data.medicalConditionIds.length > 0) {
+    for (const conditionId of data.medicalConditionIds) {
+      if (conditionId !== "other") {
+        formData.append(
+          `members[${memberIndex}][medical_condition_id][]`,
+          conditionId,
+        );
+      }
+    }
+    // Add custom medical condition text if "other" is selected
+    if (
+      data.medicalConditionIds.includes("other") &&
+      data.medicalConditionText
+    ) {
+      formData.append(
+        `members[${memberIndex}][medical_condition][]`,
+        data.medicalConditionText,
+      );
+    }
+  }
+
+  memberIndex++;
+
+  // Add other members
+  if (data.members && data.members.length > 0) {
+    for (const member of data.members) {
+      if (member.name && member.nationalId) {
+        // If member has an ID, it's an existing member
+        if (member.id) {
+          formData.append(`members[${memberIndex}][id]`, member.id.toString());
+        }
+        formData.append(`members[${memberIndex}][name]`, member.name);
+        formData.append(`members[${memberIndex}][gender]`, member.gender);
+        formData.append(`members[${memberIndex}][dob]`, member.dob);
+        // For new members (no ID), always send national_id
+        // For existing members, only send if changed
+        const memberNationalIdChanged =
+          !member.id ||
+          member.originalNationalId === undefined ||
+          member.nationalId.trim() !== member.originalNationalId.trim();
+        if (memberNationalIdChanged) {
+          formData.append(
+            `members[${memberIndex}][national_id]`,
+            member.nationalId,
+          );
+        }
+        formData.append(
+          `members[${memberIndex}][relationship_id]`,
+          member.relationshipId,
+        );
+
+        // Add member's medical conditions
+        if (
+          member.medicalConditionIds &&
+          member.medicalConditionIds.length > 0
+        ) {
+          for (const conditionId of member.medicalConditionIds) {
+            if (conditionId !== "other") {
+              formData.append(
+                `members[${memberIndex}][medical_condition_id][]`,
+                conditionId,
+              );
+            }
+          }
+          // Add custom medical condition text if "other" is selected
+          if (
+            member.medicalConditionIds.includes("other") &&
+            member.medicalConditionText
+          ) {
+            formData.append(
+              `members[${memberIndex}][medical_condition][]`,
+              member.medicalConditionText,
+            );
+          }
+        }
+
+        memberIndex++;
+      }
+    }
+  }
+
   // Uses POST for update per Postman collection ("edit" request)
-  // Note: Members are handled separately via the edit-family-dialog's member update logic
   return apiRequest(`/families/${id}/update`, {
     method: "POST",
     body: formData,
@@ -316,7 +425,8 @@ export interface FamilyMemberResponse {
   dob: string;
   nationalId: string;
   relationship: string;
-  medicalCondition: string | null;
+  medicalCondition: string | null; // Legacy single string
+  medicalConditions?: string[]; // New array format from API
   file: string | null;
   createdAt: string;
   updatedAt: string;
@@ -347,8 +457,11 @@ export async function updateFamilyMemberApi(
   const formData = new FormData();
   formData.append("name", data.name);
   // Only send national_id if it has changed from the original
-  // This avoids the backend unique validation issue when national_id hasn't changed
-  if (!originalNationalId || data.nationalId !== originalNationalId) {
+  // Use explicit undefined check - empty string is a valid original value
+  const nationalIdChanged =
+    originalNationalId === undefined ||
+    data.nationalId.trim() !== originalNationalId.trim();
+  if (nationalIdChanged) {
     formData.append("national_id", data.nationalId);
   }
   formData.append("gender", data.gender);

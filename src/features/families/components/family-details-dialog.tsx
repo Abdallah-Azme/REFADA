@@ -264,7 +264,22 @@ export default function FamilyDetailsDialog({
                             {member.relationship || "-"}
                           </td>
                           <td className="px-4 py-3">
-                            {member.medicalCondition ? (
+                            {member.medicalConditions &&
+                            member.medicalConditions.length > 0 ? (
+                              <div className="flex flex-wrap gap-1">
+                                {member.medicalConditions.map(
+                                  (condition, idx) => (
+                                    <Badge
+                                      key={idx}
+                                      variant="secondary"
+                                      className="bg-orange-50 text-orange-700 border-orange-200"
+                                    >
+                                      {condition}
+                                    </Badge>
+                                  ),
+                                )}
+                              </div>
+                            ) : member.medicalCondition ? (
                               <Badge
                                 variant="secondary"
                                 className="bg-orange-50 text-orange-700 border-orange-200"

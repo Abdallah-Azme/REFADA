@@ -72,7 +72,8 @@ export interface FamilyMember {
   gender: "male" | "female";
   dob: string;
   relationship?: string;
-  medicalCondition?: string;
+  medicalCondition?: string; // Legacy single string (backwards compat)
+  medicalConditions?: string[]; // New array format from API
 }
 
 export interface FamiliesResponse {

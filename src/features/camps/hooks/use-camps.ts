@@ -15,6 +15,18 @@ export function useCamps() {
   });
 }
 
+export function usePaginatedCamps(
+  page: number = 1,
+  perPage: number = 10,
+  searchName?: string,
+) {
+  return useQuery({
+    queryKey: ["camps", "paginated", page, perPage, searchName],
+    queryFn: () => campsApi.getPaginated(page, perPage, searchName),
+    placeholderData: (previousData) => previousData,
+  });
+}
+
 export function useCreateCamp() {
   const queryClient = useQueryClient();
 

@@ -756,7 +756,8 @@
     "latitude": "Latitude",
     "longitude": "Longitude",
     "createdAt": "Created At",
-    "updatedAt": "Last Updated"
+    "updatedAt": "Last Updated",
+    "delegates": "Delegates"
   },
   "adminCamps": {
     "pageTitle": "Shelters Management",

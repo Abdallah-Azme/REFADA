@@ -33,7 +33,17 @@ const translateMonthKey = (monthKey: string, locale: string): string => {
   return monthKey;
 };
 
-export default function Analytics() {
+interface AnalyticsProps {
+  familyCount?: number;
+  projectCount?: number;
+  contributionPercentage?: number;
+}
+
+export default function Analytics({
+  familyCount: propFamilyCount,
+  projectCount: propProjectCount,
+  contributionPercentage: propContributionPercentage,
+}: AnalyticsProps) {
   const t = useTranslations("reportsPage");
   const locale = useLocale();
   const { data: statisticsData } = useUserStatistics();
@@ -51,6 +61,12 @@ export default function Analytics() {
     return parseInt(str?.replace("%", "") || "0") || 0;
   };
 
+  const familyCount = propFamilyCount ?? (lastMonthStats?.familiesCount || 0);
+  const projectCount = propProjectCount ?? (lastMonthStats?.projectsCount || 0);
+  const contributionPercentage =
+    propContributionPercentage ??
+    parsePercentage(lastMonthStats?.contributionsPercentage || "0%");
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 py-4 px-6   bg-white rounded-md  overflow-hidden">
       <LatestActivities />
@@ -61,11 +77,9 @@ export default function Analytics() {
             ? `${t("month_report")} ${translateMonthKey(lastMonthKey, locale)}`
             : undefined
         }
-        familyCount={lastMonthStats?.familiesCount || 0}
-        projectCount={lastMonthStats?.projectsCount || 0}
-        contributionPercentage={parsePercentage(
-          lastMonthStats?.contributionsPercentage || "0%"
-        )}
+        familyCount={familyCount}
+        projectCount={projectCount}
+        contributionPercentage={contributionPercentage}
       />
     </div>
   );

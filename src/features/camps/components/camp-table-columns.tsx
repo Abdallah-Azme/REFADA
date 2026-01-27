@@ -6,16 +6,27 @@ import { Camp } from "../types/camp.schema";
 import { campService } from "../services/camp.service";
 import { CampTableColumn } from "../types/camp-table.types";
 
+// Helper to get name as string from either string or object format
+const getCampName = (
+  name: string | { ar?: string; en?: string } | undefined,
+): string => {
+  if (!name) return "";
+  if (typeof name === "string") return name;
+  return name.ar || name.en || "";
+};
+
 export const createAdminCampColumns = (
   { onEdit, onDelete, onToggleStatus, onView }: CampTableColumn,
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<Camp>[] => [
   {
-    accessorKey: "name",
+    id: "name",
+    accessorFn: (row) => getCampName(row.name),
     header: t("columns.name"),
-    cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("name")}</div>
+    cell: ({ getValue }) => (
+      <div className="font-medium">{getValue() as string}</div>
     ),
+    filterFn: "includesString",
   },
   {
     accessorKey: "location",

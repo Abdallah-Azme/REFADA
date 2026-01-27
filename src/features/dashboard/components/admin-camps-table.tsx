@@ -24,6 +24,7 @@ import React from "react";
 import { createAdminCampColumns, Camp } from "../table-cols/admin-camps-cols";
 import PaginationControls from "./pagination-controls";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "next-intl";
 
 interface AdminCampsTableProps {
   data: Camp[];
@@ -40,7 +41,7 @@ export default function AdminCampsTable({
 }: AdminCampsTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -48,14 +49,18 @@ export default function AdminCampsTable({
     pageIndex: 0,
     pageSize: 10,
   });
+  const t = useTranslations("adminCamps");
 
   const table = useReactTable<Camp>({
     data,
-    columns: createAdminCampColumns({
-      onEdit,
-      onDelete,
-      onToggleStatus,
-    }),
+    columns: createAdminCampColumns(
+      {
+        onEdit,
+        onDelete,
+        onToggleStatus,
+      },
+      t,
+    ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -96,7 +101,7 @@ export default function AdminCampsTable({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -113,7 +118,7 @@ export default function AdminCampsTable({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -123,11 +128,14 @@ export default function AdminCampsTable({
               <TableRow>
                 <TableCell
                   colSpan={
-                    createAdminCampColumns({
-                      onEdit,
-                      onDelete,
-                      onToggleStatus,
-                    }).length
+                    createAdminCampColumns(
+                      {
+                        onEdit,
+                        onDelete,
+                        onToggleStatus,
+                      },
+                      t,
+                    ).length
                   }
                   className="h-24 text-center"
                 >

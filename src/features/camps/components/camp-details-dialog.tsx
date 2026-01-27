@@ -116,7 +116,7 @@ export function CampDetailsDialog({
             )}
 
             {/* Statistics Grid */}
-            <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 pt-4 border-t">
               <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                 <Users className="h-5 w-5 text-blue-600" />
                 <div>
@@ -138,6 +138,26 @@ export function CampDetailsDialog({
               </div>
 
               <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <Baby className="h-5 w-5 text-pink-600" />
+                <div>
+                  <p className="text-sm text-gray-600">{t("childrenCount")}</p>
+                  <p className="text-lg font-bold text-gray-900">
+                    {camp.childrenCount || 0}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <User className="h-5 w-5 text-amber-600" />
+                <div>
+                  <p className="text-sm text-gray-600">{t("elderlyCount")}</p>
+                  <p className="text-lg font-bold text-gray-900">
+                    {camp.elderlyCount || 0}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                 <Users className="h-5 w-5 text-green-600" />
                 <div>
                   <p className="text-sm text-gray-600">{t("projectCount")}</p>
@@ -147,6 +167,48 @@ export function CampDetailsDialog({
                 </div>
               </div>
             </div>
+
+            {/* Delegates Section */}
+            {camp.delegates && camp.delegates.length > 0 && (
+              <div className="pt-4 border-t">
+                <h4 className="font-semibold text-gray-700 mb-3">
+                  {t("delegates")}
+                </h4>
+                <div className="space-y-2">
+                  {camp.delegates.map((delegate) => (
+                    <div
+                      key={delegate.id}
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <User className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {delegate.name}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {delegate.phone}
+                          </p>
+                        </div>
+                      </div>
+                      <Badge
+                        variant={
+                          delegate.status === "approved"
+                            ? "default"
+                            : delegate.status === "pending"
+                              ? "secondary"
+                              : "destructive"
+                        }
+                      >
+                        {delegate.status}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Bank Account */}
             {camp.bankAccount && (

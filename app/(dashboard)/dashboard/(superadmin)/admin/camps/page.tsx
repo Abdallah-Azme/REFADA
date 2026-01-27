@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
@@ -10,6 +10,7 @@ import { Dialog } from "@/components/ui/dialog";
 
 import {
   useCamps,
+  usePaginatedCamps,
   useCreateCamp,
   useUpdateCamp,
   useDeleteCamp,
@@ -32,9 +33,29 @@ export default function AdminCampsPage() {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [selectedCamp, setSelectedCamp] = useState<Camp | null>(null);
   const [detailsSlug, setDetailsSlug] = useState<string | null>(null);
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+
+  // Search state with debounce
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchInput);
+      setPage(1); // Reset to page 1 when search changes
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   // Queries & Mutations
-  const { data: campsData, isLoading: isLoadingCamps } = useCamps();
+  const {
+    data: campsData,
+    isLoading: isLoadingCamps,
+    isFetching,
+  } = usePaginatedCamps(page, perPage, debouncedSearch);
 
   const { data: campDetails, isLoading: isLoadingDetails } =
     useCampDetails(detailsSlug);
@@ -52,7 +73,7 @@ export default function AdminCampsPage() {
             setFormOpen(false);
             setSelectedCamp(null);
           },
-        }
+        },
       );
     } else {
       createMutation.mutate(data, {
@@ -84,7 +105,7 @@ export default function AdminCampsPage() {
       onToggleStatus: (slug: string) => {},
       onView: handleViewDetails,
     },
-    t
+    t,
   );
 
   return (
@@ -109,7 +130,24 @@ export default function AdminCampsPage() {
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (
-            <CampsTable data={campsData?.data || []} customColumns={columns} />
+            <CampsTable
+              data={campsData?.data || []}
+              customColumns={columns}
+              pagination={{
+                page,
+                perPage,
+                total: campsData?.meta?.total || 0,
+                lastPage: campsData?.meta?.last_page || 1,
+                onPageChange: setPage,
+                onPerPageChange: (newPerPage) => {
+                  setPerPage(newPerPage);
+                  setPage(1);
+                },
+              }}
+              searchValue={searchInput}
+              onSearchChange={setSearchInput}
+              isLoading={isFetching}
+            />
           )}
         </CardContent>
       </Card>
@@ -139,7 +177,7 @@ export default function AdminCampsPage() {
           setDetailsOpen(open);
           if (!open) setDetailsSlug(null);
         }}
-        camp={campDetails?.data}
+        camp={campDetails?.data ?? null}
         isLoading={isLoadingDetails}
       />
 
@@ -154,7 +192,7 @@ export default function AdminCampsPage() {
                 { slug: camp.slug, deleteRelated },
                 {
                   onSuccess: () => setDeleteId(null),
-                }
+                },
               );
             }
           }

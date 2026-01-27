@@ -56,14 +56,17 @@ export function useUpdateFamily() {
       id,
       data,
       originalNationalId,
+      headMemberId,
     }: {
       id: number;
       data: FamilyFormValues;
       originalNationalId?: string;
-    }) => updateFamilyApi(id, data, originalNationalId),
+      headMemberId?: number;
+    }) => updateFamilyApi(id, data, originalNationalId, headMemberId),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ["families"] });
       queryClient.invalidateQueries({ queryKey: ["family", id] });
+      queryClient.invalidateQueries({ queryKey: ["family-members", id] });
       toast.success("تم تحديث بيانات العائلة بنجاح");
     },
     onError: (error: any) => {

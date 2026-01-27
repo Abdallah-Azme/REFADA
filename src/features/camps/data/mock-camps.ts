@@ -2,7 +2,7 @@ import { Camp } from "../types/camp.schema";
 
 export const mockCamps: Camp[] = [
   {
-    id: "1",
+    id: 1,
     name: "إيواء أصداء",
     location: "غزة - الشمال",
     description: "إيواء رئيسي يوفر المأوى والخدمات الأساسية",
@@ -12,7 +12,7 @@ export const mockCamps: Camp[] = [
     status: "active",
   },
   {
-    id: "2",
+    id: 2,
     name: "إيواء النور",
     location: "غزة - الجنوب",
     description: "إيواء طوارئ للعائلات النازحة",
