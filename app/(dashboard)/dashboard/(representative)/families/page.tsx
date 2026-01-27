@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import MainHeader from "@/src/shared/components/main-header";
 import {
   FamilyTable,
@@ -9,6 +9,8 @@ import {
   Family,
   useFamilies,
   useDeleteFamily,
+  FamiliesQueryParams,
+  DEFAULT_FAMILIES_QUERY,
 } from "@/features/families";
 import EditFamilyDialog from "@/features/families/components/edit-family-dialog";
 import FamilyDetailsDialog from "@/features/families/components/family-details-dialog";
@@ -18,7 +20,18 @@ import { useTranslations } from "next-intl";
 
 export default function RepresentativeFamiliesPage() {
   const t = useTranslations("families");
-  const { data: response, isLoading, error } = useFamilies();
+
+  // Query params state for server-side filtering/pagination
+  const [queryParams, setQueryParams] = useState<FamiliesQueryParams>(
+    DEFAULT_FAMILIES_QUERY,
+  );
+
+  const {
+    data: response,
+    isLoading,
+    error,
+    isFetching,
+  } = useFamilies(queryParams);
   const deleteMutation = useDeleteFamily();
 
   const [formOpen, setFormOpen] = useState(false);
@@ -31,6 +44,7 @@ export default function RepresentativeFamiliesPage() {
   const [deletingFamily, setDeletingFamily] = useState<Family | null>(null);
 
   const families = response?.data ?? [];
+  const meta = response?.meta;
 
   const handleEdit = (family: Family) => {
     setEditingFamily(family);
@@ -58,6 +72,10 @@ export default function RepresentativeFamiliesPage() {
     }
   };
 
+  const handleQueryChange = (newParams: FamiliesQueryParams) => {
+    setQueryParams(newParams);
+  };
+
   const columns = createFamilyColumns(handleView, handleEdit, handleDelete, t, {
     hideDelete: true,
   });
@@ -79,12 +97,7 @@ export default function RepresentativeFamiliesPage() {
           {t("list_title")}
         </h3>
 
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="mr-3 text-gray-600">{t("loading_data")}</span>
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="flex items-center justify-center py-12">
             <p className="text-red-600">{t("error_loading")}</p>
           </div>
@@ -93,6 +106,10 @@ export default function RepresentativeFamiliesPage() {
             data={families}
             columns={columns}
             showCampFilter={false}
+            queryParams={queryParams}
+            onQueryChange={handleQueryChange}
+            meta={meta}
+            isLoading={isLoading || isFetching}
           />
         )}
       </div>

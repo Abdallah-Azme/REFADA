@@ -192,10 +192,27 @@ export default function EditFamilyDialog({
         const foundRelationship = relationships.find(
           (r) => r.name === member.relationship,
         );
-        // Find medical condition ID by matching name
-        const foundMedicalCondition = member.medicalCondition
-          ? medicalConditions.find((m) => m.name === member.medicalCondition)
-          : null;
+
+        // Handle medical condition mapping
+        let medicalConditionIds: string[] = [];
+        let medicalConditionText: string | undefined = undefined;
+
+        if (member.medicalCondition && member.medicalCondition !== "سليم") {
+          // Try to find the medical condition in the list
+          const foundMedicalCondition = medicalConditions.find(
+            (m) => m.name === member.medicalCondition,
+          );
+
+          if (foundMedicalCondition) {
+            // Found in the list - use its ID
+            medicalConditionIds = [foundMedicalCondition.id.toString()];
+          } else {
+            // Not found in the list - it's a custom condition
+            medicalConditionIds = ["other"];
+            medicalConditionText = member.medicalCondition;
+          }
+        }
+        // If member.medicalCondition is null or "سليم", leave medicalConditionIds as empty array (healthy)
 
         return {
           memberId: member.id, // Track existing member database ID
@@ -207,19 +224,12 @@ export default function EditFamilyDialog({
           relationshipId: foundRelationship
             ? foundRelationship.id.toString()
             : "",
-          medicalConditionIds: foundMedicalCondition
-            ? [foundMedicalCondition.id.toString()]
-            : [],
-          medicalConditionText: member.medicalCondition
-            ? foundMedicalCondition
-              ? undefined
-              : member.medicalCondition
-            : undefined,
+          medicalConditionIds,
+          medicalConditionText,
         };
       });
 
       // Use replace from useFieldArray for proper synchronization
-      replace(existingMembers as any);
       replace(existingMembers as any);
       form.setValue("totalMembers", existingMembers.length + 1);
     }

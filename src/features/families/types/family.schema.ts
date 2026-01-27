@@ -22,18 +22,18 @@ export const familySchema = z.object({
   nationalId: z.string().length(9, "رقم الهوية يجب أن يكون 9 أرقام"),
   dob: z.string().min(1, "تاريخ الميلاد مطلوب"),
   phone: z.string().min(1, "رقم الهاتف مطلوب"),
-  backupPhone: z.string().optional(),
+  backupPhone: z.string().optional().or(z.literal("")), // Allow empty string
   gender: z.enum(["male", "female"], {
     required_error: "النوع مطلوب",
   }), // Gender for the head of family
   totalMembers: z.coerce.number().min(1, "عدد الأفراد مطلوب"),
-  tentNumber: z.string().optional(),
-  location: z.string().optional(),
-  notes: z.string().optional(),
+  tentNumber: z.string().optional().or(z.literal("")),
+  location: z.string().optional().or(z.literal("")),
+  notes: z.string().optional().or(z.literal("")),
   campId: z.string().min(1, "المعسكر مطلوب"),
   maritalStatusId: z.string().min(1, "الحالة الاجتماعية مطلوبة"),
   medicalConditionIds: z.array(z.string()).optional(), // Array of medical condition IDs for head of family - 'other' means custom text
-  medicalConditionText: z.string().optional(), // Custom text when 'other' is selected
+  medicalConditionText: z.string().optional().or(z.literal("")), // Custom text when 'other' is selected
   members: z.array(familyMemberSchema).optional(), // Dynamic members array
 });
 
@@ -80,9 +80,9 @@ export interface FamiliesResponse {
   message: string;
   data: Family[];
   meta?: {
-    currentPage: number;
-    lastPage: number;
-    perPage: number;
+    current_page: number;
+    last_page: number;
+    per_page: number;
     total: number;
   };
 }

@@ -2,7 +2,7 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -89,7 +89,7 @@ export default function ProjectFormDialog({
   const isDelegate = profileData?.data?.role === "delegate";
 
   const isEdit = !!project;
-  const projectFormSchema = createProjectFormSchema(t);
+  const projectFormSchema = useMemo(() => createProjectFormSchema(t), [t]);
 
   const form = useForm<z.infer<typeof projectFormSchema>>({
     resolver: zodResolver(projectFormSchema),
@@ -110,9 +110,11 @@ export default function ProjectFormDialog({
     }
   }, [userCamp, isDelegate, form]);
 
-  // Reset form when project changes or dialog opens
+  // Reset form when dialog opens (not on every dependency change)
+  const prevOpenRef = React.useRef(open);
   useEffect(() => {
-    if (open) {
+    // Only run when dialog actually opens (transitions from false to true)
+    if (open && !prevOpenRef.current) {
       if (project) {
         // Find camp ID by name
         const camp = camps.find((c) => c.name === project.camp);
@@ -139,7 +141,8 @@ export default function ProjectFormDialog({
         setFile(null);
       }
     }
-  }, [open, project, camps, form, isDelegate, userCamp]);
+    prevOpenRef.current = open;
+  }, [open]); // Only depend on open - other values are read but don't trigger resets
 
   const onSubmit = (values: z.infer<typeof projectFormSchema>) => {
     // For delegates, use their assigned camp; for admins, use the selected camp
@@ -178,7 +181,7 @@ export default function ProjectFormDialog({
             setOpen(false);
             setFile(null);
           },
-        }
+        },
       );
     } else {
       createProject.mutate(formData, {
@@ -195,15 +198,17 @@ export default function ProjectFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger ? (
-          trigger
-        ) : (
-          <Button className="bg-[#1F423B] text-white px-6 py-5! rounded-xl flex items-center gap-2">
-            {t("add_project")} <PlusCircle className="w-4 h-4" />
-          </Button>
-        )}
-      </DialogTrigger>
+      {trigger !== null && (
+        <DialogTrigger asChild>
+          {trigger ? (
+            trigger
+          ) : (
+            <Button className="bg-[#1F423B] text-white px-6 py-5! rounded-xl flex items-center gap-2">
+              {t("add_project")} <PlusCircle className="w-4 h-4" />
+            </Button>
+          )}
+        </DialogTrigger>
+      )}
 
       <DialogContent className="rounded-xl max-w-3xl">
         <div className="flex justify-between items-center px-6 py-4 border-b">
@@ -217,7 +222,7 @@ export default function ProjectFormDialog({
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit, (errors) =>
-                console.error("Form validation errors:", errors)
+                console.error("Form validation errors:", errors),
               )}
               className="space-y-6"
             >
@@ -285,7 +290,7 @@ export default function ProjectFormDialog({
                               {field.value
                                 ? (() => {
                                     const selectedCamp = camps.find(
-                                      (c) => c.id.toString() === field.value
+                                      (c) => c.id.toString() === field.value,
                                     );
                                     if (!selectedCamp) return t("select_camp");
                                     return typeof selectedCamp.name === "string"
@@ -350,8 +355,8 @@ export default function ProjectFormDialog({
                           file
                             ? URL.createObjectURL(file)
                             : isEdit && project?.projectImage
-                            ? project.projectImage
-                            : "/image-icon.png"
+                              ? project.projectImage
+                              : "/image-icon.png"
                         }
                         width={24}
                         height={24}

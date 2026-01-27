@@ -7,12 +7,20 @@ import {
   deleteFamilyApi,
 } from "../api/families.api";
 import { FamilyFormValues } from "../types/family.schema";
+import {
+  FamiliesQueryParams,
+  buildFamiliesQueryString,
+  DEFAULT_FAMILIES_QUERY,
+} from "../types/families-query.types";
 import { toast } from "sonner";
 
-export function useFamilies(params?: string) {
+export function useFamilies(
+  params: FamiliesQueryParams = DEFAULT_FAMILIES_QUERY,
+) {
+  const queryString = buildFamiliesQueryString(params);
   return useQuery({
     queryKey: ["families", params],
-    queryFn: () => getFamiliesApi(params),
+    queryFn: () => getFamiliesApi(queryString),
     placeholderData: (previousData) => previousData,
   });
 }

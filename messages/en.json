@@ -1501,6 +1501,12 @@
       "deleting": "Deleting...",
       "success": "Families deleted successfully",
       "error": "Error deleting families"
+    },
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "page": "Page",
+      "per_page": "Per page"
     }
   },
   "projects_page": {

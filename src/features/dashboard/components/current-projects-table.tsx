@@ -56,7 +56,7 @@ export default function CurrentProjectsTable({
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -73,7 +73,7 @@ export default function CurrentProjectsTable({
   // Edit State
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [projectToEdit, setProjectToEdit] = useState<Project | undefined>(
-    undefined
+    undefined,
   );
 
   const rawData = projectsData?.data || [];
@@ -86,7 +86,7 @@ export default function CurrentProjectsTable({
     if (filters?.search) {
       const searchLower = filters.search.toLowerCase();
       filtered = filtered.filter((project) =>
-        project.name.toLowerCase().includes(searchLower)
+        project.name.toLowerCase().includes(searchLower),
       );
     }
 
@@ -98,7 +98,7 @@ export default function CurrentProjectsTable({
     // Filter by status
     if (filters?.status && filters.status !== "all") {
       filtered = filtered.filter(
-        (project) => project.status === filters.status
+        (project) => project.status === filters.status,
       );
     }
 
@@ -180,7 +180,7 @@ export default function CurrentProjectsTable({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -200,7 +200,7 @@ export default function CurrentProjectsTable({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -239,7 +239,7 @@ export default function CurrentProjectsTable({
         onConfirm={confirmDelete}
         title={t("delete_dialog.title")}
         description={t("delete_dialog.description", {
-          name: projectToDelete?.name,
+          name: projectToDelete?.name || "",
         })}
         isPending={deleteProject.isPending}
       />
@@ -252,7 +252,7 @@ export default function CurrentProjectsTable({
           if (!open) setProjectToEdit(undefined);
         }}
         project={projectToEdit}
-        trigger={<></>} // Hidden trigger
+        trigger={null} // Hidden trigger
       />
     </div>
   );

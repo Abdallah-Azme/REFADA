@@ -416,7 +416,7 @@
               "formdata": [
                 {
                   "key": "email",
-                  "value": "takwanassar1@gmail.com",
+                  "value": "admin@example.com",
                   "type": "text",
                   "uuid": "83c11e60-2283-4dcb-91f6-88b509f6f4b4"
                 }
@@ -461,13 +461,13 @@
               "formdata": [
                 {
                   "key": "email",
-                  "value": "takwanassar1@gmail.com",
+                  "value": "admin@example.com",
                   "type": "text",
                   "uuid": "83c11e60-2283-4dcb-91f6-88b509f6f4b4"
                 },
                 {
                   "key": "reset_code",
-                  "value": "182455",
+                  "value": "763080",
                   "type": "text",
                   "uuid": "1b3db75e-1d07-4f1b-9dd2-da61f42a32f7"
                 }
@@ -512,19 +512,19 @@
               "formdata": [
                 {
                   "key": "reset_token",
-                  "value": "UnNFcZywr2zSaG9Yp5CfGrHt6D3THUwpdivgPyqK7FkCxuEsWnRef4FS7f34",
+                  "value": "t1Mv5YqVu34JjwPnocEBVPkfsUO8KlJwBwQT7X6X1NBiC5zDERs3iKVY7WDD",
                   "type": "text",
                   "uuid": "4b411ae5-0775-4177-90ed-4ed325e6b131"
                 },
                 {
                   "key": "password",
-                  "value": "Fcis_it4",
+                  "value": "Admin@123",
                   "type": "text",
                   "uuid": "749c194c-8627-4216-8b4f-a71f8089839e"
                 },
                 {
                   "key": "password_confirmation",
-                  "value": "Fcis_it4",
+                  "value": "Admin@123",
                   "type": "text",
                   "uuid": "762aa169-3474-4216-85b7-ea6eb99d4433"
                 }
@@ -2281,7 +2281,7 @@
               "formdata": []
             },
             "url": {
-              "raw": "{{url}}/families?search=rawda",
+              "raw": "{{url}}/families?per_page=5",
               "host": [
                 "{{url}}"
               ],
@@ -2291,31 +2291,43 @@
               "query": [
                 {
                   "key": "search",
-                  "value": "rawda",
-                  "type": "text"
-                },
-                {
-                  "key": "total_members",
-                  "value": "",
-                  "type": "text",
+                  "value": "Family Updated",
                   "disabled": true
                 },
                 {
                   "key": "marital_status",
-                  "value": "أرمل",
+                  "value": "متزوج",
                   "disabled": true
                 },
                 {
                   "key": "medical_condition",
-                  "value": "ضغط دم مرتفع",
+                  "value": "حساسية",
                   "type": "text",
                   "disabled": true
                 },
                 {
-                  "key": "has_children",
+                  "key": "age_group",
+                  "value": "lateMiddleAge",
+                  "description": "newborns,infants,veryEarlyChildhood,toddlers,earlyChildhood ,children,adolescents,youth,youngAdults,middleAgeAdults,lateMiddleAge,seniors",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "camp_id",
                   "value": "1",
                   "type": "text",
                   "disabled": true
+                },
+                {
+                  "key": "national_id",
+                  "value": "1234567890192",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "per_page",
+                  "value": "5",
+                  "type": "text"
                 }
               ]
             }
@@ -2427,26 +2439,25 @@
                 },
                 {
                   "key": "national_id",
-                  "value": "12334",
+                  "value": "987654321",
                   "type": "text",
                   "uuid": "1b751471-2bca-4a92-ac78-9f7c0c6f80b1"
                 },
                 {
                   "key": "dob",
-                  "value": "",
+                  "value": "29-6-2002",
                   "type": "text",
-                  "uuid": "a7a974d7-bfe2-4bc0-9088-be4ada6fc08d",
-                  "disabled": true
+                  "uuid": "a7a974d7-bfe2-4bc0-9088-be4ada6fc08d"
                 },
                 {
                   "key": "phone",
-                  "value": "1111111111111111",
+                  "value": "1111111111111112",
                   "type": "text",
                   "uuid": "235f5fc3-bace-4472-a1f0-d993458a1768"
                 },
                 {
                   "key": "backup_phone",
-                  "value": "203457869888",
+                  "value": "203457869882",
                   "type": "text",
                   "uuid": "96c4c4a0-aef1-437c-9dfc-63cfccaacccb"
                 },
@@ -2507,7 +2518,7 @@
                 },
                 {
                   "key": "members[0][national_id]",
-                  "value": "123456789045",
+                  "value": "987654321",
                   "type": "text",
                   "uuid": "e361e302-7813-4d98-9287-af1df3188967"
                 },
@@ -2518,7 +2529,7 @@
                   "uuid": "571c0df0-28dc-42e9-964f-51b46bb04679"
                 },
                 {
-                  "key": "members[0][medical_condition_id]",
+                  "key": "members[0][medical_condition_id][]",
                   "value": "1",
                   "type": "text",
                   "uuid": "8e769653-b5f8-4ad6-a4d8-f504f4d88c63"
@@ -2527,50 +2538,73 @@
                   "key": "members[1][name]",
                   "value": "ليلى النجار",
                   "type": "text",
-                  "uuid": "368b475f-0344-4b99-9b8e-eb452da70e77",
-                  "disabled": true
+                  "uuid": "368b475f-0344-4b99-9b8e-eb452da70e77"
                 },
                 {
                   "key": "members[1][gender]",
                   "value": "female",
                   "type": "text",
-                  "uuid": "0ca70662-1e1c-4927-9b03-5e7ae13fd2d6",
-                  "disabled": true
+                  "uuid": "0ca70662-1e1c-4927-9b03-5e7ae13fd2d6"
                 },
                 {
                   "key": "members[1][dob]",
                   "value": "2008-07-15",
                   "type": "text",
-                  "uuid": "884f9f09-230b-4e44-9f3a-6546ef5e118c",
-                  "disabled": true
+                  "uuid": "884f9f09-230b-4e44-9f3a-6546ef5e118c"
                 },
                 {
                   "key": "members[1][national_id]",
-                  "value": "1234567890199",
+                  "value": "987654235",
                   "type": "text",
-                  "uuid": "d76b6031-1d59-40b6-8df2-d1b31a34da36",
-                  "disabled": true
+                  "uuid": "d76b6031-1d59-40b6-8df2-d1b31a34da36"
                 },
                 {
                   "key": "members[1][relationship_id]",
                   "value": "2",
                   "type": "text",
-                  "uuid": "7dda127b-dffa-47e3-8bff-1061119a2de4",
-                  "disabled": true
+                  "uuid": "7dda127b-dffa-47e3-8bff-1061119a2de4"
                 },
                 {
-                  "key": "members[1][medical_condition_id]",
-                  "value": "",
+                  "key": "members[1][medical_condition_id][]",
+                  "value": "4",
                   "type": "text",
-                  "uuid": "c2c5bc7f-fcec-4f5c-983a-6fe16b1cfa53",
-                  "disabled": true
+                  "uuid": "c2c5bc7f-fcec-4f5c-983a-6fe16b1cfa53"
                 },
                 {
-                  "key": "members[1][medical_condition]",
+                  "key": "members[0][medical_condition]",
                   "type": "text",
                   "uuid": "cbda41b2-6f50-4ac4-8398-af6cb810f7da",
-                  "value": "مرهق جدًا",
-                  "disabled": true
+                  "value": "مرهق جدًا"
+                },
+                {
+                  "key": "members[0][medical_condition_id][]",
+                  "value": "2",
+                  "type": "text",
+                  "uuid": "d7d4b3b7-0313-4759-9e2d-47eff34f0c35"
+                },
+                {
+                  "key": "members[0][medical_condition_id][]",
+                  "value": "3",
+                  "type": "text",
+                  "uuid": "f5fa5091-4347-4e42-a78e-e47f5ebf4c3f"
+                },
+                {
+                  "key": "members[1][medical_condition_id][]",
+                  "value": "5",
+                  "type": "text",
+                  "uuid": "9948ebc3-9524-4102-897a-debfad8f98ba"
+                },
+                {
+                  "key": "members[1][medical_condition_id][]",
+                  "value": "6",
+                  "type": "text",
+                  "uuid": "84e0dedf-d9aa-4ce7-ba1e-bae573c0a9f3"
+                },
+                {
+                  "key": "members[1][medical_condition_id][]",
+                  "value": "7",
+                  "type": "text",
+                  "uuid": "14266448-e4a2-4b84-a2a1-bbae04c6ef7d"
                 }
               ]
             },
@@ -2629,7 +2663,7 @@
                 },
                 {
                   "key": "national_id",
-                  "value": "12335",
+                  "value": "123355555",
                   "type": "text",
                   "uuid": "1b751471-2bca-4a92-ac78-9f7c0c6f80b1"
                 },
@@ -2644,13 +2678,15 @@
                   "key": "phone",
                   "value": "1-985-846-0395",
                   "type": "text",
-                  "uuid": "235f5fc3-bace-4472-a1f0-d993458a1768"
+                  "uuid": "235f5fc3-bace-4472-a1f0-d993458a1768",
+                  "disabled": true
                 },
                 {
                   "key": "backup_phone",
                   "value": "2034578698",
                   "type": "text",
-                  "uuid": "96c4c4a0-aef1-437c-9dfc-63cfccaacccb"
+                  "uuid": "96c4c4a0-aef1-437c-9dfc-63cfccaacccb",
+                  "disabled": true
                 },
                 {
                   "key": "total_members",
@@ -2661,7 +2697,7 @@
                 },
                 {
                   "key": "tent_number",
-                  "value": "15",
+                  "value": "",
                   "type": "text",
                   "uuid": "0d2e2e0d-bcee-4e28-ac99-745dda5abe03",
                   "disabled": true
@@ -2696,10 +2732,9 @@
                 },
                 {
                   "key": "members[0][id]",
-                  "value": "51",
+                  "value": "69",
                   "type": "text",
-                  "uuid": "d68b35d9-9fee-4096-b2e1-0038114eaae7",
-                  "disabled": true
+                  "uuid": "d68b35d9-9fee-4096-b2e1-0038114eaae7"
                 },
                 {
                   "key": "members[0][name]",
@@ -2724,10 +2759,9 @@
                 },
                 {
                   "key": "members[0][national_id]",
-                  "value": "123456789045",
+                  "value": "666666666",
                   "type": "text",
-                  "uuid": "0f4bf7a9-8749-4cbb-be83-c9456134fc3c",
-                  "disabled": true
+                  "uuid": "0f4bf7a9-8749-4cbb-be83-c9456134fc3c"
                 },
                 {
                   "key": "members[0][relationship_id]",
@@ -2737,42 +2771,42 @@
                   "disabled": true
                 },
                 {
-                  "key": "members[0][medical_condition]",
-                  "value": "السكري النوع الأول",
+                  "key": "members[0][medical_condition_id][]",
+                  "value": "4",
                   "type": "text",
                   "uuid": "2c0f6195-ead2-4bc1-9e49-bc46674187e8",
                   "disabled": true
                 },
                 {
-                  "key": "members[0][name]",
+                  "key": "members[1][name]",
                   "value": "يوسف النجار",
                   "type": "text",
                   "uuid": "b0158df3-c540-4515-aabd-69d47302f05e",
                   "disabled": true
                 },
                 {
-                  "key": "members[0][gender]",
+                  "key": "members[1][gender]",
                   "value": "male",
                   "type": "text",
                   "uuid": "0fa3f258-b4be-45df-abcd-dda4c042a463",
                   "disabled": true
                 },
                 {
-                  "key": "members[0][dob]",
+                  "key": "members[1][dob]",
                   "value": "2012-05-10",
                   "type": "text",
                   "uuid": "51caf724-6cbd-4502-817c-038351cda100",
                   "disabled": true
                 },
                 {
-                  "key": "members[0][national_id]",
-                  "value": "12345678978999",
+                  "key": "members[1][national_id]",
+                  "value": "12345678978998",
                   "type": "text",
                   "uuid": "002e97a1-1602-457b-bbd8-f5096f82f05f",
                   "disabled": true
                 },
                 {
-                  "key": "members[0][relationship_id]",
+                  "key": "members[1][relationship_id]",
                   "value": "3",
                   "type": "text",
                   "uuid": "b2f3b0d7-c2da-41fb-88fe-314da77624de",
@@ -2833,6 +2867,69 @@
                   "type": "text",
                   "uuid": "15f976f8-c6db-4bdf-8f40-1ba2a5026b36",
                   "disabled": true
+                },
+                {
+                  "key": "members[0][medical_condition_id][]",
+                  "value": "5",
+                  "type": "text",
+                  "uuid": "ea79fbaf-f979-4b13-a617-b2eb4809d0a9",
+                  "disabled": true
+                },
+                {
+                  "key": "members[0][medical_condition_id][]",
+                  "value": "6",
+                  "type": "text",
+                  "uuid": "57e2eb93-a850-4cff-a4df-bcb31a1e7993",
+                  "disabled": true
+                },
+                {
+                  "key": "members[0][medical_condition_id][]",
+                  "value": "7",
+                  "type": "text",
+                  "uuid": "1f65f415-f62b-4e82-ae50-f97930601c24",
+                  "disabled": true
+                },
+                {
+                  "key": "members[0][medical_condition][]",
+                  "value": "اضطراب القلق",
+                  "type": "text",
+                  "uuid": "6cde0ae2-3b69-4e67-a89a-67b75821c306",
+                  "disabled": true
+                },
+                {
+                  "key": "members[0][medical_condition][]",
+                  "value": "الاكتئاب",
+                  "type": "text",
+                  "uuid": "eebcea4a-4a00-4c37-9bd6-790ee2530524",
+                  "disabled": true
+                },
+                {
+                  "key": "members[1][medical_condition][]",
+                  "value": "حساسية",
+                  "type": "text",
+                  "uuid": "5d093d8d-e816-4ddf-94b0-dbac46b26af1",
+                  "disabled": true
+                },
+                {
+                  "key": "members[1][medical_condition][]",
+                  "value": "حساسية الجلد",
+                  "type": "text",
+                  "uuid": "fedeb6d7-1c3b-4a25-a7a3-24b7e469baf9",
+                  "disabled": true
+                },
+                {
+                  "key": "members[1][medical_condition_id][]",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "2492b5e7-e213-436e-bca6-a6f281ca125e",
+                  "disabled": true
+                },
+                {
+                  "key": "members[1][medical_condition_id][]",
+                  "value": "2",
+                  "type": "text",
+                  "uuid": "d508558e-6f94-4ed8-a3ec-e2e87dbc0d17",
+                  "disabled": true
                 }
               ]
             },
@@ -2849,7 +2946,7 @@
               "variable": [
                 {
                   "key": "family",
-                  "value": "14"
+                  "value": "23"
                 }
               ]
             }
@@ -2889,8 +2986,7 @@
                   "key": "delete_reason",
                   "value": "delete_reason",
                   "type": "text",
-                  "uuid": "37c3f2c1-0b79-45bf-9570-74916e984948",
-                  "disabled": true
+                  "uuid": "37c3f2c1-0b79-45bf-9570-74916e984948"
                 }
               ]
             },
@@ -2907,7 +3003,7 @@
               "variable": [
                 {
                   "key": "family",
-                  "value": "631"
+                  "value": "19"
                 }
               ]
             }
@@ -2952,7 +3048,7 @@
               "variable": [
                 {
                   "key": "family",
-                  "value": "5"
+                  "value": "1379"
                 }
               ]
             }
@@ -3202,6 +3298,57 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "show member",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "ar",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/families/:family/members/:member",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "families",
+                ":family",
+                "members",
+                ":member"
+              ],
+              "variable": [
+                {
+                  "key": "family",
+                  "value": "2047"
+                },
+                {
+                  "key": "member",
+                  "value": "7931"
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -3435,47 +3582,6 @@
                 "3",
                 "members",
                 "7"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "show",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "82|zx4VPBnVOAEfw5a0SAgguurFtVnMoAPkEu6fUqJx0ea544d0",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Accept-Language",
-                "value": "ar",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{url}}/families/16/members/4",
-              "host": [
-                "{{url}}"
-              ],
-              "path": [
-                "families",
-                "16",
-                "members",
-                "4"
               ]
             }
           },
@@ -7029,7 +7135,7 @@
               "formdata": [
                 {
                   "key": "name",
-                  "value": "متزوج",
+                  "value": "sss",
                   "type": "text",
                   "uuid": "866a622e-883d-4da8-b87e-edf15fe22a48"
                 }
@@ -7707,7 +7813,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "505|BW7YNKqMYkx5doZOEWalGdwCAM5fr313ncl6aJen8d8e6736",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]

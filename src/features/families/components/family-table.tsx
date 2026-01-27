@@ -3,16 +3,12 @@
 import * as React from "react";
 import {
   ColumnDef,
-  ColumnFiltersState,
   SortingState,
   VisibilityState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  PaginationState,
 } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import { Input } from "@/src/shared/ui/input";
@@ -24,9 +20,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/shared/ui/table";
-import PaginationControls from "@/features/dashboard/components/pagination-controls";
-import { Search, Trash2 } from "lucide-react";
+import {
+  Search,
+  Trash2,
+  Loader2,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Family } from "../types/family.schema";
+import { FamiliesQueryParams } from "../types/families-query.types";
 import {
   Select,
   SelectContent,
@@ -35,14 +37,27 @@ import {
   SelectValue,
 } from "@/src/shared/ui/select";
 import { useMedicalConditions } from "@/features/medical-condition/hooks/use-medical-condition";
+import { useCamps } from "@/features/camps";
 import { Button } from "@/src/shared/ui/button";
 import { BulkDeleteDialog } from "./bulk-delete-dialog";
+
+interface PaginationMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
 
 interface FamilyTableProps {
   data: Family[];
   columns: ColumnDef<Family>[];
   onSelectionChange?: (selectedRows: Family[]) => void;
   showCampFilter?: boolean;
+  // Server-side pagination props
+  queryParams: FamiliesQueryParams;
+  onQueryChange: (params: FamiliesQueryParams) => void;
+  meta?: PaginationMeta;
+  isLoading?: boolean;
 }
 
 export function FamilyTable({
@@ -50,42 +65,73 @@ export function FamilyTable({
   columns,
   onSelectionChange,
   showCampFilter = true,
+  queryParams,
+  onQueryChange,
+  meta,
+  isLoading = false,
 }: FamilyTableProps) {
   const t = useTranslations("families_page");
   const tCommon = useTranslations("common");
-  // console.log("data", data, { columns });
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  // Pagination state
-  const [pagination, setPagination] = React.useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+  // Local state for debounced search inputs
+  const [searchInput, setSearchInput] = React.useState(
+    queryParams.search || "",
+  );
+  const [nationalIdInput, setNationalIdInput] = React.useState(
+    queryParams.national_id || "",
+  );
+
+  // Debounce search inputs
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchInput !== (queryParams.search || "")) {
+        onQueryChange({
+          ...queryParams,
+          search: searchInput || undefined,
+          page: 1,
+        });
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      if (nationalIdInput !== (queryParams.national_id || "")) {
+        onQueryChange({
+          ...queryParams,
+          national_id: nationalIdInput || undefined,
+          page: 1,
+        });
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [nationalIdInput]);
 
   const table = useReactTable({
     data,
     columns,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    onPaginationChange: setPagination,
+    manualPagination: true, // Server-side pagination
+    manualFiltering: true, // Server-side filtering
+    pageCount: meta?.last_page ?? -1,
     state: {
       sorting,
-      columnFilters,
       columnVisibility,
       rowSelection,
-      pagination,
+      pagination: {
+        pageIndex: (meta?.current_page ?? 1) - 1,
+        pageSize: meta?.per_page ?? 10,
+      },
     },
   });
 
@@ -110,18 +156,12 @@ export function FamilyTable({
   }, [table, rowSelection]);
 
   const handleBulkDeleteSuccess = () => {
-    // Clear row selection after successful delete
     setRowSelection({});
   };
 
-  // Derive unique camps for the filter
-  const uniqueCamps = React.useMemo(() => {
-    // Filter out undefined, null or empty strings if necessary
-    const camps = data
-      .map((family) => family.camp)
-      .filter((camp): camp is string => !!camp && camp !== "undefined");
-    return Array.from(new Set(camps));
-  }, [data]);
+  // Fetch camps for the filter
+  const { data: campsData } = useCamps();
+  const camps = campsData?.data || [];
 
   // Fetch medical conditions from API
   const { data: medicalConditionsData } = useMedicalConditions();
@@ -130,7 +170,7 @@ export function FamilyTable({
   // Use translations for age groups
   const tAge = useTranslations("contributions.age_groups");
 
-  // Static age group options (same as contribute-dialog)
+  // Static age group options
   const ageGroupOptions = React.useMemo(
     () => [
       { id: "newborns", name: tAge("newborns") },
@@ -149,7 +189,32 @@ export function FamilyTable({
     [tAge],
   );
 
-  // Check for column existence safely to avoid console errors
+  // Pagination handlers
+  const handlePageChange = (newPage: number) => {
+    onQueryChange({ ...queryParams, page: newPage });
+  };
+
+  const handlePerPageChange = (newPerPage: number) => {
+    onQueryChange({ ...queryParams, per_page: newPerPage, page: 1 });
+  };
+
+  // Filter handlers
+  const handleCampChange = (value: string) => {
+    const campId = value === "all" ? undefined : value;
+    onQueryChange({ ...queryParams, camp_id: campId, page: 1 });
+  };
+
+  const handleMedicalConditionChange = (value: string) => {
+    const condition = value === "all" ? undefined : value;
+    onQueryChange({ ...queryParams, medical_condition: condition, page: 1 });
+  };
+
+  const handleAgeGroupChange = (value: string) => {
+    const ageGroup = value === "all" ? undefined : value;
+    onQueryChange({ ...queryParams, age_group: ageGroup, page: 1 });
+  };
+
+  // Check for column existence safely
   const hasCampColumn = table.getAllColumns().some((col) => col.id === "camp");
   const hasMedicalConditionsColumn = table
     .getAllColumns()
@@ -170,15 +235,8 @@ export function FamilyTable({
             <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder={t("columns.nationalId")}
-              value={
-                (table.getColumn("nationalId")?.getFilterValue() as string) ??
-                ""
-              }
-              onChange={(event) =>
-                table
-                  .getColumn("nationalId")
-                  ?.setFilterValue(event.target.value)
-              }
+              value={nationalIdInput}
+              onChange={(e) => setNationalIdInput(e.target.value)}
               className="pr-10 h-11 w-full"
             />
           </div>
@@ -193,15 +251,8 @@ export function FamilyTable({
             <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder={t("columns.familyName") + "..."}
-              value={
-                (table.getColumn("familyName")?.getFilterValue() as string) ??
-                ""
-              }
-              onChange={(event) =>
-                table
-                  .getColumn("familyName")
-                  ?.setFilterValue(event.target.value)
-              }
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
               className="pr-10 h-11 w-full"
             />
           </div>
@@ -216,25 +267,25 @@ export function FamilyTable({
                 {t("columns.camp")}
               </label>
               <Select
-                value={
-                  (table.getColumn("camp")?.getFilterValue() as string) || "all"
-                }
-                onValueChange={(value) =>
-                  table
-                    .getColumn("camp")
-                    ?.setFilterValue(value === "all" ? "" : value)
-                }
+                value={queryParams.camp_id?.toString() || "all"}
+                onValueChange={handleCampChange}
               >
                 <SelectTrigger className="h-11 w-full">
                   <SelectValue placeholder={t("columns.camp")} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">{tCommon("all")}</SelectItem>
-                  {uniqueCamps.map((camp) => (
-                    <SelectItem key={camp} value={camp}>
-                      {camp}
-                    </SelectItem>
-                  ))}
+                  {camps.map((camp) => {
+                    const displayName =
+                      typeof camp.name === "string"
+                        ? camp.name
+                        : camp.name?.ar || camp.name?.en || "";
+                    return (
+                      <SelectItem key={camp.id} value={camp.id.toString()}>
+                        {displayName}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </div>
@@ -247,16 +298,8 @@ export function FamilyTable({
                 {t("filters.medicalConditions")}
               </label>
               <Select
-                value={
-                  (table
-                    .getColumn("medicalConditions")
-                    ?.getFilterValue() as string) || "all"
-                }
-                onValueChange={(value) =>
-                  table
-                    .getColumn("medicalConditions")
-                    ?.setFilterValue(value === "all" ? "" : value)
-                }
+                value={queryParams.medical_condition || "all"}
+                onValueChange={handleMedicalConditionChange}
               >
                 <SelectTrigger className="h-11 w-full">
                   <SelectValue placeholder={t("filters.medicalConditions")} />
@@ -280,15 +323,8 @@ export function FamilyTable({
                 {t("filters.ageGroups")}
               </label>
               <Select
-                value={
-                  (table.getColumn("ageGroups")?.getFilterValue() as string) ||
-                  "all"
-                }
-                onValueChange={(value) =>
-                  table
-                    .getColumn("ageGroups")
-                    ?.setFilterValue(value === "all" ? "" : value)
-                }
+                value={queryParams.age_group || "all"}
+                onValueChange={handleAgeGroupChange}
               >
                 <SelectTrigger className="h-11 w-full">
                   <SelectValue placeholder={t("filters.ageGroups")} />
@@ -321,7 +357,13 @@ export function FamilyTable({
           )}
         </div>
       </div>
-      <div className="rounded-md border bg-white">
+
+      <div className="rounded-md border bg-white relative">
+        {isLoading && (
+          <div className="absolute inset-0 bg-white/70 flex items-center justify-center z-10">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        )}
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -372,10 +414,66 @@ export function FamilyTable({
         </Table>
       </div>
 
-      {/* Pagination Controls */}
-      <div className="flex justify-center mt-4">
-        <PaginationControls table={table} />
-      </div>
+      {/* Server-Side Pagination Controls */}
+      {meta && (
+        <div className="flex items-center justify-between mt-4 px-2">
+          <div className="text-sm text-gray-600">
+            {t("pagination.showing")}{" "}
+            {(meta.current_page - 1) * meta.per_page + 1} -{" "}
+            {Math.min(meta.current_page * meta.per_page, meta.total)}{" "}
+            {t("pagination.of")} {meta.total}
+          </div>
+
+          <div className="flex items-center gap-4">
+            {/* Per page selector */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">
+                {t("pagination.per_page")}:
+              </span>
+              <Select
+                value={meta.per_page.toString()}
+                onValueChange={(value) => handlePerPageChange(Number(value))}
+              >
+                <SelectTrigger className="w-[80px] h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="25">25</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Page navigation */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(meta.current_page - 1)}
+                disabled={meta.current_page <= 1 || isLoading}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+
+              <span className="text-sm text-gray-600">
+                {t("pagination.page")} {meta.current_page} {t("pagination.of")}{" "}
+                {meta.last_page}
+              </span>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(meta.current_page + 1)}
+                disabled={meta.current_page >= meta.last_page || isLoading}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Bulk Delete Dialog */}
       <BulkDeleteDialog

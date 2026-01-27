@@ -1,6 +1,7 @@
 // Types
 export type { Family, FamilyFormValues } from "./types/family.schema";
 export { familySchema } from "./types/family.schema";
+export * from "./types/families-query.types";
 
 // Services
 export { familyService } from "./services/family.service";

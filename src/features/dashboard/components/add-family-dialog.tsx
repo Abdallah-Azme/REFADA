@@ -83,23 +83,28 @@ export default function AddFamilyDialog() {
 
   const form = useForm<z.infer<typeof familySchema>>({
     resolver: zodResolver(familySchema),
+    mode: "onChange", // Enable real-time validation as user types
+    shouldUnregister: false, // Prevent field state loss on unmount
     defaultValues: {
       familyName: "",
       nationalId: "",
-      dob: undefined,
+      dob: "", // Use empty string instead of undefined for string fields
       phone: "",
-      backupPhone: undefined,
+      backupPhone: "",
       gender: "male", // Default to male for head of family
       totalMembers: 1,
-      tentNumber: undefined,
-      location: undefined,
-      notes: undefined,
-      campId: undefined,
-      maritalStatusId: undefined,
+      tentNumber: "",
+      location: "",
+      notes: "",
+      campId: "",
+      maritalStatusId: "",
       medicalConditionIds: [],
       members: [],
     },
   });
+
+  // Destructure formState at top level for proper subscription to updates
+  const { errors, isValid, isSubmitting } = form.formState;
 
   // Auto-set campId for representatives when profile loads
   useEffect(() => {
@@ -184,19 +189,17 @@ export default function AddFamilyDialog() {
       form.reset({
         familyName: "",
         nationalId: "",
-        dob: undefined,
+        dob: "",
         phone: "",
-        backupPhone: undefined,
+        backupPhone: "",
         gender: "male",
         totalMembers: 1,
-        tentNumber: undefined,
-        location: undefined,
-        notes: undefined,
+        tentNumber: "",
+        location: "",
+        notes: "",
         campId:
-          userRole === "delegate" && userCamp?.id
-            ? userCamp.id.toString()
-            : undefined,
-        maritalStatusId: undefined,
+          userRole === "delegate" && userCamp?.id ? userCamp.id.toString() : "",
+        maritalStatusId: "",
         medicalConditionIds: [],
         members: [],
       });
@@ -232,19 +235,17 @@ export default function AddFamilyDialog() {
       form.reset({
         familyName: "",
         nationalId: "",
-        dob: undefined,
+        dob: "",
         phone: "",
-        backupPhone: undefined,
+        backupPhone: "",
         gender: "male",
         totalMembers: 1,
-        tentNumber: undefined,
-        location: undefined,
-        notes: undefined,
+        tentNumber: "",
+        location: "",
+        notes: "",
         campId:
-          userRole === "delegate" && userCamp?.id
-            ? userCamp.id.toString()
-            : undefined,
-        maritalStatusId: undefined,
+          userRole === "delegate" && userCamp?.id ? userCamp.id.toString() : "",
+        maritalStatusId: "",
         medicalConditionIds: [],
         members: [],
       });
