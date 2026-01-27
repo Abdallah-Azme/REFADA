@@ -59,7 +59,7 @@ export function DatePicker({
           className={cn(
             "w-full justify-start text-right font-normal",
             !value && "text-muted-foreground",
-            className
+            className,
           )}
         >
           <CalendarIcon className="ml-2 h-4 w-4" />
@@ -72,7 +72,7 @@ export function DatePicker({
           selected={dateValue}
           onSelect={handleSelect}
           captionLayout="dropdown"
-          fromYear={1940}
+          fromYear={1900}
           toYear={new Date().getFullYear()}
           initialFocus
         />
