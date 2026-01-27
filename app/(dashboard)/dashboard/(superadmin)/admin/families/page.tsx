@@ -28,6 +28,7 @@ import { useTranslations } from "next-intl";
 export default function AdminFamiliesPage() {
   const t = useTranslations("families");
   const { data: response, isLoading, error } = useFamilies();
+
   const deleteMutation = useDeleteFamily();
 
   // State
@@ -116,8 +117,6 @@ export default function AdminFamiliesPage() {
       setIsExporting(false);
     }
   };
-
-  console.log({ families });
 
   const columns = createFamilyColumns(handleView, handleEdit, handleDelete, t);
 

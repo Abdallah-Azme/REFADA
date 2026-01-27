@@ -37,6 +37,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
+import { MultiSelectMedical } from "@/components/ui/multi-select-medical";
 import { familySchema } from "@/features/families/types/family.schema";
 import { useCreateFamily } from "@/features/families/hooks/use-create-family";
 import { useCamps } from "@/features/camps";
@@ -95,7 +96,7 @@ export default function AddFamilyDialog() {
       notes: undefined,
       campId: undefined,
       maritalStatusId: undefined,
-      medicalConditionId: "none",
+      medicalConditionIds: [],
       members: [],
     },
   });
@@ -148,7 +149,7 @@ export default function AddFamilyDialog() {
             gender: "male" as const,
             dob: "",
             relationshipId: "",
-            medicalConditionId: "none",
+            medicalConditionIds: [],
           }));
         newMembers.forEach((member) => append(member));
       } else if (targetCount < currentCount) {
@@ -165,21 +166,44 @@ export default function AddFamilyDialog() {
       // Inject custom medical condition text if "other" is selected
       const payload = {
         ...values,
-        medicalConditionText:
-          values.medicalConditionId === "other" ? headOtherMedical : undefined,
+        medicalConditionText: values.medicalConditionIds?.includes("other")
+          ? headOtherMedical
+          : undefined,
         members: values.members?.map((member, index) => ({
           ...member,
-          medicalConditionText:
-            member.medicalConditionId === "other"
-              ? memberOtherMedicals[index]
-              : undefined,
+          medicalConditionText: member.medicalConditionIds?.includes("other")
+            ? memberOtherMedicals[index]
+            : undefined,
         })),
       };
 
       await createFamily(payload);
 
+      // Reset all form state properly
       setOpen(false);
-      form.reset();
+      form.reset({
+        familyName: "",
+        nationalId: "",
+        dob: undefined,
+        phone: "",
+        backupPhone: undefined,
+        gender: "male",
+        totalMembers: 1,
+        tentNumber: undefined,
+        location: undefined,
+        notes: undefined,
+        campId:
+          userRole === "delegate" && userCamp?.id
+            ? userCamp.id.toString()
+            : undefined,
+        maritalStatusId: undefined,
+        medicalConditionIds: [],
+        members: [],
+      });
+      // Clear the member field array
+      replace([]);
+      // Reset the ref to allow proper member generation on next open
+      prevTotalMembersRef.current = 1;
       setHeadOtherMedical("");
       setMemberOtherMedicals({});
     } catch (error: any) {
@@ -194,14 +218,45 @@ export default function AddFamilyDialog() {
       gender: "male",
       dob: "",
       relationshipId: "",
-      medicalConditionId: "none",
+      medicalConditionIds: [],
     });
     // Update totalMembers to match: current members + new member + head of family
     form.setValue("totalMembers", fields.length + 2);
   };
 
+  // Handle dialog close - reset form when closing
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (!isOpen) {
+      // Reset form when dialog closes
+      form.reset({
+        familyName: "",
+        nationalId: "",
+        dob: undefined,
+        phone: "",
+        backupPhone: undefined,
+        gender: "male",
+        totalMembers: 1,
+        tentNumber: undefined,
+        location: undefined,
+        notes: undefined,
+        campId:
+          userRole === "delegate" && userCamp?.id
+            ? userCamp.id.toString()
+            : undefined,
+        maritalStatusId: undefined,
+        medicalConditionIds: [],
+        members: [],
+      });
+      replace([]);
+      prevTotalMembersRef.current = 1;
+      setHeadOtherMedical("");
+      setMemberOtherMedicals({});
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       {/* TRIGGER BUTTON */}
       <DialogTrigger asChild>
         <Button className="bg-[#1F423B] text-white px-6 py-2 rounded-xl flex items-center gap-2 text-sm font-medium h-11">
@@ -523,63 +578,34 @@ export default function AddFamilyDialog() {
                 {/* الحالة الصحية للرئيس العائلة */}
                 <FormField
                   control={form.control}
-                  name="medicalConditionId"
+                  name="medicalConditionIds"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-xs text-gray-600">
                         {t("medical_condition")}
                       </FormLabel>
                       <FormControl>
-                        <Select
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                            if (value !== "other") {
+                        <MultiSelectMedical
+                          conditions={medicalConditions}
+                          selectedIds={field.value || []}
+                          onSelectionChange={(ids) => {
+                            field.onChange(ids);
+                            if (!ids.includes("other")) {
                               setHeadOtherMedical("");
                             }
                           }}
-                          value={field.value || "none"}
-                        >
-                          <SelectTrigger className="w-full bg-white">
-                            {field.value === "other"
-                              ? t("other")
-                              : field.value && field.value !== "none"
-                                ? medicalConditions.find(
-                                    (m) => m.id.toString() === field.value,
-                                  )?.name || t("medical_condition")
-                                : t("healthy")}
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">{t("healthy")}</SelectItem>
-                            {medicalConditions.map((condition) => (
-                              <SelectItem
-                                key={condition.id}
-                                value={condition.id.toString()}
-                              >
-                                {condition.name}
-                              </SelectItem>
-                            ))}
-                            <SelectItem value="other">{t("other")}</SelectItem>
-                          </SelectContent>
-                        </Select>
+                          otherText={headOtherMedical}
+                          onOtherTextChange={setHeadOtherMedical}
+                          placeholder={t("medical_condition")}
+                          healthyLabel={t("healthy")}
+                          otherLabel={t("other")}
+                          otherPlaceholder={t("enter_medical_condition")}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
-                {/* Custom medical condition input for "Other" selection */}
-                {form.watch("medicalConditionId") === "other" && (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        className="bg-white"
-                        placeholder={t("enter_medical_condition")}
-                        value={headOtherMedical}
-                        onChange={(e) => setHeadOtherMedical(e.target.value)}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
               </div>
 
               {/* FAMILY MEMBERS SECTION */}
@@ -722,14 +748,16 @@ export default function AddFamilyDialog() {
                         {/* الحالة الصحية */}
                         <FormField
                           control={form.control}
-                          name={`members.${index}.medicalConditionId`}
+                          name={`members.${index}.medicalConditionIds`}
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
-                                <Select
-                                  onValueChange={(value) => {
-                                    field.onChange(value);
-                                    if (value !== "other") {
+                                <MultiSelectMedical
+                                  conditions={medicalConditions}
+                                  selectedIds={field.value || []}
+                                  onSelectionChange={(ids) => {
+                                    field.onChange(ids);
+                                    if (!ids.includes("other")) {
                                       setMemberOtherMedicals((prev) => {
                                         const updated = { ...prev };
                                         delete updated[index];
@@ -737,59 +765,25 @@ export default function AddFamilyDialog() {
                                       });
                                     }
                                   }}
-                                  value={field.value || "none"}
-                                >
-                                  <SelectTrigger className="w-full">
-                                    {field.value === "other"
-                                      ? t("other")
-                                      : field.value && field.value !== "none"
-                                        ? medicalConditions.find(
-                                            (m) =>
-                                              m.id.toString() === field.value,
-                                          )?.name || t("medical_condition")
-                                        : t("healthy")}
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="none">
-                                      {t("healthy")}
-                                    </SelectItem>
-                                    {medicalConditions.map((condition) => (
-                                      <SelectItem
-                                        key={condition.id}
-                                        value={condition.id.toString()}
-                                      >
-                                        {condition.name}
-                                      </SelectItem>
-                                    ))}
-                                    <SelectItem value="other">
-                                      {t("other")}
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
+                                  otherText={memberOtherMedicals[index] || ""}
+                                  onOtherTextChange={(text) =>
+                                    setMemberOtherMedicals((prev) => ({
+                                      ...prev,
+                                      [index]: text,
+                                    }))
+                                  }
+                                  placeholder={t("medical_condition")}
+                                  healthyLabel={t("healthy")}
+                                  otherLabel={t("other")}
+                                  otherPlaceholder={t(
+                                    "enter_medical_condition",
+                                  )}
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
-
-                        {/* Custom medical condition input for "Other" selection for members */}
-                        {form.watch(`members.${index}.medicalConditionId`) ===
-                          "other" && (
-                          <FormItem className="sm:col-span-7 mt-2">
-                            <FormControl>
-                              <Input
-                                placeholder={t("enter_medical_condition")}
-                                value={memberOtherMedicals[index] || ""}
-                                onChange={(e) =>
-                                  setMemberOtherMedicals((prev) => ({
-                                    ...prev,
-                                    [index]: e.target.value,
-                                  }))
-                                }
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
 
                         {/* Delete Button */}
                         <Button

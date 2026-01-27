@@ -11,7 +11,7 @@ export const familyMemberSchema = z.object({
   }),
   dob: z.string().min(1, "تاريخ الميلاد مطلوب"),
   relationshipId: z.string().min(1, "صلة القرابة مطلوبة"),
-  medicalConditionId: z.string().optional(), // Optional - 'none' means healthy, 'other' means custom text
+  medicalConditionIds: z.array(z.string()).optional(), // Array of medical condition IDs - empty means healthy, 'other' means custom text
   medicalConditionText: z.string().optional(), // Custom text when 'other' is selected
 });
 
@@ -32,7 +32,7 @@ export const familySchema = z.object({
   notes: z.string().optional(),
   campId: z.string().min(1, "المعسكر مطلوب"),
   maritalStatusId: z.string().min(1, "الحالة الاجتماعية مطلوبة"),
-  medicalConditionId: z.string().optional(), // Medical condition for the head of family - 'other' means custom text
+  medicalConditionIds: z.array(z.string()).optional(), // Array of medical condition IDs for head of family - 'other' means custom text
   medicalConditionText: z.string().optional(), // Custom text when 'other' is selected
   members: z.array(familyMemberSchema).optional(), // Dynamic members array
 });

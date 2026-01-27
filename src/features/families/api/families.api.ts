@@ -77,13 +77,22 @@ export async function createFamilyApi(
   if (data.notes) formData.append("notes", data.notes);
   formData.append("camp_id", data.campId);
   formData.append("marital_status_id", data.maritalStatusId);
-  // Medical condition for head of family - send text if 'other', otherwise send ID
-  if (data.medicalConditionId && data.medicalConditionId !== "none") {
-    if (data.medicalConditionId === "other" && data.medicalConditionText) {
+
+  // Medical conditions for head of family - send as array
+  if (data.medicalConditionIds && data.medicalConditionIds.length > 0) {
+    // If "other" is in the array and we have custom text, send it
+    if (
+      data.medicalConditionIds.includes("other") &&
+      data.medicalConditionText
+    ) {
       formData.append("medical_condition", data.medicalConditionText);
-    } else {
-      formData.append("medical_condition_id", data.medicalConditionId);
     }
+    // Send each non-"other" ID as medical_condition_id[]
+    data.medicalConditionIds.forEach((id) => {
+      if (id !== "other") {
+        formData.append("medical_condition_id[]", id);
+      }
+    });
   }
 
   // Add head of family as members[0]
@@ -92,18 +101,23 @@ export async function createFamilyApi(
   formData.append("members[0][dob]", data.dob);
   formData.append("members[0][national_id]", data.nationalId);
   formData.append("members[0][relationship_id]", "1"); // Head of family relationship
-  if (data.medicalConditionId && data.medicalConditionId !== "none") {
-    if (data.medicalConditionId === "other" && data.medicalConditionText) {
+
+  // Medical conditions for head of family in members[0]
+  if (data.medicalConditionIds && data.medicalConditionIds.length > 0) {
+    if (
+      data.medicalConditionIds.includes("other") &&
+      data.medicalConditionText
+    ) {
       formData.append(
         "members[0][medical_condition]",
         data.medicalConditionText,
       );
-    } else {
-      formData.append(
-        "members[0][medical_condition_id]",
-        data.medicalConditionId,
-      );
     }
+    data.medicalConditionIds.forEach((id) => {
+      if (id !== "other") {
+        formData.append("members[0][medical_condition_id][]", id);
+      }
+    });
   }
 
   // Append other members starting at index 1
@@ -121,21 +135,26 @@ export async function createFamilyApi(
         `members[${memberIndex}][relationship_id]`,
         member.relationshipId,
       );
-      if (member.medicalConditionId && member.medicalConditionId !== "none") {
+
+      // Medical conditions as array
+      if (member.medicalConditionIds && member.medicalConditionIds.length > 0) {
         if (
-          member.medicalConditionId === "other" &&
+          member.medicalConditionIds.includes("other") &&
           member.medicalConditionText
         ) {
           formData.append(
             `members[${memberIndex}][medical_condition]`,
             member.medicalConditionText,
           );
-        } else {
-          formData.append(
-            `members[${memberIndex}][medical_condition_id]`,
-            member.medicalConditionId,
-          );
         }
+        member.medicalConditionIds.forEach((id) => {
+          if (id !== "other") {
+            formData.append(
+              `members[${memberIndex}][medical_condition_id][]`,
+              id,
+            );
+          }
+        });
       }
     });
   }
@@ -194,7 +213,7 @@ export interface CreateFamilyMemberPayload {
   gender: "male" | "female";
   dob: string;
   relationshipId: string;
-  medicalConditionId?: string; // Optional - only sent if not 'none'
+  medicalConditionIds?: string[]; // Array of medical condition IDs
   medicalConditionText?: string; // Custom text when 'other' is selected
 }
 
@@ -208,13 +227,19 @@ export async function createFamilyMemberApi(
   formData.append("gender", data.gender);
   formData.append("dob", data.dob);
   formData.append("relationship_id", data.relationshipId);
-  // Send medical_condition text if 'other', otherwise send ID
-  if (data.medicalConditionId && data.medicalConditionId !== "none") {
-    if (data.medicalConditionId === "other" && data.medicalConditionText) {
+  // Medical conditions as array
+  if (data.medicalConditionIds && data.medicalConditionIds.length > 0) {
+    if (
+      data.medicalConditionIds.includes("other") &&
+      data.medicalConditionText
+    ) {
       formData.append("medical_condition", data.medicalConditionText);
-    } else {
-      formData.append("medical_condition_id", data.medicalConditionId);
     }
+    data.medicalConditionIds.forEach((id) => {
+      if (id !== "other") {
+        formData.append("medical_condition_id[]", id);
+      }
+    });
   }
 
   return apiRequest(`/families/${familyId}/members`, {
@@ -329,13 +354,19 @@ export async function updateFamilyMemberApi(
   formData.append("gender", data.gender);
   formData.append("dob", data.dob);
   formData.append("relationship_id", data.relationshipId);
-  // Send medical_condition text if 'other', otherwise send ID
-  if (data.medicalConditionId && data.medicalConditionId !== "none") {
-    if (data.medicalConditionId === "other" && data.medicalConditionText) {
+  // Medical conditions as array
+  if (data.medicalConditionIds && data.medicalConditionIds.length > 0) {
+    if (
+      data.medicalConditionIds.includes("other") &&
+      data.medicalConditionText
+    ) {
       formData.append("medical_condition", data.medicalConditionText);
-    } else {
-      formData.append("medical_condition_id", data.medicalConditionId);
     }
+    data.medicalConditionIds.forEach((id) => {
+      if (id !== "other") {
+        formData.append("medical_condition_id[]", id);
+      }
+    });
   }
 
   return apiRequest(`/families/${familyId}/members/${memberId}`, {

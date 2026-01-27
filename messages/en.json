@@ -137,6 +137,7 @@
     "welcome_message": "Welcome to the Admin Dashboard. Here you can manage site content and customize various sections.",
     "projects": "Projects",
     "total_projects": "Total Projects",
+    "families_title": "Families",
     "families": {
       "select_all": "Select All",
       "select_row": "Select Row",
