@@ -1818,6 +1818,61 @@
       "english_description_placeholder": "English Description"
     }
   },
+  "families_page": {
+    "columns": {
+      "familyName": "Family Name",
+      "nationalId": "National ID",
+      "phone": "Phone Number",
+      "totalMembers": "Members Count",
+      "camp": "Camp",
+      "maritalStatus": "Marital Status",
+      "tentNumber": "Tent Number",
+      "location": "Location",
+      "medicalConditions": "Medical Conditions",
+      "ageGroups": "Age Groups",
+      "notes": "Notes",
+      "deletedBy": "Deleted By",
+      "deleteReason": "Delete Reason",
+      "deletedAt": "Deleted At"
+    },
+    "export_excel": "Export to Excel",
+    "export": {
+      "loading": "Exporting data...",
+      "success": "Data exported successfully"
+    },
+    "filters": {
+      "medicalConditions": "Medical Conditions",
+      "ageGroups": "Age Groups"
+    },
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "per_page": "per page",
+      "page": "page"
+    },
+    "bulk_delete": {
+      "button": "Bulk Delete",
+      "title": "Delete Multiple Families",
+      "description": "Are you sure you want to delete {count} families? This action cannot be undone.",
+      "reason_label": "Delete Reason",
+      "reason_placeholder": "Enter reason for deleting these families...",
+      "cancel": "Cancel",
+      "confirm": "Confirm Delete"
+    },
+    "deleted_families_page": {
+      "title": "Deleted Families",
+      "list_title": "Deleted Families List"
+    },
+    "force_delete": {
+      "button": "Force Delete",
+      "title": "Force Delete Family",
+      "description": "Are you sure you want to permanently delete this family? This action cannot be undone.",
+      "confirm": "Confirm Force Delete"
+    },
+    "restore": {
+      "button": "Restore"
+    }
+  },
   "camps_section_home": {
     "title": "Shelters",
     "description": "Documented shelters enable better planning and fairer response.",

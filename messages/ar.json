@@ -1838,7 +1838,10 @@
       "location": "الموقع",
       "medicalConditions": "الحالات الطبية",
       "ageGroups": "الفئات العمرية",
-      "notes": "الملاحظات"
+      "notes": "الملاحظات",
+      "deletedBy": "حذفت بواسطة",
+      "deleteReason": "سبب الحذف",
+      "deletedAt": "تاريخ الحذف"
     },
     "export_excel": "تصدير إلى Excel",
     "export": {
@@ -1863,6 +1866,19 @@
       "reason_placeholder": "أدخل سبب حذف هذه العائلات...",
       "cancel": "إلغاء",
       "confirm": "تأكيد الحذف"
+    },
+    "deleted_families_page": {
+      "title": "العائلات المحذوفة",
+      "list_title": "قائمة العائلات المحذوفة"
+    },
+    "force_delete": {
+      "button": "حذف نهائي",
+      "title": "حذف نهائي للعائلة",
+      "description": "هل أنت متأكد من الحذف النهائي للعائلة؟ هذا الإجراء لا يمكن التراجع عنه.",
+      "confirm": "تأكيد الحذف النهائي"
+    },
+    "restore": {
+      "button": "استعادة"
     }
   },
   "camps_section_home": {
