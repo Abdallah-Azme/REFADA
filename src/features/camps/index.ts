@@ -7,6 +7,7 @@ export { CampDetailsDialog } from "./components/camp-details-dialog";
 export { useCampForm } from "./hooks/use-camp-form";
 export {
   useCamps,
+  useCampNames,
   useCreateCamp,
   useUpdateCamp,
   useDeleteCamp,

@@ -82,7 +82,7 @@ export default function CampsMapSection({
       return !isNaN(lat) && !isNaN(lng);
     });
   }, [camps]);
-
+  console.log({ camps });
   const [selected, setSelected] = useState<Camp | null>(
     validCamps.length > 0 ? validCamps[0] : null,
   );

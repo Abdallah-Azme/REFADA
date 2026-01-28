@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+import { useState, useMemo, useEffect } from "react";
 
 import CardTitle from "./card-title";
 import CurrentProjectsTable from "./current-projects-table";
@@ -10,8 +11,11 @@ import ProjectButtonsActions from "./project-buttons-actions";
 import ProjectFilteringForm from "./project-filtering-form";
 import { cn } from "@/lib/utils";
 import { useProjects } from "@/features/projects/hooks/use-projects";
-import { useMemo } from "react";
 import { useTranslations } from "next-intl";
+import {
+  ProjectsQueryParams,
+  DEFAULT_PROJECTS_QUERY,
+} from "@/features/projects/types/projects-query.types";
 
 const formSchema = z.object({
   search: z.string().optional(),
@@ -29,9 +33,17 @@ export default function ProjectsTable({
   hideApproveDelete?: boolean;
 }) {
   const t = useTranslations("projects_page");
-  const { data: projectsData } = useProjects();
 
+  // Server-side query params state
+  const [queryParams, setQueryParams] = useState<ProjectsQueryParams>(
+    DEFAULT_PROJECTS_QUERY,
+  );
+
+  // Fetch data with server-side params
+  const { data: projectsData, isLoading } = useProjects(queryParams);
+  console.log({ projectsData });
   const projects = projectsData?.data || [];
+  const meta = projectsData?.meta;
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -45,13 +57,39 @@ export default function ProjectsTable({
   // Watch form values for real-time filtering
   const filters = useWatch({ control: form.control });
 
-  // Get unique types from projects
+  // Debounce search and update server-side params
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setQueryParams((prev) => ({
+        ...prev,
+        search: filters.search || undefined,
+        status:
+          filters.status && filters.status !== "all"
+            ? filters.status
+            : undefined,
+        type: filters.type && filters.type !== "all" ? filters.type : undefined,
+        page: 1, // Reset to page 1 when filters change
+      }));
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [filters.search, filters.status, filters.type]);
+
+  // Handle pagination
+  const handlePageChange = (newPage: number) => {
+    setQueryParams((prev) => ({ ...prev, page: newPage }));
+  };
+
+  const handlePerPageChange = (newPerPage: number) => {
+    setQueryParams((prev) => ({ ...prev, per_page: newPerPage, page: 1 }));
+  };
+
+  // Get unique types from projects for the filter dropdown
   const uniqueTypes = useMemo(() => {
     const types = projects.map((p) => p.type).filter(Boolean);
     return [...new Set(types)];
   }, [projects]);
 
-  // Get unique statuses from projects
+  // Get unique statuses from projects for the filter dropdown
   const uniqueStatuses = useMemo(() => {
     const statuses = projects.map((p) => p.status).filter(Boolean);
     return [...new Set(statuses)];
@@ -64,7 +102,7 @@ export default function ProjectsTable({
       <div
         className={cn(
           "flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4",
-          main ? "p-2" : "p-6"
+          main ? "p-2" : "p-6",
         )}
       >
         {/* HEADER & BUTTONS */}
@@ -81,8 +119,12 @@ export default function ProjectsTable({
       {/* FORM */}
       {/* Table - no height constraints */}
       <CurrentProjectsTable
-        filters={filters}
         hideApproveDelete={hideApproveDelete}
+        projects={projects}
+        isLoading={isLoading}
+        meta={meta}
+        onPageChange={handlePageChange}
+        onPerPageChange={handlePerPageChange}
       />
     </div>
   );

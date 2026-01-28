@@ -15,6 +15,14 @@ export function useCamps() {
   });
 }
 
+// Hook specifically for getting camp names (used in family filter)
+export function useCampNames() {
+  return useQuery({
+    queryKey: ["camp-names"],
+    queryFn: campsApi.getCampNames,
+  });
+}
+
 export function usePaginatedCamps(
   page: number = 1,
   perPage: number = 10,

@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 
 export default function Page() {
   const { data: campsData, isLoading, isError } = useCamps();
-
+  console.log({ campsData });
   if (isLoading) {
     return (
       <section className="container mx-auto px-4 relative">

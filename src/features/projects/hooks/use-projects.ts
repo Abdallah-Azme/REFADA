@@ -7,11 +7,20 @@ import {
   deleteProjectApi,
 } from "../api/projects.api";
 import { toast } from "sonner";
+import {
+  ProjectsQueryParams,
+  buildProjectsQueryString,
+  DEFAULT_PROJECTS_QUERY,
+} from "../types/projects-query.types";
 
-export function useProjects() {
+export function useProjects(
+  params: ProjectsQueryParams = DEFAULT_PROJECTS_QUERY,
+) {
+  const queryString = buildProjectsQueryString(params);
   return useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getProjectsApi(),
+    queryKey: ["projects", params],
+    queryFn: () => getProjectsApi(queryString),
+    placeholderData: (previousData) => previousData,
   });
 }
 
@@ -29,7 +38,9 @@ export function useCreateProject() {
       const validationErrors = error?.errors
         ? Object.values(error.errors).flat().join(", ")
         : "";
-      toast.error(validationErrors ? `${message}: ${validationErrors}` : message);
+      toast.error(
+        validationErrors ? `${message}: ${validationErrors}` : message,
+      );
     },
   });
 }

@@ -1,7 +1,5 @@
 import AddProjectDialog from "@/features/dashboard/components/add-project-project";
-import ExportingProjects from "@/features/dashboard/components/exporting-projects";
 import MainHeader from "@/features/dashboard/components/main-header";
-import PrintingProjects from "@/features/dashboard/components/printing-projects";
 import ProjectsTable from "@/features/dashboard/components/projects-table";
 import { SquareKanban } from "lucide-react";
 import { useTranslations } from "next-intl";

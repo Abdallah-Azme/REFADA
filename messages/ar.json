@@ -1480,6 +1480,11 @@
       "confirm": "حذف نهائي",
       "button": "حذف نهائي"
     },
+    "restore": {
+      "button": "استعادة",
+      "success": "تم استعادة العائلة بنجاح",
+      "error": "فشل في استعادة العائلة"
+    },
     "add_button": "إضافة عائلة",
     "loading_data": "جارٍ تحميل البيانات...",
     "error_loading": "خطأ في تحميل البيانات",
@@ -1538,6 +1543,7 @@
     "no_results": "لا توجد مشاريع",
     "columns": {
       "project": "المشروع",
+      "camp": "المخيم",
       "progress": "التقدم",
       "total": "الإجمالي",
       "received": "تم تسليم",
@@ -1818,6 +1824,45 @@
       "english_title_placeholder": "العنوان بالإنجليزية",
       "english_subtitle_placeholder": "العنوان الفرعي بالإنجليزية",
       "english_description_placeholder": "الوصف بالإنجليزية"
+    }
+  },
+  "families_page": {
+    "columns": {
+      "familyName": "اسم العائلة",
+      "nationalId": "رقم الهوية",
+      "phone": "رقم الهاتف",
+      "totalMembers": "عدد الأفراد",
+      "camp": "المخيم",
+      "maritalStatus": "الحالة الاجتماعية",
+      "tentNumber": "رقم الخيمة",
+      "location": "الموقع",
+      "medicalConditions": "الحالات الطبية",
+      "ageGroups": "الفئات العمرية",
+      "notes": "الملاحظات"
+    },
+    "export_excel": "تصدير إلى Excel",
+    "export": {
+      "loading": "جاري تصدير البيانات...",
+      "success": "تم تصدير البيانات بنجاح"
+    },
+    "filters": {
+      "medicalConditions": "الحالات الطبية",
+      "ageGroups": "الفئات العمرية"
+    },
+    "pagination": {
+      "showing": "عرض",
+      "of": "من",
+      "per_page": "لكل صفحة",
+      "page": "صفحة"
+    },
+    "bulk_delete": {
+      "button": "حذف متعدد",
+      "title": "حذف عائلات متعددة",
+      "description": "هل أنت متأكد من حذف {count} عائلة؟ هذا الإجراء لا يمكن التراجع عنه.",
+      "reason_label": "سبب الحذف",
+      "reason_placeholder": "أدخل سبب حذف هذه العائلات...",
+      "cancel": "إلغاء",
+      "confirm": "تأكيد الحذف"
     }
   },
   "camps_section_home": {

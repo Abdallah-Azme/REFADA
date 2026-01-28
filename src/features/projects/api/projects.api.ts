@@ -3,7 +3,7 @@ const API_BASE_URL =
 
 async function apiRequest<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> {
   const headers: Record<string, string> = {
     Accept: "application/json",
@@ -64,14 +64,17 @@ export interface ProjectsResponse {
   };
 }
 
-export async function getProjectsApi(): Promise<ProjectsResponse> {
-  return apiRequest<ProjectsResponse>(`/projects`, {
+export async function getProjectsApi(
+  params?: string,
+): Promise<ProjectsResponse> {
+  const queryString = params ? `?${params}` : "";
+  return apiRequest<ProjectsResponse>(`/projects${queryString}`, {
     method: "GET",
   });
 }
 
 export async function createProjectApi(
-  data: FormData
+  data: FormData,
 ): Promise<{ success: boolean; message: string; data: Project }> {
   return apiRequest(`/projects`, {
     method: "POST",
@@ -81,7 +84,7 @@ export async function createProjectApi(
 
 export async function updateProjectApi(
   id: number,
-  data: FormData
+  data: FormData,
 ): Promise<{ success: boolean; message: string; data: Project }> {
   return apiRequest(`/projects/${id}`, {
     method: "POST",
@@ -91,7 +94,7 @@ export async function updateProjectApi(
 
 export async function approveProjectApi(
   id: number,
-  status: "in_progress" | "cancelled"
+  status: "in_progress" | "cancelled",
 ): Promise<{ success: boolean; message: string; data: Project }> {
   const formData = new FormData();
   formData.append("status", status);
@@ -103,7 +106,7 @@ export async function approveProjectApi(
 }
 
 export async function deleteProjectApi(
-  id: number
+  id: number,
 ): Promise<{ success: boolean; message: string }> {
   return apiRequest(`/projects/${id}`, {
     method: "DELETE",

@@ -67,7 +67,12 @@ async function apiRequest<T>(
 
 export const campsApi = {
   getAll: async (): Promise<CampsResponse> => {
-    return apiRequest<CampsResponse>("/camps?per_page=1000");
+    return apiRequest<CampsResponse>("/camps?per_page=10");
+  },
+
+  // Separate endpoint for getting camp names (used in family filter)
+  getCampNames: async (): Promise<CampsResponse> => {
+    return apiRequest<CampsResponse>("/camps-list/names");
   },
 
   getPaginated: async (

@@ -24,7 +24,7 @@ type ActionHandlers = {
 };
 
 export const createColumns = (
-  handlers: ActionHandlers
+  handlers: ActionHandlers,
 ): ColumnDef<Project>[] => [
   {
     id: "select",
@@ -70,6 +70,25 @@ export const createColumns = (
         <div className="text-sm text-gray-500">
           {row.original.beneficiaryCount} مستفيد
         </div>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "camp",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {handlers.t("columns.camp")}
+          <ArrowUpDown className="me-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="text-center text-gray-700">
+        {row.original.camp || "-"}
       </div>
     ),
   },

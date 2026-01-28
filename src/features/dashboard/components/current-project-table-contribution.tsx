@@ -82,7 +82,7 @@ export default function CurrentProjectsTableContribution({
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -93,7 +93,7 @@ export default function CurrentProjectsTableContribution({
   });
 
   const [selectedProject, setSelectedProject] = React.useState<Project | null>(
-    null
+    null,
   );
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [isContributeDialogOpen, setIsContributeDialogOpen] =
@@ -121,7 +121,7 @@ export default function CurrentProjectsTableContribution({
 
     if (watchedName) {
       filtered = filtered.filter((p) =>
-        p.name.toLowerCase().includes(watchedName.toLowerCase())
+        p.name.toLowerCase().includes(watchedName.toLowerCase()),
       );
     }
 
@@ -146,7 +146,7 @@ export default function CurrentProjectsTableContribution({
 
   const handleViewHistory = (project: Project): void => {
     const projectHistoryItems = historyItems.filter(
-      (item: { project: { id: number } }) => item.project.id === project.id
+      (item: { project: { id: number } }) => item.project?.id === project.id,
     );
 
     // Collect all families from all contributions for this project
@@ -185,7 +185,9 @@ export default function CurrentProjectsTableContribution({
   const projectIdsWithHistory = React.useMemo(() => {
     const ids = new Set<number>();
     historyItems.forEach((item: { project: { id: number } }) => {
-      ids.add(item.project.id);
+      if (item.project?.id) {
+        ids.add(item.project.id);
+      }
     });
     return ids;
   }, [historyItems]);
@@ -198,7 +200,7 @@ export default function CurrentProjectsTableContribution({
         onContribute: handleContribute,
         projectIdsWithHistory,
       },
-      t
+      t,
     ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -300,7 +302,7 @@ export default function CurrentProjectsTableContribution({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -320,7 +322,7 @@ export default function CurrentProjectsTableContribution({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -335,7 +337,7 @@ export default function CurrentProjectsTableContribution({
                         onView: handleView,
                         onContribute: handleContribute,
                       },
-                      t
+                      t,
                     ).length
                   }
                   className="h-24 text-center"

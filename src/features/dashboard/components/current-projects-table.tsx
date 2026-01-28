@@ -8,63 +8,66 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
-  PaginationState,
   RowSelectionState,
   SortingState,
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { createColumns, Project } from "../table-cols/current-projects-cols";
-import PaginationControls from "./pagination-controls";
 import ProjectFormDialog from "./add-project-project";
 import {
-  useProjects,
   useDeleteProject,
   useApproveProject,
 } from "@/features/projects/hooks/use-projects";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { DeleteConfirmDialog } from "@/features/marital-status/components/delete-confirm-dialog";
 import { useTranslations } from "next-intl";
+import { Button } from "@/src/shared/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/src/shared/ui/select";
 
-interface Filters {
-  search?: string;
-  status?: string;
-  type?: string;
+interface PaginationMeta {
+  currentPage: number;
+  lastPage: number;
+  perPage: number;
+  total: number;
 }
 
 interface CurrentProjectsTableProps {
-  filters?: Filters;
   hideApproveDelete?: boolean;
+  projects: Project[];
+  isLoading?: boolean;
+  meta?: PaginationMeta;
+  onPageChange?: (page: number) => void;
+  onPerPageChange?: (perPage: number) => void;
 }
 
 export default function CurrentProjectsTable({
-  filters,
   hideApproveDelete,
+  projects,
+  isLoading = false,
+  meta,
+  onPageChange,
+  onPerPageChange,
 }: CurrentProjectsTableProps) {
   const t = useTranslations("projects_page");
-  const tCommon = useTranslations("common");
-  const { data: projectsData, isLoading } = useProjects();
+  const tFamilies = useTranslations("families_page");
   const deleteProject = useDeleteProject();
   const approveProject = useApproveProject();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-  const [pagination, setPagination] = React.useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
 
   // Delete State
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -75,35 +78,6 @@ export default function CurrentProjectsTable({
   const [projectToEdit, setProjectToEdit] = useState<Project | undefined>(
     undefined,
   );
-
-  const rawData = projectsData?.data || [];
-
-  // Apply filters
-  const data = useMemo(() => {
-    let filtered = rawData;
-
-    // Filter by search (name)
-    if (filters?.search) {
-      const searchLower = filters.search.toLowerCase();
-      filtered = filtered.filter((project) =>
-        project.name.toLowerCase().includes(searchLower),
-      );
-    }
-
-    // Filter by type
-    if (filters?.type && filters.type !== "all") {
-      filtered = filtered.filter((project) => project.type === filters.type);
-    }
-
-    // Filter by status
-    if (filters?.status && filters.status !== "all") {
-      filtered = filtered.filter(
-        (project) => project.status === filters.status,
-      );
-    }
-
-    return filtered;
-  }, [rawData, filters]);
 
   const handleEdit = (project: Project): void => {
     setProjectToEdit(project);
@@ -132,7 +106,7 @@ export default function CurrentProjectsTable({
   };
 
   const table = useReactTable<Project>({
-    data,
+    data: projects,
     columns: createColumns({
       onEdit: handleEdit,
       onDelete: handleDelete,
@@ -141,34 +115,31 @@ export default function CurrentProjectsTable({
       t: t,
     }),
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    onPaginationChange: setPagination,
+    manualPagination: true, // Server-side pagination
+    pageCount: meta?.lastPage ?? -1,
     state: {
       sorting,
-      columnFilters,
       columnVisibility,
       rowSelection,
-      pagination,
+      pagination: {
+        pageIndex: (meta?.currentPage ?? 1) - 1,
+        pageSize: meta?.perPage ?? 15,
+      },
     },
   });
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-10">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
   return (
     <div className="rounded-lg bg-white">
-      <div className="w-full overflow-x-auto">
+      <div className="w-full overflow-x-auto relative">
+        {isLoading && (
+          <div className="absolute inset-0 bg-white/70 flex items-center justify-center z-10">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        )}
         <Table className="min-w-[960px]">
           <TableHeader className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -227,10 +198,66 @@ export default function CurrentProjectsTable({
         </Table>
       </div>
 
-      {/* Pagination - separate from table */}
-      <div className="flex items-center justify-center px-2 py-4">
-        <PaginationControls table={table} />
-      </div>
+      {/* Server-Side Pagination Controls */}
+      {meta && onPageChange && onPerPageChange && (
+        <div className="flex items-center justify-between mt-4 px-4 py-4 border-t">
+          <div className="text-sm text-gray-600">
+            {tFamilies("pagination.showing")}{" "}
+            {(meta.currentPage - 1) * meta.perPage + 1} -{" "}
+            {Math.min(meta.currentPage * meta.perPage, meta.total)}{" "}
+            {tFamilies("pagination.of")} {meta.total}
+          </div>
+
+          <div className="flex items-center gap-4">
+            {/* Per page selector */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">
+                {tFamilies("pagination.per_page")}:
+              </span>
+              <Select
+                value={meta.perPage.toString()}
+                onValueChange={(value) => onPerPageChange(Number(value))}
+              >
+                <SelectTrigger className="w-[80px] h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="15">15</SelectItem>
+                  <SelectItem value="25">25</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Page navigation */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPageChange(meta.currentPage - 1)}
+                disabled={meta.currentPage <= 1 || isLoading}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+
+              <span className="text-sm text-gray-600">
+                {tFamilies("pagination.page")} {meta.currentPage}{" "}
+                {tFamilies("pagination.of")} {meta.lastPage}
+              </span>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPageChange(meta.currentPage + 1)}
+                disabled={meta.currentPage >= meta.lastPage || isLoading}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Delete Confirmation Dialog */}
       <DeleteConfirmDialog

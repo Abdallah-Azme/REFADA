@@ -1461,6 +1461,22 @@
   "families_page": {
     "page_title": "Families Management",
     "list_title": "Families List",
+    "deleted_families_page": {
+      "title": "Deleted Families",
+      "list_title": "Deleted Families List",
+      "no_results": "No deleted families"
+    },
+    "force_delete": {
+      "title": "Permanent Delete",
+      "description": "Are you sure you want to permanently delete family {name}? This action cannot be undone.",
+      "confirm": "Delete Permanently",
+      "button": "Delete Permanently"
+    },
+    "restore": {
+      "button": "Restore",
+      "success": "Family restored successfully",
+      "error": "Failed to restore family"
+    },
     "add_button": "Add Family",
     "loading_data": "Loading data...",
     "error_loading": "Error loading data",
@@ -1518,6 +1534,7 @@
     "no_results": "No projects found",
     "columns": {
       "project": "Project",
+      "camp": "Camp",
       "progress": "Progress",
       "total": "Total",
       "received": "Received",

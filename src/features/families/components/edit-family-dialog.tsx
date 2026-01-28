@@ -147,7 +147,6 @@ export default function EditFamilyDialog({
     if (
       family &&
       open &&
-      camps.length > 0 &&
       maritalStatuses.length > 0 &&
       medicalConditions.length > 0
     ) {
@@ -157,21 +156,28 @@ export default function EditFamilyDialog({
         (m) => m.name === family.maritalStatus,
       );
 
-      // Store the original national_id for the family (keep actual value for comparison)
-      setOriginalFamilyNationalId(family.nationalId);
+      // Get head of family data from first member in members array
+      const headMember = family.members?.[0];
+
+      // Store the original national_id for the family (use head member's nationalId)
+      setOriginalFamilyNationalId(headMember?.nationalId || family.nationalId);
 
       // Map head of family's medical conditions (names) to IDs
       let headMedicalConditionIds: string[] = [];
       let headMedicalConditionText: string | undefined = undefined;
 
-      if (family.medicalConditions && family.medicalConditions.length > 0) {
-        family.medicalConditions.forEach((conditionName: string) => {
+      // Use head member's medical conditions if available, otherwise use family's
+      const medicalConditionsToMap =
+        headMember?.medicalConditions || family.medicalConditions;
+
+      if (medicalConditionsToMap && medicalConditionsToMap.length > 0) {
+        medicalConditionsToMap.forEach((conditionName: string) => {
           const foundCondition = medicalConditions.find(
             (m) => m.name === conditionName,
           );
           if (foundCondition) {
             headMedicalConditionIds.push(foundCondition.id.toString());
-          } else if (conditionName && conditionName !== "سليم") {
+          } else if (conditionName) {
             // Custom condition not in list
             if (!headMedicalConditionIds.includes("other")) {
               headMedicalConditionIds.push("other");
@@ -187,12 +193,12 @@ export default function EditFamilyDialog({
       }
 
       form.reset({
-        familyName: family.familyName || "",
-        nationalId: family.nationalId || "",
-        dob: family.dob || "",
+        familyName: headMember?.name || family.familyName || "",
+        nationalId: headMember?.nationalId || family.nationalId || "",
+        dob: headMember?.dob || family.dob || "",
         phone: family.phone || "",
         backupPhone: family.backupPhone || "",
-        gender: "male", // Default to male for head of family when editing
+        gender: headMember?.gender || "male",
         totalMembers: family.totalMembers || 1,
         tentNumber:
           family.tentNumber === "undefined" ? "" : family.tentNumber || "",
@@ -204,7 +210,7 @@ export default function EditFamilyDialog({
         members: [],
       });
     }
-  }, [family, open, camps, maritalStatuses, medicalConditions, form]);
+  }, [family, open, camps, maritalStatuses, medicalConditions]);
 
   const { fields, append, remove, replace } = useFieldArray({
     control: form.control,
@@ -213,7 +219,12 @@ export default function EditFamilyDialog({
 
   // Populate existing members when membersData loads
   useEffect(() => {
-    if (membersData?.data && relationships.length > 0 && open) {
+    if (
+      membersData?.data &&
+      relationships.length > 0 &&
+      medicalConditions.length > 0 &&
+      open
+    ) {
       // Find the head of family member (relationship_id = 1) and store their ID
       const headMember = membersData.data.find((member) => {
         const foundRelationship = relationships.find(
@@ -221,8 +232,45 @@ export default function EditFamilyDialog({
         );
         return foundRelationship?.id === 1;
       });
+
       if (headMember) {
         setHeadMemberId(headMember.id);
+
+        // Populate head of family form fields from member data
+        // Map head member's medical conditions to IDs
+        let headMedicalConditionIds: string[] = [];
+        let headMedicalConditionText: string | undefined = undefined;
+
+        if (
+          headMember.medicalConditions &&
+          headMember.medicalConditions.length > 0
+        ) {
+          headMember.medicalConditions.forEach((conditionName: string) => {
+            const foundCondition = medicalConditions.find(
+              (m) => m.name === conditionName,
+            );
+            if (foundCondition) {
+              headMedicalConditionIds.push(foundCondition.id.toString());
+            } else if (conditionName) {
+              // Custom condition not in list
+              if (!headMedicalConditionIds.includes("other")) {
+                headMedicalConditionIds.push("other");
+              }
+              headMedicalConditionText = conditionName;
+            }
+          });
+        }
+
+        // Set the "other" text if needed
+        if (headMedicalConditionText) {
+          setHeadOtherMedical(headMedicalConditionText);
+        }
+
+        // Update form with head member data
+        form.setValue("familyName", headMember.name || "");
+        form.setValue("nationalId", headMember.nationalId || "");
+        form.setValue("dob", headMember.dob || "");
+        form.setValue("medicalConditionIds", headMedicalConditionIds);
       }
 
       // Filter out head of family (relationship "أب" or id 1) since they're already in the main form
@@ -265,7 +313,7 @@ export default function EditFamilyDialog({
             );
             if (foundCondition) {
               medicalConditionIds.push(foundCondition.id.toString());
-            } else if (conditionName && conditionName !== "سليم") {
+            } else if (conditionName) {
               // Custom condition not in list
               if (!medicalConditionIds.includes("other")) {
                 medicalConditionIds.push("other");
@@ -273,10 +321,7 @@ export default function EditFamilyDialog({
               medicalConditionText = conditionName;
             }
           });
-        } else if (
-          member.medicalCondition &&
-          member.medicalCondition !== "سليم"
-        ) {
+        } else if (member.medicalCondition) {
           // Legacy single string format fallback
           const foundMedicalCondition = medicalConditions.find(
             (m) => m.name === member.medicalCondition,
@@ -289,7 +334,7 @@ export default function EditFamilyDialog({
             medicalConditionText = member.medicalCondition;
           }
         }
-        // If both null/empty or "سليم", leave medicalConditionIds as empty array (healthy)
+        // If both null/empty, leave medicalConditionIds as empty array (no conditions selected)
 
         return {
           id: member.id, // Track existing member database ID (matches schema)

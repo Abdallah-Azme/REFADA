@@ -20,7 +20,7 @@ export default function Page() {
   // Get user's camp slug from profile
   const campSlug = profileData?.data?.camp?.slug;
   const { data: campData, isLoading: campLoading } = useCampDetails(
-    campSlug || null
+    campSlug || null,
   );
 
   const isLoading = profileLoading || campLoading || contributionsLoading;
@@ -33,13 +33,13 @@ export default function Page() {
 
   // Count projects by status
   const pendingProjects = projects.filter(
-    (p: any) => p.status === "pending" || p.status === "في الانتظار"
+    (p: any) => p.status === "pending" || p.status === "في الانتظار",
   ).length;
   const completedProjects = projects.filter(
     (p: any) =>
       p.status === "تم التسليم" ||
       p.status === "completed" ||
-      p.status === "in_progress"
+      p.status === "in_progress",
   ).length;
   const totalProjects = projects.length;
 
@@ -79,7 +79,7 @@ export default function Page() {
       subtitle:
         totalProjects > 0
           ? `${Math.round((completedProjects / totalProjects) * 100)}% ${t(
-              "of_total"
+              "of_total",
             )}`
           : "0%",
       subColor: "text-green-500",
@@ -106,6 +106,7 @@ export default function Page() {
     );
   }
 
+  console.log({ campData });
   return (
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">
       <MainHeader header={userCamp?.name || "إيواء"}>
@@ -130,7 +131,11 @@ export default function Page() {
           <h2 className="text-[#333333] font-bold text-lg mb-2">
             {t("location")}
           </h2>
-          <CampsMapSection secondary dashboard />
+          <CampsMapSection
+            secondary
+            dashboard
+            camps={campData?.data ? [campData.data] : []}
+          />
         </div>
       </div>
 

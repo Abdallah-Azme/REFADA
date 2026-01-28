@@ -33,7 +33,7 @@ export default function CampsSection({ camps = [] }: CampsSectionProps) {
       delay: 3000,
       stopOnInteraction: false,
       stopOnMouseEnter: true,
-    })
+    }),
   );
 
   const [api, setApi] = React.useState<CarouselApi>();
@@ -62,7 +62,7 @@ export default function CampsSection({ camps = [] }: CampsSectionProps) {
       // If not found, try finding in array (older embla versions)
       if (!autoplayPlugin && Array.isArray(plugins)) {
         autoplayPlugin = plugins.find(
-          (plugin: any) => plugin?.play || plugin?.stop
+          (plugin: any) => plugin?.play || plugin?.stop,
         );
       }
 
@@ -118,27 +118,35 @@ export default function CampsSection({ camps = [] }: CampsSectionProps) {
         className="relative"
       >
         <CarouselContent className="-ml-4">
-          {camps.map((camp, index) => (
-            <CarouselItem
-              key={camp.id}
-              className="pl-4 sm:basis-1/2 lg:basis-1/4"
-            >
-              <CampCard
-                id={camp.id}
-                title={camp.name}
-                location={camp.location || ""}
-                families={
-                  camp.statistics?.familyCount ||
-                  camp.families?.length ||
-                  camp.familyCount ||
-                  0
-                }
-                image={camp.campImg || "/placeholder.jpg"}
-                index={index}
-                slug={camp.slug}
-              />
-            </CarouselItem>
-          ))}
+          {camps.map((camp, index) => {
+            // Extract string name from camp.name (handle both string and object formats)
+            const campName =
+              typeof camp.name === "string"
+                ? camp.name
+                : camp.name?.ar || camp.name?.en || "";
+
+            return (
+              <CarouselItem
+                key={camp.id}
+                className="pl-4 sm:basis-1/2 lg:basis-1/4"
+              >
+                <CampCard
+                  id={camp.id}
+                  title={campName}
+                  location={camp.location || ""}
+                  families={
+                    camp.statistics?.familyCount ||
+                    camp.families?.length ||
+                    camp.familyCount ||
+                    0
+                  }
+                  image={camp.campImg || "/placeholder.jpg"}
+                  index={index}
+                  slug={camp.slug}
+                />
+              </CarouselItem>
+            );
+          })}
         </CarouselContent>
       </Carousel>
 
@@ -152,7 +160,7 @@ export default function CampsSection({ camps = [] }: CampsSectionProps) {
               "size-2.5 rounded-full transition-all duration-300",
               current >= i * 4 && current < (i + 1) * 4
                 ? "bg-primary "
-                : "bg-[#D2D2D2] "
+                : "bg-[#D2D2D2] ",
             )}
             aria-label={`Go to slide ${i + 1}`}
           />

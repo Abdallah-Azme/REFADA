@@ -1792,23 +1792,6 @@
                   "key": "name",
                   "value": "",
                   "disabled": true
-                },
-                {
-                  "key": "location",
-                  "value": "",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "family_count",
-                  "value": "",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "governorate_id",
-                  "value": "2",
-                  "disabled": true
                 }
               ]
             }
@@ -2237,6 +2220,38 @@
               "path": [
                 "camp",
                 "family-statistics"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Camp Name",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "ar",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/camps-list/names",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "camps-list",
+                "names"
               ]
             }
           },

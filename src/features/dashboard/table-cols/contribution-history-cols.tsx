@@ -18,25 +18,34 @@ type ActionHandlers = {
 
 export const createContributionHistoryColumns = (
   handlers: ActionHandlers,
-  t: any
+  t: any,
 ): ColumnDef<ContributionHistoryItem>[] => [
   {
     accessorKey: "project.name",
     header: t("project"),
-    cell: ({ row }) => (
-      <div className="text-right">
-        <div className="font-bold text-gray-900">
-          {row.original.project.name}
+    cell: ({ row }) => {
+      const project = row.original.project;
+      if (!project) {
+        return (
+          <div className="text-right">
+            <div className="text-gray-400 text-sm">-</div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="text-right">
+          <div className="font-bold text-gray-900">{project.name}</div>
+          <div className="text-xs text-gray-500">
+            {project.type === "product"
+              ? t("type_product")
+              : project.type === "internal"
+                ? t("type_internal")
+                : project.type}
+          </div>
         </div>
-        <div className="text-xs text-gray-500">
-          {row.original.project.type === "product"
-            ? t("type_product")
-            : row.original.project.type === "internal"
-            ? t("type_internal")
-            : row.original.project.type}
-        </div>
-      </div>
-    ),
+      );
+    },
   },
   {
     accessorKey: "totalQuantity",

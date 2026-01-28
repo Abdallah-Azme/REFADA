@@ -43,9 +43,19 @@ export function MultiSelectMedical({
   className,
 }: MultiSelectMedicalProps) {
   const [open, setOpen] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
-  const isHealthy = selectedIds.length === 0;
   const hasOther = selectedIds.includes("other");
+
+  // Filter conditions based on search query
+  const filteredConditions = React.useMemo(() => {
+    if (!searchQuery.trim()) return conditions;
+    const query = searchQuery.toLowerCase();
+    return conditions.filter((condition) =>
+      condition.name.toLowerCase().includes(query),
+    );
+  }, [conditions, searchQuery]);
 
   const handleToggle = (id: string) => {
     if (selectedIds.includes(id)) {
@@ -55,12 +65,6 @@ export function MultiSelectMedical({
       // Add the ID
       onSelectionChange([...selectedIds, id]);
     }
-  };
-
-  const handleSelectHealthy = () => {
-    onSelectionChange([]);
-    onOtherTextChange?.("");
-    setOpen(false);
   };
 
   const handleRemove = (id: string) => {
@@ -76,6 +80,13 @@ export function MultiSelectMedical({
     return condition?.name || id;
   };
 
+  // Reset search when popover closes
+  React.useEffect(() => {
+    if (!open) {
+      setSearchQuery("");
+    }
+  }, [open]);
+
   return (
     <div className={cn("space-y-2", className)}>
       <Popover open={open} onOpenChange={setOpen}>
@@ -87,8 +98,8 @@ export function MultiSelectMedical({
             className="w-full justify-between bg-white font-normal"
           >
             <span className="truncate">
-              {isHealthy
-                ? healthyLabel
+              {selectedIds.length === 0
+                ? placeholder
                 : selectedIds.length === 1
                   ? getConditionName(selectedIds[0])
                   : `${selectedIds.length} حالات محددة`}
@@ -99,24 +110,32 @@ export function MultiSelectMedical({
         <PopoverContent
           className="p-0 min-w-[var(--radix-popover-trigger-width)] max-w-[280px] w-auto"
           align="start"
+          onWheel={(e) => e.stopPropagation()}
         >
-          <div className="max-h-60 overflow-y-auto">
-            {/* Healthy option */}
-            <div
-              className={cn(
-                "flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-secondary",
-                isHealthy && "bg-secondary",
-              )}
-              onClick={handleSelectHealthy}
-            >
-              <div className="w-4 h-4 flex items-center justify-center">
-                {isHealthy && <Check className="h-4 w-4" />}
-              </div>
-              <span>{healthyLabel}</span>
-            </div>
+          {/* Search Input */}
+          <div className="p-2 border-b">
+            <Input
+              placeholder="ابحث عن حالة صحية..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-8 text-sm"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
 
+          {/* Scrollable list */}
+          <div
+            ref={scrollRef}
+            className="overflow-y-scroll overscroll-contain"
+            style={{
+              maxHeight: "240px",
+              overflowY: "scroll",
+              WebkitOverflowScrolling: "touch",
+              touchAction: "pan-y",
+            }}
+          >
             {/* Medical conditions */}
-            {conditions.map((condition) => {
+            {filteredConditions.map((condition) => {
               const isSelected = selectedIds.includes(condition.id.toString());
               return (
                 <div
@@ -134,6 +153,13 @@ export function MultiSelectMedical({
                 </div>
               );
             })}
+
+            {/* No results message */}
+            {filteredConditions.length === 0 && searchQuery.trim() && (
+              <div className="px-3 py-2 text-sm text-muted-foreground text-center">
+                لا توجد نتائج
+              </div>
+            )}
 
             {/* Other option */}
             <div

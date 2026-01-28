@@ -21,7 +21,6 @@ export default function DeletedFamiliesPage() {
   const { mutate: forceDelete, isPending: isDeleting } = useForceDeleteFamily();
   const { mutate: restoreFamily, isPending: isRestoring } = useRestoreFamily();
   const [selectedFamily, setSelectedFamily] = useState<Family | null>(null);
-
   // Extract deleted families data
   const families = response?.data || [];
 

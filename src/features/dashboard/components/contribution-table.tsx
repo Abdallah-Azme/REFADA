@@ -81,18 +81,22 @@ function ContributionDetailsDialog({
         </DialogHeader>
         <div className="space-y-4 text-right">
           {/* Project Info */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-800 mb-2">{t("project")}</h4>
-            <p className="text-gray-600">{contribution.project.name}</p>
-            <p className="text-sm text-gray-500">
-              {t("type")}:{" "}
-              {contribution.project.type === "product"
-                ? t("type_product")
-                : contribution.project.type === "internal"
-                ? t("type_internal")
-                : contribution.project.type}
-            </p>
-          </div>
+          {contribution.project && (
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-gray-800 mb-2">
+                {t("project")}
+              </h4>
+              <p className="text-gray-600">{contribution.project.name}</p>
+              <p className="text-sm text-gray-500">
+                {t("type")}:{" "}
+                {contribution.project.type === "product"
+                  ? t("type_product")
+                  : contribution.project.type === "internal"
+                    ? t("type_internal")
+                    : contribution.project.type}
+              </p>
+            </div>
+          )}
 
           {/* Contribution Details */}
           <div className="grid grid-cols-2 gap-4">
@@ -113,21 +117,21 @@ function ContributionDetailsDialog({
                   contribution.status === "pending"
                     ? "text-yellow-600"
                     : contribution.status === "approved"
-                    ? "text-green-600"
-                    : contribution.status === "rejected"
-                    ? "text-red-600"
-                    : "text-blue-600"
+                      ? "text-green-600"
+                      : contribution.status === "rejected"
+                        ? "text-red-600"
+                        : "text-blue-600"
                 }`}
               >
                 {contribution.status === "pending"
                   ? t("pending")
                   : contribution.status === "approved"
-                  ? t("approved")
-                  : contribution.status === "rejected"
-                  ? t("rejected")
-                  : contribution.status === "completed"
-                  ? t("completed")
-                  : contribution.status}
+                    ? t("approved")
+                    : contribution.status === "rejected"
+                      ? t("rejected")
+                      : contribution.status === "completed"
+                        ? t("completed")
+                        : contribution.status}
               </p>
             </div>
           </div>
@@ -244,7 +248,7 @@ export default function ContributionTable() {
 
     if (watchedProject && watchedProject !== "all") {
       filtered = filtered.filter(
-        (item) => item.project.id.toString() === watchedProject
+        (item) => item.project?.id.toString() === watchedProject,
       );
     }
 
@@ -255,11 +259,13 @@ export default function ContributionTable() {
     return filtered;
   }, [data, watchedProject, watchedStatus]);
 
-   // Get unique projects for filter dropdown
+  // Get unique projects for filter dropdown
   const uniqueProjects = React.useMemo(() => {
     const projectMap = new Map<number, string>();
     data.forEach((item) => {
-      projectMap.set(item.project.id, item.project.name);
+      if (item.project && item.project.id && item.project.name) {
+        projectMap.set(item.project.id, item.project.name);
+      }
     });
     return Array.from(projectMap.entries()).map(([id, name]) => ({
       id: id.toString(),
@@ -281,12 +287,12 @@ export default function ContributionTable() {
         status === "pending"
           ? t("pending")
           : status === "approved"
-          ? t("approved")
-          : status === "rejected"
-          ? t("rejected")
-          : status === "completed"
-          ? t("completed")
-          : status,
+            ? t("approved")
+            : status === "rejected"
+              ? t("rejected")
+              : status === "completed"
+                ? t("completed")
+                : status,
     }));
   }, [data, t]);
 
@@ -296,7 +302,7 @@ export default function ContributionTable() {
       {
         onView: handleView,
       },
-      t
+      t,
     ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -443,7 +449,7 @@ export default function ContributionTable() {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   ))}
@@ -463,7 +469,7 @@ export default function ContributionTable() {
                       <TableCell key={cell.id} className="text-start">
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}
@@ -477,7 +483,7 @@ export default function ContributionTable() {
                         {
                           onView: handleView,
                         },
-                        t
+                        t,
                       ).length
                     }
                     className="h-24 text-start"
