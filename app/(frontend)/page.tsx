@@ -34,6 +34,7 @@ async function getHomePageData(): Promise<HomePageData> {
 
 async function getCamps() {
   try {
+    // Fetch all camps for homepage display
     const response = await campsApi.getAll();
     return response.data || [];
   } catch (error) {
@@ -90,9 +91,15 @@ export default async function Home() {
       <CampsSection camps={camps} />
       <CampsMapSection camps={camps} />
       <ShelterProjectsSection
-        projects={camps.flatMap(
-          (c) => c.projects?.map((p) => ({ ...p, campName: c.name })) || []
-        )}
+        projects={camps.flatMap((c) => {
+          // Convert camp name to string (handle both string and object formats)
+          const campName =
+            typeof c.name === "string"
+              ? c.name
+              : c.name?.ar || c.name?.en || "";
+
+          return c.projects?.map((p) => ({ ...p, campName })) || [];
+        })}
       />
       <TestimonialsSection testimonials={testimonials} />
       <ContactSection />

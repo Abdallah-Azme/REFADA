@@ -280,7 +280,7 @@ export function FamilyTable({
         if (queryParams.national_id)
           exportParams.append("national_id", queryParams.national_id);
         if (queryParams.camp_id)
-          exportParams.append("camp_id", queryParams.camp_id);
+          exportParams.append("camp_id", String(queryParams.camp_id));
         if (queryParams.medical_condition)
           exportParams.append(
             "medical_condition",
@@ -451,7 +451,7 @@ export function FamilyTable({
 
             {/* Filter by Medical Conditions */}
             {hasMedicalConditionsColumn && (
-              <div className="space-y-2 w-full sm:min-w-[200px] sm:w-auto">
+              <div className="space-y-2 w-full sm:min-w-[250px] sm:w-auto">
                 <label className="text-sm font-medium text-gray-700">
                   {t("filters.medicalConditions")}
                 </label>
