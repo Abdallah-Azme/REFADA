@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { usePaginatedCamps } from "@/features/camps/hooks/use-camps";
+import { useGovernorates } from "@/features/dashboard/hooks/use-governorates";
 import CampsPageClient from "@/components/pages/camps/camps-page-client";
-import { Loader2 } from "lucide-react";
+import { Loader2, Filter } from "lucide-react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -11,16 +13,81 @@ import {
   PaginationItem,
   PaginationLink,
 } from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-export default function Page() {
-  const [page, setPage] = useState(1);
+function CampsContent() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Get params from URL
+  const pageParam = Number(searchParams.get("page")) || 1;
+  const governorateParam = searchParams.get("governorate_id") || undefined;
+  const searchNameParam = searchParams.get("name") || undefined;
+
+  const [page, setPage] = useState(pageParam);
+
+  // Sync state with URL when params change
+  if (pageParam !== page) {
+    setPage(pageParam);
+  }
+
+  // Fetch Governorates
+  const { data: governoratesResponse } = useGovernorates();
+  const governorates = governoratesResponse?.data || [];
+
+  // Fetch Camps
+  // Note: searchName parameter was already supported in usePaginatedCamps third argument
   const {
     data: campsData,
     isLoading,
     isFetching,
     isError,
-  } = usePaginatedCamps(page, 12); // 12 camps per page for grid layout
+  } = usePaginatedCamps(page, 12, searchNameParam, governorateParam);
+
+  // Update URL helper
+  const updateUrl = (
+    newPage: number,
+    newGovId?: string,
+    newSearchName?: string,
+  ) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", newPage.toString());
+    if (newGovId && newGovId !== "all") {
+      params.set("governorate_id", newGovId);
+    } else {
+      params.delete("governorate_id");
+    }
+    if (newSearchName && newSearchName.trim()) {
+      params.set("name", newSearchName.trim());
+    } else {
+      params.delete("name");
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    updateUrl(newPage, governorateParam, searchNameParam);
+  };
+
+  const handleGovernorateChange = (value: string) => {
+    const govId = value === "all" ? undefined : value;
+    setPage(1); // Reset to page 1 on filter change
+    updateUrl(1, govId, searchNameParam);
+  };
+
+  const handleSearchNameChange = (value: string) => {
+    setPage(1);
+    updateUrl(1, governorateParam, value);
+  };
 
   if (isLoading) {
     return (
@@ -57,7 +124,7 @@ export default function Page() {
       <PaginationItem key={1}>
         <PaginationLink
           isActive={currentPage === 1}
-          onClick={() => setPage(1)}
+          onClick={() => handlePageChange(1)}
           className="cursor-pointer"
         >
           1
@@ -84,7 +151,7 @@ export default function Page() {
         <PaginationItem key={i}>
           <PaginationLink
             isActive={currentPage === i}
-            onClick={() => setPage(i)}
+            onClick={() => handlePageChange(i)}
             className="cursor-pointer"
           >
             {i}
@@ -108,7 +175,7 @@ export default function Page() {
         <PaginationItem key={totalPages}>
           <PaginationLink
             isActive={currentPage === totalPages}
-            onClick={() => setPage(totalPages)}
+            onClick={() => handlePageChange(totalPages)}
             className="cursor-pointer"
           >
             {totalPages}
@@ -131,7 +198,13 @@ export default function Page() {
             </div>
           </div>
         )}
-        <CampsPageClient camps={camps} />
+        <CampsPageClient
+          camps={camps}
+          selectedGovernorate={governorateParam}
+          onGovernorateChange={handleGovernorateChange}
+          selectedSearchName={searchNameParam}
+          onSearchNameChange={handleSearchNameChange}
+        />
       </div>
 
       {/* Pagination Controls */}
@@ -141,7 +214,7 @@ export default function Page() {
             <PaginationContent>
               <PaginationItem>
                 <PaginationLink
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  onClick={() => handlePageChange(Math.max(1, page - 1))}
                   className={`gap-1 px-2.5 cursor-pointer ${
                     page === 1 ? "pointer-events-none opacity-50" : ""
                   }`}
@@ -157,7 +230,7 @@ export default function Page() {
               <PaginationItem>
                 <PaginationLink
                   onClick={() =>
-                    setPage((p) => Math.min(meta.last_page, p + 1))
+                    handlePageChange(Math.min(meta.last_page, page + 1))
                   }
                   className={`gap-1 px-2.5 cursor-pointer ${
                     page === meta.last_page
@@ -175,5 +248,19 @@ export default function Page() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-screen">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      }
+    >
+      <CampsContent />
+    </Suspense>
   );
 }

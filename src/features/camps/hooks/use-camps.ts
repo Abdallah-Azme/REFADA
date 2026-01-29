@@ -27,10 +27,12 @@ export function usePaginatedCamps(
   page: number = 1,
   perPage: number = 10,
   searchName?: string,
+  governorateId?: string,
 ) {
   return useQuery({
-    queryKey: ["camps", "paginated", page, perPage, searchName],
-    queryFn: () => campsApi.getPaginated(page, perPage, searchName),
+    queryKey: ["camps", "paginated", page, perPage, searchName, governorateId],
+    queryFn: () =>
+      campsApi.getPaginated(page, perPage, searchName, governorateId),
     placeholderData: (previousData) => previousData,
   });
 }
@@ -107,5 +109,12 @@ export function useCampFamilyStatistics() {
   return useQuery({
     queryKey: ["camp-family-statistics"],
     queryFn: campsApi.getFamilyStatistics,
+  });
+}
+
+export function useCampNamesList() {
+  return useQuery({
+    queryKey: ["camps", "names"],
+    queryFn: campsApi.getCampNames,
   });
 }

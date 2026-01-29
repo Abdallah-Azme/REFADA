@@ -79,12 +79,16 @@ export const campsApi = {
     page: number = 1,
     perPage: number = 10,
     searchName?: string,
+    governorateId?: string,
   ): Promise<PaginatedCampsResponse> => {
     const params = new URLSearchParams();
     params.append("page", String(page));
     params.append("per_page", String(perPage));
     if (searchName && searchName.trim()) {
       params.append("name", searchName.trim());
+    }
+    if (governorateId && governorateId !== "all") {
+      params.append("governorate_id", governorateId);
     }
     return apiRequest<PaginatedCampsResponse>(`/camps?${params.toString()}`);
   },

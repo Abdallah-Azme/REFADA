@@ -16,8 +16,23 @@ import {
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useGovernorates } from "@/features/dashboard/hooks/use-governorates";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useCampNamesList } from "@/features/camps/hooks/use-camps";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // Helper function to get camp name as string
 function getCampNameString(
@@ -32,27 +47,73 @@ function getCampNameString(
 export default function CampProjects({
   camps = [],
   dashboard = false,
+  selectedGovernorate,
+  onGovernorateChange,
+  selectedSearchName,
+  onSearchNameChange,
 }: {
   camps?: Camp[];
   dashboard?: boolean;
+  selectedGovernorate?: string;
+  onGovernorateChange?: (value: string) => void;
+  selectedSearchName?: string;
+  onSearchNameChange?: (value: string) => void;
 }) {
   const t = useTranslations("camp_projects");
+  const [open, setOpen] = useState(false);
+
   const form = useForm({
     defaultValues: {
-      region: "",
+      region: selectedGovernorate || "",
       campName: "",
       campTitle: "",
-      shelterName: "",
+      shelterName: selectedSearchName || "",
     },
   });
 
   const { data: governoratesData, isLoading: isLoadingGovernorates } =
     useGovernorates();
+  const { data: campNamesData, isLoading: isLoadingCampNames } =
+    useCampNamesList();
   const watchedValues = form.watch();
 
-  // Get unique governorates from camps and API
+  // Sync prop with form state
+  useMemo(() => {
+    if (
+      selectedGovernorate !== undefined &&
+      selectedGovernorate !== form.getValues().region
+    ) {
+      form.setValue("region", selectedGovernorate);
+    }
+  }, [selectedGovernorate, form]);
+
+  useMemo(() => {
+    if (
+      selectedSearchName !== undefined &&
+      selectedSearchName !== form.getValues().shelterName
+    ) {
+      form.setValue("shelterName", selectedSearchName);
+    }
+  }, [selectedSearchName, form]);
+
+  // Handle server-side filter change
+  useMemo(() => {
+    if (onGovernorateChange && watchedValues.region !== selectedGovernorate) {
+      // Debounce or direct call? Select is usually instant.
+      // However, we avoid infinite loop by checking equality above.
+      // But wait, watchedValues.region updates on render.
+      // Better to use onValueChange in the Select component directly or use an effect.
+    }
+  }, [watchedValues.region]);
+
+  // Actually, simpler: Attach onValueChange handler to the Select component directly
+  // and keep the form for other fields.
+
   const governorates = useMemo(() => {
     const apiGovernorates = governoratesData?.data || [];
+    // Only use API governorates for server-side mode to assure complete list
+    if (onGovernorateChange) return apiGovernorates;
+
     const campGovernorates = camps
       .map((camp) => {
         if (!camp.governorate) return null;
@@ -63,29 +124,34 @@ export default function CampProjects({
       })
       .filter((gov) => gov !== null) as { id: number; name: string }[];
 
-    // Combine and deduplicate by name
     const allGovernorates = [...apiGovernorates, ...campGovernorates];
-    const uniqueGovernorates = Array.from(
+    return Array.from(
       new Map(allGovernorates.map((gov) => [gov.name, gov])).values(),
     );
-    return uniqueGovernorates;
-  }, [governoratesData, camps]);
+  }, [governoratesData, camps, onGovernorateChange]);
 
   // Get unique camp names
   const campNames = useMemo(() => {
+    if (campNamesData?.data) {
+      return campNamesData.data.map((item: any) => ({
+        id: item.id,
+        name: item.name.ar || item.name.en,
+      }));
+    }
+    // Fallback to local
     return camps.map((camp) => ({
       id: camp.id,
       name: getCampNameString(camp.name),
       slug: camp.slug,
     }));
-  }, [camps]);
+  }, [campNamesData, camps]);
 
   // Filter camps based on form values
   const filteredCamps = useMemo(() => {
     let filtered = [...camps];
 
-    // Filter by governorate/region
-    if (watchedValues.region) {
+    // Filter by governorate/region (Only if NOT server-side filtering)
+    if (watchedValues.region && !onGovernorateChange) {
       filtered = filtered.filter((camp) => {
         if (!camp.governorate) return false;
         const governorateName =
@@ -97,17 +163,20 @@ export default function CampProjects({
     }
 
     // Filter by camp name (shelterName)
-    if (watchedValues.shelterName) {
+    if (watchedValues.shelterName && !onSearchNameChange) {
       filtered = filtered.filter(
         (camp) => getCampNameString(camp.name) === watchedValues.shelterName,
       );
     }
 
-    // Filter by camp title (if needed - this might need to be based on project types or other criteria)
-    // For now, we'll skip this as it's not clear what campTitle refers to in the data structure
-
     return filtered;
-  }, [camps, watchedValues.region, watchedValues.shelterName]);
+  }, [
+    camps,
+    watchedValues.region,
+    watchedValues.shelterName,
+    onGovernorateChange,
+    onSearchNameChange,
+  ]);
 
   const onSubmit = (data: any) => {
     // Form submission is handled by real-time filtering via watch()
@@ -120,6 +189,12 @@ export default function CampProjects({
       campTitle: "",
       shelterName: "",
     });
+    if (onGovernorateChange) {
+      onGovernorateChange("all");
+    }
+    if (onSearchNameChange) {
+      onSearchNameChange("");
+    }
   };
 
   return (
@@ -152,7 +227,19 @@ export default function CampProjects({
             name="region"
             render={({ field }) => (
               <FormItem className="flex-1 min-w-[150px] max-w-[300px]">
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    if (onGovernorateChange) {
+                      // The value in SelectItem below needs to lead to ID for the API
+                      // If value is name, we must find ID.
+                      // However, let's update SelectItem to use ID if we are in server mode?
+                      // Or just pass the value if it's the ID.
+                      onGovernorateChange(value);
+                    }
+                  }}
+                  value={field.value}
+                >
                   <FormControl>
                     <SelectTrigger className="w-full bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 focus:ring-0">
                       <SelectValue placeholder={t("governorate")} />
@@ -167,7 +254,15 @@ export default function CampProjects({
                       governorates.map((governorate) => (
                         <SelectItem
                           key={governorate.id || governorate.name}
-                          value={governorate.name}
+                          // If onGovernorateChange is present, we prefer ID.
+                          // But existing components might prefer Name?
+                          // The API implementation requires ID.
+                          // So we must use ID here if onGovernorateChange is active.
+                          value={
+                            onGovernorateChange
+                              ? governorate.id.toString()
+                              : governorate.name
+                          }
                         >
                           {governorate.name}
                         </SelectItem>
@@ -183,32 +278,65 @@ export default function CampProjects({
             )}
           />
 
-          {/* Shelter Name */}
+          {/* Shelter Name Combobox with Search */}
           <FormField
             control={form.control}
             name="shelterName"
             render={({ field }) => (
               <FormItem className="flex-1 min-w-[150px] max-w-[300px]">
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 focus:ring-0">
-                      <SelectValue placeholder={t("shelter_name")} />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {campNames.length > 0 ? (
-                      campNames.map((camp) => (
-                        <SelectItem key={camp.id} value={camp.name}>
-                          {camp.name}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <SelectItem value="no-data" disabled>
-                        {t("no_shelters")}
-                      </SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="w-full justify-between bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 hover:bg-[#F8F6F2] hover:text-gray-700"
+                      >
+                        {field.value
+                          ? campNames.find((camp) => camp.name === field.value)
+                              ?.name
+                          : t("shelter_name")}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[300px] p-0">
+                    <Command>
+                      <CommandInput placeholder={t("search_shelter")} />
+                      <CommandEmpty>{t("no_shelters")}</CommandEmpty>
+                      <CommandGroup className="max-h-[200px] overflow-auto">
+                        {campNames.map((camp) => (
+                          <CommandItem
+                            key={camp.id}
+                            value={camp.name}
+                            onSelect={(currentValue) => {
+                              const newValue =
+                                currentValue === field.value
+                                  ? ""
+                                  : currentValue;
+                              field.onChange(newValue);
+                              if (onSearchNameChange) {
+                                onSearchNameChange(newValue);
+                              }
+                              setOpen(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                field.value === camp.name
+                                  ? "opacity-100"
+                                  : "opacity-0",
+                              )}
+                            />
+                            {camp.name}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </FormItem>
             )}
           />

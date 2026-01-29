@@ -9,9 +9,19 @@ import { Camp } from "@/features/camps/types/camp.schema";
 
 interface CampsPageClientProps {
   camps: Camp[];
+  selectedGovernorate?: string;
+  onGovernorateChange?: (value: string) => void;
+  selectedSearchName?: string;
+  onSearchNameChange?: (value: string) => void;
 }
 
-export default function CampsPageClient({ camps }: CampsPageClientProps) {
+export default function CampsPageClient({
+  camps,
+  selectedGovernorate,
+  onGovernorateChange,
+  selectedSearchName,
+  onSearchNameChange,
+}: CampsPageClientProps) {
   const t = useTranslations();
 
   return (
@@ -62,7 +72,13 @@ export default function CampsPageClient({ camps }: CampsPageClientProps) {
           className="absolute bottom-0 right-1/4 w-16 h-[78px]"
         />
       </motion.div>
-      <CampProjects camps={camps} />
+      <CampProjects
+        camps={camps}
+        selectedGovernorate={selectedGovernorate}
+        onGovernorateChange={onGovernorateChange}
+        selectedSearchName={selectedSearchName}
+        onSearchNameChange={onSearchNameChange}
+      />
     </section>
   );
 }
