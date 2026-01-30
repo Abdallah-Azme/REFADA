@@ -38,10 +38,10 @@ export interface Project {
   id: number;
   name: string;
   type: string;
-  addedBy: string;
+  DelegatePhone?: string;
   beneficiaryCount: number;
   college: string;
-  status: string; // "pending" | "approved" | "rejected"
+  status: string; // "pending" | "approved" | "rejected" | "delivered"
   isApproved: boolean;
   notes: string | null;
   projectImage: string;
@@ -69,6 +69,20 @@ export async function getProjectsApi(
 ): Promise<ProjectsResponse> {
   const queryString = params ? `?${params}` : "";
   return apiRequest<ProjectsResponse>(`/projects${queryString}`, {
+    method: "GET",
+  });
+}
+
+export async function listProjectsApi(): Promise<{
+  success: boolean;
+  message: string;
+  data: Project[];
+}> {
+  return apiRequest<{
+    success: boolean;
+    message: string;
+    data: Project[];
+  }>(`/list-projects`, {
     method: "GET",
   });
 }

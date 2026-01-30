@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import { toast } from "sonner";
-import { getFamiliesApi } from "../api/families.api";
+import { getFamiliesApi, getFamilyMembersApi } from "../api/families.api";
 import { Family } from "../types/family.schema";
 import { FamiliesQueryParams } from "../types/families-query.types";
 import {
@@ -45,6 +45,10 @@ import { useCampNames } from "@/features/camps";
 import { useMaritalStatuses } from "@/features/marital-status";
 import { Button } from "@/src/shared/ui/button";
 import { BulkDeleteDialog } from "./bulk-delete-dialog";
+import {
+  exportToExcel,
+  formatFamiliesWithMembersForExport,
+} from "@/src/lib/export-utils";
 
 interface PaginationMeta {
   current_page: number;
@@ -258,21 +262,18 @@ export function FamilyTable({
       setIsExporting(true);
       toast.info(t("export.loading"));
 
-      let dataToExport: Family[] = [];
+      let familiesToExport: Family[] = [];
 
       // Check if there are selected rows
       const selectedRows = table.getFilteredSelectedRowModel().rows;
 
       if (selectedRows.length > 0) {
         // Use selected rows directly
-        dataToExport = selectedRows.map((row) => row.original);
+        familiesToExport = selectedRows.map((row) => row.original);
       } else {
-        // No selection - fetch all data from API
-        // Construct query params for fetching all data
-        // We pass per_page as a very large number to get all records
-        // Filter params are preserved from current state
+        // No selection - fetch all data from API based on current filters
         const exportParams = new URLSearchParams();
-        exportParams.append("per_page", "100000");
+        exportParams.append("per_page", "1000"); // Limit to 1000 for performance
         exportParams.append("page", "1");
 
         if (queryParams.search)
@@ -294,48 +295,50 @@ export function FamilyTable({
         // Fetch data
         const response = await getFamiliesApi(exportParams.toString());
         if (response && response.data) {
-          dataToExport = response.data;
+          familiesToExport = response.data;
         }
       }
 
-      if (dataToExport.length > 0) {
-        // Transform data for Excel
-        const exportData = dataToExport.map((family) => ({
-          [t("columns.familyName")]: family.familyName,
-          [t("columns.nationalId")]: family.nationalId,
-          [t("columns.phone")]: family.phone,
-          [t("columns.camp")]: family.camp || "",
-          [t("columns.tentNumber")]: family.tentNumber || "",
-          [t("columns.maritalStatus")]: family.maritalStatus || "",
-          [t("columns.totalMembers")]: family.totalMembers,
-          [t("columns.medicalConditions")]: Array.isArray(
-            family.medicalConditions,
-          )
-            ? family.medicalConditions.join(", ")
-            : "",
-          [t("columns.ageGroups")]: Array.isArray(family.ageGroups)
-            ? family.ageGroups.map((ag) => ag).join(", ")
-            : "",
-          [t("columns.location")]: family.location || "",
-          [t("columns.notes")]: family.notes || "",
-        }));
+      if (familiesToExport.length > 0) {
+        // Fetch members for each family (only if not already present)
+        const familiesWithMembers = await Promise.all(
+          familiesToExport.map(async (family) => {
+            if (family.members && family.members.length > 0) {
+              return {
+                family,
+                members: family.members,
+              };
+            }
 
-        // Create workbook and worksheet
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(exportData);
+            try {
+              const membersResponse = await getFamilyMembersApi(family.id);
+              return {
+                family,
+                members: membersResponse.data || [],
+              };
+            } catch (error) {
+              console.error(
+                `Error fetching members for family ${family.id}:`,
+                error,
+              );
+              return {
+                family,
+                members: [],
+              };
+            }
+          }),
+        );
 
-        // Add worksheet to workbook
-        XLSX.utils.book_append_sheet(wb, ws, "Families");
+        const formattedData =
+          formatFamiliesWithMembersForExport(familiesWithMembers);
 
-        // Generate Excel file
-        const fileName =
+        const filename =
           selectedRows.length > 0
-            ? `families_selected_export_${new Date().toISOString().split("T")[0]}.xlsx`
-            : `families_full_export_${new Date().toISOString().split("T")[0]}.xlsx`;
+            ? `families_members_export_${selectedRows.length}_selected_${new Date().toISOString().split("T")[0]}`
+            : `families_members_export_all_${new Date().toISOString().split("T")[0]}`;
 
-        XLSX.writeFile(wb, fileName);
-
-        toast.success(t("export.success"));
+        exportToExcel(formattedData, filename, "Families With Members");
+        toast.success(t("export.success") || "تم تصدير البيانات بنجاح");
       } else {
         toast.error(tCommon("error_occurred"));
       }

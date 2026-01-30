@@ -43,6 +43,7 @@ export default function RepresentativeFamiliesPage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletingFamily, setDeletingFamily] = useState<Family | null>(null);
 
+  console.log({ response });
   const families = response?.data ?? [];
   const meta = response?.meta;
 

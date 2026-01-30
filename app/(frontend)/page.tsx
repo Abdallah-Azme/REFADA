@@ -16,6 +16,8 @@ import { testimonialApi } from "@/features/testimonials/api/testimonial.api";
 import { HomePageData } from "@/features/home-control/types/hero.schema";
 import AddFamilyDialog from "@/src/features/dashboard/components/add-family-dialog";
 import { FamilyFormDialog } from "@/src/features/families/components/family-form-dialog";
+import { listProjectsApi } from "@/features/projects/api/projects.api";
+import { Project } from "@/features/projects/api/projects.api";
 
 async function getHomePageData(): Promise<HomePageData> {
   try {
@@ -61,14 +63,24 @@ async function getTestimonials() {
   }
 }
 
+async function getProjects(): Promise<Project[]> {
+  try {
+    const response = await listProjectsApi();
+    return response.data || [];
+  } catch (error) {
+    console.error("Failed to fetch projects:", error);
+    return [];
+  }
+}
+
 export default async function Home() {
   const homePageData = await getHomePageData();
   const slides = homePageData.slides || [];
   const camps = await getCamps();
 
-  console.log({ camps });
   const partners = await getPartners();
   const testimonials = await getTestimonials();
+  const projects = await getProjects();
 
   return (
     <main className="flex flex-col gap-6 mt-10">
@@ -93,15 +105,10 @@ export default async function Home() {
       <CampsSection camps={camps} />
       <CampsMapSection camps={camps} />
       <ShelterProjectsSection
-        projects={camps.flatMap((c) => {
-          // Convert camp name to string (handle both string and object formats)
-          const campName =
-            typeof c.name === "string"
-              ? c.name
-              : c.name?.ar || c.name?.en || "";
-
-          return c.projects?.map((p) => ({ ...p, campName })) || [];
-        })}
+        projects={projects.map((p) => ({
+          ...p,
+          campName: p.camp,
+        }))}
       />
       <TestimonialsSection testimonials={testimonials} />
       <ContactSection />

@@ -40,8 +40,13 @@ export function formatFamiliesForExport(families: any[]) {
     "Total Members": family.totalMembers || 0,
     "Tent Number": family.tentNumber || "",
     Location: family.location || "",
-    "Marital Status": family.maritalStatus?.name || "",
-    "Medical Condition": family.medicalCondition?.name || "Healthy",
+    "Marital Status":
+      typeof family.maritalStatus === "string"
+        ? family.maritalStatus
+        : family.maritalStatus?.name || "",
+    "Medical Conditions": Array.isArray(family.medicalConditions)
+      ? family.medicalConditions.join(", ")
+      : family.medicalCondition?.name || "Healthy",
     Notes: family.notes || "",
     "Created At": family.createdAt
       ? new Date(family.createdAt).toLocaleDateString()
@@ -97,7 +102,9 @@ export function formatFamiliesWithMembersForExport(
         "Member Gender": member.gender,
         "Member DOB": member.dob,
         "Member Relationship": member.relationship,
-        "Member Med. Condition": member.medicalCondition || "Healthy",
+        "Member Med. Condition": Array.isArray(member.medicalConditions)
+          ? member.medicalConditions.join(", ")
+          : member.medicalCondition || "Healthy",
       });
     });
   });

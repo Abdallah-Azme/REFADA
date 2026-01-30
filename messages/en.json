@@ -1518,6 +1518,7 @@
       "deletedBy": "Deleted By",
       "deleteReason": "Delete Reason",
       "deletedAt": "Deleted At",
+      "notes": "Notes",
       "actions": "Actions"
     },
     "filters": {

@@ -5,6 +5,7 @@ import {
   updateProjectApi,
   approveProjectApi,
   deleteProjectApi,
+  listProjectsApi,
 } from "../api/projects.api";
 import { toast } from "sonner";
 import {
@@ -21,6 +22,13 @@ export function useProjects(
     queryKey: ["projects", params],
     queryFn: () => getProjectsApi(queryString),
     placeholderData: (previousData) => previousData,
+  });
+}
+
+export function useListProjects() {
+  return useQuery({
+    queryKey: ["projects", "list"],
+    queryFn: () => listProjectsApi(),
   });
 }
 
