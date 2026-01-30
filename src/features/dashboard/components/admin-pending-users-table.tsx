@@ -31,7 +31,7 @@ import {
 } from "@/features/representatives/hooks/use-pending-users";
 import { PendingUser } from "@/features/representatives/types/pending-users.schema";
 import { Loader2 } from "lucide-react";
-import { useCamps } from "@/features/camps/hooks/use-camps";
+import { useCampNamesList } from "@/features/camps/hooks/use-camps";
 import { useAdminPositions } from "@/features/admin-position";
 import {
   Dialog,
@@ -47,13 +47,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function AdminPendingUsersTable() {
   const t = useTranslations();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -75,14 +90,15 @@ export default function AdminPendingUsersTable() {
   }, [response]);
 
   // Camp Assignment Logic
-  const { data: campsResponse } = useCamps();
-  const camps = campsResponse?.data || [];
+  const { data: campsResponse } = useCampNamesList();
+  const camps = (campsResponse?.data || []) as any[];
 
   // Admin Positions Logic
   const { data: adminPositionsData } = useAdminPositions();
   const adminPositions = adminPositionsData?.data || [];
 
   const [isCampDialogOpen, setIsCampDialogOpen] = React.useState(false);
+  const [campOpen, setCampOpen] = React.useState(false);
   const [pendingUserToApprove, setPendingUserToApprove] =
     React.useState<PendingUser | null>(null);
   const [selectedCampId, setSelectedCampId] = React.useState<string>("");
@@ -120,7 +136,7 @@ export default function AdminPendingUsersTable() {
         // Camp not found - show suggestion message
         setSelectedCampId("");
         setCampSuggestionMessage(
-          `المستخدم أدخل اسم مخيم "${user.campName}" غير موجود في القائمة. قد تحتاج إلى إنشاء مخيم جديد بهذا الاسم.`
+          `المستخدم أدخل اسم مخيم "${user.campName}" غير موجود في القائمة. قد تحتاج إلى إنشاء مخيم جديد بهذا الاسم.`,
         );
       }
     } else {
@@ -158,7 +174,7 @@ export default function AdminPendingUsersTable() {
         onApprove: handleApprove,
         onReject: handleReject,
       },
-      t
+      t,
     ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -207,7 +223,7 @@ export default function AdminPendingUsersTable() {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -224,7 +240,7 @@ export default function AdminPendingUsersTable() {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -239,7 +255,7 @@ export default function AdminPendingUsersTable() {
                         onApprove: handleApprove,
                         onReject: handleReject,
                       },
-                      t
+                      t,
                     ).length
                   }
                   className="h-24 text-center"
@@ -273,24 +289,72 @@ export default function AdminPendingUsersTable() {
             {/* Camp Select */}
             <div className="space-y-2">
               <label className="text-sm font-medium">المخيم</label>
-              <Select value={selectedCampId} onValueChange={setSelectedCampId}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="اختر المخيم" />
-                </SelectTrigger>
-                <SelectContent>
-                  {camps.map((camp: any) => {
-                    const campName =
-                      typeof camp.name === "string"
-                        ? camp.name
-                        : camp.name?.ar || camp.name?.en || "";
-                    return (
-                      <SelectItem key={camp.id} value={camp.id.toString()}>
-                        {campName}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
+              <Popover open={campOpen} onOpenChange={setCampOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className={cn(
+                      "w-full justify-between pl-3 text-right font-normal",
+                      !selectedCampId && "text-muted-foreground",
+                    )}
+                  >
+                    {selectedCampId
+                      ? (() => {
+                          const camp = camps.find(
+                            (c) => c.id.toString() === selectedCampId,
+                          );
+                          if (!camp) return "اختر المخيم";
+                          const name = camp.name;
+                          return typeof name === "string"
+                            ? name
+                            : name?.ar || name?.en || "اختر المخيم";
+                        })()
+                      : "اختر المخيم"}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-[var(--radix-popover-trigger-width)] max-h-[300px] overflow-hidden p-0"
+                  align="start"
+                  onWheel={(e) => e.stopPropagation()}
+                >
+                  <Command>
+                    <CommandInput placeholder="ابحث عن مخيم..." />
+                    <CommandList className="overflow-y-auto">
+                      <CommandEmpty>لا توجد نتائج</CommandEmpty>
+                      <CommandGroup>
+                        {camps.map((camp) => {
+                          const displayName =
+                            typeof camp.name === "string"
+                              ? camp.name
+                              : camp.name?.ar || camp.name?.en || "";
+                          return (
+                            <CommandItem
+                              value={displayName}
+                              key={camp.id}
+                              onSelect={() => {
+                                setSelectedCampId(camp.id.toString());
+                                setCampOpen(false);
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  camp.id.toString() === selectedCampId
+                                    ? "opacity-100"
+                                    : "opacity-0",
+                                )}
+                              />
+                              {displayName}
+                            </CommandItem>
+                          );
+                        })}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
               {/* Camp Suggestion Message */}
               {campSuggestionMessage && (
                 <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-md">

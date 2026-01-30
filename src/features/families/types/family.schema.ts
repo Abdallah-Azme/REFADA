@@ -35,6 +35,7 @@ export const familySchema = z.object({
   medicalConditionIds: z.array(z.string()).optional(), // Array of medical condition IDs for head of family - 'other' means custom text
   medicalConditionText: z.string().optional().or(z.literal("")), // Custom text when 'other' is selected
   members: z.array(familyMemberSchema).optional(), // Dynamic members array
+  file: z.any().optional(), // Image file
 });
 
 export type FamilyFormValues = z.infer<typeof familySchema>;

@@ -13,6 +13,7 @@
     "yes": "نعم",
     "no": "لا",
     "search": "بحث",
+    "clear_filters": "مسح التصفية",
     "filter": "تصفية",
     "reset": "إعادة تعيين",
     "actions": "الإجراءات",
@@ -163,7 +164,8 @@
         "view_details": "عرض التفاصيل",
         "edit": "تعديل",
         "delete": "حذف"
-      }
+      },
+      "no_results": "لا توجد نتائج"
     },
     "system_management": "إدارة النظام",
     "manage_projects": "إدارة المشاريع",
@@ -355,6 +357,12 @@
   "contributor_history_location": "الموقع",
   "contributor_history_no_families_found": "لم يتم العثور على أسر",
   "families": {
+    "toast": {
+      "validation_error": "يرجى التحقق من المدخلات",
+      "update_success": "تم تعديل بيانات العائلة بنجاح",
+      "update_error": "حدث خطأ أثناء تعديل البيانات",
+      "member_delete_error": "حدث خطأ أثناء حذف الفرد"
+    },
     "columns": {
       "id": "الرقم",
       "familyName": "اسم العائلة",
@@ -420,10 +428,7 @@
     "delete_description": "هل أنت متأكد من حذف عائلة \"{name}\"؟ هذا الإجراء لا يمكن التراجع عنه.",
     "family_members": "أفراد العائلة",
     "relationship": "صلة القرابة",
-    "toast": {
-      "update_success": "تم تعديل بيانات العائلة بنجاح",
-      "update_error": "حدث خطأ أثناء تعديل البيانات"
-    },
+
     "update_family_title": "تعديل بيانات العائلة",
     "add_family_title": "إضافة عائلة جديدة",
     "national_id_placeholder_14": "رقم الهوية (14 رقم)",
@@ -444,6 +449,8 @@
     "healthy": "سليم",
     "other": "أخرى",
     "choose_camp": "اختر المعسكر",
+    "search_camp": "ابحث عن إيواء",
+    "no_results": "لا توجد نتائج",
     "choose_status": "اختر الحالة الاجتماعية",
     "actions_menu": {
       "open_menu": "فتح القائمة",
@@ -486,6 +493,7 @@
     "update_btn": "تحديث",
     "add_btn": "إضافة",
     "cancel": "إلغاء",
+    "no_results": "لا توجد نتائج",
     "create_project_error": "لا يمكن إنشاء المشروع",
     "no_camp_selected_desc": "لم يتم تحديد الإيواء. تأكد من أنك مسجل في إيواء معين.",
     "validation": {
@@ -625,6 +633,7 @@
     "success_add": "تم إضافة المندوب بنجاح",
     "error_add": "حدث خطأ أثناء إضافة المندوب",
     "no_representatives": "لا يوجد مندوبين معتمدين",
+    "no_results": "لا توجد نتائج",
     "loading": "جاري التحميل...",
     "error_loading": "حدث خطأ أثناء تحميل البيانات",
     "error_title": "حدث خطأ أثناء تحميل النشاطات",
@@ -653,7 +662,19 @@
     "confirm_new_password": "تأكيد كلمة المرور",
     "confirm_password_placeholder": "أعد إدخال كلمة المرور",
     "passwords_not_match": "كلمات المرور غير متطابقة",
-    "save_password": "حفظ كلمة المرور"
+    "save_password": "حفظ كلمة المرور",
+    "filters": {
+      "search_placeholder": "بحث (الاسم، البريد، الهاتف، الهوية)",
+      "search_camp_placeholder": "بحث عن مخيم...",
+      "no_camps_found": "لا يوجد مخيمات",
+      "status_label": "الحالة",
+      "camp_label": "المخيم",
+      "all_statuses": "جميع الحالات",
+      "all_camps": "جميع المخيمات",
+      "status_pending": "قيد الانتظار",
+      "status_approved": "مقبول",
+      "status_rejected": "مرفوض"
+    }
   },
   "contributors": {
     "page_title": "إدارة المساهمين",
@@ -1498,6 +1519,7 @@
       "phone": "رقم الهاتف",
       "totalMembers": "عدد الأفراد",
       "camp": "المخيم",
+      "maritalStatus": "الحالة الاجتماعية",
       "tentNumber": "رقم الخيمة",
       "location": "الموقع",
       "medicalConditions": "الحالات الطبية",
@@ -1534,6 +1556,11 @@
       "of": "من",
       "page": "صفحة",
       "per_page": "لكل صفحة"
+    },
+    "export_excel": "تصدير إلى Excel",
+    "export": {
+      "loading": "جاري تصدير البيانات...",
+      "success": "تم تصدير البيانات بنجاح"
     }
   },
   "projects_page": {
@@ -1825,61 +1852,6 @@
       "english_title_placeholder": "العنوان بالإنجليزية",
       "english_subtitle_placeholder": "العنوان الفرعي بالإنجليزية",
       "english_description_placeholder": "الوصف بالإنجليزية"
-    }
-  },
-  "families_page": {
-    "columns": {
-      "familyName": "اسم العائلة",
-      "nationalId": "رقم الهوية",
-      "phone": "رقم الهاتف",
-      "totalMembers": "عدد الأفراد",
-      "camp": "المخيم",
-      "maritalStatus": "الحالة الاجتماعية",
-      "tentNumber": "رقم الخيمة",
-      "location": "الموقع",
-      "medicalConditions": "الحالات الطبية",
-      "ageGroups": "الفئات العمرية",
-      "notes": "الملاحظات",
-      "deletedBy": "حذفت بواسطة",
-      "deleteReason": "سبب الحذف",
-      "deletedAt": "تاريخ الحذف"
-    },
-    "export_excel": "تصدير إلى Excel",
-    "export": {
-      "loading": "جاري تصدير البيانات...",
-      "success": "تم تصدير البيانات بنجاح"
-    },
-    "filters": {
-      "medicalConditions": "الحالات الطبية",
-      "ageGroups": "الفئات العمرية"
-    },
-    "pagination": {
-      "showing": "عرض",
-      "of": "من",
-      "per_page": "لكل صفحة",
-      "page": "صفحة"
-    },
-    "bulk_delete": {
-      "button": "حذف متعدد",
-      "title": "حذف عائلات متعددة",
-      "description": "هل أنت متأكد من حذف {count} عائلة؟ هذا الإجراء لا يمكن التراجع عنه.",
-      "reason_label": "سبب الحذف",
-      "reason_placeholder": "أدخل سبب حذف هذه العائلات...",
-      "cancel": "إلغاء",
-      "confirm": "تأكيد الحذف"
-    },
-    "deleted_families_page": {
-      "title": "العائلات المحذوفة",
-      "list_title": "قائمة العائلات المحذوفة"
-    },
-    "force_delete": {
-      "button": "حذف نهائي",
-      "title": "حذف نهائي للعائلة",
-      "description": "هل أنت متأكد من الحذف النهائي للعائلة؟ هذا الإجراء لا يمكن التراجع عنه.",
-      "confirm": "تأكيد الحذف النهائي"
-    },
-    "restore": {
-      "button": "استعادة"
     }
   },
   "camps_section_home": {

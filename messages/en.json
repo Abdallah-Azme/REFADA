@@ -13,6 +13,7 @@
     "yes": "Yes",
     "no": "No",
     "search": "Search",
+    "clear_filters": "Clear Filters",
     "filter": "Filter",
     "reset": "Reset",
     "actions": "Actions",
@@ -155,7 +156,8 @@
         "view_details": "View Details",
         "edit": "Edit",
         "delete": "Delete"
-      }
+      },
+      "no_results": "No results found"
     },
     "total_families": "Total Families",
     "contributors": "Contributors",
@@ -362,6 +364,12 @@
   "contributor_history_location": "Location",
   "contributor_history_no_families_found": "No families found",
   "families": {
+    "toast": {
+      "validation_error": "Please check the form for errors",
+      "update_success": "Family data updated successfully",
+      "update_error": "Error updating family data",
+      "member_delete_error": "Error deleting member"
+    },
     "columns": {
       "familyName": "Family Name",
       "nationalId": "ID Number",
@@ -429,10 +437,7 @@
     "delete_description": "Are you sure you want to delete the family \"{name}\"? This action cannot be undone.",
     "family_members": "Family Members",
     "relationship": "Relationship",
-    "toast": {
-      "update_success": "Family data updated successfully",
-      "update_error": "Error updating family data"
-    },
+
     "update_family_title": "Edit Family Data",
     "add_family_title": "Add New Family",
     "national_id_placeholder_14": "National ID (14 digits)",
@@ -453,6 +458,8 @@
     "healthy": "Healthy",
     "other": "Other",
     "choose_camp": "Select Camp",
+    "search_camp": "Search for shelter",
+    "no_results": "No results",
     "choose_status": "Select Status",
     "validation_error": "Please check the entered data",
     "age_groups": {
@@ -489,6 +496,7 @@
     "update_btn": "Update",
     "add_btn": "Add",
     "cancel": "Cancel",
+    "no_results": "No results found",
     "create_project_error": "Cannot create project",
     "no_camp_selected_desc": "Camp is not selected. Ensure you are registered in a specific camp.",
     "validation": {
@@ -627,6 +635,7 @@
     "success_add": "Representative added successfully",
     "error_add": "Error adding representative",
     "no_representatives": "No approved representatives",
+    "no_results": "No results found",
     "loading": "Loading...",
     "error_loading": "Error loading data",
     "delete_title": "Delete Representative",
@@ -645,7 +654,19 @@
     "confirm_new_password": "Confirm Password",
     "confirm_password_placeholder": "Re-enter password",
     "passwords_not_match": "Passwords do not match",
-    "save_password": "Save Password"
+    "save_password": "Save Password",
+    "filters": {
+      "search_placeholder": "Search (Name, Email, Phone, ID)",
+      "search_camp_placeholder": "Search for a shelter...",
+      "no_camps_found": "No shelters found",
+      "status_label": "Status",
+      "camp_label": "Shelter",
+      "all_statuses": "All Statuses",
+      "all_camps": "All Shelters",
+      "status_pending": "Pending",
+      "status_approved": "Approved",
+      "status_rejected": "Rejected"
+    }
   },
   "contributors": {
     "page_title": "Manage Contributors",
@@ -1489,6 +1510,7 @@
       "phone": "Phone Number",
       "totalMembers": "Members Count",
       "camp": "Camp",
+      "maritalStatus": "Marital Status",
       "tentNumber": "Tent Number",
       "location": "Location",
       "medicalConditions": "Medical Conditions",
@@ -1523,8 +1545,12 @@
     "pagination": {
       "showing": "Showing",
       "of": "of",
-      "page": "Page",
-      "per_page": "Per page"
+      "page": "Page"
+    },
+    "export_excel": "Export to Excel",
+    "export": {
+      "loading": "Exporting data...",
+      "success": "Data exported successfully"
     }
   },
   "projects_page": {
@@ -1817,61 +1843,6 @@
       "english_title_placeholder": "English Title",
       "english_subtitle_placeholder": "English Subtitle",
       "english_description_placeholder": "English Description"
-    }
-  },
-  "families_page": {
-    "columns": {
-      "familyName": "Family Name",
-      "nationalId": "National ID",
-      "phone": "Phone Number",
-      "totalMembers": "Members Count",
-      "camp": "Camp",
-      "maritalStatus": "Marital Status",
-      "tentNumber": "Tent Number",
-      "location": "Location",
-      "medicalConditions": "Medical Conditions",
-      "ageGroups": "Age Groups",
-      "notes": "Notes",
-      "deletedBy": "Deleted By",
-      "deleteReason": "Delete Reason",
-      "deletedAt": "Deleted At"
-    },
-    "export_excel": "Export to Excel",
-    "export": {
-      "loading": "Exporting data...",
-      "success": "Data exported successfully"
-    },
-    "filters": {
-      "medicalConditions": "Medical Conditions",
-      "ageGroups": "Age Groups"
-    },
-    "pagination": {
-      "showing": "Showing",
-      "of": "of",
-      "per_page": "per page",
-      "page": "page"
-    },
-    "bulk_delete": {
-      "button": "Bulk Delete",
-      "title": "Delete Multiple Families",
-      "description": "Are you sure you want to delete {count} families? This action cannot be undone.",
-      "reason_label": "Delete Reason",
-      "reason_placeholder": "Enter reason for deleting these families...",
-      "cancel": "Cancel",
-      "confirm": "Confirm Delete"
-    },
-    "deleted_families_page": {
-      "title": "Deleted Families",
-      "list_title": "Deleted Families List"
-    },
-    "force_delete": {
-      "button": "Force Delete",
-      "title": "Force Delete Family",
-      "description": "Are you sure you want to permanently delete this family? This action cannot be undone.",
-      "confirm": "Confirm Force Delete"
-    },
-    "restore": {
-      "button": "Restore"
     }
   },
   "camps_section_home": {

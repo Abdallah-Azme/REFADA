@@ -29,7 +29,15 @@ import { PhoneInput } from "@/components/ui/phone-input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
-import { CirclePlus, PlusCircle, Users, Trash2, UserPlus } from "lucide-react";
+import {
+  CirclePlus,
+  PlusCircle,
+  Users,
+  Trash2,
+  UserPlus,
+  Check,
+  ChevronsUpDown,
+} from "lucide-react";
 
 import {
   Select,
@@ -37,10 +45,24 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { MultiSelectMedical } from "@/components/ui/multi-select-medical";
 import { familySchema } from "@/features/families/types/family.schema";
 import { useCreateFamily } from "@/features/families/hooks/use-create-family";
-import { useCamps } from "@/features/camps";
+import { useCampNamesList } from "@/features/camps";
 import { toast } from "sonner";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useRelationships } from "@/features/families/hooks/use-relationships";
@@ -51,6 +73,7 @@ import { useProfile } from "@/features/profile";
 export default function AddFamilyDialog() {
   const t = useTranslations("families");
   const [open, setOpen] = useState(false);
+  const [campOpen, setCampOpen] = useState(false);
   const { mutateAsync: createFamily, isPending } = useCreateFamily();
 
   // Track "Other" medical condition selection for head of family
@@ -61,8 +84,8 @@ export default function AddFamilyDialog() {
   >({});
 
   // Load camps for the select
-  const { data: campsData } = useCamps();
-  const camps = campsData?.data || [];
+  const { data: campsData } = useCampNamesList();
+  const camps = (campsData?.data || []) as any[];
 
   // Load relationships for the select
   const { data: relationshipsData } = useRelationships();
@@ -500,49 +523,85 @@ export default function AddFamilyDialog() {
                     control={form.control}
                     name="campId"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="flex flex-col">
                         <FormLabel className="text-xs text-gray-600">
                           {t("camp")}
                         </FormLabel>
-                        <FormControl>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
+                        <Popover open={campOpen} onOpenChange={setCampOpen}>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className={cn(
+                                  "w-full justify-between bg-white pl-3 text-right font-normal",
+                                  !field.value && "text-muted-foreground",
+                                )}
+                              >
+                                {field.value
+                                  ? (() => {
+                                      const camp = camps.find(
+                                        (c) => c.id.toString() === field.value,
+                                      );
+                                      if (!camp) return t("camp_placeholder");
+                                      const name = camp.name;
+                                      return typeof name === "string"
+                                        ? name
+                                        : name?.ar ||
+                                            name?.en ||
+                                            t("camp_placeholder");
+                                    })()
+                                  : t("camp_placeholder")}
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-[var(--radix-popover-trigger-width)] max-h-[300px] overflow-hidden p-0"
+                            align="start"
+                            onWheel={(e) => e.stopPropagation()}
                           >
-                            <SelectTrigger className="w-full bg-white">
-                              {field.value
-                                ? (() => {
-                                    const camp = camps.find(
-                                      (c) => c.id.toString() === field.value,
+                            <Command>
+                              <CommandInput
+                                placeholder={t("search_camp") + "..."}
+                              />
+                              <CommandList className="overflow-y-auto">
+                                <CommandEmpty>{t("no_results")}</CommandEmpty>
+                                <CommandGroup>
+                                  {camps.map((camp) => {
+                                    const displayName =
+                                      typeof camp.name === "string"
+                                        ? camp.name
+                                        : camp.name?.ar || camp.name?.en || "";
+                                    return (
+                                      <CommandItem
+                                        value={displayName}
+                                        key={camp.id}
+                                        onSelect={() => {
+                                          form.setValue(
+                                            "campId",
+                                            camp.id.toString(),
+                                          );
+                                          setCampOpen(false);
+                                        }}
+                                      >
+                                        <Check
+                                          className={cn(
+                                            "mr-2 h-4 w-4",
+                                            camp.id.toString() === field.value
+                                              ? "opacity-100"
+                                              : "opacity-0",
+                                          )}
+                                        />
+                                        {displayName}
+                                      </CommandItem>
                                     );
-                                    if (!camp) return t("camp_placeholder");
-                                    const name = camp.name;
-                                    return typeof name === "string"
-                                      ? name
-                                      : name?.ar ||
-                                          name?.en ||
-                                          t("camp_placeholder");
-                                  })()
-                                : t("camp_placeholder")}
-                            </SelectTrigger>
-                            <SelectContent>
-                              {camps.map((camp) => {
-                                const displayName =
-                                  typeof camp.name === "string"
-                                    ? camp.name
-                                    : camp.name?.ar || camp.name?.en || "";
-                                return (
-                                  <SelectItem
-                                    key={camp.id}
-                                    value={camp.id.toString()}
-                                  >
-                                    {displayName}
-                                  </SelectItem>
-                                );
-                              })}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
+                                  })}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
                         <FormMessage />
                       </FormItem>
                     )}

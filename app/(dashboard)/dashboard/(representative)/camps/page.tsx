@@ -22,7 +22,7 @@ export default function Page() {
   const { data: campData, isLoading: campLoading } = useCampDetails(
     campSlug || null,
   );
-
+  console.log({ campData });
   const isLoading = profileLoading || campLoading || contributionsLoading;
 
   // Build dynamic stats from API data

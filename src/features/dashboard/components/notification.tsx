@@ -17,7 +17,7 @@ import {
 
 // Map backend notification type to UI type
 function getNotificationType(
-  notification: BackendNotification
+  notification: BackendNotification,
 ): "error" | "info" | "success" {
   // You can customize this based on notification.type
   if (notification.type === "error" || notification.type === "rejection") {
@@ -51,7 +51,7 @@ export default function Notification() {
       description: notification.message,
       timeAgo: notification.timeAgo,
       isRead: notification.isRead,
-    })
+    }),
   );
 
   // Combine: FCM first (newest), then backend
@@ -76,6 +76,7 @@ export default function Notification() {
         side="bottom"
         align="center"
         className="w-[380px] p-0 rounded-xl"
+        onWheel={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="px-5 py-4 font-semibold text-lg flex justify-between items-center">

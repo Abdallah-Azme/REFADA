@@ -13,6 +13,7 @@ export {
   useDeleteCamp,
   useCampDetails,
   useCampFamilyStatistics,
+  useCampNamesList,
 } from "./hooks/use-camps";
 
 // Types

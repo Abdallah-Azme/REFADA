@@ -33,24 +33,40 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Check, ChevronsUpDown } from "lucide-react";
 
 import { createRepresentativeSchema } from "../types/create-representative.schema";
 import { useCreateRepresentative } from "../hooks/use-create-representative";
-import { useCamps } from "@/features/camps";
+import { useCampNamesList } from "@/features/camps";
 import { useAdminPositions } from "@/features/admin-position";
 
 export default function AddRepresentativeDialog() {
   const t = useTranslations("representatives");
   const locale = useLocale();
   const [open, setOpen] = useState(false);
+  const [campOpen, setCampOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { mutateAsync: createRepresentative, isPending } =
     useCreateRepresentative();
 
   // Load camps for the select
-  const { data: campsData } = useCamps();
-  const camps = campsData?.data || [];
+  const { data: campsData } = useCampNamesList();
+  const camps = (campsData?.data || []) as any[];
 
   // Load admin positions for the select
   const { data: adminPositionsData } = useAdminPositions();
@@ -82,7 +98,7 @@ export default function AddRepresentativeDialog() {
   });
 
   const onSubmit = async (
-    values: z.infer<typeof createRepresentativeSchema>
+    values: z.infer<typeof createRepresentativeSchema>,
   ) => {
     try {
       await createRepresentative(values);
@@ -216,33 +232,69 @@ export default function AddRepresentativeDialog() {
                   control={form.control}
                   name="camp_id"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col">
                       <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="w-full bg-white">
-                            {field.value
-                              ? (() => {
-                                  const camp = camps.find(
-                                    (c) => c.id.toString() === field.value
-                                  );
-                                  return camp ? getCampName(camp) : t("camp");
-                                })()
-                              : t("camp")}
-                          </SelectTrigger>
-                          <SelectContent>
-                            {camps.map((camp) => (
-                              <SelectItem
-                                key={camp.id}
-                                value={camp.id.toString()}
-                              >
-                                {getCampName(camp)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <Popover open={campOpen} onOpenChange={setCampOpen}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "w-full justify-between bg-white pl-3 text-right font-normal",
+                                !field.value && "text-muted-foreground",
+                              )}
+                            >
+                              {field.value
+                                ? (() => {
+                                    const camp = camps.find(
+                                      (c) => c.id.toString() === field.value,
+                                    );
+                                    return camp ? getCampName(camp) : t("camp");
+                                  })()
+                                : t("camp")}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-[var(--radix-popover-trigger-width)] max-h-[300px] overflow-hidden p-0"
+                            align="start"
+                            onWheel={(e) => e.stopPropagation()}
+                          >
+                            <Command>
+                              <CommandInput
+                                placeholder={t("search_camp") + "..."}
+                              />
+                              <CommandList className="overflow-y-auto">
+                                <CommandEmpty>{t("no_results")}</CommandEmpty>
+                                <CommandGroup>
+                                  {camps.map((camp) => (
+                                    <CommandItem
+                                      value={getCampName(camp)}
+                                      key={camp.id}
+                                      onSelect={() => {
+                                        form.setValue(
+                                          "camp_id",
+                                          camp.id.toString(),
+                                        );
+                                        setCampOpen(false);
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          camp.id.toString() === field.value
+                                            ? "opacity-100"
+                                            : "opacity-0",
+                                        )}
+                                      />
+                                      {getCampName(camp)}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -263,7 +315,7 @@ export default function AddRepresentativeDialog() {
                           <SelectTrigger className="w-full bg-white">
                             {field.value
                               ? adminPositions.find(
-                                  (p) => p.id.toString() === field.value
+                                  (p) => p.id.toString() === field.value,
                                 )?.name || t("admin_position")
                               : t("admin_position")}
                           </SelectTrigger>

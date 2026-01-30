@@ -65,6 +65,8 @@ export default async function Home() {
   const homePageData = await getHomePageData();
   const slides = homePageData.slides || [];
   const camps = await getCamps();
+
+  console.log({ camps });
   const partners = await getPartners();
   const testimonials = await getTestimonials();
 

@@ -24,6 +24,7 @@ import {
 import React, { useState } from "react";
 import { createPendingDelegatesColumns } from "../table-cols/admin-representatives-cols";
 import PaginationControls from "./pagination-controls";
+import { RepresentativesFilter } from "./representatives-filter";
 import { useRepresentatives } from "@/features/representatives/hooks/use-representatives";
 import { useDeleteRepresentative } from "@/features/representatives/hooks/use-delete-representative";
 import {
@@ -31,7 +32,7 @@ import {
   useRejectRepresentative,
   useChangeRepresentativePassword,
 } from "@/features/representatives/hooks/use-approve-reject";
-import { useCamps } from "@/features/camps";
+import { useCampNames } from "@/features/camps/hooks/use-camps";
 import { PendingUser } from "@/features/representatives/types/pending-users.schema";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { DeleteConfirmDialog } from "@/features/marital-status";
@@ -58,10 +59,16 @@ export default function AdminRepresentativesTable() {
     { id: "createdAt", desc: true },
   ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
+
+  // Filter state
+  const [globalFilter, setGlobalFilter] = React.useState("");
+  const [statusFilter, setStatusFilter] = React.useState("all");
+  const [campFilter, setCampFilter] = React.useState("all");
+
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -97,7 +104,7 @@ export default function AdminRepresentativesTable() {
   const changePasswordMutation = useChangeRepresentativePassword();
 
   // Fetch camps for selection
-  const { data: campsData } = useCamps();
+  const { data: campsData } = useCampNames();
   const camps = campsData?.data || [];
 
   // Use all data from the response (already filtered by role=delegate in the API)
@@ -149,7 +156,7 @@ export default function AdminRepresentativesTable() {
             setApprovingUser(null);
             setSelectedCampId("");
           },
-        }
+        },
       );
     }
   };
@@ -195,10 +202,26 @@ export default function AdminRepresentativesTable() {
             setNewPassword("");
             setConfirmPassword("");
           },
-        }
+        },
       );
     }
   };
+
+  // Update filters when controls change
+  React.useEffect(() => {
+    setColumnFilters((prev) => {
+      const next = prev.filter(
+        (filter) => filter.id !== "status" && filter.id !== "campName",
+      );
+      if (statusFilter !== "all") {
+        next.push({ id: "status", value: statusFilter });
+      }
+      if (campFilter !== "all") {
+        next.push({ id: "campName", value: campFilter });
+      }
+      return next;
+    });
+  }, [statusFilter, campFilter]);
 
   const table = useReactTable<PendingUser>({
     data,
@@ -209,7 +232,7 @@ export default function AdminRepresentativesTable() {
         onDelete: handleDelete,
         onChangePassword: handleChangePassword,
       },
-      t
+      t,
     ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -217,6 +240,7 @@ export default function AdminRepresentativesTable() {
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
     onColumnVisibilityChange: setColumnVisibility,
     onPaginationChange: setPagination,
     state: {
@@ -224,6 +248,23 @@ export default function AdminRepresentativesTable() {
       columnFilters,
       columnVisibility,
       pagination,
+      globalFilter,
+    },
+    // Custom global filter function
+    globalFilterFn: (row, columnId, filterValue) => {
+      const search = filterValue.toLowerCase();
+      const name = (row.getValue("name") as string)?.toLowerCase() || "";
+      const email = (row.getValue("email") as string)?.toLowerCase() || "";
+      const phone = (row.getValue("phone") as string)?.toLowerCase() || "";
+      const idNumber =
+        (row.getValue("idNumber") as string)?.toLowerCase() || "";
+
+      return (
+        name.includes(search) ||
+        email.includes(search) ||
+        phone.includes(search) ||
+        idNumber.includes(search)
+      );
     },
   });
 
@@ -246,6 +287,16 @@ export default function AdminRepresentativesTable() {
 
   return (
     <>
+      <RepresentativesFilter
+        searchValue={globalFilter}
+        setSearchValue={setGlobalFilter}
+        statusValue={statusFilter}
+        setStatusValue={setStatusFilter}
+        campValue={campFilter}
+        setCampValue={setCampFilter}
+        camps={camps}
+      />
+
       <div className="rounded-lg bg-white">
         <div className="w-full overflow-x-auto">
           <Table className="min-w-[960px]">
@@ -259,7 +310,7 @@ export default function AdminRepresentativesTable() {
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                       </TableHead>
                     );
@@ -276,7 +327,7 @@ export default function AdminRepresentativesTable() {
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}
@@ -292,7 +343,7 @@ export default function AdminRepresentativesTable() {
                           onReject: () => {},
                           onDelete: () => {},
                         },
-                        t
+                        t,
                       ).length
                     }
                     className="h-24 text-center"
@@ -505,7 +556,7 @@ export default function AdminRepresentativesTable() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder={t(
-                    "representatives.confirm_password_placeholder"
+                    "representatives.confirm_password_placeholder",
                   )}
                   className="pe-10"
                 />

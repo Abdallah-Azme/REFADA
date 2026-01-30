@@ -616,15 +616,15 @@ export function FamilyTable({
 
       {/* Server-Side Pagination Controls */}
       {meta && (
-        <div className="flex items-center justify-between mt-4 px-2">
-          <div className="text-sm text-gray-600">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 px-2">
+          <div className="text-sm text-gray-600 text-center sm:text-start">
             {t("pagination.showing")}{" "}
             {(meta.current_page - 1) * meta.per_page + 1} -{" "}
             {Math.min(meta.current_page * meta.per_page, meta.total)}{" "}
             {t("pagination.of")} {meta.total}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-4 w-full sm:w-auto">
             {/* Per page selector */}
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">

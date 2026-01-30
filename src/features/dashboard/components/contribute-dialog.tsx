@@ -178,7 +178,7 @@ export default function ContributeDialog({
               name: String(name),
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString(),
-            })
+            }),
           );
           setMedicalConditions(mappedConditions);
         }
@@ -232,7 +232,7 @@ export default function ContributeDialog({
 
   const toggleAgeFilter = (id: string) => {
     setSelectedAgeFilters((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   };
 
@@ -240,7 +240,7 @@ export default function ContributeDialog({
     setSelectedMedicalFilters((prev) =>
       prev.includes(name)
         ? prev.filter((item) => item !== name)
-        : [...prev, name]
+        : [...prev, name],
     );
   };
 
@@ -274,7 +274,7 @@ export default function ContributeDialog({
       selectedMedicalFilters.length > 0 &&
       family.medicalConditions &&
       family.medicalConditions.some((condition: string) =>
-        selectedMedicalFilters.includes(condition)
+        selectedMedicalFilters.includes(condition),
       );
 
     // OR logic: show family if it matches age OR medical condition
@@ -351,13 +351,17 @@ export default function ContributeDialog({
                             <Search className="w-5 h-5 text-gray-400 absolute right-3 top-3.5" />
                           </div>
                         </PopoverTrigger>
-                        <PopoverContent className="p-0 w-[300px]" align="end">
+                        <PopoverContent
+                          className="w-[var(--radix-popover-trigger-width)] max-h-[300px] overflow-hidden p-0"
+                          align="end"
+                          onWheel={(e) => e.stopPropagation()}
+                        >
                           <Command>
                             <CommandInput
                               placeholder={t("search_family_placeholder")}
                               className="text-right"
                             />
-                            <CommandList className="max-h-[300px] overflow-y-auto">
+                            <CommandList className="overflow-y-auto">
                               {isLoadingFamilies ? (
                                 <div className="flex items-center justify-center py-6">
                                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -394,7 +398,7 @@ export default function ContributeDialog({
                                             "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
                                             selectedFamilies.includes(family.id)
                                               ? "bg-primary text-primary-foreground"
-                                              : "opacity-50 [&_svg]:invisible"
+                                              : "opacity-50 [&_svg]:invisible",
                                           )}
                                         >
                                           <Check className={cn("h-4 w-4")} />
@@ -431,6 +435,7 @@ export default function ContributeDialog({
                         <PopoverContent
                           className="w-[200px] p-2 bg-white rounded-xl shadow-lg max-h-[300px] overflow-y-auto"
                           align="end"
+                          onWheel={(e) => e.stopPropagation()}
                         >
                           <div className="flex flex-col gap-2">
                             {ageGroupOptions.map((ageGroup) => (
@@ -448,7 +453,7 @@ export default function ContributeDialog({
                                 <Checkbox
                                   id={ageGroup.id}
                                   checked={selectedAgeFilters.includes(
-                                    ageGroup.id
+                                    ageGroup.id,
                                   )}
                                   onCheckedChange={() =>
                                     toggleAgeFilter(ageGroup.id)
@@ -494,6 +499,7 @@ export default function ContributeDialog({
                         <PopoverContent
                           className="w-[200px] p-2 bg-white rounded-xl shadow-lg max-h-[300px] overflow-y-auto"
                           align="end"
+                          onWheel={(e) => e.stopPropagation()}
                         >
                           <div className="flex flex-col gap-2">
                             {isLoadingConditions ? (
@@ -518,7 +524,7 @@ export default function ContributeDialog({
                                   <Checkbox
                                     id={`medical-${condition.id}`}
                                     checked={selectedMedicalFilters.includes(
-                                      condition.name
+                                      condition.name,
                                     )}
                                     onCheckedChange={() =>
                                       toggleMedicalFilter(condition.name)

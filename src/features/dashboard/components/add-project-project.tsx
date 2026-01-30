@@ -27,8 +27,29 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
-
-import { PlusCircle, SquareKanban, X, Loader2, Pencil } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import {
+  PlusCircle,
+  SquareKanban,
+  X,
+  Loader2,
+  Pencil,
+  Check,
+  ChevronsUpDown,
+} from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -39,7 +60,7 @@ import {
   useUpdateProject,
   Project,
 } from "@/features/projects";
-import { useCamps } from "@/features/camps";
+import { useCampNamesList } from "@/features/camps";
 import { useProfile } from "@/features/profile";
 import { toast } from "sonner";
 
@@ -73,6 +94,7 @@ export default function ProjectFormDialog({
   const locale = useLocale();
   const [file, setFile] = useState<File | null>(null);
   const [internalOpen, setInternalOpen] = useState(false);
+  const [campOpen, setCampOpen] = useState(false);
 
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
@@ -80,9 +102,9 @@ export default function ProjectFormDialog({
 
   const createProject = useCreateProject();
   const updateProject = useUpdateProject();
-  const { data: campsData } = useCamps();
+  const { data: campsData } = useCampNamesList();
   const { data: profileData } = useProfile();
-  const camps = campsData?.data || [];
+  const camps = (campsData?.data || []) as any[];
 
   // Get user's camp from profile
   const userCamp = profileData?.data?.camp;
@@ -110,25 +132,40 @@ export default function ProjectFormDialog({
     }
   }, [userCamp, isDelegate, form]);
 
-  // Reset form when dialog opens (not on every dependency change)
+  // Reset form when dialog opens
   const prevOpenRef = React.useRef(open);
   useEffect(() => {
-    // Only run when dialog actually opens (transitions from false to true)
-    if (open && !prevOpenRef.current) {
-      if (project) {
-        // Find camp ID by name
-        const camp = camps.find((c) => c.name === project.camp);
+    // We want to reset when the dialog opens
+    // OR when the project changes (e.g., clicking edit on a different project while dialog is already open, if that's possible)
+    // OR when camps become available while the dialog is open in edit mode with no camp_id yet
+    const justOpened = open && !prevOpenRef.current;
+    const needsCampResolution =
+      open && project && !form.getValues("camp_id") && camps.length > 0;
 
-        form.reset({
-          name: project.name,
-          type: project.type,
-          beneficiary_count: project.beneficiaryCount.toString(),
-          college: project.college,
-          notes: project.notes || "",
-          camp_id: camp ? camp.id.toString() : "",
+    if (justOpened || needsCampResolution) {
+      if (project) {
+        // Find camp ID by name or direct ID if available
+        const camp = camps.find((c) => {
+          if (typeof c.name === "string") return c.name === project.camp;
+          return c.name?.ar === project.camp || c.name?.en === project.camp;
         });
-        setFile(null);
-      } else {
+
+        // Only reset the whole form on open to avoid overwriting user edits if camps load late
+        if (justOpened) {
+          form.reset({
+            name: project.name,
+            type: project.type,
+            beneficiary_count: project.beneficiaryCount.toString(),
+            college: project.college,
+            notes: project.notes || "",
+            camp_id: camp ? camp.id.toString() : "",
+          });
+          setFile(null);
+        } else if (needsCampResolution && camp) {
+          // If we are already open but just resolved the camp, just set the camp_id
+          form.setValue("camp_id", camp.id.toString());
+        }
+      } else if (justOpened) {
         // Reset to empty for new project - delegates will have camp_id set by the other useEffect
         form.reset({
           name: "",
@@ -142,7 +179,7 @@ export default function ProjectFormDialog({
       }
     }
     prevOpenRef.current = open;
-  }, [open]); // Only depend on open - other values are read but don't trigger resets
+  }, [open, project, camps, isDelegate, userCamp, form]);
 
   const onSubmit = (values: z.infer<typeof projectFormSchema>) => {
     // For delegates, use their assigned camp; for admins, use the selected camp
@@ -164,7 +201,9 @@ export default function ProjectFormDialog({
     formData.append("name", values.name);
     formData.append("type", values.type);
     formData.append("beneficiary_count", values.beneficiary_count);
-    formData.append("college", values.beneficiary_count);
+    if (values.college) {
+      formData.append("college", values.college);
+    }
     formData.append("camp_id", campId);
     if (values.notes) {
       formData.append("notes", values.notes);
@@ -280,45 +319,85 @@ export default function ProjectFormDialog({
                     control={form.control}
                     name="camp_id"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="flex flex-col">
                         <FormControl>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <SelectTrigger className="w-full bg-white">
-                              {field.value
-                                ? (() => {
-                                    const selectedCamp = camps.find(
-                                      (c) => c.id.toString() === field.value,
-                                    );
-                                    if (!selectedCamp) return t("select_camp");
-                                    return typeof selectedCamp.name === "string"
-                                      ? selectedCamp.name
-                                      : selectedCamp.name[
-                                          locale as "ar" | "en"
-                                        ] || selectedCamp.name["ar"];
-                                  })()
-                                : t("select_camp")}
-                            </SelectTrigger>
-                            <SelectContent>
-                              {camps.map((camp) => {
-                                const campName =
-                                  typeof camp.name === "string"
-                                    ? camp.name
-                                    : camp.name[locale as "ar" | "en"] ||
-                                      camp.name["ar"];
-                                return (
-                                  <SelectItem
-                                    key={camp.id}
-                                    value={camp.id.toString()}
-                                  >
-                                    {campName}
-                                  </SelectItem>
-                                );
-                              })}
-                            </SelectContent>
-                          </Select>
+                          <Popover open={campOpen} onOpenChange={setCampOpen}>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className={cn(
+                                  "w-full justify-between bg-white pl-3 text-right font-normal",
+                                  !field.value && "text-muted-foreground",
+                                )}
+                              >
+                                {field.value
+                                  ? (() => {
+                                      const selectedCamp = camps.find(
+                                        (c) => c.id.toString() === field.value,
+                                      );
+                                      if (!selectedCamp)
+                                        return t("select_camp");
+                                      return typeof selectedCamp.name ===
+                                        "string"
+                                        ? selectedCamp.name
+                                        : selectedCamp.name[
+                                            locale as "ar" | "en"
+                                          ] || selectedCamp.name["ar"];
+                                    })()
+                                  : t("select_camp")}
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-[var(--radix-popover-trigger-width)] max-h-[300px] overflow-hidden p-0"
+                              align="start"
+                              onWheel={(e) => e.stopPropagation()}
+                            >
+                              <Command>
+                                <CommandInput
+                                  placeholder={t("select_camp") + "..."}
+                                />
+                                <CommandList className="overflow-y-auto">
+                                  <CommandEmpty>
+                                    {t("no_results") || "No results"}
+                                  </CommandEmpty>
+                                  <CommandGroup>
+                                    {camps.map((camp) => {
+                                      const campName =
+                                        typeof camp.name === "string"
+                                          ? camp.name
+                                          : camp.name[locale as "ar" | "en"] ||
+                                            camp.name["ar"];
+                                      return (
+                                        <CommandItem
+                                          value={campName}
+                                          key={camp.id}
+                                          onSelect={() => {
+                                            form.setValue(
+                                              "camp_id",
+                                              camp.id.toString(),
+                                            );
+                                            setCampOpen(false);
+                                          }}
+                                        >
+                                          <Check
+                                            className={cn(
+                                              "mr-2 h-4 w-4",
+                                              camp.id.toString() === field.value
+                                                ? "opacity-100"
+                                                : "opacity-0",
+                                            )}
+                                          />
+                                          {campName}
+                                        </CommandItem>
+                                      );
+                                    })}
+                                  </CommandGroup>
+                                </CommandList>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

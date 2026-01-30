@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 
 import {
@@ -30,10 +30,25 @@ import {
   SelectValue,
 } from "@/src/shared/ui/select";
 import { Textarea } from "@/src/shared/ui/textarea";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Check, ChevronsUpDown } from "lucide-react";
 
 import { Family, FamilyFormValues, familySchema } from "../types/family.schema";
 import { useCreateFamily, useUpdateFamily } from "../hooks/use-families";
-import { useCamps } from "@/features/camps";
+import { useCampNamesList } from "@/features/camps";
 import { useMaritalStatuses } from "@/features/marital-status";
 import { useTranslations } from "next-intl";
 
@@ -50,14 +65,15 @@ export function FamilyFormDialog({
 }: FamilyFormDialogProps) {
   const t = useTranslations("families");
   const tCommon = useTranslations("common");
+  const [campOpen, setCampOpen] = useState(false);
   const createMutation = useCreateFamily();
   const updateMutation = useUpdateFamily();
 
   // Fetch dependencies
-  const { data: campsData } = useCamps();
+  const { data: campsData } = useCampNamesList();
   const { data: maritalStatusesData } = useMaritalStatuses();
 
-  const camps = campsData?.data || [];
+  const camps = (campsData?.data || []) as any[];
   const maritalStatuses = maritalStatusesData?.data || [];
 
   const form = useForm<FamilyFormValues>({
@@ -78,29 +94,61 @@ export function FamilyFormDialog({
     },
   });
 
+  // Reset form when dialog opens or initialData changes
+  const prevOpenRef = React.useRef(open);
   useEffect(() => {
-    if (initialData) {
-      // We need to map the initial data (which has names for camp/maritalStatus) to IDs
-      const foundCamp = camps.find((c) => c.name === initialData.camp);
-      const foundMS = maritalStatuses.find(
-        (m) => m.name === initialData.maritalStatus,
-      );
+    const justOpened = open && !prevOpenRef.current;
 
-      form.reset({
-        familyName: initialData.familyName,
-        nationalId: initialData.nationalId,
-        dob: initialData.dob,
-        phone: initialData.phone,
-        backupPhone: initialData.backupPhone,
-        gender: "male", // Default to male for existing families since it wasn't captured before
-        totalMembers: initialData.totalMembers,
-        tentNumber: initialData.tentNumber,
-        location: initialData.location,
-        notes: initialData.notes || "",
-        campId: foundCamp ? foundCamp.id.toString() : "",
-        maritalStatusId: foundMS ? foundMS.id.toString() : "",
+    if (initialData && open) {
+      // Find IDs by matching names (robustly)
+      const foundCamp = camps.find((c) => {
+        if (typeof c.name === "string") return c.name === initialData.camp;
+        return (
+          (c.name as any)?.ar === initialData.camp ||
+          (c.name as any)?.en === initialData.camp
+        );
       });
-    } else {
+
+      const foundMS = maritalStatuses.find((m) => {
+        if (typeof m.name === "string")
+          return m.name === initialData.maritalStatus;
+        return (
+          (m.name as any)?.ar === initialData.maritalStatus ||
+          (m.name as any)?.en === initialData.maritalStatus
+        );
+      });
+
+      const campId = foundCamp ? foundCamp.id.toString() : "";
+      const maritalStatusId = foundMS ? foundMS.id.toString() : "";
+
+      // If we just opened, reset the whole form
+      if (justOpened) {
+        form.reset({
+          familyName: initialData.familyName,
+          nationalId: initialData.nationalId,
+          dob: initialData.dob,
+          phone: initialData.phone,
+          backupPhone: initialData.backupPhone,
+          gender: "male",
+          totalMembers: initialData.totalMembers,
+          tentNumber: initialData.tentNumber,
+          location: initialData.location,
+          notes: initialData.notes || "",
+          campId,
+          maritalStatusId,
+        });
+      } else {
+        // If already open but dependencies (camps/maritalStatuses) just loaded,
+        // only update the ID fields if they are currently empty
+        if (campId && !form.getValues("campId")) {
+          form.setValue("campId", campId);
+        }
+        if (maritalStatusId && !form.getValues("maritalStatusId")) {
+          form.setValue("maritalStatusId", maritalStatusId);
+        }
+      }
+    } else if (justOpened) {
+      // Reset for new entry
       form.reset({
         familyName: "",
         nationalId: "",
@@ -116,7 +164,8 @@ export function FamilyFormDialog({
         maritalStatusId: "",
       });
     }
-  }, [initialData, form, camps, maritalStatuses]);
+    prevOpenRef.current = open;
+  }, [initialData, open, form, camps, maritalStatuses]);
 
   const onSubmit = (data: FamilyFormValues) => {
     if (initialData) {
@@ -297,22 +346,81 @@ export function FamilyFormDialog({
                 control={form.control}
                 name="campId"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-col">
                     <FormLabel>{t("camp")}</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder={t("choose_camp")} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {camps.map((camp: any) => (
-                          <SelectItem key={camp.id} value={camp.id.toString()}>
-                            {camp.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Popover open={campOpen} onOpenChange={setCampOpen}>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "w-full justify-between pl-3 text-right font-normal",
+                              !field.value && "text-muted-foreground",
+                            )}
+                          >
+                            {field.value
+                              ? (() => {
+                                  const camp = camps.find(
+                                    (c) => c.id.toString() === field.value,
+                                  );
+                                  if (!camp) return t("camp");
+                                  const name = camp.name;
+                                  return typeof name === "string"
+                                    ? name
+                                    : name?.ar || name?.en || t("camp");
+                                })()
+                              : t("camp")}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-[var(--radix-popover-trigger-width)] max-h-[300px] overflow-hidden p-0"
+                        align="start"
+                        onWheel={(e) => e.stopPropagation()}
+                      >
+                        <Command>
+                          <CommandInput
+                            placeholder={t("search_camp") + "..."}
+                          />
+                          <CommandList className="overflow-y-auto">
+                            <CommandEmpty>{t("no_results")}</CommandEmpty>
+                            <CommandGroup>
+                              {camps.map((camp) => {
+                                const displayName =
+                                  typeof camp.name === "string"
+                                    ? camp.name
+                                    : camp.name?.ar || camp.name?.en || "";
+                                return (
+                                  <CommandItem
+                                    value={displayName}
+                                    key={camp.id}
+                                    onSelect={() => {
+                                      form.setValue(
+                                        "campId",
+                                        camp.id.toString(),
+                                      );
+                                      setCampOpen(false);
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        camp.id.toString() === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0",
+                                      )}
+                                    />
+                                    {displayName}
+                                  </CommandItem>
+                                );
+                              })}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}

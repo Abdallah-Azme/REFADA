@@ -25,6 +25,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from "@/components/ui/command";
 import {
   Popover,
@@ -294,46 +295,70 @@ export default function CampProjects({
                         className="w-full justify-between bg-[#F8F6F2] border border-[#E5E3DC] rounded-md h-10 text-gray-700 hover:bg-[#F8F6F2] hover:text-gray-700"
                       >
                         {field.value
-                          ? campNames.find((camp) => camp.name === field.value)
-                              ?.name
+                          ? (() => {
+                              const camp = campNames.find((c) => {
+                                if (typeof c.name === "string")
+                                  return c.name === field.value;
+                                return (
+                                  c.name?.ar === field.value ||
+                                  c.name?.en === field.value
+                                );
+                              });
+                              if (!camp) return field.value;
+                              const name = camp.name;
+                              return typeof name === "string"
+                                ? name
+                                : name?.ar || name?.en || field.value;
+                            })()
                           : t("shelter_name")}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[300px] p-0">
+                  <PopoverContent
+                    className="w-[var(--radix-popover-trigger-width)] max-h-[300px] overflow-hidden p-0"
+                    onWheel={(e) => e.stopPropagation()}
+                  >
                     <Command>
                       <CommandInput placeholder={t("search_shelter")} />
-                      <CommandEmpty>{t("no_shelters")}</CommandEmpty>
-                      <CommandGroup className="max-h-[200px] overflow-auto">
-                        {campNames.map((camp) => (
-                          <CommandItem
-                            key={camp.id}
-                            value={camp.name}
-                            onSelect={(currentValue) => {
-                              const newValue =
-                                currentValue === field.value
-                                  ? ""
-                                  : currentValue;
-                              field.onChange(newValue);
-                              if (onSearchNameChange) {
-                                onSearchNameChange(newValue);
-                              }
-                              setOpen(false);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                field.value === camp.name
-                                  ? "opacity-100"
-                                  : "opacity-0",
-                              )}
-                            />
-                            {camp.name}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
+                      <CommandList className="overflow-y-auto">
+                        <CommandEmpty>{t("no_shelters")}</CommandEmpty>
+                        <CommandGroup>
+                          {campNames.map((camp) => {
+                            const campName =
+                              typeof camp.name === "string"
+                                ? camp.name
+                                : camp.name?.ar || camp.name?.en || "";
+                            return (
+                              <CommandItem
+                                key={camp.id}
+                                value={campName}
+                                onSelect={(currentValue) => {
+                                  const newValue =
+                                    currentValue === field.value
+                                      ? ""
+                                      : currentValue;
+                                  field.onChange(newValue);
+                                  if (onSearchNameChange) {
+                                    onSearchNameChange(newValue);
+                                  }
+                                  setOpen(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    field.value === campName
+                                      ? "opacity-100"
+                                      : "opacity-0",
+                                  )}
+                                />
+                                {campName}
+                              </CommandItem>
+                            );
+                          })}
+                        </CommandGroup>
+                      </CommandList>
                     </Command>
                   </PopoverContent>
                 </Popover>
