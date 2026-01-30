@@ -41,7 +41,6 @@ export default function ProjectsTable({
 
   // Fetch data with server-side params
   const { data: projectsData, isLoading } = useProjects(queryParams);
-  console.log({ projectsData });
   const projects = projectsData?.data || [];
   const meta = projectsData?.meta;
 

@@ -84,7 +84,7 @@ const createDelegateContributionColumns = (
     setConfirmStep: (step: number) => void;
     fetchCampFamilies: (contributionId?: number) => void;
   },
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<DelegateContribution>[] => [
   {
     accessorKey: "id",
@@ -145,7 +145,7 @@ const createDelegateContributionColumns = (
       // Calculate total quantity from all families
       const totalQuantity = families.reduce(
         (sum, f) => sum + (f.quantity || 0),
-        0
+        0,
       );
 
       return (
@@ -317,21 +317,21 @@ function DelegateContributionDetailsDialog({
                   contribution.status === "pending"
                     ? "text-yellow-600"
                     : contribution.status === "approved"
-                    ? "text-green-600"
-                    : contribution.status === "rejected"
-                    ? "text-red-600"
-                    : "text-blue-600"
+                      ? "text-green-600"
+                      : contribution.status === "rejected"
+                        ? "text-red-600"
+                        : "text-blue-600"
                 }`}
               >
                 {contribution.status === "pending"
                   ? t("status_pending")
                   : contribution.status === "approved"
-                  ? t("status_approved")
-                  : contribution.status === "rejected"
-                  ? t("status_rejected")
-                  : contribution.status === "completed"
-                  ? t("status_completed")
-                  : contribution.status}
+                    ? t("status_approved")
+                    : contribution.status === "rejected"
+                      ? t("status_rejected")
+                      : contribution.status === "completed"
+                        ? t("status_completed")
+                        : contribution.status}
               </p>
             </div>
           </div>
@@ -424,7 +424,7 @@ export default function DelegateContributionsTable() {
   // Step 2: Family selection state
   const [confirmStep, setConfirmStep] = useState<number>(1);
   const [selectedFamilies, setSelectedFamilies] = useState<Map<number, string>>(
-    new Map()
+    new Map(),
   );
   const [isAddingFamilies, setIsAddingFamilies] = useState(false);
   const [campFamilies, setCampFamilies] = useState<CampFamily[]>([]);
@@ -445,9 +445,8 @@ export default function DelegateContributionsTable() {
     try {
       // Use the new endpoint that includes addedByContributor flag
       if (contributionId) {
-        const response = await getDelegateFamiliesForContributionApi(
-          contributionId
-        );
+        const response =
+          await getDelegateFamiliesForContributionApi(contributionId);
         if (response.success) {
           // Sort families: suggested (addedByContributor) first
           const sortedFamilies = [...response.data.families].sort((a, b) => {
@@ -492,7 +491,7 @@ export default function DelegateContributionsTable() {
         // Sort by id descending (latest first) or createdAt
         const sortedData = [...response.data].sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
         setData(sortedData);
       }
@@ -535,7 +534,7 @@ export default function DelegateContributionsTable() {
 
       const response = await addFamiliesToContributionApi(
         confirmingContribution.id,
-        familiesData
+        familiesData,
       );
 
       if (response.success) {
@@ -573,7 +572,7 @@ export default function DelegateContributionsTable() {
     try {
       const response = await confirmDelegateContributionApi(
         confirmingContribution.id,
-        quantity
+        quantity,
       );
       if (response.success) {
         toast.success(response.message || t("confirm_success"));
@@ -582,8 +581,8 @@ export default function DelegateContributionsTable() {
           prevData.map((item) =>
             item.id === confirmingContribution.id
               ? { ...item, alreadyConfirmed: true }
-              : item
-          )
+              : item,
+          ),
         );
         // Fetch families with contribution ID to get addedByContributor and hasBenefit flags
         await fetchCampFamilies(confirmingContribution.id);
@@ -606,7 +605,7 @@ export default function DelegateContributionsTable() {
     setIsConfirming(true);
     try {
       const response = await completeDelegateContributionApi(
-        confirmingContribution.id
+        confirmingContribution.id,
       );
       if (response.success) {
         toast.success(response.message || t("complete_success"));
@@ -615,8 +614,8 @@ export default function DelegateContributionsTable() {
           prevData.map((item) =>
             item.id === confirmingContribution.id
               ? { ...item, status: "completed" }
-              : item
-          )
+              : item,
+          ),
         );
         handleCloseConfirmDialog();
       } else {
@@ -650,8 +649,6 @@ export default function DelegateContributionsTable() {
     return filtered;
   }, [data, watchedStatus]);
 
-  console.log("filteredData", { filteredData });
-
   const table = useReactTable<DelegateContribution>({
     data: filteredData,
     columns: createDelegateContributionColumns(
@@ -662,7 +659,7 @@ export default function DelegateContributionsTable() {
         setConfirmStep,
         fetchCampFamilies,
       },
-      t
+      t,
     ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -787,7 +784,7 @@ export default function DelegateContributionsTable() {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   ))}
@@ -807,7 +804,7 @@ export default function DelegateContributionsTable() {
                       <TableCell key={cell.id} className="text-center">
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}
@@ -825,7 +822,7 @@ export default function DelegateContributionsTable() {
                           setConfirmStep,
                           fetchCampFamilies,
                         },
-                        t
+                        t,
                       ).length
                     }
                     className="h-24 text-center"

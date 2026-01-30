@@ -72,7 +72,7 @@ const createProjectFormSchema = (t: any) =>
     beneficiary_count: z
       .string()
       .min(1, t("validation.beneficiary_count_required")),
-    college: z.string().optional(),
+    college: z.string().min(1, t("validation.college_required")),
     notes: z.string().optional(),
     camp_id: z.string().optional(),
   });
@@ -307,6 +307,20 @@ export default function ProjectFormDialog({
                           placeholder={t("beneficiary_count")}
                           {...field}
                         />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* الكلية */}
+                <FormField
+                  control={form.control}
+                  name="college"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl className="bg-white">
+                        <Input placeholder={t("college")} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

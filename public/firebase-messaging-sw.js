@@ -2,10 +2,10 @@
 // This file must be in the public directory
 
 importScripts(
-  "https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"
+  "https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js",
 );
 importScripts(
-  "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"
+  "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js",
 );
 
 // Initialize Firebase in the service worker
@@ -23,7 +23,6 @@ const messaging = firebase.messaging();
 
 // Handle background messages
 messaging.onBackgroundMessage((payload) => {
-  console.log("Background message received: ", payload);
   const notificationTitle = payload.notification?.title || "New Notification";
   const notificationOptions = {
     body: payload.notification?.body || "",
@@ -58,6 +57,6 @@ self.addEventListener("notificationclick", (event) => {
         if (clients.openWindow) {
           return clients.openWindow(urlToOpen);
         }
-      })
+      }),
   );
 });

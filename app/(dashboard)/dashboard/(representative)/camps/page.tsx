@@ -22,7 +22,6 @@ export default function Page() {
   const { data: campData, isLoading: campLoading } = useCampDetails(
     campSlug || null,
   );
-  console.log({ campData });
   const isLoading = profileLoading || campLoading || contributionsLoading;
 
   // Build dynamic stats from API data
@@ -106,7 +105,6 @@ export default function Page() {
     );
   }
 
-  console.log({ campData });
   return (
     <div className="w-full gap-6 p-8 flex flex-col bg-gray-50">
       <MainHeader header={userCamp?.name || "إيواء"}>

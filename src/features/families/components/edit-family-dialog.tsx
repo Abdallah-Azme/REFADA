@@ -457,8 +457,10 @@ export default function EditFamilyDialog({
   };
 
   const handleDeleteMember = (index: number) => {
-    const member = fields[index] as any;
-    if (member.id) {
+    // FIX: Use form.getValues() to get the actual data, including the database ID.
+    // fields[index] contains the RHF internal ID (UUID) which overwrites the database ID.
+    const member = form.getValues().members?.[index];
+    if (member && member.id) {
       // Existing member - show confirmation dialog
       setMemberToDelete({ index, id: member.id });
       setDeleteDialogOpen(true);
