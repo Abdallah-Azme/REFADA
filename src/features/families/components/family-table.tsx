@@ -48,7 +48,9 @@ import { BulkDeleteDialog } from "./bulk-delete-dialog";
 import {
   exportToExcel,
   formatFamiliesWithMembersForExport,
+  formatFamiliesForExport,
 } from "@/src/lib/export-utils";
+import { useTableExport } from "@/src/shared/hooks/use-table-export";
 
 interface PaginationMeta {
   current_page: number;
@@ -141,6 +143,7 @@ export function FamilyTable({
     manualPagination: true, // Server-side pagination
     manualFiltering: true, // Server-side filtering
     pageCount: meta?.last_page ?? -1,
+    getRowId: (row) => row.id.toString(), // Use family ID as row ID
     state: {
       sorting,
       columnVisibility,
@@ -152,25 +155,23 @@ export function FamilyTable({
     },
   });
 
+  // Get selected families from the current page
+  const selectedRows = table.getFilteredSelectedRowModel().rows;
+  const selectedFamilies = selectedRows.map((row) => row.original);
+  const selectedCount = selectedFamilies.length;
+
   // Notify parent of selection changes
   React.useEffect(() => {
     if (onSelectionChange) {
-      const selectedRows = table
-        .getFilteredSelectedRowModel()
-        .rows.map((row) => row.original);
-      onSelectionChange(selectedRows);
+      onSelectionChange(selectedFamilies);
     }
-  }, [rowSelection, onSelectionChange, table]);
+  }, [rowSelection, onSelectionChange]);
 
   // Bulk delete dialog state
   const [isBulkDeleteOpen, setIsBulkDeleteOpen] = React.useState(false);
 
-  // Get selected family IDs
-  const selectedFamilyIds = React.useMemo(() => {
-    return table
-      .getFilteredSelectedRowModel()
-      .rows.map((row) => row.original.id);
-  }, [table, rowSelection]);
+  // Get selected family IDs for bulk operations
+  const selectedFamilyIds = selectedFamilies.map((f) => f.id);
 
   const handleBulkDeleteSuccess = () => {
     setRowSelection({});
@@ -254,99 +255,154 @@ export function FamilyTable({
     onQueryChange?.({ ...queryParams, age_group: ageGroup, page: 1 });
   };
 
-  // Export to Excel handler
+  // Export to Excel handlers
   const [isExporting, setIsExporting] = React.useState(false);
+  const [isExportingAll, setIsExportingAll] = React.useState(false);
 
-  const handleExportExcel = async () => {
+  // Export selected rows only (current page)
+  const handleExportSelected = async () => {
+    if (selectedFamilies.length === 0) {
+      toast.error(
+        t("export.no_selection") || "الرجاء تحديد البيانات المراد تصديرها",
+      );
+      return;
+    }
+
     try {
       setIsExporting(true);
       toast.info(t("export.loading"));
 
-      let familiesToExport: Family[] = [];
+      // Fetch members for each selected family
+      const familiesWithMembers = await Promise.all(
+        selectedFamilies.map(async (family: Family) => {
+          if (family.members && family.members.length > 0) {
+            return { family, members: family.members };
+          }
+          try {
+            const membersResponse = await getFamilyMembersApi(family.id);
+            return { family, members: membersResponse.data || [] };
+          } catch (error) {
+            console.error(
+              `Error fetching members for family ${family.id}:`,
+              error,
+            );
+            return { family, members: [] };
+          }
+        }),
+      );
 
-      // Check if there are selected rows
-      const selectedRows = table.getFilteredSelectedRowModel().rows;
+      const formattedData =
+        formatFamiliesWithMembersForExport(familiesWithMembers);
+      const filename = `families_selected_${selectedFamilies.length}_${new Date().toISOString().split("T")[0]}`;
 
-      if (selectedRows.length > 0) {
-        // Use selected rows directly
-        familiesToExport = selectedRows.map((row) => row.original);
-      } else {
-        // No selection - fetch all data from API based on current filters
-        const exportParams = new URLSearchParams();
-        exportParams.append("per_page", "1000"); // Limit to 1000 for performance
-        exportParams.append("page", "1");
-
-        if (queryParams.search)
-          exportParams.append("search", queryParams.search);
-        if (queryParams.national_id)
-          exportParams.append("national_id", queryParams.national_id);
-        if (queryParams.camp_id)
-          exportParams.append("camp_id", String(queryParams.camp_id));
-        if (queryParams.medical_condition)
-          exportParams.append(
-            "medical_condition",
-            queryParams.medical_condition,
-          );
-        if (queryParams.marital_status)
-          exportParams.append("marital_status", queryParams.marital_status);
-        if (queryParams.age_group)
-          exportParams.append("age_group", queryParams.age_group);
-
-        // Fetch data
-        const response = await getFamiliesApi(exportParams.toString());
-        if (response && response.data) {
-          familiesToExport = response.data;
-        }
-      }
-
-      if (familiesToExport.length > 0) {
-        // Fetch members for each family (only if not already present)
-        const familiesWithMembers = await Promise.all(
-          familiesToExport.map(async (family) => {
-            if (family.members && family.members.length > 0) {
-              return {
-                family,
-                members: family.members,
-              };
-            }
-
-            try {
-              const membersResponse = await getFamilyMembersApi(family.id);
-              return {
-                family,
-                members: membersResponse.data || [],
-              };
-            } catch (error) {
-              console.error(
-                `Error fetching members for family ${family.id}:`,
-                error,
-              );
-              return {
-                family,
-                members: [],
-              };
-            }
-          }),
-        );
-
-        const formattedData =
-          formatFamiliesWithMembersForExport(familiesWithMembers);
-
-        const filename =
-          selectedRows.length > 0
-            ? `families_members_export_${selectedRows.length}_selected_${new Date().toISOString().split("T")[0]}`
-            : `families_members_export_all_${new Date().toISOString().split("T")[0]}`;
-
-        exportToExcel(formattedData, filename, "Families With Members");
-        toast.success(t("export.success") || "تم تصدير البيانات بنجاح");
-      } else {
-        toast.error(tCommon("error_occurred"));
-      }
+      exportToExcel(formattedData, filename, "Families With Members");
+      toast.success(t("export.success") || "تم تصدير البيانات بنجاح");
     } catch (error) {
       console.error("Export failed:", error);
       toast.error(tCommon("error_occurred"));
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  // Export ALL data (all pages)
+  const handleExportAll = async () => {
+    try {
+      setIsExportingAll(true);
+      toast.info(t("export.loading_all") || "جاري تحميل جميع البيانات...");
+
+      let familiesToExport: Family[] = [];
+      const exportParams = new URLSearchParams();
+
+      // Start with first page to get total count
+      exportParams.append("per_page", "1000");
+      exportParams.append("page", "1");
+
+      if (queryParams.search) exportParams.append("search", queryParams.search);
+      if (queryParams.national_id)
+        exportParams.append("national_id", queryParams.national_id);
+      if (queryParams.camp_id)
+        exportParams.append("camp_id", String(queryParams.camp_id));
+      if (queryParams.medical_condition)
+        exportParams.append("medical_condition", queryParams.medical_condition);
+      if (queryParams.marital_status)
+        exportParams.append("marital_status", queryParams.marital_status);
+      if (queryParams.age_group)
+        exportParams.append("age_group", queryParams.age_group);
+
+      // Fetch first page
+      const firstResponse = await getFamiliesApi(exportParams.toString());
+      if (firstResponse && firstResponse.data) {
+        familiesToExport.push(...firstResponse.data);
+
+        // If there are more pages, fetch them
+        if (firstResponse.meta && firstResponse.meta.last_page > 1) {
+          const totalPages = firstResponse.meta.last_page;
+          toast.info(`جاري تحميل ${totalPages} صفحات...`);
+
+          // Fetch remaining pages
+          const pagePromises = [];
+          for (let page = 2; page <= totalPages; page++) {
+            const pageParams = new URLSearchParams(exportParams);
+            pageParams.set("page", page.toString());
+            pagePromises.push(getFamiliesApi(pageParams.toString()));
+          }
+
+          const responses = await Promise.all(pagePromises);
+          responses.forEach((response) => {
+            if (response && response.data) {
+              familiesToExport.push(...response.data);
+            }
+          });
+        }
+      }
+
+      if (familiesToExport.length === 0) {
+        toast.error(t("export.no_data") || "لا توجد بيانات للتصدير");
+        return;
+      }
+
+      // Fetch members for each family
+      const familiesWithMembers = await Promise.all(
+        familiesToExport.map(async (family) => {
+          if (family.members && family.members.length > 0) {
+            return { family, members: family.members };
+          }
+          try {
+            const membersResponse = await getFamilyMembersApi(family.id);
+            return { family, members: membersResponse.data || [] };
+          } catch (error) {
+            console.error(
+              `Error fetching members for family ${family.id}:`,
+              error,
+            );
+            return { family, members: [] };
+          }
+        }),
+      );
+
+      const formattedData =
+        formatFamiliesWithMembersForExport(familiesWithMembers);
+      const filename = `families_all_${familiesToExport.length}_${new Date().toISOString().split("T")[0]}`;
+
+      exportToExcel(formattedData, filename, "Families With Members");
+      toast.success(
+        `${t("export.success") || "تم تصدير"} ${familiesToExport.length} عائلة بنجاح`,
+      );
+    } catch (error) {
+      console.error("Export failed:", error);
+      toast.error(tCommon("error_occurred"));
+    } finally {
+      setIsExportingAll(false);
+    }
+  };
+
+  // Legacy handler - kept for backwards compatibility
+  const handleExportExcel = async () => {
+    if (selectedFamilies.length > 0) {
+      await handleExportSelected();
+    } else {
+      await handleExportAll();
     }
   };
 
@@ -540,21 +596,40 @@ export function FamilyTable({
               </div>
             )}
 
-            {/* Export Excel Button */}
+            {/* Export Selected Button - always visible, disabled when no selection */}
             <div className="flex items-end">
               <Button
                 variant="outline"
                 size="default"
-                onClick={handleExportExcel}
-                disabled={isExporting}
-                className="h-11 gap-2 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 border-green-200"
+                onClick={handleExportSelected}
+                disabled={isExporting || selectedCount === 0}
+                className="h-11 gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 border-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isExporting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <FileSpreadsheet className="h-4 w-4" />
                 )}
-                {t("export_excel")}
+                {t("export_selected") || "تصدير المحدد"}
+                {selectedCount > 0 ? ` (${selectedCount})` : ""}
+              </Button>
+            </div>
+
+            {/* Export All Button */}
+            <div className="flex items-end">
+              <Button
+                variant="outline"
+                size="default"
+                onClick={handleExportAll}
+                disabled={isExportingAll}
+                className="h-11 gap-2 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 border-green-200"
+              >
+                {isExportingAll ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <FileSpreadsheet className="h-4 w-4" />
+                )}
+                {t("export_all") || "تصدير الكل"}
               </Button>
             </div>
           </div>

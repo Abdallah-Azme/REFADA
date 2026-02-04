@@ -39,6 +39,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { FileSpreadsheet } from "lucide-react";
+import {
+  exportToExcel,
+  formatContributorsForExport,
+} from "@/src/lib/export-utils";
+import { toast } from "sonner";
 
 export default function AdminContributorsTable() {
   const t = useTranslations();
@@ -149,6 +155,21 @@ export default function AdminContributorsTable() {
     },
   });
 
+  // Export to Excel handler
+  const handleExportExcel = () => {
+    try {
+      const formattedData = formatContributorsForExport(data);
+      const filename = `contributors_export_${new Date().toISOString().split("T")[0]}`;
+      exportToExcel(formattedData, filename, "Contributors");
+      toast.success(
+        t("contributors.export_success") || "تم تصدير البيانات بنجاح",
+      );
+    } catch (error) {
+      console.error("Export failed:", error);
+      toast.error(t("common.error_occurred") || "حدث خطأ");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="rounded-lg bg-white p-8 flex items-center justify-center">
@@ -169,6 +190,18 @@ export default function AdminContributorsTable() {
   return (
     <>
       <div className="rounded-lg bg-white">
+        {/* Export All Button */}
+        <div className="flex items-center justify-end p-4 border-b">
+          <Button
+            variant="outline"
+            size="default"
+            onClick={handleExportExcel}
+            className="gap-2 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 border-green-200"
+          >
+            <FileSpreadsheet className="h-4 w-4" />
+            {t("contributors.export_all") || "تصدير الكل"}
+          </Button>
+        </div>
         <div className="w-full overflow-x-auto">
           <Table className="min-w-[960px]">
             <TableHeader className="bg-gray-50">

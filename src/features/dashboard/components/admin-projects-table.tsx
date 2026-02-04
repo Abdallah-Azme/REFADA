@@ -28,9 +28,11 @@ import {
 } from "../table-cols/admin-projects-cols";
 import PaginationControls from "./pagination-controls";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, FileSpreadsheet } from "lucide-react";
 import { useProjects } from "@/features/projects/hooks/use-projects";
 import { Project } from "@/features/projects/api/projects.api";
+import { exportToExcel, formatProjectsForExport } from "@/src/lib/export-utils";
+import { toast } from "sonner";
 
 interface AdminProjectsTableProps {
   data?: Project[];
@@ -47,7 +49,7 @@ export default function AdminProjectsTable({
 }: AdminProjectsTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -139,6 +141,19 @@ export default function AdminProjectsTable({
     },
   });
 
+  // Export to Excel handler
+  const handleExportExcel = () => {
+    try {
+      const formattedData = formatProjectsForExport(apiData);
+      const filename = `projects_export_${new Date().toISOString().split("T")[0]}`;
+      exportToExcel(formattedData, filename, "Projects");
+      toast.success("تم تصدير البيانات بنجاح");
+    } catch (error) {
+      console.error("Export failed:", error);
+      toast.error("حدث خطأ أثناء التصدير");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="rounded-lg bg-white p-8 flex items-center justify-center">
@@ -158,6 +173,16 @@ export default function AdminProjectsTable({
 
   return (
     <div className="rounded-lg bg-white">
+      {/* Export All Button */}
+      <div className="flex items-center justify-end p-4 border-b">
+        <button
+          onClick={handleExportExcel}
+          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-md hover:bg-green-100 hover:text-green-800 transition-colors"
+        >
+          <FileSpreadsheet className="h-4 w-4" />
+          تصدير الكل
+        </button>
+      </div>
       <div className="w-full overflow-x-auto">
         <Table className="min-w-[960px]">
           <TableHeader className="bg-gray-50">
@@ -170,7 +195,7 @@ export default function AdminProjectsTable({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -187,7 +212,7 @@ export default function AdminProjectsTable({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
