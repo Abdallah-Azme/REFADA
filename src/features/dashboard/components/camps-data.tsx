@@ -18,6 +18,8 @@ export default function CampsData() {
   const { data: familiesData, isLoading: familiesLoading } =
     useRepresentativeCampFamilies();
 
+  console.log({ profileData, familiesData });
+
   const isLoading = profileLoading || familiesLoading;
 
   // Get camp data from user's profile
@@ -30,7 +32,7 @@ export default function CampsData() {
   const totalFamilies = families.length;
   const totalMembers = families.reduce(
     (sum, family) => sum + (family.totalMembers || 0),
-    0
+    0,
   );
 
   // Build dynamic camp stats from API data

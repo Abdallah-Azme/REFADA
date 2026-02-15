@@ -57,6 +57,8 @@ export default function AdminCampsPage() {
     isFetching,
   } = usePaginatedCamps(page, perPage, debouncedSearch);
 
+  console.log({ campsData });
+
   const { data: campDetails, isLoading: isLoadingDetails } =
     useCampDetails(detailsSlug);
 

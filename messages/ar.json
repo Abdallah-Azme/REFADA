@@ -482,7 +482,7 @@
     "type_female": "إناث",
     "type_beneficiary": "مستفيدين",
     "beneficiary_count": "عدد المستفيدين",
-    "college": "الكلية",
+    "college": "الهدف",
     "select_camp": "اختر الإيواء",
     "change_image": "تغيير الصورة",
     "add_image": "إضافة صورة",
@@ -500,7 +500,7 @@
       "name_required": "اسم المشروع مطلوب",
       "type_required": "النوع مطلوب",
       "beneficiary_count_required": "عدد المستفيدين مطلوب",
-      "college_required": "الكلية مطلوبة",
+      "college_required": "الهدف مطلوب",
       "camp_required": "المخيم مطلوب"
     }
   },

@@ -32,10 +32,12 @@ export default function Page() {
 
   // Count projects by status
   const pendingProjects = projects.filter(
-    (p: any) => p.status === "pending" || p.status === "في الانتظار",
+    (p: any) =>
+      (p.status === "pending" || p.status === "في الانتظار") && !p.isApproved,
   ).length;
   const completedProjects = projects.filter(
     (p: any) =>
+      p.isApproved ||
       p.status === "تم التسليم" ||
       p.status === "completed" ||
       p.status === "in_progress",
@@ -52,7 +54,7 @@ export default function Page() {
 
   // Get total contributions count from the contributions API
   const totalContributions = contributions.length;
-
+  console.log({ projects });
   const dynamicStats = [
     {
       icon: Heart,

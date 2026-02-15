@@ -75,8 +75,8 @@ export default function PolicySection({
   return (
     <section
       className={cn(
-        " text-white py-5 lg:py-20 overflow-hidden rounded-t-[50px] sm:rounded-t-[100px]  ",
-        secondary ? "bg-white" : "bg-primary  mt-[-50px]"
+        " text-white py-5 lg:py-10 overflow-hidden rounded-t-[50px] sm:rounded-t-[100px]  ",
+        secondary ? "bg-white" : "bg-primary  mt-[-50px]",
       )}
     >
       <div className="container relative mx-auto px-6 ">
@@ -132,7 +132,7 @@ export default function PolicySection({
                         <div
                           className={cn(
                             "mb-4 rounded-full overflow-hidden w-20 h-20 shrink-0",
-                            secondary ? "bg-[#DEEDEA]" : "bg-white"
+                            secondary ? "bg-[#DEEDEA]" : "bg-white",
                           )}
                         >
                           <ImageFallback
@@ -147,13 +147,13 @@ export default function PolicySection({
                         <div
                           className={cn(
                             "mb-4 rounded-full text-primary p-4 shrink-0",
-                            secondary ? "bg-[#DEEDEA]" : "bg-white"
+                            secondary ? "bg-[#DEEDEA]" : "bg-white",
                           )}
                         >
                           <IconComponent
                             className={cn(
                               "w-10 h-10",
-                              secondary ? "text-secondary" : "text-primary"
+                              secondary ? "text-secondary" : "text-primary",
                             )}
                           />
                         </div>
@@ -162,7 +162,7 @@ export default function PolicySection({
                         <h3
                           className={cn(
                             "text-xl font-bold",
-                            secondary ? "text-[#1E1E1E]" : "text-white"
+                            secondary ? "text-[#1E1E1E]" : "text-white",
                           )}
                         >
                           {card.title}
@@ -171,7 +171,7 @@ export default function PolicySection({
                           <div
                             className={cn(
                               "leading-relaxed text-sm",
-                              secondary ? "text-[#494949]" : "text-white"
+                              secondary ? "text-[#494949]" : "text-white",
                             )}
                             dangerouslySetInnerHTML={{ __html: card.desc }}
                           />
@@ -212,7 +212,7 @@ export default function PolicySection({
                   <div
                     className={cn(
                       "mb-4 rounded-full overflow-hidden sm:w-32 sm:h-32 shrink-0",
-                      secondary ? "bg-[#DEEDEA]" : "bg-white"
+                      secondary ? "bg-[#DEEDEA]" : "bg-white",
                     )}
                   >
                     <ImageFallback
@@ -227,13 +227,13 @@ export default function PolicySection({
                   <div
                     className={cn(
                       "mb-4 rounded-full text-primary sm:p-10 shrink-0",
-                      secondary ? "bg-[#DEEDEA]" : "bg-white"
+                      secondary ? "bg-[#DEEDEA]" : "bg-white",
                     )}
                   >
                     <IconComponent
                       className={cn(
                         "w-10 h-10",
-                        secondary ? "text-secondary" : "text-primary"
+                        secondary ? "text-secondary" : "text-primary",
                       )}
                     />
                   </div>
@@ -242,7 +242,7 @@ export default function PolicySection({
                   <h3
                     className={cn(
                       "text-xl font-bold",
-                      secondary ? "text-[#1E1E1E]" : "text-white"
+                      secondary ? "text-[#1E1E1E]" : "text-white",
                     )}
                   >
                     {card.title}
@@ -251,7 +251,7 @@ export default function PolicySection({
                     <div
                       className={cn(
                         "max-w-[300px] leading-relaxed  ",
-                        secondary ? "text-[#494949]" : "text-white"
+                        secondary ? "text-[#494949]" : "text-white",
                       )}
                       dangerouslySetInnerHTML={{ __html: card.desc }}
                     />

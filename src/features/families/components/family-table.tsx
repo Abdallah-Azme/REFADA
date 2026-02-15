@@ -142,6 +142,9 @@ export function FamilyTable({
     onRowSelectionChange: setRowSelection,
     manualPagination: true, // Server-side pagination
     manualFiltering: true, // Server-side filtering
+    enableRowSelection: true,
+    // @ts-ignore
+    autoResetRowSelection: false, // Don't reset selection when data (page) changes
     pageCount: meta?.last_page ?? -1,
     getRowId: (row) => row.id.toString(), // Use family ID as row ID
     state: {
@@ -155,9 +158,47 @@ export function FamilyTable({
     },
   });
 
-  // Get selected families from the current page
-  const selectedRows = table.getFilteredSelectedRowModel().rows;
-  const selectedFamilies = selectedRows.map((row) => row.original);
+  // Persistent selection map to store selected items across pages
+  // We need this because table.getSelectedRowModel() only returns rows from the current data
+  const [selectedFamiliesMap, setSelectedFamiliesMap] = React.useState<
+    Record<string, Family>
+  >({});
+
+  // Sync rowSelection and data with selectedFamiliesMap
+  React.useEffect(() => {
+    const newMap = { ...selectedFamiliesMap };
+    let hasChanges = false;
+
+    // 1. Remove items that are no longer in rowSelection
+    Object.keys(newMap).forEach((id) => {
+      // @ts-ignore - rowSelection is typed as {} by default in the component state
+      if (!rowSelection[id]) {
+        delete newMap[id];
+        hasChanges = true;
+      }
+    });
+
+    // 2. Add newly selected items from current data
+    // We iterate through available data to find the full objects for selected IDs
+    data.forEach((family) => {
+      const id = family.id.toString();
+      // @ts-ignore
+      if (rowSelection[id] && !newMap[id]) {
+        newMap[id] = family;
+        hasChanges = true;
+      }
+    });
+
+    if (hasChanges) {
+      setSelectedFamiliesMap(newMap);
+    }
+  }, [rowSelection, data, selectedFamiliesMap]);
+
+  // Derive selected families list from the map
+  const selectedFamilies = React.useMemo(
+    () => Object.values(selectedFamiliesMap),
+    [selectedFamiliesMap],
+  );
   const selectedCount = selectedFamilies.length;
 
   // Notify parent of selection changes
@@ -165,7 +206,7 @@ export function FamilyTable({
     if (onSelectionChange) {
       onSelectionChange(selectedFamilies);
     }
-  }, [rowSelection, onSelectionChange]);
+  }, [selectedFamilies, onSelectionChange]);
 
   // Bulk delete dialog state
   const [isBulkDeleteOpen, setIsBulkDeleteOpen] = React.useState(false);

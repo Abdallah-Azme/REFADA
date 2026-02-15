@@ -73,6 +73,8 @@ export default function AdminContributorsTable() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const [rowSelection, setRowSelection] = React.useState({});
+
   // Fetch contributors
   const { data: response, isLoading, error } = useContributors();
 
@@ -147,19 +149,69 @@ export default function AdminContributorsTable() {
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onPaginationChange: setPagination,
+    onRowSelectionChange: setRowSelection,
+    enableRowSelection: true,
+    // @ts-ignore
+    autoResetRowSelection: false,
+    getRowId: (row) => row.id.toString(),
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       pagination,
+      rowSelection,
     },
   });
+
+  // Persistent selection map logic
+  const [selectedContributorsMap, setSelectedContributorsMap] = React.useState<
+    Record<string, PendingUser>
+  >({});
+
+  React.useEffect(() => {
+    const newMap = { ...selectedContributorsMap };
+    let hasChanges = false;
+
+    // Remove unselected
+    Object.keys(newMap).forEach((id) => {
+      // @ts-ignore
+      if (!rowSelection[id]) {
+        delete newMap[id];
+        hasChanges = true;
+      }
+    });
+
+    // Add selected from current page
+    data.forEach((user) => {
+      const id = user.id.toString();
+      // @ts-ignore
+      if (rowSelection[id] && !newMap[id]) {
+        newMap[id] = user;
+        hasChanges = true;
+      }
+    });
+
+    if (hasChanges) {
+      setSelectedContributorsMap(newMap);
+    }
+  }, [rowSelection, data, selectedContributorsMap]);
+
+  const selectedContributors = React.useMemo(
+    () => Object.values(selectedContributorsMap),
+    [selectedContributorsMap],
+  );
 
   // Export to Excel handler
   const handleExportExcel = () => {
     try {
-      const formattedData = formatContributorsForExport(data);
-      const filename = `contributors_export_${new Date().toISOString().split("T")[0]}`;
+      const dataToExport =
+        selectedContributors.length > 0 ? selectedContributors : data;
+      const formattedData = formatContributorsForExport(dataToExport);
+      const filename =
+        selectedContributors.length > 0
+          ? `contributors_selected_${selectedContributors.length}_${new Date().toISOString().split("T")[0]}`
+          : `contributors_all_${new Date().toISOString().split("T")[0]}`;
+
       exportToExcel(formattedData, filename, "Contributors");
       toast.success(
         t("contributors.export_success") || "تم تصدير البيانات بنجاح",
@@ -190,8 +242,8 @@ export default function AdminContributorsTable() {
   return (
     <>
       <div className="rounded-lg bg-white">
-        {/* Export All Button */}
-        <div className="flex items-center justify-end p-4 border-b">
+        {/* Export Buttons */}
+        <div className="flex items-center justify-end p-4 border-b gap-2">
           <Button
             variant="outline"
             size="default"
@@ -199,7 +251,9 @@ export default function AdminContributorsTable() {
             className="gap-2 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 border-green-200"
           >
             <FileSpreadsheet className="h-4 w-4" />
-            {t("contributors.export_all") || "تصدير الكل"}
+            {selectedContributors.length > 0
+              ? `${t("contributors.export_selected") || "تصدير المحدد"} (${selectedContributors.length})`
+              : t("contributors.export_all") || "تصدير الكل"}
           </Button>
         </div>
         <div className="w-full overflow-x-auto">

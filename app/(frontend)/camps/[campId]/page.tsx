@@ -4,6 +4,7 @@ import ImageDecorations from "@/components/image-decorations";
 import CampsMapSection from "@/components/pages/home/camps-map-section";
 import { Breadcrumb } from "@/components/shared/breadcrumb";
 import ImageFallback from "@/components/shared/image-fallback";
+import { Skeleton } from "@/components/ui/skeleton";
 import ProjectsSection from "@/features/campaign/components/projects-section";
 import CampDetailsSection from "@/features/camps/components/camp-details-section";
 import CampStats from "@/features/camps/components/camp-stats";
@@ -13,7 +14,6 @@ import { motion } from "framer-motion";
 import { Info, SquareKanban } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Page() {
   const t = useTranslations();

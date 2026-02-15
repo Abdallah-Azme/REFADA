@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Check, X, Eye } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export type AdminProject = {
   id: number;
@@ -62,8 +63,30 @@ type ActionHandlers = {
 };
 
 export const createAdminProjectColumns = (
-  handlers: ActionHandlers
+  handlers: ActionHandlers,
 ): ColumnDef<AdminProject>[] => [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -154,22 +177,22 @@ export const createAdminProjectColumns = (
               status === "approved"
                 ? "default"
                 : status === "rejected"
-                ? "destructive"
-                : "secondary"
+                  ? "destructive"
+                  : "secondary"
             }
             className={
               status === "approved"
                 ? "bg-green-500 hover:bg-green-600"
                 : status === "pending"
-                ? "bg-yellow-500 hover:bg-yellow-600 text-black"
-                : ""
+                  ? "bg-yellow-500 hover:bg-yellow-600 text-black"
+                  : ""
             }
           >
             {status === "approved"
               ? "مقبول"
               : status === "rejected"
-              ? "مرفوض"
-              : "قيد الانتظار"}
+                ? "مرفوض"
+                : "قيد الانتظار"}
           </Badge>
         </div>
       );

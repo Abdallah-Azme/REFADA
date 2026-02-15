@@ -50,24 +50,7 @@ export const createAdminCampColumns = (
       );
     },
   },
-  {
-    accessorKey: "capacity",
-    header: t("columns.capacity"),
-  },
-  {
-    accessorKey: "currentOccupancy",
-    header: t("columns.occupancy"),
-    cell: ({ row }) => {
-      const camp = row.original;
-      const percentage = campService.calculateOccupancyRate(camp);
-      return (
-        <div>
-          {camp.currentOccupancy}{" "}
-          <span className="text-xs text-gray-500">({percentage}%)</span>
-        </div>
-      );
-    },
-  },
+
   {
     accessorKey: "status",
     header: t("columns.status"),

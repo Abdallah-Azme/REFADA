@@ -85,7 +85,7 @@ export function ProjectCard({
           <div className="flex justify-between text-xs text-gray-600 mb-1">
             <span>{formattedPercentage}%</span>
             <span>
-              {t("goalLabel")}: {goal}
+              {t("requiredLabel")}: {goal}
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
@@ -114,7 +114,7 @@ export function ProjectCard({
         <div className="flex justify-between items-center text-sm">
           <div className="text-gray-500">
             <span>
-              {t("requiredLabel")}: {donors}
+              {t("goalLabel")}: {donors}
             </span>
           </div>
           <div className="text-gray-700 text-end">

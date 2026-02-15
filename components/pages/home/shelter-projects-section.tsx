@@ -31,7 +31,7 @@ export default function ShelterProjectsSection({
       delay: 3000,
       stopOnInteraction: false,
       stopOnMouseEnter: true,
-    })
+    }),
   );
 
   const [api, setApi] = React.useState<any>();
@@ -55,7 +55,7 @@ export default function ShelterProjectsSection({
       // If not found, try finding in array (older embla versions)
       if (!autoplayPlugin && Array.isArray(plugins)) {
         autoplayPlugin = plugins.find(
-          (plugin: any) => plugin?.play || plugin?.stop
+          (plugin: any) => plugin?.play || plugin?.stop,
         );
       }
 
@@ -176,7 +176,7 @@ export default function ShelterProjectsSection({
       </Carousel>
 
       {/* Dots */}
-      <div className="flex justify-center mt-6 gap-2">
+      {/* <div className="flex justify-center mt-6 gap-2">
         {Array.from({ length: Math.ceil(projects.length / 4) }).map((_, i) => (
           <button
             key={i}
@@ -190,7 +190,7 @@ export default function ShelterProjectsSection({
             aria-label={`انتقل إلى الشريحة ${i + 1}`}
           />
         ))}
-      </div>
+      </div> */}
     </section>
   );
 }

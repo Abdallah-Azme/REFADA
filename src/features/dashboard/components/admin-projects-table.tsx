@@ -47,6 +47,7 @@ export default function AdminProjectsTable({
   onView,
   onDelete,
 }: AdminProjectsTableProps) {
+  const [rowSelection, setRowSelection] = React.useState({});
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -64,34 +65,19 @@ export default function AdminProjectsTable({
   const apiData = propData || response?.data || [];
 
   const data = React.useMemo(() => {
-    // Map API Project to AdminProject (UI model) if needed, or use directly if columns adjusted.
-    // The columns expect AdminProject. let's check mapping.
-    // API: id, name, type, addedBy, beneficiaryCount, college, status... projectImage
-    // UI (AdminProject): id, name, type, location (missing in API, maybe 'camp'?), beneficiaryCount, budget (missing?), collected (totalReceived), status, image (projectImage).
-
-    // I will map API data to AdminProject shape to minimize column refactor,
-    // OR BETTER: Update columns to match API.
-
-    // Let's look at `createAdminProjectColumns`. It uses `AdminProject`.
-    // I should probably map the API data to match `AdminProject` to be safe,
-    // or update `AdminProject` type in cols file.
-
-    // Mapping seems safer and quicker to get "display" working.
-    // project.camp is the location?
-    // project.totalRemaining = budget? No, remaining needed.
-    // project.totalReceived = collected.
-
     return apiData.map((p) => ({
       id: p.id,
       name: p.name,
+      representative: "", // API might not expose addedBy directly on Project type
+      date: new Date(p.createdAt).toLocaleDateString("en-US"), // Format date
       type: p.type,
-      location: p.camp, // Use camp as location for now
+      location: p.camp,
       beneficiaryCount: p.beneficiaryCount,
-      budget: p.totalRemaining + p.totalReceived, // Estimate budget? Or just show remaining?
+      budget: (p.totalRemaining + p.totalReceived).toString(),
       collected: p.totalReceived,
       status: p.status as "pending" | "approved" | "rejected",
       image: p.projectImage,
-    }));
+    })) as unknown as AdminProject[];
   }, [apiData]);
 
   const handleAccept = (project: any): void => {
@@ -133,19 +119,69 @@ export default function AdminProjectsTable({
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onPaginationChange: setPagination,
+    onRowSelectionChange: setRowSelection,
+    enableRowSelection: true,
+    // @ts-ignore
+    autoResetRowSelection: false,
+    getRowId: (row) => row.id.toString(),
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       pagination,
+      rowSelection,
     },
   });
+
+  // Persistent selection map logic
+  const [selectedProjectsMap, setSelectedProjectsMap] = React.useState<
+    Record<string, Project>
+  >({});
+
+  React.useEffect(() => {
+    const newMap = { ...selectedProjectsMap };
+    let hasChanges = false;
+
+    // Remove unselected
+    Object.keys(newMap).forEach((id) => {
+      // @ts-ignore
+      if (!rowSelection[id]) {
+        delete newMap[id];
+        hasChanges = true;
+      }
+    });
+
+    // Add selected from current page
+    apiData.forEach((project) => {
+      const id = project.id.toString();
+      // @ts-ignore
+      if (rowSelection[id] && !newMap[id]) {
+        newMap[id] = project;
+        hasChanges = true;
+      }
+    });
+
+    if (hasChanges) {
+      setSelectedProjectsMap(newMap);
+    }
+  }, [rowSelection, apiData, selectedProjectsMap]);
+
+  const selectedProjects = React.useMemo(
+    () => Object.values(selectedProjectsMap),
+    [selectedProjectsMap],
+  );
 
   // Export to Excel handler
   const handleExportExcel = () => {
     try {
-      const formattedData = formatProjectsForExport(apiData);
-      const filename = `projects_export_${new Date().toISOString().split("T")[0]}`;
+      const dataToExport =
+        selectedProjects.length > 0 ? selectedProjects : apiData;
+      const formattedData = formatProjectsForExport(dataToExport);
+      const filename =
+        selectedProjects.length > 0
+          ? `projects_selected_${selectedProjects.length}_${new Date().toISOString().split("T")[0]}`
+          : `projects_all_${new Date().toISOString().split("T")[0]}`;
+
       exportToExcel(formattedData, filename, "Projects");
       toast.success("تم تصدير البيانات بنجاح");
     } catch (error) {
@@ -180,7 +216,9 @@ export default function AdminProjectsTable({
           className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-md hover:bg-green-100 hover:text-green-800 transition-colors"
         >
           <FileSpreadsheet className="h-4 w-4" />
-          تصدير الكل
+          {selectedProjects.length > 0
+            ? `تصدير المحدد (${selectedProjects.length})`
+            : "تصدير الكل"}
         </button>
       </div>
       <div className="w-full overflow-x-auto">

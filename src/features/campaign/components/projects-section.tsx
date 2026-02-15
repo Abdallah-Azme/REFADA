@@ -27,7 +27,10 @@ export default function ProjectsSection({
       {projects.map((project, index) => {
         const goal = project.totalRemaining + project.totalReceived;
         const current = project.totalReceived;
-        const percentage = goal > 0 ? Math.round((current / goal) * 100) : 0;
+        const percentage =
+          project.beneficiaryCount > 0
+            ? Math.round((current / project.beneficiaryCount) * 100)
+            : 0;
 
         return (
           <div key={project.id} className="pl-4 sm:basis-1/2 lg:basis-1/4">

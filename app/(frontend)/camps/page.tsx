@@ -1,11 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
-import { usePaginatedCamps } from "@/features/camps/hooks/use-camps";
-import { useGovernorates } from "@/features/dashboard/hooks/use-governorates";
 import CampsPageClient from "@/components/pages/camps/camps-page-client";
-import { Loader2, Filter } from "lucide-react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -13,14 +8,11 @@ import {
   PaginationItem,
   PaginationLink,
 } from "@/components/ui/pagination";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { usePaginatedCamps } from "@/features/camps/hooks/use-camps";
+import { useGovernorates } from "@/features/dashboard/hooks/use-governorates";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 
 function CampsContent() {
   const router = useRouter();
