@@ -108,6 +108,7 @@ export interface CampFamily {
   ageGroups: string[];
   medicalConditions: string[];
   hasBenefit?: boolean;
+  members?: any[];
   addedByContributor?: boolean;
   createdAt: string;
   updatedAt: string;

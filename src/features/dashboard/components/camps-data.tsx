@@ -4,6 +4,7 @@ import { useProfile } from "@/features/profile";
 import CampsDetails from "./camps-details";
 import EditCampFormData from "./edit-camp-form-data";
 import { Loader2 } from "lucide-react";
+import { useCampDetails } from "@/features/camps/hooks/use-camps";
 import { useRepresentativeCampFamilies } from "@/features/contributors/hooks/use-camp-families";
 import { useTranslations } from "next-intl";
 
@@ -15,23 +16,23 @@ export interface CampsStats {
 export default function CampsData() {
   const t = useTranslations("camps_data");
   const { data: profileData, isLoading: profileLoading } = useProfile();
-  const { data: familiesData, isLoading: familiesLoading } =
-    useRepresentativeCampFamilies();
 
-  console.log({ profileData, familiesData });
+  const campSlug = profileData?.data?.camp?.slug;
+  const { data: campData, isLoading: campLoading } = useCampDetails(
+    campSlug || null,
+  );
 
-  const isLoading = profileLoading || familiesLoading;
+  const isLoading = profileLoading || campLoading;
 
   // Get camp data from user's profile
   const userCamp = profileData?.data?.camp;
 
-  // Get families from API - data.families is the array
-  const families = familiesData?.data?.families || [];
-
   // Calculate dynamic stats from families data
+  const families = campData?.data?.families || [];
   const totalFamilies = families.length;
   const totalMembers = families.reduce(
-    (sum, family) => sum + (family.totalMembers || 0),
+    (sum: number, family: any) =>
+      sum + (family.totalMembers || family.members?.length || 0),
     0,
   );
 
