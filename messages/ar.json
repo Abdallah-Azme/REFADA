@@ -588,6 +588,7 @@
       "delegate": "المندوب",
       "capacity": "السعة",
       "occupancy": "الإشغال",
+      "families_count": "عدد العائلات",
       "status": "الحالة",
       "actions": "الإجراءات"
     },
@@ -807,7 +808,21 @@
     "campDeleted": "تم حذف الإيواء",
     "campDeletedSuccess": "تم حذف الإيواء بنجاح",
     "campDeleteError": "فشل في حذف الإيواء",
-    "error": "خطأ"
+    "error": "خطأ",
+    "columns": {
+      "name": "اسم الإيواء",
+      "location": "الموقع",
+      "delegate": "المندوب",
+      "families_count": "عدد العائلات",
+      "status": "الحالة",
+      "actions": "الإجراءات",
+      "occupancy": "الإشغال",
+      "capacity": "السعة"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    }
   },
   "contact_messages": {
     "page_title": "رسائل التواصل",

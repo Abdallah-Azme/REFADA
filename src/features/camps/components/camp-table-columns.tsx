@@ -39,15 +39,31 @@ export const createAdminCampColumns = (
     ),
   },
   {
-    accessorKey: "delegate",
+    accessorKey: "delegates",
     header: t("columns.delegate"),
     cell: ({ row }) => {
-      const delegate = row.getValue("delegate") as string | null;
+      const delegates = row.original.delegates;
+      let names = "";
+      if (Array.isArray(delegates)) {
+        names = delegates
+          .map((d) => (typeof d === "string" ? d : d.name))
+          .join(", ");
+      } else if (typeof delegates === "string") {
+        names = delegates;
+      }
       return (
-        <div className={delegate ? "font-medium" : "text-gray-400 italic"}>
-          {delegate || t("no_delegate")}
+        <div className={names ? "font-medium" : "text-gray-400 italic"}>
+          {names || t("no_delegate")}
         </div>
       );
+    },
+  },
+  {
+    header: t("columns.families_count"),
+    accessorFn: (row) => row.statistics?.familyCount || 0,
+    cell: ({ row }) => {
+      const count = row.original.statistics?.familyCount || 0;
+      return <div>{count}</div>;
     },
   },
 

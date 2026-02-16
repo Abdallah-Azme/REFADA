@@ -21,7 +21,8 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import React from "react";
-import { createAdminCampColumns, Camp } from "../table-cols/admin-camps-cols";
+import { createAdminCampColumns } from "../table-cols/admin-camps-cols";
+import { Camp } from "@/features/camps/types/camp.schema";
 import PaginationControls from "./pagination-controls";
 import { Input } from "@/components/ui/input";
 import { useTranslations } from "next-intl";

@@ -2,43 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, MapPin } from "lucide-react";
-
-export interface Camp {
-  id: string;
-  name: string;
-  location: string;
-  description: string;
-  capacity: number;
-  currentOccupancy: number;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
-  status: "active" | "inactive";
-}
-
-export const dummyCamps: Camp[] = [
-  {
-    id: "1",
-    name: "إيواء أصداء",
-    location: "غزة - الشمال",
-    description: "إيواء رئيسي يوفر المأوى والخدمات الأساسية",
-    capacity: 500,
-    currentOccupancy: 350,
-    coordinates: { lat: 31.5, lng: 34.45 },
-    status: "active",
-  },
-  {
-    id: "2",
-    name: "إيواء النور",
-    location: "غزة - الجنوب",
-    description: "إيواء طوارئ للعائلات النازحة",
-    capacity: 300,
-    currentOccupancy: 280,
-    coordinates: { lat: 31.3, lng: 34.3 },
-    status: "active",
-  },
-];
+import { Camp } from "@/features/camps/types/camp.schema";
 
 interface AdminCampColumnsProps {
   onEdit: (camp: Camp) => void;
@@ -48,14 +12,18 @@ interface AdminCampColumnsProps {
 
 export const createAdminCampColumns = (
   { onEdit, onDelete, onToggleStatus }: AdminCampColumnsProps,
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<Camp>[] => [
   {
     accessorKey: "name",
     header: t("columns.name"),
-    cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("name")}</div>
-    ),
+    cell: ({ row }) => {
+      const name = row.original.name;
+      // Handle name if it's an object (based on schema) or string
+      const displayName =
+        typeof name === "string" ? name : name?.ar || name?.en || "";
+      return <div className="font-medium">{displayName}</div>;
+    },
   },
   {
     accessorKey: "location",
@@ -68,34 +36,39 @@ export const createAdminCampColumns = (
     ),
   },
   {
-    accessorKey: "capacity",
-    header: t("columns.capacity"),
+    accessorKey: "delegates",
+    header: t("columns.delegate"),
+    cell: ({ row }) => {
+      const delegates = row.original.delegates;
+      let names = "";
+      if (Array.isArray(delegates)) {
+        names = delegates
+          .map((d) => (typeof d === "string" ? d : d.name))
+          .join(", ");
+      } else if (typeof delegates === "string") {
+        names = delegates;
+      }
+      return <div>{names || "-"}</div>;
+    },
   },
   {
-    accessorKey: "currentOccupancy",
-    header: t("columns.occupancy"),
+    header: t("columns.families_count"),
+    accessorFn: (row) => row.statistics?.familyCount || 0,
     cell: ({ row }) => {
-      const occupancy = row.getValue("currentOccupancy") as number;
-      const capacity = row.original.capacity;
-      const percentage = Math.round((occupancy / capacity) * 100);
-      return (
-        <div>
-          {occupancy}{" "}
-          <span className="text-xs text-gray-500">({percentage}%)</span>
-        </div>
-      );
+      const count = row.original.statistics?.familyCount || 0;
+      return <div>{count}</div>;
     },
   },
   {
     accessorKey: "status",
     header: t("columns.status"),
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
+      const status = row.original.status || "active"; // Default/fallback
       return (
         <Badge
           variant={status === "active" ? "default" : "secondary"}
           className="cursor-pointer hover:opacity-80"
-          onClick={() => onToggleStatus(row.original.id)}
+          onClick={() => onToggleStatus(row.original.id.toString())}
         >
           {t(`status.${status}`)}
         </Badge>
@@ -115,7 +88,7 @@ export const createAdminCampColumns = (
           <Button
             variant="destructive"
             size="sm"
-            onClick={() => onDelete(camp.id)}
+            onClick={() => onDelete(camp.id.toString())}
           >
             <Trash2 className="h-4 w-4" />
           </Button>

@@ -132,7 +132,7 @@ export interface Camp {
   campImg?: string;
   projects?: Project[];
   families?: CampFamily[];
-  delegates?: CampDelegate[]; // Array of delegates associated with the camp
+  delegates?: string[] | CampDelegate[]; // Array of delegates associated with the camp
   statistics?: {
     familyCount: number;
     memberCount: number;
