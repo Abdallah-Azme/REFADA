@@ -118,7 +118,7 @@ export function RepresentativesFilter({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-[var(--radix-popover-trigger-width)] max-h-[300px] overflow-hidden p-0"
+          className="w-[var(--radix-popover-trigger-width)] max-h-[400px] overflow-hidden p-0"
           onWheel={(e) => e.stopPropagation()}
         >
           <Command>

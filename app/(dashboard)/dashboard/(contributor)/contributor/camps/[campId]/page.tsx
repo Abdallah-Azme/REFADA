@@ -17,7 +17,7 @@ import { useLocale } from "next-intl";
 // Helper to extract text from localized field
 function getLocalizedText(
   field: string | { ar?: string; en?: string } | undefined | null,
-  locale: string = "ar"
+  locale: string = "ar",
 ): string {
   if (!field) return "";
   if (typeof field === "string") return field;
@@ -42,14 +42,13 @@ export default function Page() {
   const projects = camp?.projects || [];
   const families = camp?.families || [];
 
-  // Use statistics object as primary source (most accurate), fallback to calculated values
   const actualFamilyCount =
     camp?.statistics?.familyCount || families.length || camp?.familyCount || 0;
   const actualMembersCount =
     camp?.statistics?.memberCount ||
     families.reduce(
       (sum, family) => sum + (family.totalMembers || family.membersCount || 0),
-      0
+      0,
     );
 
   // Get localized camp name and description
@@ -105,7 +104,7 @@ export default function Page() {
             animate={{ opacity: 1, y: 0 }}
             className={cn(
               "bg-white rounded-xl shadow-sm border p-4 flex items-center gap-4 pointer-events-auto",
-              "h-full"
+              "h-full",
             )}
           >
             {/* Image */}

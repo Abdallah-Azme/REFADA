@@ -315,7 +315,7 @@ export default function AdminPendingUsersTable() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
-                  className="w-[var(--radix-popover-trigger-width)] max-h-[300px] overflow-hidden p-0"
+                  className="w-[var(--radix-popover-trigger-width)] max-h-[400px] overflow-hidden p-0"
                   align="start"
                   onWheel={(e) => e.stopPropagation()}
                 >
