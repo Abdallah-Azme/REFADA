@@ -38,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import PaginationControls from "./pagination-controls";
 import { createAdminContributionColumns } from "../table-cols/admin-contribution-cols";
 import {
@@ -45,6 +46,7 @@ import {
   AdminContribution,
   deleteFamilyFromContributionApi,
   ContributorFamily,
+  deleteContributionApi,
 } from "@/features/contributors/api/contributors.api";
 import { listProjectsApi, Project } from "@/features/projects/api/projects.api";
 import { toast } from "sonner";
@@ -320,7 +322,15 @@ export default function AdminContributionsTable() {
   const [selectedContribution, setSelectedContribution] =
     useState<AdminContribution | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Delete Contribution State
+  const [deletingContribution, setDeletingContribution] =
+    useState<AdminContribution | null>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
+  const [isDeletingContribution, setIsDeletingContribution] = useState(false);
+
   const t = useTranslations("contributions");
+  const tCommon = useTranslations("common");
 
   // Fetch contributions
   useEffect(() => {
@@ -379,6 +389,40 @@ export default function AdminContributionsTable() {
     setSelectedContribution(null);
   };
 
+  const handleDeleteClick = (item: AdminContribution) => {
+    setDeletingContribution(item);
+    setDeleteConfirmation("");
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deletingContribution) return;
+    if (deleteConfirmation.toLowerCase() !== "delete") {
+      toast.error(
+        t("delete_confirmation_error") || "Please type delete to confirm",
+      );
+      return;
+    }
+
+    setIsDeletingContribution(true);
+    try {
+      const response = await deleteContributionApi(deletingContribution.id);
+      if (response.success) {
+        toast.success(
+          t("delete_success") || "Contribution deleted successfully",
+        );
+        setDeletingContribution(null);
+        fetchContributions();
+      } else {
+        toast.error(response.message || t("delete_error"));
+      }
+    } catch (error: any) {
+      console.error("Failed to delete contribution:", error);
+      toast.error(error?.message || t("delete_error"));
+    } finally {
+      setIsDeletingContribution(false);
+    }
+  };
+
   // Get projects for filter dropdown
   const uniqueProjects = React.useMemo(() => {
     return projectsList.map((project) => ({
@@ -392,6 +436,7 @@ export default function AdminContributionsTable() {
     columns: createAdminContributionColumns(
       {
         onView: handleView,
+        onDelete: handleDeleteClick,
       },
       t,
     ),
@@ -614,6 +659,59 @@ export default function AdminContributionsTable() {
           contribution={selectedContribution}
           onFamilyDeleted={handleFamilyDeleted}
         />
+
+        {/* Delete Contribution Dialog */}
+        <AlertDialog
+          open={!!deletingContribution}
+          onOpenChange={(open) => {
+            if (!open) setDeletingContribution(null);
+          }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {t("delete_contribution_title") || "Delete Contribution"}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {t("delete_contribution_desc") ||
+                  "This action cannot be undone. Please type 'delete' to confirm."}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="py-4">
+              <Input
+                value={deleteConfirmation}
+                onChange={(e) => setDeleteConfirmation(e.target.value)}
+                placeholder="delete"
+                className="w-full"
+              />
+            </div>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isDeletingContribution}>
+                {tCommon("cancel")}
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleDeleteConfirm();
+                }}
+                disabled={
+                  isDeletingContribution ||
+                  deleteConfirmation.toLowerCase() !== "delete"
+                }
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                {isDeletingContribution ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    {t("deleting")}
+                  </>
+                ) : (
+                  t("confirm_delete")
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

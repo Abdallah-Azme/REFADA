@@ -371,6 +371,26 @@ export async function deleteFamilyFromContributionApi(
 }
 
 // ============================================================================
+// Delete Contribution API
+// ============================================================================
+
+export interface DeleteContributionResponse {
+  success: boolean;
+  message: string;
+}
+
+export async function deleteContributionApi(
+  contributionId: number,
+): Promise<DeleteContributionResponse> {
+  return apiRequest<DeleteContributionResponse>(
+    `/contributions/${contributionId}`,
+    {
+      method: "DELETE",
+    },
+  );
+}
+
+// ============================================================================
 // Delegate (Representative) Contributions API
 // ============================================================================
 

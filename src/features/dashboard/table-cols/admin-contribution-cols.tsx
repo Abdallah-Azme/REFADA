@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
 import {
   AdminContribution,
   ContributorFamily,
@@ -14,11 +14,12 @@ import {
 
 type ActionHandlers = {
   onView: (item: AdminContribution) => void;
+  onDelete: (item: AdminContribution) => void;
 };
 
 export const createAdminContributionColumns = (
   handlers: ActionHandlers,
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<AdminContribution>[] => [
   {
     accessorKey: "id",
@@ -170,7 +171,7 @@ export const createAdminContributionColumns = (
     id: "view",
     header: t("view"),
     cell: ({ row }) => (
-      <div className="flex justify-center">
+      <div className="flex justify-center gap-1">
         <Button
           variant="ghost"
           size="icon"
@@ -178,6 +179,14 @@ export const createAdminContributionColumns = (
           onClick={() => handlers.onView(row.original)}
         >
           <Eye className="w-5 h-5" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+          onClick={() => handlers.onDelete(row.original)}
+        >
+          <Trash2 className="w-5 h-5" />
         </Button>
       </div>
     ),
