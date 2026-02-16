@@ -306,18 +306,43 @@ export interface AdminContribution {
   updatedAt: string;
 }
 
+export interface PaginationMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
 export interface AdminContributionsResponse {
   success: boolean;
   message: string;
   data: AdminContribution[];
+  meta: PaginationMeta;
+}
+
+export interface AdminContributionsParams {
+  page?: number;
+  camp_id?: number;
+  project_id?: string;
+  status?: string;
 }
 
 export async function getAdminContributionsApi(
-  campId?: number,
+  params: AdminContributionsParams = {},
 ): Promise<AdminContributionsResponse> {
-  const queryParams = campId ? `?camp_id=${campId}` : "";
+  const queryParts: string[] = [];
+
+  if (params.page) queryParts.push(`page=${params.page}`);
+  if (params.camp_id) queryParts.push(`camp_id=${params.camp_id}`);
+  if (params.project_id && params.project_id !== "all")
+    queryParts.push(`project_id=${params.project_id}`);
+  if (params.status && params.status !== "all")
+    queryParts.push(`status=${params.status}`);
+
+  const queryString = queryParts.length > 0 ? `?${queryParts.join("&")}` : "";
+
   return apiRequest<AdminContributionsResponse>(
-    `/admin/contributions${queryParams}`,
+    `/admin/contributions${queryString}`,
     {
       method: "GET",
     },

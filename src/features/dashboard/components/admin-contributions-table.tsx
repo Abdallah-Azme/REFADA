@@ -46,6 +46,7 @@ import {
   deleteFamilyFromContributionApi,
   ContributorFamily,
 } from "@/features/contributors/api/contributors.api";
+import { listProjectsApi, Project } from "@/features/projects/api/projects.api";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import {
@@ -312,6 +313,9 @@ export default function AdminContributionsTable() {
   const [globalFilter, setGlobalFilter] = useState("");
 
   const [data, setData] = useState<AdminContribution[]>([]);
+  const [projectsList, setProjectsList] = useState<Project[]>([]);
+  const [pageCount, setPageCount] = useState(0);
+
   const [isLoading, setIsLoading] = useState(true);
   const [selectedContribution, setSelectedContribution] =
     useState<AdminContribution | null>(null);
@@ -321,15 +325,38 @@ export default function AdminContributionsTable() {
   // Fetch contributions
   useEffect(() => {
     fetchContributions();
+  }, [pagination.pageIndex, pagination.pageSize]);
+
+  // Fetch projects list for filter
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await listProjectsApi();
+        if (response.success) {
+          setProjectsList(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch projects list:", error);
+      }
+    };
+    fetchProjects();
   }, []);
 
   const fetchContributions = async () => {
     setIsLoading(true);
     try {
-      const response = await getAdminContributionsApi();
+      const { project, status } = form.getValues();
+      const response = await getAdminContributionsApi({
+        page: pagination.pageIndex + 1,
+        project_id: project && project !== "all" ? project : undefined,
+        status: status && status !== "all" ? status : undefined,
+      });
 
       if (response.success) {
         setData(response.data);
+        if (response.meta) {
+          setPageCount(response.meta.last_page);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch contributions:", error);
@@ -352,42 +379,16 @@ export default function AdminContributionsTable() {
     setSelectedContribution(null);
   };
 
-  // Filter data based on form values
-  const watchedProject = form.watch("project");
-  const watchedStatus = form.watch("status");
-
-  const filteredData = React.useMemo(() => {
-    let filtered = [...data];
-
-    if (watchedProject && watchedProject !== "all") {
-      filtered = filtered.filter(
-        (item) => item.project?.id.toString() === watchedProject,
-      );
-    }
-
-    if (watchedStatus && watchedStatus !== "all") {
-      filtered = filtered.filter((item) => item.status === watchedStatus);
-    }
-
-    return filtered;
-  }, [data, watchedProject, watchedStatus]);
-
-  // Get unique projects for filter dropdown
+  // Get projects for filter dropdown
   const uniqueProjects = React.useMemo(() => {
-    const projectMap = new Map<number, string>();
-    data.forEach((item) => {
-      if (item.project) {
-        projectMap.set(item.project.id, item.project.name);
-      }
-    });
-    return Array.from(projectMap.entries()).map(([id, name]) => ({
-      id: id.toString(),
-      name,
+    return projectsList.map((project) => ({
+      id: project.id.toString(),
+      name: project.name,
     }));
-  }, [data]);
+  }, [projectsList]);
 
   const table = useReactTable<AdminContribution>({
-    data: filteredData,
+    data: data,
     columns: createAdminContributionColumns(
       {
         onView: handleView,
@@ -396,24 +397,13 @@ export default function AdminContributionsTable() {
     ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    manualPagination: true,
+    pageCount: pageCount,
     onPaginationChange: setPagination,
-    onGlobalFilterChange: setGlobalFilter,
     state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
       pagination,
-      globalFilter,
     },
   });
-
   function onSubmit(values: z.infer<typeof formSchema>) {}
 
   if (isLoading) {
@@ -515,7 +505,13 @@ export default function AdminContributionsTable() {
                 <Button
                   className="bg-primary text-white px-4 sm:px-6 flex-1 sm:flex-none py-2 rounded-xl flex items-center justify-center gap-2 text-sm font-medium"
                   size="lg"
-                  onClick={fetchContributions}
+                  onClick={() => {
+                    if (pagination.pageIndex === 0) {
+                      fetchContributions();
+                    } else {
+                      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+                    }
+                  }}
                 >
                   <SearchCheck className="w-4 h-4" />
                   {t("update")}
@@ -525,7 +521,19 @@ export default function AdminContributionsTable() {
                   size="lg"
                   variant="outline"
                   className="px-4 sm:px-6 flex-1 sm:flex-none py-2 rounded-xl"
-                  onClick={() => form.reset()}
+                  onClick={() => {
+                    form.reset({
+                      project: "",
+                      status: "",
+                      // Or 'all' if that is the default logic, but defaults were empty strings
+                    });
+                    // Explicitly reset to empty strings if form.reset() without args reverts to defaultValues
+                    if (pagination.pageIndex === 0) {
+                      fetchContributions();
+                    } else {
+                      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+                    }
+                  }}
                 >
                   <RotateCcw className="w-4 h-4 text-primary" />
                   {t("reset")}
