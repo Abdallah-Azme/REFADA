@@ -15,7 +15,16 @@ import {
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, Send, ChevronDown, Check, Loader2, X } from "lucide-react";
+import {
+  Search,
+  Send,
+  ChevronDown,
+  Check,
+  Loader2,
+  X,
+  ChevronRight,
+  User,
+} from "lucide-react";
 import { Project } from "../table-cols/project-contribution-cols";
 import { useState, useEffect, useMemo } from "react";
 import {
@@ -76,6 +85,7 @@ export default function ContributeDialog({
         }),
       notes: z.string().optional(),
       families: z.array(z.number()).optional(),
+      members: z.array(z.number()).optional(),
     });
   }, [t]);
 
@@ -103,6 +113,7 @@ export default function ContributeDialog({
     string[]
   >([]);
   const [openFamilySearch, setOpenFamilySearch] = useState(false);
+  const [expandedFamilies, setExpandedFamilies] = useState<number[]>([]);
   const [families, setFamilies] = useState<CampFamily[]>([]);
   const [medicalConditions, setMedicalConditions] = useState<
     MedicalCondition[]
@@ -117,6 +128,7 @@ export default function ContributeDialog({
       quantity: "",
       notes: "",
       families: [],
+      members: [],
     },
   });
 
@@ -140,9 +152,11 @@ export default function ContributeDialog({
         quantity: "",
         notes: "",
         families: [],
+        members: [],
       });
       setSelectedAgeFilters([]);
       setSelectedMedicalFilters([]);
+      setExpandedFamilies([]);
     }
   }, [isOpen, form]);
 
@@ -216,6 +230,8 @@ export default function ContributeDialog({
         notes: data.notes || undefined,
         families:
           data.families && data.families.length > 0 ? data.families : undefined,
+        members:
+          data.members && data.members.length > 0 ? data.members : undefined,
       });
 
       if (response.success) {
@@ -253,6 +269,21 @@ export default function ContributeDialog({
     form.setValue("families", newFamilies);
   };
 
+  const toggleMember = (id: number) => {
+    const currentMembers = form.getValues("members") || [];
+    const newMembers = currentMembers.includes(id)
+      ? currentMembers.filter((item) => item !== id)
+      : [...currentMembers, id];
+    form.setValue("members", newMembers);
+  };
+
+  const toggleExpandFamily = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    setExpandedFamilies((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+    );
+  };
+
   // Filter families based on selected age groups and medical conditions (OR logic)
   const filteredFamilies = families.filter((family) => {
     // If no filters selected, show all families
@@ -282,6 +313,7 @@ export default function ContributeDialog({
   });
 
   const selectedFamilies = form.watch("families") || [];
+  const selectedMembers = form.watch("members") || [];
 
   return (
     <Dialog open={isOpen} onOpenChange={(v) => !v && onClose()}>
@@ -339,12 +371,13 @@ export default function ContributeDialog({
                               className="bg-white border-gray-200 text-right h-12 rounded-xl pr-10 cursor-pointer"
                               readOnly
                               value={
-                                selectedFamilies.length > 0
-                                  ? selectedFamilies.length === 1
-                                    ? t("selected_one")
-                                    : t("selected_multiple", {
-                                        count: selectedFamilies.length,
-                                      })
+                                selectedFamilies.length > 0 ||
+                                selectedMembers.length > 0
+                                  ? t("selected_multiple", {
+                                      count:
+                                        selectedFamilies.length +
+                                        selectedMembers.length,
+                                    })
                                   : ""
                               }
                             />
@@ -375,34 +408,144 @@ export default function ContributeDialog({
                                         key={family.id}
                                         value={`${family.familyName} ${family.nationalId}`}
                                         onSelect={() => toggleFamily(family.id)}
-                                        className="flex items-center justify-between cursor-pointer data-[selected=true]:text-white hover:text-white [&[data-selected=true]_.text-gray-500]:text-white/90"
+                                        className="flex flex-col items-stretch cursor-pointer data-[selected=true]:text-white data-[selected=true]:bg-primary group [&[data-selected=true]_.text-gray-500]:text-white/90 [&[data-selected=true]_.text-gray-400]:text-white/80 [&[data-selected=true]_button]:text-white/90"
                                       >
-                                        <div className="flex flex-col text-right flex-1">
-                                          <div className="flex items-center gap-2">
-                                            <span>{family.familyName}</span>
-                                            {family.hasBenefit && (
-                                              <span className="bg-green-100 text-green-700 text-xs px-1.5 py-0.5 rounded-full">
-                                                {t("beneficiary_tag")}
-                                              </span>
+                                        <div className="flex items-center justify-between w-full">
+                                          {/* Right Side: Expand Button + Text Info */}
+                                          <div className="flex items-center gap-2 flex-1 overflow-hidden">
+                                            {/* Expand Button */}
+                                            {family.members &&
+                                              family.members.length > 0 && (
+                                                <button
+                                                  type="button"
+                                                  onClick={(e) =>
+                                                    toggleExpandFamily(
+                                                      e,
+                                                      family.id,
+                                                    )
+                                                  }
+                                                  className="p-1 shrink-0 hover:bg-gray-100 group-data-[selected=true]:hover:bg-white/20 rounded-full transition-colors"
+                                                >
+                                                  {expandedFamilies.includes(
+                                                    family.id,
+                                                  ) ? (
+                                                    <ChevronDown className="h-4 w-4 text-gray-400 group-data-[selected=true]:text-white/90" />
+                                                  ) : (
+                                                    <ChevronRight className="h-4 w-4 text-gray-400 group-data-[selected=true]:text-white/90 rtl:rotate-180" />
+                                                  )}
+                                                </button>
+                                              )}
+
+                                            {/* Spacer if no expand button to align text? Optional, but keep text start aligned */}
+                                            {(!family.members ||
+                                              family.members.length === 0) && (
+                                              <div className="w-6 shrink-0" />
                                             )}
+
+                                            <div className="flex flex-col text-right flex-1 min-w-0">
+                                              <div className="flex items-center justify-start gap-2 truncate">
+                                                <span className="truncate">
+                                                  {family.familyName}
+                                                </span>
+                                                {family.hasBenefit && (
+                                                  <span className="bg-green-100 text-green-700 text-xs px-1.5 py-0.5 rounded-full group-data-[selected=true]:bg-white/20 group-data-[selected=true]:text-white shrink-0">
+                                                    {t("beneficiary_tag")}
+                                                  </span>
+                                                )}
+                                              </div>
+                                              <span className="text-xs text-gray-500 truncate">
+                                                {family.nationalId} -{" "}
+                                                {t("members_count", {
+                                                  count: family.totalMembers,
+                                                })}
+                                              </span>
+                                            </div>
                                           </div>
-                                          <span className="text-xs text-gray-500">
-                                            {family.nationalId} -{" "}
-                                            {t("members_count", {
-                                              count: family.totalMembers,
-                                            })}
-                                          </span>
+
+                                          {/* Left Side: Checkbox */}
+                                          <div className="flex items-center justify-center shrink-0 ml-2">
+                                            <div
+                                              className={cn(
+                                                "flex h-5 w-5 items-center justify-center rounded-sm border border-primary",
+                                                selectedFamilies.includes(
+                                                  family.id,
+                                                )
+                                                  ? "bg-primary text-primary-foreground group-data-[selected=true]:border-white group-data-[selected=true]:bg-white group-data-[selected=true]:text-primary"
+                                                  : "opacity-50 group-data-[selected=true]:border-white/50",
+                                              )}
+                                            >
+                                              <Check
+                                                className={cn(
+                                                  "h-3.5 w-3.5",
+                                                  selectedFamilies.includes(
+                                                    family.id,
+                                                  )
+                                                    ? "visible"
+                                                    : "invisible",
+                                                )}
+                                              />
+                                            </div>
+                                          </div>
                                         </div>
-                                        <div
-                                          className={cn(
-                                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                                            selectedFamilies.includes(family.id)
-                                              ? "bg-primary text-primary-foreground"
-                                              : "opacity-50 [&_svg]:invisible",
+
+                                        {/* Members List */}
+                                        {expandedFamilies.includes(family.id) &&
+                                          family.members &&
+                                          family.members.length > 0 && (
+                                            <div className="mt-2 mr-8 border-r-2 border-gray-100 group-data-[selected=true]:border-white/20 pr-4 space-y-2">
+                                              {family.members.map((member) => (
+                                                <div
+                                                  key={member.id}
+                                                  className="flex items-center justify-between w-full p-2 hover:bg-gray-50 group-data-[selected=true]:hover:bg-white/10 rounded-lg cursor-pointer transition-colors"
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleMember(member.id);
+                                                  }}
+                                                >
+                                                  {/* Right Side: Text Info */}
+                                                  <div className="flex flex-col text-right flex-1 min-w-0">
+                                                    <div className="flex items-center justify-start gap-2">
+                                                      <User className="w-3.5 h-3.5 text-gray-400 group-data-[selected=true]:text-white/80 shrink-0" />
+                                                      <span className="text-sm truncate">
+                                                        {member.name}
+                                                      </span>
+                                                    </div>
+                                                    <div className="flex gap-2 justify-start pr-5">
+                                                      <span className="text-[10px] text-gray-400 group-data-[selected=true]:text-white/70">
+                                                        {member.ageGroup &&
+                                                          tAge(member.ageGroup)}
+                                                      </span>
+                                                    </div>
+                                                  </div>
+
+                                                  {/* Left Side: Checkbox */}
+                                                  <div className="flex items-center gap-2 ml-2">
+                                                    <div
+                                                      className={cn(
+                                                        "flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                                        selectedMembers.includes(
+                                                          member.id,
+                                                        )
+                                                          ? "bg-primary text-primary-foreground group-data-[selected=true]:border-white group-data-[selected=true]:bg-white group-data-[selected=true]:text-primary"
+                                                          : "opacity-50 group-data-[selected=true]:border-white/50",
+                                                      )}
+                                                    >
+                                                      <Check
+                                                        className={cn(
+                                                          "h-3 w-3",
+                                                          selectedMembers.includes(
+                                                            member.id,
+                                                          )
+                                                            ? "visible"
+                                                            : "invisible",
+                                                        )}
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              ))}
+                                            </div>
                                           )}
-                                        >
-                                          <Check className={cn("h-4 w-4")} />
-                                        </div>
                                       </CommandItem>
                                     ))}
                                   </CommandGroup>

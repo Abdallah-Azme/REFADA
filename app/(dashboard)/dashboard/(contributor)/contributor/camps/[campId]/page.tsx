@@ -37,6 +37,8 @@ export default function Page() {
     isError,
   } = useCampDetails(campSlug || null);
 
+  console.log({ campData });
+
   const camp = campData?.data;
 
   const projects = camp?.projects || [];

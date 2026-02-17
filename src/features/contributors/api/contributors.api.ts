@@ -87,6 +87,16 @@ export async function deleteContributorApi(
 // Camp Families API
 // ============================================================================
 
+export interface FamilyMember {
+  id: number;
+  name: string;
+  gender: string;
+  dob: string;
+  ageGroup: string;
+  medicalConditions: string[];
+  hasBenefit: boolean;
+}
+
 export interface CampFamily {
   id: number;
   familyName: string;
@@ -108,7 +118,7 @@ export interface CampFamily {
   ageGroups: string[];
   medicalConditions: string[];
   hasBenefit?: boolean;
-  members?: any[];
+  members?: FamilyMember[];
   addedByContributor?: boolean;
   createdAt: string;
   updatedAt: string;
@@ -173,6 +183,7 @@ export interface ContributeFormData {
   contributedQuantity: number;
   notes?: string;
   families?: number[];
+  members?: number[];
 }
 
 export interface ContributeResponse {
@@ -194,6 +205,12 @@ export async function submitContributionApi(
   if (data.families && data.families.length > 0) {
     data.families.forEach((familyId) => {
       formData.append("families[]", familyId.toString());
+    });
+  }
+
+  if (data.members && data.members.length > 0) {
+    data.members.forEach((memberId) => {
+      formData.append("members[]", memberId.toString());
     });
   }
 

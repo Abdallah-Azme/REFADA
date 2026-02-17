@@ -110,6 +110,9 @@ export default function CurrentProjectsTableContribution({
 
   // Fetch contributor history
   const { data: historyData } = useContributorHistory();
+
+  console.log({ historyData });
+
   const historyItems = historyData?.data || [];
 
   // Filter projects based on search
@@ -219,6 +222,8 @@ export default function CurrentProjectsTableContribution({
       pagination,
     },
   });
+
+  console.log({ selectedHistoryFamilies });
 
   function onSubmit(values: z.infer<typeof formSchema>) {}
 

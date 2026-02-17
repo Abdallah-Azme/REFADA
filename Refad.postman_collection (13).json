@@ -366,7 +366,7 @@
                     },
                     {
                       "key": "password",
-                      "value": "12345678@Ta",
+                      "value": "Fcis_it4",
                       "type": "text",
                       "uuid": "f28cd3ef-c816-4b71-8735-1cf6e0a35ef0"
                     }
@@ -416,7 +416,7 @@
               "formdata": [
                 {
                   "key": "email",
-                  "value": "admin@example.com",
+                  "value": "contributor@gmail.com",
                   "type": "text",
                   "uuid": "83c11e60-2283-4dcb-91f6-88b509f6f4b4"
                 }
@@ -461,13 +461,13 @@
               "formdata": [
                 {
                   "key": "email",
-                  "value": "admin@example.com",
+                  "value": "contributor@gmail.com",
                   "type": "text",
                   "uuid": "83c11e60-2283-4dcb-91f6-88b509f6f4b4"
                 },
                 {
                   "key": "reset_code",
-                  "value": "763080",
+                  "value": "801254",
                   "type": "text",
                   "uuid": "1b3db75e-1d07-4f1b-9dd2-da61f42a32f7"
                 }
@@ -512,19 +512,19 @@
               "formdata": [
                 {
                   "key": "reset_token",
-                  "value": "t1Mv5YqVu34JjwPnocEBVPkfsUO8KlJwBwQT7X6X1NBiC5zDERs3iKVY7WDD",
+                  "value": "ZFeGE7euWeghMUcBtL9rD6XqYXSCSSSgNg5rQggRbJSNKxDV2j5VejEaKGuY",
                   "type": "text",
                   "uuid": "4b411ae5-0775-4177-90ed-4ed325e6b131"
                 },
                 {
                   "key": "password",
-                  "value": "Admin@123",
+                  "value": "Fcis_it4",
                   "type": "text",
                   "uuid": "749c194c-8627-4216-8b4f-a71f8089839e"
                 },
                 {
                   "key": "password_confirmation",
-                  "value": "Admin@123",
+                  "value": "Fcis_it4",
                   "type": "text",
                   "uuid": "762aa169-3474-4216-85b7-ea6eb99d4433"
                 }
@@ -864,7 +864,7 @@
               "variable": [
                 {
                   "key": "user",
-                  "value": "4"
+                  "value": "215"
                 }
               ]
             }
@@ -953,7 +953,7 @@
               }
             ],
             "url": {
-              "raw": "{{url}}/admin/contributions",
+              "raw": "{{url}}/admin/contributions?per_page=2",
               "host": [
                 "{{url}}"
               ],
@@ -977,6 +977,11 @@
                   "key": "project_id",
                   "value": "5",
                   "disabled": true
+                },
+                {
+                  "key": "per_page",
+                  "value": "2",
+                  "type": "text"
                 }
               ]
             }
@@ -1266,7 +1271,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "186|AmUPMPeihoMlmY9jzJDfKq3UEBDDkYtGkaTY9QXcf6991919",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
@@ -1289,13 +1294,13 @@
               "formdata": [
                 {
                   "key": "password",
-                  "value": "1234@Ssss",
+                  "value": "Fcis_it4",
                   "type": "text",
                   "uuid": "bf324e19-3e1c-4cdd-9f24-d1b509bde08f"
                 },
                 {
                   "key": "password_confirmation",
-                  "value": "1234@Ssss",
+                  "value": "Fcis_it4",
                   "type": "text",
                   "uuid": "200a76dd-041d-48e5-803c-57323d317d9f"
                 }
@@ -1314,7 +1319,7 @@
               "variable": [
                 {
                   "key": "user",
-                  "value": "5"
+                  "value": "258"
                 }
               ]
             }
@@ -1329,7 +1334,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "215|sXsN6o3yjrfsk5S1XF9fpcSiohnyShoXX8oh45iO5a167485",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
@@ -1370,11 +1375,71 @@
               "variable": [
                 {
                   "key": "contribution",
-                  "value": "22"
+                  "value": "20"
                 },
                 {
                   "key": "family",
-                  "value": "17"
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "removeMemberFromContribution",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "ar",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{url}}/contributions/:contribution/members/:member",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "contributions",
+                ":contribution",
+                "members",
+                ":member"
+              ],
+              "variable": [
+                {
+                  "key": "contribution",
+                  "value": "20"
+                },
+                {
+                  "key": "member",
+                  "value": "8"
                 }
               ]
             }
@@ -1523,6 +1588,51 @@
               "path": [
                 "families",
                 "deleted"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Contribution",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "ar",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/contributions/:contribution",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "contributions",
+                ":contribution"
+              ],
+              "variable": [
+                {
+                  "key": "contribution",
+                  "value": "20"
+                }
               ]
             }
           },
@@ -1761,7 +1871,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "72|PRepssUy9ZR4qZ6T75hNvFNGgpVfdn3lSOUdtD0va8b0c1a3",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
@@ -1791,6 +1901,16 @@
                 {
                   "key": "name",
                   "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "governorate_id",
+                  "value": "7",
+                  "disabled": true
+                },
+                {
+                  "key": "per_page",
+                  "value": "3",
                   "disabled": true
                 }
               ]
@@ -1934,13 +2054,13 @@
               "formdata": []
             },
             "url": {
-              "raw": "{{url}}/camps/Gabalya-Camp",
+              "raw": "{{url}}/camps/إيواء-نخيل-الإقليمي-3",
               "host": [
                 "{{url}}"
               ],
               "path": [
                 "camps",
-                "Gabalya-Camp"
+                "إيواء-نخيل-الإقليمي-3"
               ]
             }
           },
@@ -2174,13 +2294,19 @@
               }
             ],
             "url": {
-              "raw": "{{url}}/camps/statistics",
+              "raw": "{{url}}/camps/statistics?page=7",
               "host": [
                 "{{url}}"
               ],
               "path": [
                 "camps",
                 "statistics"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "7"
+                }
               ]
             }
           },
@@ -2749,7 +2875,8 @@
                   "key": "members[0][id]",
                   "value": "69",
                   "type": "text",
-                  "uuid": "d68b35d9-9fee-4096-b2e1-0038114eaae7"
+                  "uuid": "d68b35d9-9fee-4096-b2e1-0038114eaae7",
+                  "disabled": true
                 },
                 {
                   "key": "members[0][name]",
@@ -2776,7 +2903,8 @@
                   "key": "members[0][national_id]",
                   "value": "666666666",
                   "type": "text",
-                  "uuid": "0f4bf7a9-8749-4cbb-be83-c9456134fc3c"
+                  "uuid": "0f4bf7a9-8749-4cbb-be83-c9456134fc3c",
+                  "disabled": true
                 },
                 {
                   "key": "members[0][relationship_id]",
@@ -2961,7 +3089,7 @@
               "variable": [
                 {
                   "key": "family",
-                  "value": "23"
+                  "value": "1407"
                 }
               ]
             }
@@ -3078,7 +3206,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "121|aTyGFVIvWtELRdWncJuRXP3uX52JrUx9Mt47kl3M9bd21e85",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
@@ -3110,11 +3238,11 @@
               "variable": [
                 {
                   "key": "family",
-                  "value": "8"
+                  "value": "3399"
                 },
                 {
                   "key": "member",
-                  "value": "32"
+                  "value": "13812"
                 }
               ]
             }
@@ -3256,13 +3384,13 @@
               }
             ],
             "url": {
-              "raw": "{{url}}/families/deleted",
+              "raw": "{{url}}/families/deleted    ",
               "host": [
                 "{{url}}"
               ],
               "path": [
                 "families",
-                "deleted"
+                "deleted    "
               ]
             }
           },
@@ -3707,7 +3835,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "18|zuY7TkSRh9G7hm0z3r4wBSyuhsvdHbPhWSu4g5tta7fb3148",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
@@ -3764,10 +3892,9 @@
                 },
                 {
                   "key": "status",
-                  "value": "",
+                  "value": "delivered",
                   "type": "text",
-                  "uuid": "b0d4534f-dccf-405f-a729-78989e5cba39",
-                  "disabled": true
+                  "uuid": "b0d4534f-dccf-405f-a729-78989e5cba39"
                 },
                 {
                   "key": "notes",
@@ -3780,24 +3907,26 @@
                   "key": "project_image",
                   "type": "file",
                   "uuid": "8f9efe05-ce05-4e7c-97a7-b67f6ea34c79",
-                  "src": "postman-cloud:///1f0c52d2-866e-4ec0-8476-1b15719387ae"
+                  "src": "postman-cloud:///1f0c52d2-866e-4ec0-8476-1b15719387ae",
+                  "disabled": true
                 },
                 {
                   "key": "camp_id ",
                   "value": "",
                   "type": "text",
-                  "uuid": "1cfc68fa-d18f-4f18-ade4-028a5dcc6a67"
+                  "uuid": "1cfc68fa-d18f-4f18-ade4-028a5dcc6a67",
+                  "disabled": true
                 }
               ]
             },
             "url": {
-              "raw": "{{url}}/projects/1",
+              "raw": "{{url}}/projects/44",
               "host": [
                 "{{url}}"
               ],
               "path": [
                 "projects",
-                "1"
+                "44"
               ]
             }
           },
@@ -4148,7 +4277,7 @@
               "variable": [
                 {
                   "key": "contribution",
-                  "value": "11"
+                  "value": "23"
                 }
               ]
             }
@@ -4193,13 +4322,15 @@
                   "key": "families[0][id]",
                   "value": "5",
                   "type": "text",
-                  "uuid": "7bb825fc-5ce2-40eb-a73a-22c05edbf7da"
+                  "uuid": "7bb825fc-5ce2-40eb-a73a-22c05edbf7da",
+                  "disabled": true
                 },
                 {
                   "key": "families[0][quantity]",
                   "value": "4",
                   "type": "text",
-                  "uuid": "6dc72336-faa3-4544-a92c-280208c92370"
+                  "uuid": "6dc72336-faa3-4544-a92c-280208c92370",
+                  "disabled": true
                 },
                 {
                   "key": "families[1][id]",
@@ -4228,6 +4359,18 @@
                   "type": "text",
                   "uuid": "96feb5ae-3484-4cba-b674-0eac71607675",
                   "disabled": true
+                },
+                {
+                  "key": "members[0][id]",
+                  "value": "8",
+                  "type": "text",
+                  "uuid": "1ec8222a-302e-4099-abc5-3837e7441ee6"
+                },
+                {
+                  "key": "members[0][quantity]",
+                  "value": "4",
+                  "type": "text",
+                  "uuid": "0dbd1ff4-c85c-430b-a0bf-27d6622d9602"
                 }
               ]
             },
@@ -4245,7 +4388,7 @@
               "variable": [
                 {
                   "key": "contribution",
-                  "value": "11"
+                  "value": "23"
                 }
               ]
             }
@@ -4309,11 +4452,11 @@
               "variable": [
                 {
                   "key": "contribution",
-                  "value": "30"
+                  "value": "22"
                 },
                 {
                   "key": "family",
-                  "value": "62"
+                  "value": "1"
                 }
               ]
             }
@@ -4373,7 +4516,7 @@
               "variable": [
                 {
                   "key": "contribution",
-                  "value": "45"
+                  "value": "20"
                 }
               ]
             }
@@ -4425,7 +4568,7 @@
               "variable": [
                 {
                   "key": "contribution",
-                  "value": "11"
+                  "value": "23"
                 }
               ]
             }
@@ -4473,11 +4616,63 @@
               "variable": [
                 {
                   "key": "contribution",
-                  "value": "18"
+                  "value": "20"
                 },
                 {
                   "key": "family",
-                  "value": "22"
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "requestRemoveFamilyMember",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "ar",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/contributions/:contribution/members/:member/request-remove",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "contributions",
+                ":contribution",
+                "members",
+                ":member",
+                "request-remove"
+              ],
+              "variable": [
+                {
+                  "key": "contribution",
+                  "value": "20"
+                },
+                {
+                  "key": "member",
+                  "value": "11"
                 }
               ]
             }
@@ -4630,13 +4825,13 @@
                 },
                 {
                   "key": "families[]",
-                  "value": "4",
+                  "value": "1",
                   "type": "text",
                   "uuid": "c7167bb6-3c70-4579-8602-203277184416"
                 },
                 {
                   "key": "families[]",
-                  "value": "66",
+                  "value": "2",
                   "type": "text",
                   "uuid": "880b2861-6321-40a2-a715-a2301c3a219c",
                   "disabled": true
@@ -4653,6 +4848,19 @@
                   "value": "21",
                   "type": "text",
                   "uuid": "5749aefd-d1b5-4330-89ca-6a5db358e6d5",
+                  "disabled": true
+                },
+                {
+                  "key": "members[]",
+                  "value": "6",
+                  "type": "text",
+                  "uuid": "99fc81f9-3661-4a94-9585-5d200c337ede"
+                },
+                {
+                  "key": "members[]",
+                  "value": "11",
+                  "type": "text",
+                  "uuid": "7c557525-b6c6-48e3-9c29-17e0b2171378",
                   "disabled": true
                 }
               ]
@@ -6715,7 +6923,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "27|N92s0J6EUk2Rfh0ECFyVYjXu2ntsxKG3IdAXGMo23a7e58ce",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
