@@ -195,10 +195,6 @@ export default function FamilySelectionDialog({
   // Auto-select suggested families and benefited families when dialog opens
   useEffect(() => {
     if (isOpen && families.length > 0) {
-      console.log(
-        "Auto-selecting families/members. Total families:",
-        families.length,
-      );
       const newSelection = new Map(initialSelection);
       const newMemberSelection = new Map(initialMemberSelection);
       const newExpandedFamilies = new Set<number>(expandedFamilies);
@@ -209,9 +205,6 @@ export default function FamilySelectionDialog({
           (family.addedByContributor || family.hasBenefit) &&
           !newSelection.has(family.id)
         ) {
-          console.log(
-            `Auto-selecting family ${family.id} (${family.familyName})`,
-          );
           newSelection.set(family.id, "1");
         }
 
@@ -225,9 +218,6 @@ export default function FamilySelectionDialog({
               member.hasBenefit === true
             ) {
               if (!newMemberSelection.has(member.id)) {
-                console.log(
-                  `Auto-selecting member ${member.id} (${member.name}) in family ${family.id}`,
-                );
                 newMemberSelection.set(member.id, "1");
                 hasSelectedMember = true;
               }
@@ -283,7 +273,6 @@ export default function FamilySelectionDialog({
   };
 
   const toggleExpandFamily = (familyId: number) => {
-    console.log("toggleExpandFamily clicked for familyId:", familyId);
     setExpandedFamilies((prev) =>
       prev.includes(familyId)
         ? prev.filter((id) => id !== familyId)

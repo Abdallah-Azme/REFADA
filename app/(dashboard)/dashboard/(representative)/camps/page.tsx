@@ -23,7 +23,6 @@ export default function Page() {
     campSlug || null,
   );
 
-  console.log({ campData });
   const isLoading = profileLoading || campLoading || contributionsLoading;
 
   // Build dynamic stats from API data
@@ -56,7 +55,6 @@ export default function Page() {
 
   // Get total contributions count from the contributions API
   const totalContributions = contributions.length;
-  console.log({ projects });
   const dynamicStats = [
     {
       icon: Heart,

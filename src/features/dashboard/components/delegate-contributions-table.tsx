@@ -458,10 +458,7 @@ export default function DelegateContributionsTable() {
       if (contributionId) {
         const response =
           await getDelegateFamiliesForContributionApi(contributionId);
-        console.log(
-          "getDelegateFamiliesForContributionApi response:",
-          response,
-        );
+
         if (response.success) {
           // Sort families: suggested (addedByContributor) first
           const sortedFamilies = [...response.data.families].sort((a, b) => {
@@ -732,8 +729,6 @@ export default function DelegateContributionsTable() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {}
-
-  console.log({ selectedFamilies });
 
   if (isLoading) {
     return (

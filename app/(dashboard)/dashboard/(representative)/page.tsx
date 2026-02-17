@@ -20,7 +20,6 @@ export default function DashboardPage() {
   // Get user's camp slug from profile
   const campSlug = profileData?.data?.camp?.slug;
   const { data: campData } = useCampDetails(campSlug || null);
-  console.log({ campData });
   const isLoading = profileLoading || projectsLoading || contributionsLoading;
 
   // Build dynamic stats from API data
@@ -48,8 +47,6 @@ export default function DashboardPage() {
     campDetails?.familyCount ||
     userCamp?.familyCount ||
     0;
-
-  console.log({ contributions });
 
   // Get total contributions count from the contributions API
   const totalContributions = contributions.length;
