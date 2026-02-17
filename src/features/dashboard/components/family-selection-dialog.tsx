@@ -17,6 +17,8 @@ import {
   CheckCircle2,
   Download,
   Filter,
+  ChevronDown,
+  ChevronLeft,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
@@ -45,6 +47,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { FamilyMember } from "@/features/contributors/api/contributors.api";
+
 interface Family {
   id: number;
   familyName: string;
@@ -52,15 +56,20 @@ interface Family {
   nationalId: string;
   addedByContributor?: boolean;
   hasBenefit?: boolean;
+  members?: FamilyMember[];
 }
 
 interface FamilySelectionDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (selectedFamilies: Map<number, string>) => void;
+  onConfirm: (
+    selectedFamilies: Map<number, string>,
+    selectedMembers: Map<number, string>,
+  ) => void;
   families: Family[];
   isLoading: boolean;
   initialSelection?: Map<number, string>;
+  initialMemberSelection?: Map<number, string>;
 }
 
 export default function FamilySelectionDialog({
@@ -70,12 +79,24 @@ export default function FamilySelectionDialog({
   families,
   isLoading,
   initialSelection = new Map(),
-}: FamilySelectionDialogProps) {
+  initialMemberSelection = new Map(),
+}: FamilySelectionDialogProps & {
+  initialMemberSelection?: Map<number, string>;
+  onConfirm: (
+    selectedFamilies: Map<number, string>,
+    selectedMembers: Map<number, string>,
+  ) => void;
+}) {
   const t = useTranslations("contributions");
   const tCommon = useTranslations("common");
   const [globalFilter, setGlobalFilter] = useState("");
   const [selectedFamilies, setSelectedFamilies] =
     useState<Map<number, string>>(initialSelection);
+  const [selectedMembers, setSelectedMembers] = useState<Map<number, string>>(
+    initialMemberSelection,
+  );
+  const [expandedFamilies, setExpandedFamilies] = useState<number[]>([]);
+
   const [chosenFilter, setChosenFilter] = useState<string>("all");
   const [benefitFilter, setBenefitFilter] = useState<string>("all");
 
@@ -111,7 +132,11 @@ export default function FamilySelectionDialog({
       const newSelection = new Map(selectedFamilies);
       filteredFamilies.forEach((family) => {
         if (!newSelection.has(family.id)) {
-          newSelection.set(family.id, "1");
+          // Check disabled state? Usually bulk select ignores disabled
+          const isDisabled = family.hasBenefit || family.addedByContributor;
+          if (!isDisabled) {
+            newSelection.set(family.id, "1");
+          }
         }
       });
       setSelectedFamilies(newSelection);
@@ -123,7 +148,7 @@ export default function FamilySelectionDialog({
     // Get only selected families
     const selectedFamilyIds = Array.from(selectedFamilies.keys());
     const familiesToExport = families.filter((f) =>
-      selectedFamilyIds.includes(f.id)
+      selectedFamilyIds.includes(f.id),
     );
 
     if (familiesToExport.length === 0) {
@@ -159,7 +184,7 @@ export default function FamilySelectionDialog({
     link.setAttribute("href", url);
     link.setAttribute(
       "download",
-      `families_${new Date().toISOString().split("T")[0]}.csv`
+      `families_${new Date().toISOString().split("T")[0]}.csv`,
     );
     link.style.visibility = "hidden";
     document.body.appendChild(link);
@@ -170,19 +195,55 @@ export default function FamilySelectionDialog({
   // Auto-select suggested families and benefited families when dialog opens
   useEffect(() => {
     if (isOpen && families.length > 0) {
+      console.log(
+        "Auto-selecting families/members. Total families:",
+        families.length,
+      );
       const newSelection = new Map(initialSelection);
+      const newMemberSelection = new Map(initialMemberSelection);
+      const newExpandedFamilies = new Set<number>(expandedFamilies);
+
       families.forEach((family) => {
         // Auto-select families that are addedByContributor or have already benefited
         if (
           (family.addedByContributor || family.hasBenefit) &&
           !newSelection.has(family.id)
         ) {
+          console.log(
+            `Auto-selecting family ${family.id} (${family.familyName})`,
+          );
           newSelection.set(family.id, "1");
+        }
+
+        // Check members
+        if (family.members && family.members.length > 0) {
+          let hasSelectedMember = false;
+          family.members.forEach((member) => {
+            // Check strictly for true
+            if (
+              member.addedByContributor === true ||
+              member.hasBenefit === true
+            ) {
+              if (!newMemberSelection.has(member.id)) {
+                console.log(
+                  `Auto-selecting member ${member.id} (${member.name}) in family ${family.id}`,
+                );
+                newMemberSelection.set(member.id, "1");
+                hasSelectedMember = true;
+              }
+            }
+          });
+
+          if (hasSelectedMember) {
+            newExpandedFamilies.add(family.id);
+          }
         }
       });
       setSelectedFamilies(newSelection);
+      setSelectedMembers(newMemberSelection);
+      setExpandedFamilies(Array.from(newExpandedFamilies));
     }
-  }, [isOpen, families, initialSelection]);
+  }, [isOpen, families, initialSelection, initialMemberSelection]);
 
   const handleToggleFamily = (familyId: number) => {
     // Find the family to check if it's disabled
@@ -196,8 +257,21 @@ export default function FamilySelectionDialog({
       newMap.delete(familyId);
     } else {
       newMap.set(familyId, "1");
+      // Deselect members if family is selected? Or keep them?
+      // Usually if family is selected, members don't need to be selected individually unless we want double counting (which is bad)
+      // For now, let's keep them independent or clear members if family is selected
     }
     setSelectedFamilies(newMap);
+  };
+
+  const handleToggleMember = (memberId: number) => {
+    const newMap = new Map(selectedMembers);
+    if (newMap.has(memberId)) {
+      newMap.delete(memberId);
+    } else {
+      newMap.set(memberId, "1");
+    }
+    setSelectedMembers(newMap);
   };
 
   const handleQuantityChange = (familyId: number, value: string) => {
@@ -206,6 +280,15 @@ export default function FamilySelectionDialog({
       newMap.set(familyId, value);
       setSelectedFamilies(newMap);
     }
+  };
+
+  const toggleExpandFamily = (familyId: number) => {
+    console.log("toggleExpandFamily clicked for familyId:", familyId);
+    setExpandedFamilies((prev) =>
+      prev.includes(familyId)
+        ? prev.filter((id) => id !== familyId)
+        : [...prev, familyId],
+    );
   };
 
   const columns: ColumnDef<Family>[] = [
@@ -232,8 +315,8 @@ export default function FamilySelectionDialog({
                 isDisabled
                   ? "border-gray-200 bg-gray-100 cursor-not-allowed opacity-50"
                   : isSelected
-                  ? "border-primary bg-primary text-white"
-                  : "border-gray-300 hover:border-primary/50"
+                    ? "border-primary bg-primary text-white"
+                    : "border-gray-300 hover:border-primary/50"
               }`}
             />
           </div>
@@ -248,9 +331,29 @@ export default function FamilySelectionDialog({
       cell: ({ row }) => {
         const isChosen = row.original.addedByContributor;
         const hasBenefited = row.original.hasBenefit;
+        const family = row.original;
+        const isExpanded = expandedFamilies.includes(family.id);
 
         return (
           <div className="flex items-center gap-2">
+            {family.members && family.members.length > 0 ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleExpandFamily(family.id);
+                }}
+                className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                {isExpanded ? (
+                  <ChevronDown className="h-4 w-4 text-primary" />
+                ) : (
+                  <ChevronLeft className="h-4 w-4 text-gray-400" />
+                )}
+              </button>
+            ) : (
+              <div className="w-6" /> // Spacer
+            )}
+
             <span
               className={`font-medium ${
                 hasBenefited ? "text-gray-400" : "text-gray-800"
@@ -259,7 +362,7 @@ export default function FamilySelectionDialog({
               {row.original.familyName}
             </span>
             {isChosen && (
-              <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs px-2 py-0.5 shadow-sm">
+              <Badge className="bg-linear-to-r from-green-500 to-emerald-600 text-white text-xs px-2 py-0.5 shadow-sm">
                 <CheckCircle2 className="w-3 h-3 ml-1" />
                 {t("chosen_by_contributor")}
               </Badge>
@@ -350,14 +453,14 @@ export default function FamilySelectionDialog({
   });
 
   const handleConfirm = () => {
-    onConfirm(selectedFamilies);
+    onConfirm(selectedFamilies, selectedMembers);
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="w-[95vw] sm:w-full max-w-4xl max-h-[90vh] bg-gradient-to-br from-white to-gray-50 border-0 shadow-2xl overflow-hidden flex flex-col"
+        className="w-[95vw] sm:w-full max-w-4xl max-h-[90vh] bg-linear-to-br from-white to-gray-50 border-0 shadow-2xl overflow-hidden flex flex-col"
         dir="rtl"
       >
         <DialogHeader className="pb-4 border-b border-gray-100 shrink-0">
@@ -434,14 +537,24 @@ export default function FamilySelectionDialog({
                 return (
                   family && !family.hasBenefit && !family.addedByContributor
                 );
-              }
+              },
             ).length;
 
-            return newFamiliesCount > 0 ? (
+            const newMembersCount = Array.from(selectedMembers.keys()).filter(
+              (id) => {
+                // Determine if member is valid to count (not added by contributor)
+                // This might require scanning all families to find the member
+                return true;
+              },
+            ).length;
+
+            return newFamiliesCount > 0 || newMembersCount > 0 ? (
               <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-xl border border-primary/20 mx-1">
                 <CheckCircle2 className="w-5 h-5 text-primary" />
                 <span className="text-primary font-semibold">
                   {newFamiliesCount} {t("families_benefited")}
+                  {newMembersCount > 0 &&
+                    `، ${newMembersCount} ${t("individuals")}`}
                 </span>
               </div>
             ) : null;
@@ -466,7 +579,7 @@ export default function FamilySelectionDialog({
                             ? null
                             : flexRender(
                                 header.column.columnDef.header,
-                                header.getContext()
+                                header.getContext(),
                               )}
                         </TableHead>
                       ))}
@@ -492,10 +605,16 @@ export default function FamilySelectionDialog({
                       const isChosen = row.original.addedByContributor;
                       const hasBenefited = row.original.hasBenefit;
                       const isDisabled = hasBenefited || isChosen;
+                      const isExpanded = expandedFamilies.includes(
+                        row.original.id,
+                      );
+                      const family = row.original;
+
                       return (
-                        <TableRow
-                          key={row.id}
-                          className={`
+                        <>
+                          <TableRow
+                            key={row.id}
+                            className={`
                             transition-all duration-200
                             ${
                               isDisabled
@@ -506,8 +625,8 @@ export default function FamilySelectionDialog({
                               isSelected
                                 ? "bg-primary/5 hover:bg-primary/10"
                                 : isDisabled
-                                ? "bg-gray-50"
-                                : "hover:bg-gray-50"
+                                  ? "bg-gray-50"
+                                  : "hover:bg-gray-50"
                             }
                             ${
                               isChosen && !isSelected && !hasBenefited
@@ -520,28 +639,105 @@ export default function FamilySelectionDialog({
                                 : ""
                             }
                           `}
-                          onClick={() =>
-                            !isDisabled && handleToggleFamily(row.original.id)
-                          }
-                        >
-                          {row.getVisibleCells().map((cell) => (
-                            <TableCell
-                              key={cell.id}
-                              className="text-center py-4 px-4"
-                              onClick={(e) => {
-                                // Prevent row click for quantity input
-                                if (cell.column.id === "quantity") {
-                                  e.stopPropagation();
-                                }
-                              }}
-                            >
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              )}
-                            </TableCell>
-                          ))}
-                        </TableRow>
+                            onClick={() =>
+                              !isDisabled && handleToggleFamily(row.original.id)
+                            }
+                          >
+                            {row.getVisibleCells().map((cell) => (
+                              <TableCell
+                                key={cell.id}
+                                className="text-center py-4 px-4"
+                                onClick={(e) => {
+                                  // Prevent row click for quantity input
+                                  if (cell.column.id === "quantity") {
+                                    e.stopPropagation();
+                                  }
+                                }}
+                              >
+                                {flexRender(
+                                  cell.column.columnDef.cell,
+                                  cell.getContext(),
+                                )}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                          {/* Expanded Members Row */}
+                          {isExpanded &&
+                            family.members &&
+                            family.members.length > 0 && (
+                              <TableRow className="bg-gray-50/50">
+                                <TableCell
+                                  colSpan={columns.length}
+                                  className="p-0"
+                                >
+                                  <div className="p-4 pr-12 space-y-2 border-t border-gray-100">
+                                    <div className="text-sm font-semibold text-gray-500 mb-2">
+                                      أفراد العائلة:
+                                    </div>
+                                    {family.members.map((member) => {
+                                      const isMemberSelected =
+                                        selectedMembers.has(member.id);
+                                      const isMemberDisabled =
+                                        member.hasBenefit ||
+                                        member.addedByContributor;
+
+                                      return (
+                                        <div
+                                          key={member.id}
+                                          className={`flex items-center justify-between p-3 rounded-lg border ${
+                                            isMemberDisabled
+                                              ? "bg-gray-100 border-gray-200 opacity-70"
+                                              : isMemberSelected
+                                                ? "bg-white border-primary shadow-sm"
+                                                : "bg-white border-gray-200 hover:border-blue-200"
+                                          }`}
+                                        >
+                                          <div className="flex items-center gap-3">
+                                            <Checkbox
+                                              checked={isMemberSelected}
+                                              disabled={isMemberDisabled}
+                                              onCheckedChange={() =>
+                                                handleToggleMember(member.id)
+                                              }
+                                              className={
+                                                isMemberSelected
+                                                  ? "bg-primary border-primary text-white"
+                                                  : ""
+                                              }
+                                            />
+                                            <div className="flex flex-col text-right">
+                                              <div className="flex items-center gap-2">
+                                                <span className="font-medium text-gray-800">
+                                                  {member.name}
+                                                </span>
+                                                {member.addedByContributor && (
+                                                  <Badge
+                                                    variant="secondary"
+                                                    className="text-[10px] bg-green-100 text-green-700 h-5"
+                                                  >
+                                                    {t("chosen_by_contributor")}
+                                                  </Badge>
+                                                )}
+                                              </div>
+                                              <div className="flex gap-3 text-xs text-gray-500">
+                                                <span>
+                                                  {new Date(
+                                                    member.dob,
+                                                  ).toLocaleDateString("ar-EG")}
+                                                </span>
+                                                <span>•</span>
+                                                <span>{member.ageGroup}</span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            )}
+                        </>
                       );
                     })
                   ) : (
@@ -602,7 +798,7 @@ export default function FamilySelectionDialog({
             {(() => {
               // Count only NEW families (not already benefited or added by contributor)
               const newFamiliesCount = Array.from(
-                selectedFamilies.keys()
+                selectedFamilies.keys(),
               ).filter((id) => {
                 const family = families.find((f) => f.id === id);
                 return (
@@ -610,14 +806,16 @@ export default function FamilySelectionDialog({
                 );
               }).length;
 
+              const newMembersCount = selectedMembers.size; // Simplify for now
+
               return (
                 <Button
                   onClick={handleConfirm}
-                  disabled={newFamiliesCount === 0}
-                  className="px-8 h-11 rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-semibold shadow-lg shadow-primary/25 disabled:opacity-50 disabled:shadow-none"
+                  disabled={newFamiliesCount === 0 && newMembersCount === 0}
+                  className="px-8 h-11 rounded-xl bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-semibold shadow-lg shadow-primary/25 disabled:opacity-50 disabled:shadow-none"
                 >
                   <CheckCircle2 className="w-5 h-5 ml-2" />
-                  {t("add_families")} ({newFamiliesCount})
+                  {t("add_families")} ({newFamiliesCount + newMembersCount})
                 </Button>
               );
             })()}

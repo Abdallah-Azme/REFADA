@@ -95,6 +95,7 @@ export interface FamilyMember {
   ageGroup: string;
   medicalConditions: string[];
   hasBenefit: boolean;
+  addedByContributor?: boolean;
 }
 
 export interface CampFamily {
@@ -123,6 +124,10 @@ export interface CampFamily {
   createdAt: string;
   updatedAt: string;
 }
+
+// ============================================================================
+// Camp Families API
+// ============================================================================
 
 export interface CampFamiliesResponse {
   success: boolean;
@@ -419,6 +424,7 @@ export interface DelegateContribution {
   alreadyConfirmed?: boolean;
   delegate?: string;
   project?: ContributionHistoryProject | null;
+  contributor?: { name: string };
   contributorFamilies: ContributorFamily[];
   createdAt: string;
   updatedAt: string;
@@ -470,6 +476,11 @@ export interface FamilyQuantity {
   quantity: number;
 }
 
+export interface MemberQuantity {
+  id: number;
+  quantity: number;
+}
+
 export interface AddFamiliesToContributionResponse {
   success: boolean;
   message: string;
@@ -478,6 +489,7 @@ export interface AddFamiliesToContributionResponse {
 export async function addFamiliesToContributionApi(
   contributionId: number,
   families: FamilyQuantity[],
+  members?: MemberQuantity[],
 ): Promise<AddFamiliesToContributionResponse> {
   const formData = new FormData();
 
@@ -485,6 +497,16 @@ export async function addFamiliesToContributionApi(
     formData.append(`families[${index}][id]`, family.id.toString());
     formData.append(`families[${index}][quantity]`, family.quantity.toString());
   });
+
+  if (members && members.length > 0) {
+    members.forEach((member, index) => {
+      formData.append(`members[${index}][id]`, member.id.toString());
+      formData.append(
+        `members[${index}][quantity]`,
+        member.quantity.toString(),
+      );
+    });
+  }
 
   return apiRequest<AddFamiliesToContributionResponse>(
     `/delegate/contributions/${contributionId}/add-families`,

@@ -38,6 +38,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -93,6 +95,7 @@ const createDelegateContributionColumns = (
   },
   {
     accessorKey: "project.name",
+    id: "projectName",
     header: t("project_name"),
     cell: ({ row }) => (
       <div className="text-center text-gray-700 font-medium max-w-[200px] truncate">
@@ -426,6 +429,10 @@ export default function DelegateContributionsTable() {
   const [selectedFamilies, setSelectedFamilies] = useState<Map<number, string>>(
     new Map(),
   );
+  const [selectedMembers, setSelectedMembers] = useState<Map<number, string>>(
+    new Map(),
+  );
+
   const [isAddingFamilies, setIsAddingFamilies] = useState(false);
   const [campFamilies, setCampFamilies] = useState<CampFamily[]>([]);
   const [isLoadingCampFamilies, setIsLoadingCampFamilies] = useState(false);
@@ -436,9 +443,13 @@ export default function DelegateContributionsTable() {
   // Fetch camp families when stepping into family selection (Step 2)
   useEffect(() => {
     if (confirmStep === 2 && campFamilies.length === 0) {
-      fetchCampFamilies();
+      if (confirmingContribution) {
+        fetchCampFamilies(confirmingContribution.id);
+      } else {
+        fetchCampFamilies();
+      }
     }
-  }, [confirmStep, campFamilies.length]);
+  }, [confirmStep, campFamilies.length, confirmingContribution]);
 
   const fetchCampFamilies = async (contributionId?: number) => {
     setIsLoadingCampFamilies(true);
@@ -447,7 +458,10 @@ export default function DelegateContributionsTable() {
       if (contributionId) {
         const response =
           await getDelegateFamiliesForContributionApi(contributionId);
-        console.log("console-response", response);
+        console.log(
+          "getDelegateFamiliesForContributionApi response:",
+          response,
+        );
         if (response.success) {
           // Sort families: suggested (addedByContributor) first
           const sortedFamilies = [...response.data.families].sort((a, b) => {
@@ -510,32 +524,65 @@ export default function DelegateContributionsTable() {
   };
 
   // Wrapper for existing handleAddFamilies to work with new dialog
-  const handleAddFamiliesWrapper = async (selected: Map<number, string>) => {
+  const handleAddFamiliesWrapper = async (
+    selectedFamiliesMap: Map<number, string>,
+    selectedMembersMap: Map<number, string> = new Map(),
+  ) => {
     if (!confirmingContribution) return;
 
     setIsAddingFamilies(true);
     try {
-      // Filter out families that are already addedByContributor or hasBenefit (they're already true on backend)
-      const familiesData = Array.from(selected.entries())
+      // Filter out families that hasBenefit (already received) OR addedByContributor (already in contribution)
+      const familiesData = Array.from(selectedFamiliesMap.entries())
         .filter(([familyId]) => {
           const family = campFamilies.find((f) => f.id === familyId);
-          return !family?.addedByContributor && !family?.hasBenefit;
+          // Only filter out if they already have benefit OR were added by contributor
+          return !family?.hasBenefit && !family?.addedByContributor;
         })
         .map(([familyId, quantity]) => ({
           id: familyId,
           quantity: parseInt(quantity) || 1,
         }));
 
+      // Prepare members data
+      const membersData = Array.from(selectedMembersMap.entries())
+        .filter(([memberId]) => {
+          // Find member in campFamilies
+          for (const family of campFamilies) {
+            const member = family.members?.find((m) => m.id === memberId);
+            if (member) {
+              // Filter out if hasBenefit OR addedByContributor
+              return !member.hasBenefit && !member.addedByContributor;
+            }
+          }
+          return true; // Should not happen if data is consistent
+        })
+        .map(([memberId, quantity]) => ({
+          id: memberId,
+          quantity: parseInt(quantity) || 1,
+        }));
+
       // If all selected families were already added, just close the dialog
-      if (familiesData.length === 0) {
-        toast.success(t("add_families_success"));
-        handleCloseConfirmDialog();
-        return;
+      if (familiesData.length === 0 && membersData.length === 0) {
+        // Check if there was ANY selection at all (even if filtered out)
+        if (selectedFamiliesMap.size > 0 || selectedMembersMap.size > 0) {
+          // User selected something but it was filtered out => it's already added.
+          // We treat this as success.
+          toast.success(t("add_families_success"));
+          handleCloseConfirmDialog();
+          fetchContributions();
+          return;
+        } else {
+          // User selected nothing
+          toast.info(t("no_new_selection"));
+          return;
+        }
       }
 
       const response = await addFamiliesToContributionApi(
         confirmingContribution.id,
         familiesData,
+        membersData,
       );
 
       if (response.success) {
@@ -558,6 +605,8 @@ export default function DelegateContributionsTable() {
     setConfirmedQuantity("");
     setConfirmStep(1);
     setSelectedFamilies(new Map());
+    setSelectedMembers(new Map());
+    setCampFamilies([]); // Clear families to force fetch on step 2
   };
 
   const handleConfirmContribution = async () => {
@@ -696,93 +745,33 @@ export default function DelegateContributionsTable() {
   }
 
   return (
-    <div className="w-full p-6 bg-white rounded-lg min-h-screen bg">
-      <div className="space-y-4">
-        {/* Header with Title and Search */}
-        <div className=" mb-2">
-          <h2 className="text-2xl font-bold text-gray-800">
-            {t("page_title")}
-          </h2>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold tracking-tight">
+          {t("contributions")}
+        </h2>
+      </div>
 
-          <div className="p-6  ">
-            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
-              {/* FORM */}
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="w-full sm:w-auto"
-                >
-                  {/* الحالة */}
-                  <FormField
-                    control={form.control}
-                    name="status"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            <SelectTrigger className="w-full sm:w-[160px] h-10 rounded-md bg-white border border-gray-300 text-sm text-gray-700">
-                              <SelectValue placeholder={t("filter_status")} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="all">
-                                {t("filter_all")}
-                              </SelectItem>
-                              <SelectItem value="pending">
-                                {t("status_pending")}
-                              </SelectItem>
-                              <SelectItem value="approved">
-                                {t("status_approved")}
-                              </SelectItem>
-                              <SelectItem value="rejected">
-                                {t("status_rejected")}
-                              </SelectItem>
-                              <SelectItem value="completed">
-                                {t("status_completed")}
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </form>
-              </Form>
-
-              <div className="flex gap-2 w-full sm:w-auto">
-                <Button
-                  className="bg-primary text-white px-6 flex-1 sm:flex-none py-2 rounded-xl flex items-center justify-center gap-2 text-sm font-medium"
-                  size="lg"
-                  onClick={fetchContributions}
-                >
-                  <SearchCheck className="w-4 h-4" />
-                  {t("update")}
-                </Button>
-
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="px-6 flex-1 sm:flex-none py-2 rounded-xl shrink-0"
-                  onClick={() => form.reset()}
-                >
-                  <RotateCcw className="w-4 h-4 text-primary" />
-                  {t("reset")}
-                </Button>
-              </div>
-            </div>
-          </div>
+      <div className="rounded-md border bg-white shadow-sm">
+        <div className="p-4 border-b flex items-center gap-4">
+          <Input
+            placeholder={t("search_placeholder")}
+            value={
+              (table.getColumn("projectName")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("projectName")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
         </div>
-
-        {/* Table */}
-        <div className=" bg-white ">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="bg-gray-50">
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id} className="text-center">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -790,182 +779,204 @@ export default function DelegateContributionsTable() {
                             header.getContext(),
                           )}
                     </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
                   ))}
                 </TableRow>
-              ))}
-            </TableHeader>
-
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                    className="hover:bg-gray-50"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="text-center">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={
-                      createDelegateContributionColumns(
-                        {
-                          onView: handleView,
-                          onConfirm: handleConfirmClick,
-                          setConfirmingContribution,
-                          setConfirmStep,
-                          fetchCampFamilies,
-                        },
-                        t,
-                      ).length
-                    }
-                    className="h-24 text-center"
-                  >
-                    {tCommon("no_results")}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-
-        {/* Pagination */}
-        <div className="flex items-center justify-center">
-          <PaginationControls table={table} />
-        </div>
-
-        {/* Details Dialog */}
-        <DelegateContributionDetailsDialog
-          isOpen={isDialogOpen}
-          onClose={() => setIsDialogOpen(false)}
-          contribution={selectedContribution}
-        />
-
-        {/* Confirm Contribution Dialog - Step 1 Only (Quantity) */}
-        {/* Confirm Contribution Dialog */}
-        <Dialog
-          open={!!confirmingContribution}
-          onOpenChange={(open) => {
-            if (!open) handleCloseConfirmDialog();
-          }}
-        >
-          <DialogContent className="max-w-lg" dir="rtl">
-            <DialogHeader>
-              <DialogTitle className="text-right">
-                {confirmStep === 3
-                  ? t("finish_confirm_title")
-                  : t("confirm_receipt_title")}
-              </DialogTitle>
-            </DialogHeader>
-
-            {confirmStep === 1 ? (
-              // Step 1: Quantity
-              <div className="space-y-4 text-right">
-                <p className="text-gray-600">
-                  {t("confirm_receipt_desc")}{" "}
-                  <span className="font-semibold text-gray-900">
-                    #{confirmingContribution?.id}
-                  </span>
-                  ؟
-                </p>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="confirmed-quantity"
-                    className="text-right block"
-                  >
-                    {t("received_quantity")}{" "}
-                    <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="confirmed-quantity"
-                    type="number"
-                    placeholder={t("received_quantity_placeholder")}
-                    value={confirmedQuantity}
-                    onChange={(e) => setConfirmedQuantity(e.target.value)}
-                    className="text-right"
-                  />
-                </div>
-
-                <div className="flex justify-end gap-2 mt-4">
-                  <Button
-                    variant="outline"
-                    onClick={handleCloseConfirmDialog}
-                    disabled={isConfirming}
-                  >
-                    {t("cancel")}
-                  </Button>
-                  <Button
-                    onClick={handleConfirmContribution}
-                    disabled={!confirmedQuantity || isConfirming}
-                    className="bg-primary text-white hover:bg-primary/90"
-                  >
-                    {isConfirming ? (
-                      <>
-                        <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-                        {t("confirming")}
-                      </>
-                    ) : (
-                      t("confirm_receipt")
-                    )}
-                  </Button>
-                </div>
-              </div>
-            ) : confirmStep === 2 ? (
-              // Step 2: Family Selection Active (Placeholder)
-              <div className="py-8 text-center text-gray-500">
-                {t("families_selection_active")}
-              </div>
+              ))
             ) : (
-              // Step 3: Finish Confirmation
-              <div className="space-y-4 text-right">
-                <p className="text-gray-600">{t("finish_confirm_desc")}</p>
-                <div className="flex justify-end gap-2 mt-4">
-                  <Button variant="outline" onClick={handleCloseConfirmDialog}>
-                    {tCommon("cancel")}
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  {t("no_results")}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+        <div className="flex items-center justify-end space-x-2 py-4 px-4 border-t">
+          <div className="flex-1 text-sm text-muted-foreground">
+            {table.getFilteredSelectedRowModel().rows.length} {t("of")}{" "}
+            {table.getFilteredRowModel().rows.length} {t("row_selected")}
+          </div>
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              {t("prev")}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              {t("next")}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* View Details Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("contribution_details")}</DialogTitle>
+          </DialogHeader>
+          {selectedContribution && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-semibold text-sm text-gray-500">
+                    {t("project_name")}
+                  </h4>
+                  <p>{selectedContribution.project?.name || "-"}</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-gray-500">
+                    {t("contributor_name")}
+                  </h4>
+                  <p>{selectedContribution.contributor?.name || "-"}</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-gray-500">
+                    {t("quantity")}
+                  </h4>
+                  <p>{selectedContribution.quantity}</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-gray-500">
+                    {t("date")}
+                  </h4>
+                  <p>
+                    {new Date(
+                      selectedContribution.createdAt,
+                    ).toLocaleDateString("ar-EG")}
+                  </p>
+                </div>
+                <div className="col-span-2">
+                  <h4 className="font-semibold text-sm text-gray-500">
+                    {t("notes")}
+                  </h4>
+                  <p>{selectedContribution.notes || t("no_notes")}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              {t("close")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirm Contribution Dialog */}
+      {/* Confirm Contribution Dialog (Steps 1 & 3) */}
+      <Dialog
+        open={
+          !!confirmingContribution && (confirmStep === 1 || confirmStep === 3)
+        }
+        onOpenChange={(open) => {
+          if (!open) handleCloseConfirmDialog();
+        }}
+      >
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>
+              {confirmStep === 1
+                ? t("confirm_receipt")
+                : t("finish_confirm_title")}
+            </DialogTitle>
+            <DialogDescription>
+              {confirmStep === 1
+                ? t("confirm_receipt_desc")
+                : t("finish_confirm_desc")}
+            </DialogDescription>
+          </DialogHeader>
+
+          {confirmingContribution && (
+            <>
+              {confirmStep === 1 ? (
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmedQuantity">
+                      {t("received_quantity")}
+                    </Label>
+                    <Input
+                      id="confirmedQuantity"
+                      type="number"
+                      value={confirmedQuantity}
+                      onChange={(e) => setConfirmedQuantity(e.target.value)}
+                      placeholder={t("enter_received_quantity")}
+                    />
+                  </div>
+                </div>
+              ) : (
+                /* Step 3: Finish Confirmation */
+                <div className="py-4">
+                  <p className="text-center text-muted-foreground">
+                    {t("finish_confirm_desc")}
+                  </p>
+                </div>
+              )}
+
+              <DialogFooter>
+                <Button variant="outline" onClick={handleCloseConfirmDialog}>
+                  {t("cancel")}
+                </Button>
+                {confirmStep === 1 ? (
+                  <Button onClick={handleConfirmContribution}>
+                    {t("next")}
                   </Button>
+                ) : (
                   <Button
                     onClick={handleCompleteContribution}
-                    disabled={isConfirming}
-                    className="bg-green-600 hover:bg-green-700 text-white"
+                    className="bg-green-600 hover:bg-green-700"
                   >
-                    {isConfirming ? (
-                      <>
-                        <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-                        {t("sending")}
-                      </>
-                    ) : (
-                      t("finish")
-                    )}
+                    {t("finish")}
                   </Button>
-                </div>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+                )}
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
-        {/* Family Selection Dialog */}
+      {/* Family Selection Dialog (Step 2) */}
+      {confirmingContribution && confirmStep === 2 && (
         <FamilySelectionDialog
-          isOpen={confirmStep === 2}
+          isOpen={true}
           onClose={handleCloseConfirmDialog}
-          onConfirm={(selected) => {
-            setSelectedFamilies(selected);
-            handleAddFamiliesWrapper(selected);
-          }}
-          families={displayFamilies}
+          onConfirm={handleAddFamiliesWrapper}
+          families={campFamilies}
           isLoading={isLoadingCampFamilies}
           initialSelection={selectedFamilies}
+          initialMemberSelection={selectedMembers}
         />
-      </div>
+      )}
     </div>
   );
 }
