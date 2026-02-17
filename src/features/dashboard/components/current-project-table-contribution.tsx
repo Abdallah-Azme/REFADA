@@ -48,6 +48,7 @@ import { Input } from "@/components/ui/input";
 import {
   useContributorHistory,
   ContributorFamily,
+  ContributorMember,
 } from "@/features/contributor/hooks/use-contributor-history";
 import ContributionFamiliesDialog from "@/features/contributor/components/contribution-families-dialog";
 import { toast } from "sonner";
@@ -104,7 +105,9 @@ export default function CurrentProjectsTableContribution({
   const [selectedHistoryFamilies, setSelectedHistoryFamilies] = React.useState<
     ContributorFamily[]
   >([]);
-
+  const [selectedHistoryMembers, setSelectedHistoryMembers] = React.useState<
+    ContributorMember[]
+  >([]);
   const [selectedHistoryProjectName, setSelectedHistoryProjectName] =
     React.useState<string>("");
 
@@ -145,6 +148,8 @@ export default function CurrentProjectsTableContribution({
     setIsDialogOpen(true);
   };
 
+  console.log({ historyItems });
+
   const handleViewHistory = (project: Project): void => {
     const projectHistoryItems = historyItems.filter(
       (item: { project: { id: number } }) => item.project?.id === project.id,
@@ -158,15 +163,25 @@ export default function CurrentProjectsTableContribution({
       return acc;
     }, []);
 
-    if (allFamilies.length > 0) {
+    // Collect all members from all contributions for this project
+    const allMembers = projectHistoryItems.reduce((acc: any[], item: any) => {
+      if (item.contributorMembers && item.contributorMembers.length > 0) {
+        return [...acc, ...item.contributorMembers];
+      }
+      return acc;
+    }, []);
+
+    if (allFamilies.length > 0 || allMembers.length > 0) {
       setSelectedHistoryFamilies(allFamilies);
+      setSelectedHistoryMembers(allMembers);
       setSelectedHistoryProjectName(project.name);
       setIsHistoryDialogOpen(true);
     } else {
       // If no families found across all contributions
       if (projectHistoryItems.length > 0) {
-        // Has contributions but no families assigned yet
+        // Has contributions but no families or members assigned yet
         setSelectedHistoryFamilies([]);
+        setSelectedHistoryMembers([]);
         setSelectedHistoryProjectName(project.name);
         setIsHistoryDialogOpen(true);
       } else {
@@ -374,6 +389,7 @@ export default function CurrentProjectsTableContribution({
         isOpen={isHistoryDialogOpen}
         onClose={() => setIsHistoryDialogOpen(false)}
         families={selectedHistoryFamilies}
+        members={selectedHistoryMembers}
         projectName={selectedHistoryProjectName}
       />
     </div>

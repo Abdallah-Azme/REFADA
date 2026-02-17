@@ -36,6 +36,16 @@ export interface ContributionHistoryProject {
   updatedAt: string;
 }
 
+export interface ContributorMember {
+  id: number;
+  name: string;
+  nationalId: string;
+  dob: string;
+  gender: string;
+  relationship: string;
+  medicalConditions: string[];
+}
+
 export interface ContributorHistoryItem {
   id: number;
   totalQuantity: number;
@@ -43,6 +53,7 @@ export interface ContributorHistoryItem {
   status: string;
   project: ContributionHistoryProject;
   contributorFamilies: ContributorFamily[];
+  contributorMembers: ContributorMember[];
   createdAt: string;
   updatedAt: string;
 }
@@ -55,7 +66,7 @@ export interface ContributorHistoryResponse {
 
 async function apiRequest<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> {
   const headers: Record<string, string> = {
     Accept: "application/json",

@@ -7,4 +7,7 @@ export const useContributorHistory = () => {
     queryFn: contributorHistoryApi.getHistory,
   });
 };
-export type { ContributorFamily } from "../api/contributor-history.api";
+export type {
+  ContributorFamily,
+  ContributorMember,
+} from "../api/contributor-history.api";
