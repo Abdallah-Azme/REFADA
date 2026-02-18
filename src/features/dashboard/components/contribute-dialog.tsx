@@ -317,7 +317,7 @@ export default function ContributeDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-[500px] p-0 bg-white rounded-3xl max-h-[90vh] flex flex-col">
+      <DialogContent className="w-[95vw] sm:w-[500px] p-0 bg-white rounded-3xl max-h-[90vh] flex flex-col">
         <div className="shrink-0 p-6 pb-0">
           <DialogHeader className="flex flex-row items-center justify-between mb-6">
             <DialogTitle className="text-xl font-bold text-center w-full text-gray-800">
@@ -357,8 +357,8 @@ export default function ContributeDialog({
                   <label className="text-sm font-bold text-gray-800 block text-right">
                     {t("beneficiary_families")}
                   </label>
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
+                  <div className="flex flex-col gap-3">
+                    <div className="relative w-full">
                       <Popover
                         open={openFamilySearch}
                         onOpenChange={setOpenFamilySearch}
@@ -385,7 +385,10 @@ export default function ContributeDialog({
                           </div>
                         </PopoverTrigger>
                         <PopoverContent
-                          className="w-[var(--radix-popover-trigger-width)] max-h-[400px] overflow-hidden p-0"
+                          side="bottom"
+                          sideOffset={8}
+                          avoidCollisions={false}
+                          className="w-(--radix-popover-trigger-width) min-w-[min(100%,300px)] md:min-w-[400px] max-h-[400px] overflow-hidden p-0"
                           align="end"
                           onWheel={(e) => e.stopPropagation()}
                         >
@@ -394,7 +397,7 @@ export default function ContributeDialog({
                               placeholder={t("search_family_placeholder")}
                               className="text-right"
                             />
-                            <CommandList className="overflow-y-auto">
+                            <CommandList className="overflow-y-auto min-h-[min(200px,40vh)]">
                               {isLoadingFamilies ? (
                                 <div className="flex items-center justify-center py-6">
                                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -418,12 +421,17 @@ export default function ContributeDialog({
                                               family.members.length > 0 && (
                                                 <button
                                                   type="button"
-                                                  onClick={(e) =>
+                                                  onPointerDown={(e) =>
+                                                    e.stopPropagation()
+                                                  }
+                                                  onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
                                                     toggleExpandFamily(
                                                       e,
                                                       family.id,
-                                                    )
-                                                  }
+                                                    );
+                                                  }}
                                                   className="p-1 shrink-0 hover:bg-gray-100 group-data-[selected=true]:hover:bg-white/20 rounded-full transition-colors"
                                                 >
                                                   {expandedFamilies.includes(
@@ -492,12 +500,16 @@ export default function ContributeDialog({
                                         {expandedFamilies.includes(family.id) &&
                                           family.members &&
                                           family.members.length > 0 && (
-                                            <div className="mt-2 mr-8 border-r-2 border-gray-100 group-data-[selected=true]:border-white/20 pr-4 space-y-2">
+                                            <div className="mt-2 mr-4 sm:mr-8 border-r-2 border-gray-100 group-data-[selected=true]:border-white/20 pr-4 space-y-2">
                                               {family.members.map((member) => (
                                                 <div
                                                   key={member.id}
                                                   className="flex items-center justify-between w-full p-2 hover:bg-gray-50 group-data-[selected=true]:hover:bg-white/10 rounded-lg cursor-pointer transition-colors"
+                                                  onPointerDown={(e) =>
+                                                    e.stopPropagation()
+                                                  }
                                                   onClick={(e) => {
+                                                    e.preventDefault();
                                                     e.stopPropagation();
                                                     toggleMember(member.id);
                                                   }}
@@ -557,144 +569,148 @@ export default function ContributeDialog({
                       </Popover>
                     </div>
 
-                    {/* Age Groups Filter */}
-                    <div className="flex items-center gap-1">
-                      <Popover modal={true}>
-                        <PopoverTrigger asChild>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            className="bg-white border-gray-200 h-12 rounded-xl flex flex-row-reverse justify-between items-center px-3 text-gray-500 font-normal gap-1"
+                    <div className="flex flex-row gap-2">
+                      {/* Age Groups Filter */}
+                      <div className="flex items-center gap-1 flex-1">
+                        <Popover modal={true}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="bg-white border-gray-200 h-12 rounded-xl flex flex-row-reverse justify-between items-center px-3 text-gray-500 font-normal gap-1 w-full"
+                            >
+                              <ChevronDown className="h-4 w-4 opacity-50" />
+                              <span className="truncate">{t("age_group")}</span>
+                              {selectedAgeFilters.length > 0 && (
+                                <span className="bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[18px]">
+                                  {selectedAgeFilters.length}
+                                </span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-[200px] p-2 bg-white rounded-xl shadow-lg max-h-[300px] overflow-y-auto"
+                            align="end"
+                            onWheel={(e) => e.stopPropagation()}
                           >
-                            <ChevronDown className="h-4 w-4 opacity-50" />
-                            <span>{t("age_group")}</span>
-                            {selectedAgeFilters.length > 0 && (
-                              <span className="bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[18px]">
-                                {selectedAgeFilters.length}
-                              </span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-[200px] p-2 bg-white rounded-xl shadow-lg max-h-[300px] overflow-y-auto"
-                          align="end"
-                          onWheel={(e) => e.stopPropagation()}
-                        >
-                          <div className="flex flex-col gap-2">
-                            {ageGroupOptions.map((ageGroup) => (
-                              <div
-                                key={ageGroup.id}
-                                className="flex items-center justify-between gap-2 p-1 hover:bg-gray-50 rounded-md cursor-pointer"
-                                onClick={() => toggleAgeFilter(ageGroup.id)}
-                              >
-                                <label
-                                  htmlFor={ageGroup.id}
-                                  className="text-sm text-gray-700 cursor-pointer select-none"
-                                >
-                                  {ageGroup.name}
-                                </label>
-                                <Checkbox
-                                  id={ageGroup.id}
-                                  checked={selectedAgeFilters.includes(
-                                    ageGroup.id,
-                                  )}
-                                  onCheckedChange={() =>
-                                    toggleAgeFilter(ageGroup.id)
-                                  }
-                                  className="border-gray-300 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                      {selectedAgeFilters.length > 0 && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500"
-                          onClick={() => setSelectedAgeFilters([])}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-
-                    {/* Medical Conditions Filter */}
-                    <div className="flex items-center gap-1">
-                      <Popover modal={true}>
-                        <PopoverTrigger asChild>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            className="bg-white border-gray-200 h-12 rounded-xl flex flex-row-reverse justify-between items-center px-3 text-gray-500 font-normal gap-1"
-                          >
-                            <ChevronDown className="h-4 w-4 opacity-50" />
-                            <span>{t("medical_condition")}</span>
-                            {selectedMedicalFilters.length > 0 && (
-                              <span className="bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[18px]">
-                                {selectedMedicalFilters.length}
-                              </span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-[200px] p-2 bg-white rounded-xl shadow-lg max-h-[300px] overflow-y-auto"
-                          align="end"
-                          onWheel={(e) => e.stopPropagation()}
-                        >
-                          <div className="flex flex-col gap-2">
-                            {isLoadingConditions ? (
-                              <div className="flex items-center justify-center py-4">
-                                <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                              </div>
-                            ) : medicalConditions.length > 0 ? (
-                              medicalConditions.map((condition) => (
+                            <div className="flex flex-col gap-2">
+                              {ageGroupOptions.map((ageGroup) => (
                                 <div
-                                  key={condition.id}
+                                  key={ageGroup.id}
                                   className="flex items-center justify-between gap-2 p-1 hover:bg-gray-50 rounded-md cursor-pointer"
-                                  onClick={() =>
-                                    toggleMedicalFilter(condition.name)
-                                  }
+                                  onClick={() => toggleAgeFilter(ageGroup.id)}
                                 >
                                   <label
-                                    htmlFor={`medical-${condition.id}`}
+                                    htmlFor={ageGroup.id}
                                     className="text-sm text-gray-700 cursor-pointer select-none"
                                   >
-                                    {condition.name}
+                                    {ageGroup.name}
                                   </label>
                                   <Checkbox
-                                    id={`medical-${condition.id}`}
-                                    checked={selectedMedicalFilters.includes(
-                                      condition.name,
+                                    id={ageGroup.id}
+                                    checked={selectedAgeFilters.includes(
+                                      ageGroup.id,
                                     )}
                                     onCheckedChange={() =>
-                                      toggleMedicalFilter(condition.name)
+                                      toggleAgeFilter(ageGroup.id)
                                     }
                                     className="border-gray-300 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                                   />
                                 </div>
-                              ))
-                            ) : (
-                              <p className="text-sm text-gray-500 text-center py-2">
-                                {t("no_conditions")}
-                              </p>
-                            )}
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                      {selectedMedicalFilters.length > 0 && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500"
-                          onClick={() => setSelectedMedicalFilters([])}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
+                              ))}
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                        {selectedAgeFilters.length > 0 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 shrink-0"
+                            onClick={() => setSelectedAgeFilters([])}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+
+                      {/* Medical Conditions Filter */}
+                      <div className="flex items-center gap-1 flex-1">
+                        <Popover modal={true}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="bg-white border-gray-200 h-12 rounded-xl flex flex-row-reverse justify-between items-center px-3 text-gray-500 font-normal gap-1 w-full"
+                            >
+                              <ChevronDown className="h-4 w-4 opacity-50" />
+                              <span className="truncate">
+                                {t("medical_condition")}
+                              </span>
+                              {selectedMedicalFilters.length > 0 && (
+                                <span className="bg-primary text-white text-xs rounded-full px-1.5 py-0.5 min-w-[18px]">
+                                  {selectedMedicalFilters.length}
+                                </span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-[200px] p-2 bg-white rounded-xl shadow-lg max-h-[300px] overflow-y-auto"
+                            align="end"
+                            onWheel={(e) => e.stopPropagation()}
+                          >
+                            <div className="flex flex-col gap-2">
+                              {isLoadingConditions ? (
+                                <div className="flex items-center justify-center py-4">
+                                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                                </div>
+                              ) : medicalConditions.length > 0 ? (
+                                medicalConditions.map((condition) => (
+                                  <div
+                                    key={condition.id}
+                                    className="flex items-center justify-between gap-2 p-1 hover:bg-gray-50 rounded-md cursor-pointer"
+                                    onClick={() =>
+                                      toggleMedicalFilter(condition.name)
+                                    }
+                                  >
+                                    <label
+                                      htmlFor={`medical-${condition.id}`}
+                                      className="text-sm text-gray-700 cursor-pointer select-none"
+                                    >
+                                      {condition.name}
+                                    </label>
+                                    <Checkbox
+                                      id={`medical-${condition.id}`}
+                                      checked={selectedMedicalFilters.includes(
+                                        condition.name,
+                                      )}
+                                      onCheckedChange={() =>
+                                        toggleMedicalFilter(condition.name)
+                                      }
+                                      className="border-gray-300 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                                    />
+                                  </div>
+                                ))
+                              ) : (
+                                <p className="text-sm text-gray-500 text-center py-2">
+                                  {t("no_conditions")}
+                                </p>
+                              )}
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                        {selectedMedicalFilters.length > 0 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 shrink-0"
+                            onClick={() => setSelectedMedicalFilters([])}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
