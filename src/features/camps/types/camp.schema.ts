@@ -195,3 +195,21 @@ export interface CampFamilyStatisticsResponse {
     total: number;
   };
 }
+
+export interface CampDashboardStatistics {
+  currentProjects: number;
+  currentProjectsLastWeek: number;
+  currentProjectsLastWeekPercentage: string;
+  deliveredProjects: number;
+  deliveredProjectsLastWeek: number;
+  deliveredProjectsLastWeekPercentage: string;
+  familiesCount: number;
+  familiesGrowthPercentage: string;
+  contributionsCount: number;
+}
+
+export interface CampDashboardStatisticsResponse {
+  success: boolean;
+  message: string;
+  data: CampDashboardStatistics;
+}

@@ -3,6 +3,7 @@ import {
   CampFormValues,
   CampStatisticsResponse,
   CampFamilyStatisticsResponse,
+  CampDashboardStatisticsResponse,
 } from "../types/camp.schema";
 
 const API_BASE_URL =
@@ -219,4 +220,9 @@ export const campsApi = {
   getFamilyStatistics: async (): Promise<CampFamilyStatisticsResponse> => {
     return apiRequest<CampFamilyStatisticsResponse>("/camp/family-statistics");
   },
+
+  getCampDashboardStatistics:
+    async (): Promise<CampDashboardStatisticsResponse> => {
+      return apiRequest<CampDashboardStatisticsResponse>("/camp/statistics");
+    },
 };

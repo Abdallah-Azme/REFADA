@@ -1,7 +1,10 @@
 "use client";
 
 import { useProfile } from "@/features/profile";
-import { useCampDetails } from "@/features/camps/hooks/use-camps";
+import {
+  useCampDetails,
+  useCampDashboardStatistics,
+} from "@/features/camps/hooks/use-camps";
 import { useDelegateContributions } from "@/features/contributors/hooks/use-delegate-contributions";
 import CampsMapSection from "@/components/pages/home/camps-map-section";
 import Analytics from "@/features/dashboard/components/analytics";
@@ -22,14 +25,18 @@ export default function Page() {
   const { data: campData, isLoading: campLoading } = useCampDetails(
     campSlug || null,
   );
+  const { data: apiStatsRes, isLoading: apiStatsLoading } =
+    useCampDashboardStatistics();
 
-  const isLoading = profileLoading || campLoading || contributionsLoading;
+  const isLoading =
+    profileLoading || campLoading || contributionsLoading || apiStatsLoading;
 
   // Build dynamic stats from API data
   const userCamp = profileData?.data?.camp;
   const campDetails = campData?.data;
   const projects = campDetails?.projects || [];
   const contributions = contributionsData?.data || [];
+  const apiStats = apiStatsRes?.data;
 
   // Count projects by status
   const pendingProjects = projects.filter(
@@ -47,14 +54,20 @@ export default function Page() {
 
   // Get family count from camp - use statistics object first (most accurate)
   const familyCount =
-    campDetails?.statistics?.familyCount ||
-    campDetails?.families?.length ||
-    campDetails?.familyCount ||
-    userCamp?.familyCount ||
+    apiStats?.familiesCount ??
+    campDetails?.statistics?.familyCount ??
+    campDetails?.families?.length ??
+    campDetails?.familyCount ??
+    userCamp?.familyCount ??
     0;
 
   // Get total contributions count from the contributions API
-  const totalContributions = contributions.length;
+  const totalContributions =
+    apiStats?.contributionsCount ?? contributions.length;
+  const currentProjectsCount = apiStats?.currentProjects ?? pendingProjects;
+  const deliveredProjectsCount =
+    apiStats?.deliveredProjects ?? completedProjects;
+
   const dynamicStats = [
     {
       icon: Heart,
@@ -67,8 +80,10 @@ export default function Page() {
     {
       icon: Zap,
       label: t("current_projects"),
-      value: pendingProjects.toString(),
-      subtitle: `${t("total_projects")}: ${totalProjects}`,
+      value: currentProjectsCount.toString(),
+      subtitle: apiStats?.currentProjectsLastWeekPercentage
+        ? `${apiStats.currentProjectsLastWeekPercentage} (الأسبوع الماضي: ${apiStats.currentProjectsLastWeek})`
+        : `${t("total_projects")}: ${totalProjects}`,
       subColor: "text-orange-500",
       color: "bg-orange-50",
       iconColor: "text-orange-500",
@@ -76,9 +91,10 @@ export default function Page() {
     {
       icon: CheckCircle,
       label: t("completed_projects"),
-      value: completedProjects.toString(),
-      subtitle:
-        totalProjects > 0
+      value: deliveredProjectsCount.toString(),
+      subtitle: apiStats?.deliveredProjectsLastWeekPercentage
+        ? `${apiStats.deliveredProjectsLastWeekPercentage} (الأسبوع الماضي: ${apiStats.deliveredProjectsLastWeek})`
+        : totalProjects > 0
           ? `${Math.round((completedProjects / totalProjects) * 100)}% ${t(
               "of_total",
             )}`
@@ -91,7 +107,9 @@ export default function Page() {
       icon: Users,
       label: t("families_count"),
       value: familyCount.toLocaleString(),
-      subtitle: userCamp?.name || t("camp"),
+      subtitle: apiStats?.familiesGrowthPercentage
+        ? `+ ${apiStats.familiesGrowthPercentage}`
+        : userCamp?.name || t("camp"),
       subColor: "text-blue-500",
       color: "bg-blue-50",
       iconColor: "text-blue-500",

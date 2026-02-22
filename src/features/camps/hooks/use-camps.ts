@@ -118,3 +118,10 @@ export function useCampNamesList() {
     queryFn: campsApi.getCampNames,
   });
 }
+
+export function useCampDashboardStatistics() {
+  return useQuery({
+    queryKey: ["camp-dashboard-statistics"],
+    queryFn: campsApi.getCampDashboardStatistics,
+  });
+}

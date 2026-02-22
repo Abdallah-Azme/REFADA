@@ -16,7 +16,10 @@ import AnalyticsChart from "./analytics-chart";
 import ReportsFormFiltring from "./reports-form-filtring";
 import StatsCards from "./stats-cards";
 import { useProfile } from "@/features/profile";
-import { useCampDetails } from "@/features/camps/hooks/use-camps";
+import {
+  useCampDetails,
+  useCampDashboardStatistics,
+} from "@/features/camps/hooks/use-camps";
 import { useProjects } from "@/features/projects/hooks/use-projects";
 import { useTranslations, useLocale } from "next-intl";
 import { useUserStatistics } from "../hooks/use-statistics";
@@ -64,38 +67,49 @@ export default function ReportsPage() {
   // Get user's camp slug from profile
   const campSlug = profileData?.data?.camp?.slug;
   const { data: campData } = useCampDetails(campSlug || null);
+  const { data: apiStatsRes, isLoading: apiStatsLoading } =
+    useCampDashboardStatistics();
 
-  const isLoading = profileLoading || projectsLoading || statisticsLoading;
+  const isLoading =
+    profileLoading || projectsLoading || statisticsLoading || apiStatsLoading;
 
   // Build dynamic stats from API data
   const userCamp = profileData?.data?.camp;
   const campDetails = campData?.data;
   const projects = projectsData?.data || [];
+  const apiStats = apiStatsRes?.data;
 
-  // Count projects by status
+  // Count projects by status (Fallback if API stats are empty)
   const pendingProjects = projects.filter(
-    (p) => p.status === "pending" || p.status === "في الانتظار"
+    (p) => p.status === "pending" || p.status === "في الانتظار",
   ).length;
   const completedProjects = projects.filter(
     (p) =>
       p.status === "تم التسليم" ||
       p.status === "completed" ||
-      p.status === "in_progress"
+      p.status === "in_progress",
   ).length;
   const totalProjects = projects.length;
 
   // Get family count from camp (statistics.familyCount has the actual count)
   const familyCount =
-    campDetails?.statistics?.familyCount ||
-    campDetails?.familyCount ||
-    userCamp?.familyCount ||
+    apiStats?.familiesCount ??
+    campDetails?.statistics?.familyCount ??
+    campDetails?.familyCount ??
+    userCamp?.familyCount ??
     0;
 
   // Calculate total contributions (sum of totalReceived from all projects)
-  const totalContributions = projects.reduce(
+  const __totalContributionsProjects = projects.reduce(
     (sum, p) => sum + (p.totalReceived || 0),
-    0
+    0,
   );
+
+  const totalContributions =
+    apiStats?.contributionsCount ?? __totalContributionsProjects;
+  const currentProjectsCount = apiStats?.currentProjects ?? pendingProjects;
+  const deliveredProjectsCount =
+    apiStats?.deliveredProjects ?? completedProjects;
 
   const dynamicStats = [
     {
@@ -109,8 +123,10 @@ export default function ReportsPage() {
     {
       icon: Zap,
       label: t("current_projects"),
-      value: pendingProjects.toString(),
-      subtitle: `${t("total_projects")}: ${totalProjects}`,
+      value: currentProjectsCount.toString(),
+      subtitle: apiStats?.currentProjectsLastWeekPercentage
+        ? `${apiStats.currentProjectsLastWeekPercentage} (الأسبوع الماضي: ${apiStats.currentProjectsLastWeek})`
+        : `${t("total_projects")}: ${totalProjects}`,
       subColor: "text-orange-500",
       color: "bg-orange-50",
       iconColor: "text-orange-500",
@@ -118,11 +134,12 @@ export default function ReportsPage() {
     {
       icon: CheckCircle,
       label: t("completed_projects"),
-      value: completedProjects.toString(),
-      subtitle:
-        totalProjects > 0
+      value: deliveredProjectsCount.toString(),
+      subtitle: apiStats?.deliveredProjectsLastWeekPercentage
+        ? `${apiStats.deliveredProjectsLastWeekPercentage} (الأسبوع الماضي: ${apiStats.deliveredProjectsLastWeek})`
+        : totalProjects > 0
           ? `${Math.round((completedProjects / totalProjects) * 100)}% ${t(
-              "of_total"
+              "of_total",
             )}`
           : "0%",
       subColor: "text-green-500",
@@ -133,7 +150,9 @@ export default function ReportsPage() {
       icon: Users,
       label: t("families_count"),
       value: familyCount.toLocaleString(),
-      subtitle: userCamp?.name || t("camp"),
+      subtitle: apiStats?.familiesGrowthPercentage
+        ? `+ ${apiStats.familiesGrowthPercentage}`
+        : userCamp?.name || t("camp"),
       subColor: "text-blue-500",
       color: "bg-blue-50",
       iconColor: "text-blue-500",
@@ -145,6 +164,7 @@ export default function ReportsPage() {
     toDate: z.string().optional(),
     reportType: z.string().optional(),
   });
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -171,7 +191,7 @@ export default function ReportsPage() {
       familyCount: monthStats?.familiesCount || 0,
       projectCount: monthStats?.projectsCount || 0,
       contributionPercentage: parsePercentage(
-        monthStats?.contributionsPercentage || "0%"
+        monthStats?.contributionsPercentage || "0%",
       ),
     };
   });
