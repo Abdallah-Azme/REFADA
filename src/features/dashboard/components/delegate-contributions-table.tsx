@@ -25,7 +25,7 @@ import {
 import React, { useEffect, useState } from "react";
 import FamilySelectionDialog from "./family-selection-dialog";
 
-import { Eye, Loader2, RotateCcw, SearchCheck } from "lucide-react";
+import { Eye, Loader2, RotateCcw, SearchCheck, Users } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -70,6 +70,7 @@ import {
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import PaginationControls from "./pagination-controls";
+import ContributionFamiliesDialog from "@/features/contributor/components/contribution-families-dialog";
 
 const formSchema = z.object({
   status: z.string().optional(),
@@ -85,6 +86,7 @@ const createDelegateContributionColumns = (
     setConfirmingContribution: (item: DelegateContribution | null) => void;
     setConfirmStep: (step: number) => void;
     fetchCampFamilies: (contributionId?: number) => void;
+    onViewFamilies: (item: DelegateContribution) => void;
   },
   t: (key: string) => string,
 ): ColumnDef<DelegateContribution>[] => [
@@ -266,6 +268,15 @@ const createDelegateContributionColumns = (
           <Button
             variant="ghost"
             size="icon"
+            onClick={() => handlers.onViewFamilies(contribution)}
+            title={t("families_benefited")}
+          >
+            <Users className="h-4 w-4 text-primary" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => handlers.onView(contribution)}
             title={t("view_details")}
           >
@@ -429,6 +440,17 @@ export default function DelegateContributionsTable() {
   const [selectedFamilies, setSelectedFamilies] = useState<Map<number, string>>(
     new Map(),
   );
+
+  // View Families state
+  const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
+  const [selectedHistoryFamilies, setSelectedHistoryFamilies] = useState<any[]>(
+    [],
+  );
+  const [selectedHistoryMembers, setSelectedHistoryMembers] = useState<any[]>(
+    [],
+  );
+  const [selectedHistoryProjectName, setSelectedHistoryProjectName] =
+    useState("");
   const [selectedMembers, setSelectedMembers] = useState<Map<number, string>>(
     new Map(),
   );
@@ -518,6 +540,15 @@ export default function DelegateContributionsTable() {
   const handleView = (item: DelegateContribution): void => {
     setSelectedContribution(item);
     setIsDialogOpen(true);
+  };
+
+  const handleViewFamilies = (item: DelegateContribution): void => {
+    setSelectedHistoryFamilies(item.contributorFamilies || []);
+    // Try to get members if they are returned by API
+    const members = (item as any).contributorMembers || [];
+    setSelectedHistoryMembers(members);
+    setSelectedHistoryProjectName(item.project?.name || "");
+    setIsHistoryDialogOpen(true);
   };
 
   // Wrapper for existing handleAddFamilies to work with new dialog
@@ -705,6 +736,7 @@ export default function DelegateContributionsTable() {
         setConfirmingContribution,
         setConfirmStep,
         fetchCampFamilies,
+        onViewFamilies: handleViewFamilies,
       },
       t,
     ),
@@ -972,6 +1004,14 @@ export default function DelegateContributionsTable() {
           initialMemberSelection={selectedMembers}
         />
       )}
+
+      <ContributionFamiliesDialog
+        isOpen={isHistoryDialogOpen}
+        onClose={() => setIsHistoryDialogOpen(false)}
+        families={selectedHistoryFamilies}
+        members={selectedHistoryMembers}
+        projectName={selectedHistoryProjectName}
+      />
     </div>
   );
 }
