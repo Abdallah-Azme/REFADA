@@ -41,6 +41,7 @@ export interface Project {
   DelegatePhone?: string;
   beneficiaryCount: number;
   college: string;
+  contributionsCount?: number;
   status: string; // "pending" | "approved" | "rejected" | "delivered"
   isApproved: boolean;
   notes: string | null;

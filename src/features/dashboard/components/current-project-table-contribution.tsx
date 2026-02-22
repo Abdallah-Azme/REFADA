@@ -148,8 +148,6 @@ export default function CurrentProjectsTableContribution({
     setIsDialogOpen(true);
   };
 
-  console.log({ historyItems });
-
   const handleViewHistory = (project: Project): void => {
     const projectHistoryItems = historyItems.filter(
       (item: { project: { id: number } }) => item.project?.id === project.id,

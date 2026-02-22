@@ -176,7 +176,7 @@ export default function AdminRepresentativesTable() {
       });
     }
   };
-
+  console.log({ data });
   const handleChangePassword = (user: PendingUser) => {
     setPasswordUser(user);
     setNewPassword("");

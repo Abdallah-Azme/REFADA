@@ -426,6 +426,8 @@ export interface DelegateContribution {
   project?: ContributionHistoryProject | null;
   contributor?: { name: string };
   contributorFamilies: ContributorFamily[];
+  contributorName?: string;
+  totalQuantity?: number;
   createdAt: string;
   updatedAt: string;
 }

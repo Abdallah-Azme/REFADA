@@ -210,7 +210,9 @@ export const createColumns = (
         </Button>
       );
     },
-    cell: ({ row }) => <div className="text-center">0</div>,
+    cell: ({ row }) => (
+      <div className="text-center">{row.original.contributionsCount || 0}</div>
+    ),
   },
   {
     id: "update",

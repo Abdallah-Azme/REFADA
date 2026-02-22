@@ -23,43 +23,38 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useEffect, useState } from "react";
+import {
+  exportToExcel,
+  formatFamiliesForExport,
+} from "../../../lib/export-utils";
 import FamilySelectionDialog from "./family-selection-dialog";
 
-import { Eye, Loader2, RotateCcw, SearchCheck, Users } from "lucide-react";
+import { Download, Eye, FileDown, Loader2, Users } from "lucide-react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ContributionFamiliesDialog from "@/features/contributor/components/contribution-families-dialog";
 import {
   CampFamily,
   DelegateContribution,
-  FamilyQuantity,
   addFamiliesToContributionApi,
   completeDelegateContributionApi,
   confirmDelegateContributionApi,
@@ -69,8 +64,6 @@ import {
 } from "@/features/contributors/api/contributors.api";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import PaginationControls from "./pagination-controls";
-import ContributionFamiliesDialog from "@/features/contributor/components/contribution-families-dialog";
 
 const formSchema = z.object({
   status: z.string().optional(),
@@ -87,6 +80,8 @@ const createDelegateContributionColumns = (
     setConfirmStep: (step: number) => void;
     fetchCampFamilies: (contributionId?: number) => void;
     onViewFamilies: (item: DelegateContribution) => void;
+    onExportContributorFamilies: (item: DelegateContribution) => void;
+    onExportProjectFamilies: (item: DelegateContribution) => void;
   },
   t: (key: string) => string,
 ): ColumnDef<DelegateContribution>[] => [
@@ -171,6 +166,48 @@ const createDelegateContributionColumns = (
                     <span className="text-gray-400 text-xs mr-2">
                       ({f.quantity || 0} وحدة)
                     </span>
+                  </div>
+                ))}
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    },
+  },
+  {
+    accessorKey: "contributorMembers",
+    id: "contributorMembers",
+    header: "الأفراد المستفيدين",
+    cell: ({ row }) => {
+      const members = (row.original as any).contributorMembers;
+      if (!members || members.length === 0) {
+        return <div className="text-center text-gray-400">-</div>;
+      }
+
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="text-center cursor-pointer">
+                <div
+                  className="text-gray-600 font-semibold"
+                  title="عدد الأفراد"
+                >
+                  {members.length}
+                </div>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-[300px]">
+              <div className="text-right space-y-1">
+                {members.map((m: any) => (
+                  <div key={m.id} className="text-sm">
+                    <span className="font-medium">{m.name}</span>
+                    {m.quantity && m.quantity > 0 && (
+                      <span className="text-gray-400 text-xs mr-2">
+                        ({m.quantity} وحدة)
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -269,9 +306,27 @@ const createDelegateContributionColumns = (
             variant="ghost"
             size="icon"
             onClick={() => handlers.onViewFamilies(contribution)}
-            title={t("families_benefited")}
+            title={t("families_benefited") || "العائلات المستفيدة"}
           >
             <Users className="h-4 w-4 text-primary" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handlers.onExportContributorFamilies(contribution)}
+            title={"تصدير عائلات المساهم"}
+          >
+            <FileDown className="h-4 w-4 text-green-600" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handlers.onExportProjectFamilies(contribution)}
+            title={"تصدير العائلات المستفيدة من المشروع"}
+          >
+            <Download className="h-4 w-4 text-blue-600" />
           </Button>
 
           <Button
@@ -348,6 +403,31 @@ function DelegateContributionDetailsDialog({
                         : contribution.status}
               </p>
             </div>
+
+            {/* Conditionally reveal contributor name and quantity */}
+            {(contribution.status === "approved" ||
+              ["completed", "finished", "delivered"].includes(
+                contribution.project?.status || "",
+              )) && (
+              <>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-gray-800 mb-1">
+                    اسم المساهم
+                  </h4>
+                  <p className="font-medium text-gray-900">
+                    {contribution.contributorName || "-"}
+                  </p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-gray-800 mb-1">
+                    الكمية الكلية
+                  </h4>
+                  <p className="text-xl font-bold text-primary">
+                    {contribution.totalQuantity || "-"}
+                  </p>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Families */}
@@ -521,6 +601,7 @@ export default function DelegateContributionsTable() {
     setIsLoading(true);
     try {
       const response = await getDelegateContributionsApi();
+
       if (response.success) {
         // Sort by id descending (latest first) or createdAt
         const sortedData = [...response.data].sort(
@@ -549,6 +630,56 @@ export default function DelegateContributionsTable() {
     setSelectedHistoryMembers(members);
     setSelectedHistoryProjectName(item.project?.name || "");
     setIsHistoryDialogOpen(true);
+  };
+
+  const handleExportContributorFamilies = async (
+    item: DelegateContribution,
+  ) => {
+    try {
+      toast.loading("جاري التصدير...", { id: "export-toast" });
+      const response = await getDelegateFamiliesForContributionApi(item.id);
+      if (response.success) {
+        const familiesToExport = response.data.families.filter(
+          (f) => f.addedByContributor,
+        );
+        if (familiesToExport.length === 0) {
+          toast.dismiss("export-toast");
+          toast.info("لا توجد عائلات مختارة من قبل المساهم");
+          return;
+        }
+        const formattedData = formatFamiliesForExport(familiesToExport);
+        exportToExcel(formattedData, `Contributor_Chosen_Families_${item.id}`);
+        toast.dismiss("export-toast");
+        toast.success("تم التصدير بنجاح");
+      }
+    } catch (error) {
+      toast.dismiss("export-toast");
+      toast.error("حدث خطأ أثناء التصدير");
+    }
+  };
+
+  const handleExportProjectFamilies = async (item: DelegateContribution) => {
+    try {
+      toast.loading("جاري التصدير...", { id: "export-toast" });
+      const response = await getDelegateFamiliesForContributionApi(item.id);
+      if (response.success) {
+        const familiesToExport = response.data.families.filter(
+          (f) => f.hasBenefit,
+        );
+        if (familiesToExport.length === 0) {
+          toast.dismiss("export-toast");
+          toast.info("لا توجد عائلات مستفيدة من المشروع");
+          return;
+        }
+        const formattedData = formatFamiliesForExport(familiesToExport);
+        exportToExcel(formattedData, `Benefited_Families_Project_${item.id}`);
+        toast.dismiss("export-toast");
+        toast.success("تم التصدير بنجاح");
+      }
+    } catch (error) {
+      toast.dismiss("export-toast");
+      toast.error("حدث خطأ أثناء التصدير");
+    }
   };
 
   // Wrapper for existing handleAddFamilies to work with new dialog
@@ -737,6 +868,8 @@ export default function DelegateContributionsTable() {
         setConfirmStep,
         fetchCampFamilies,
         onViewFamilies: handleViewFamilies,
+        onExportContributorFamilies: handleExportContributorFamilies,
+        onExportProjectFamilies: handleExportProjectFamilies,
       },
       t,
     ),
@@ -831,7 +964,7 @@ export default function DelegateContributionsTable() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={table.getAllColumns().length}
                   className="h-24 text-center"
                 >
                   {t("no_results")}
@@ -881,18 +1014,33 @@ export default function DelegateContributionsTable() {
                   </h4>
                   <p>{selectedContribution.project?.name || "-"}</p>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-sm text-gray-500">
-                    {t("contributor_name")}
-                  </h4>
-                  <p>{selectedContribution.contributor?.name || "-"}</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-sm text-gray-500">
-                    {t("quantity")}
-                  </h4>
-                  <p>{selectedContribution.quantity}</p>
-                </div>
+                {(selectedContribution.status === "approved" ||
+                  ["completed", "finished", "delivered"].includes(
+                    selectedContribution.project?.status || "",
+                  )) && (
+                  <>
+                    <div>
+                      <h4 className="font-semibold text-sm text-gray-500">
+                        {t("contributor_name")}
+                      </h4>
+                      <p>
+                        {selectedContribution.contributorName ||
+                          selectedContribution.contributor?.name ||
+                          "-"}
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-sm text-gray-500">
+                        {t("quantity")}
+                      </h4>
+                      <p>
+                        {(selectedContribution as any).quantity ||
+                          (selectedContribution as any).totalQuantity ||
+                          "-"}
+                      </p>
+                    </div>
+                  </>
+                )}
                 <div>
                   <h4 className="font-semibold text-sm text-gray-500">
                     {t("date")}
