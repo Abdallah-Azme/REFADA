@@ -120,6 +120,9 @@ export default function ContributionFamiliesDialog({
                         <TableHead className="text-right font-bold text-gray-700">
                           {t("location")}
                         </TableHead>
+                        <TableHead className="text-right font-bold text-gray-700">
+                          {t("quantity") || "الكمية"}
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -149,6 +152,11 @@ export default function ContributionFamiliesDialog({
                             {family.location && family.location !== "undefined"
                               ? family.location
                               : "-"}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <span className="px-2 py-1 flex items-center justify-center w-fit min-w-[30px] rounded bg-green-50 text-green-700 text-sm font-bold border border-green-200">
+                              {family.quantity || 1}
+                            </span>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -198,6 +206,9 @@ export default function ContributionFamiliesDialog({
                         </TableHead>
                         <TableHead className="text-right font-bold text-gray-700">
                           {t("relationship")}
+                        </TableHead>
+                        <TableHead className="text-right font-bold text-gray-700">
+                          {t("quantity") || "الكمية"}
                         </TableHead>
                       </TableRow>
                     </TableHeader>
@@ -256,6 +267,11 @@ export default function ContributionFamiliesDialog({
                           <TableCell className="text-right">
                             <span className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600">
                               {member.relationship}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <span className="px-2 py-1 flex items-center justify-center w-fit min-w-[30px] rounded bg-green-50 text-green-700 text-sm font-bold border border-green-200">
+                              {member.quantity || 1}
                             </span>
                           </TableCell>
                         </TableRow>

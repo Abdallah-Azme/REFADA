@@ -44,6 +44,7 @@ export interface ContributorMember {
   gender: string;
   relationship: string;
   medicalConditions: string[];
+  quantity?: number | null;
 }
 
 export interface ContributorHistoryItem {
