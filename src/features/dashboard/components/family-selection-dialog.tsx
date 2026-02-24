@@ -56,6 +56,7 @@ interface Family {
   nationalId: string;
   addedByContributor?: boolean;
   hasBenefit?: boolean;
+  quantity?: number | null;
   members?: FamilyMember[];
 }
 
@@ -205,7 +206,7 @@ export default function FamilySelectionDialog({
           (family.addedByContributor || family.hasBenefit) &&
           !newSelection.has(family.id)
         ) {
-          newSelection.set(family.id, "1");
+          newSelection.set(family.id, family.quantity?.toString() || "1");
         }
 
         // Check members
@@ -218,7 +219,10 @@ export default function FamilySelectionDialog({
               member.hasBenefit === true
             ) {
               if (!newMemberSelection.has(member.id)) {
-                newMemberSelection.set(member.id, "1");
+                newMemberSelection.set(
+                  member.id,
+                  member.quantity?.toString() || "1",
+                );
                 hasSelectedMember = true;
               }
             }
@@ -262,6 +266,14 @@ export default function FamilySelectionDialog({
       newMap.set(memberId, "1");
     }
     setSelectedMembers(newMap);
+  };
+
+  const handleMemberQuantityChange = (memberId: number, value: string) => {
+    const newMap = new Map(selectedMembers);
+    if (newMap.has(memberId)) {
+      newMap.set(memberId, value);
+      setSelectedMembers(newMap);
+    }
   };
 
   const handleQuantityChange = (familyId: number, value: string) => {
@@ -719,6 +731,37 @@ export default function FamilySelectionDialog({
                                               </div>
                                             </div>
                                           </div>
+                                          {isMemberSelected && (
+                                            <div className="flex shrink-0 border-r border-gray-100 pr-3 mr-3 items-center">
+                                              <span className="text-gray-500 text-sm ml-2">
+                                                {t("quantity")}:
+                                              </span>
+                                              <Input
+                                                type="number"
+                                                min="1"
+                                                disabled={isMemberDisabled}
+                                                className={`w-20 h-9 text-center font-semibold border-2 border-primary/30 focus:border-primary rounded-lg shadow-sm ${
+                                                  isMemberDisabled
+                                                    ? "bg-gray-100 cursor-not-allowed opacity-50"
+                                                    : ""
+                                                }`}
+                                                value={
+                                                  selectedMembers.get(
+                                                    member.id,
+                                                  ) || ""
+                                                }
+                                                onChange={(e) =>
+                                                  handleMemberQuantityChange(
+                                                    member.id,
+                                                    e.target.value,
+                                                  )
+                                                }
+                                                onClick={(e) =>
+                                                  e.stopPropagation()
+                                                }
+                                              />
+                                            </div>
+                                          )}
                                         </div>
                                       );
                                     })}

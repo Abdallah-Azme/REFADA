@@ -96,6 +96,7 @@ export interface FamilyMember {
   medicalConditions: string[];
   hasBenefit: boolean;
   addedByContributor?: boolean;
+  quantity?: number;
 }
 
 export interface CampFamily {

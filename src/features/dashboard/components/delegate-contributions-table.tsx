@@ -1148,8 +1148,21 @@ export default function DelegateContributionsTable() {
           onConfirm={handleAddFamiliesWrapper}
           families={campFamilies}
           isLoading={isLoadingCampFamilies}
-          initialSelection={selectedFamilies}
-          initialMemberSelection={selectedMembers}
+          initialSelection={
+            new Map(
+              confirmingContribution.contributorFamilies?.map((f) => [
+                f.id,
+                f.quantity?.toString() || "1",
+              ]) || [],
+            )
+          }
+          initialMemberSelection={
+            new Map(
+              (confirmingContribution as any).contributorMembers?.map(
+                (m: any) => [m.id, m.quantity?.toString() || "1"],
+              ) || [],
+            )
+          }
         />
       )}
 
