@@ -13,7 +13,8 @@ type ActionHandlers = {
 
 export const createPendingDelegatesColumns = (
   handlers: ActionHandlers,
-  t: any
+  t: any,
+  validDelegateNames?: string[] | null,
 ): ColumnDef<PendingUser>[] => [
   {
     accessorKey: "name",
@@ -54,8 +55,8 @@ export const createPendingDelegatesColumns = (
             {role === "delegate"
               ? t("table.roles.delegate")
               : role === "contributor"
-              ? t("table.roles.contributor")
-              : role}
+                ? t("table.roles.contributor")
+                : role}
           </Badge>
         </div>
       );
@@ -87,34 +88,69 @@ export const createPendingDelegatesColumns = (
   },
 
   {
-    accessorKey: "idNumber",
+    id: "idNumber",
+    accessorFn: (row: any) => row.idNumber || row.id_number || "",
     header: () => (
       <div className="text-center font-semibold">{t("table.id_number")}</div>
     ),
     cell: ({ row }) => (
-      <div className="text-center">{row.original.idNumber}</div>
+      <div className="text-center">
+        {(row.getValue("idNumber") as string) || "-"}
+      </div>
     ),
   },
 
   {
-    accessorKey: "campName",
+    id: "campName",
+    accessorFn: (row: any) =>
+      row.campName || row.camp_name || row.camp?.name || "",
     header: () => (
       <div className="text-center font-semibold">{t("table.camp_name")}</div>
     ),
     cell: ({ row }) => (
-      <div className="text-center">{row.original.campName || "-"}</div>
+      <div className="text-center">
+        {(row.getValue("campName") as string) || "-"}
+      </div>
     ),
+    filterFn: (row, columnId, filterValue) => {
+      // The filterValue here is the `campFilter` string from ComboBox (e.g. "إيواء حياة")
+      if (!filterValue || filterValue === "all") return true;
+
+      const nameVal = (row.getValue("name") as string) || "";
+
+      // If validDelegateNames array is loaded, filter strictly by user presence in array
+      if (validDelegateNames && validDelegateNames.length > 0) {
+        return (
+          validDelegateNames.includes(nameVal) ||
+          validDelegateNames.includes(nameVal.trim())
+        );
+      } else if (validDelegateNames && validDelegateNames.length === 0) {
+        // We searched a real camp, but it had 0 delegates
+        return false;
+      }
+
+      // Fallback matching if api array is not available
+      const campName = (row.getValue(columnId) as string) || "";
+      return campName.includes(filterValue) || filterValue.includes(campName);
+    },
   },
 
   {
-    accessorKey: "adminPositionName",
+    id: "adminPositionName",
+    accessorFn: (row: any) =>
+      row.adminPositionName ||
+      row.admin_position_name ||
+      row.adminPosition?.name ||
+      "",
     header: () => (
       <div className="text-center font-semibold">
         {t("table.admin_position")}
       </div>
     ),
     cell: ({ row }) => (
-      <div className="text-center">{row.original.adminPositionName || "-"}</div>
+      <div className="text-center">
+        {(row.getValue("adminPositionName") as string) || "-"}
+      </div>
     ),
   },
 
@@ -141,15 +177,15 @@ export const createPendingDelegatesColumns = (
               status === "approved"
                 ? "bg-green-500 hover:bg-green-600"
                 : status === "pending"
-                ? "bg-yellow-500 hover:bg-yellow-600"
-                : "bg-red-500 hover:bg-red-600"
+                  ? "bg-yellow-500 hover:bg-yellow-600"
+                  : "bg-red-500 hover:bg-red-600"
             }
           >
             {status === "approved"
               ? t("table.status_labels.approved")
               : status === "pending"
-              ? t("table.status_labels.pending")
-              : t("table.status_labels.rejected")}
+                ? t("table.status_labels.pending")
+                : t("table.status_labels.rejected")}
           </Badge>
         </div>
       );
@@ -157,7 +193,9 @@ export const createPendingDelegatesColumns = (
   },
 
   {
-    accessorKey: "createdAt",
+    id: "createdAt",
+    accessorFn: (row: any) =>
+      row.createdAt || row.created_at || new Date().toISOString(),
     header: ({ column }) => {
       return (
         <Button
@@ -170,7 +208,8 @@ export const createPendingDelegatesColumns = (
       );
     },
     cell: ({ row }) => {
-      const date = new Date(row.original.createdAt);
+      const dateString = row.getValue("createdAt") as string;
+      const date = new Date(dateString);
       return (
         <div className="text-center">{date.toLocaleDateString("ar-EG")}</div>
       );

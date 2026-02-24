@@ -1,6 +1,8 @@
 "use client";
 
 import { useCampNames } from "@/features/camps/hooks/use-camps";
+import { campsApi } from "@/features/camps/api/camp.api";
+import { useQuery } from "@tanstack/react-query";
 import { DeleteConfirmDialog } from "@/features/marital-status";
 import {
   useApproveRepresentative,
@@ -40,8 +42,29 @@ export default function AdminRepresentativesTable() {
   const [passwordOpen, setPasswordOpen] = useState(false);
   const [passwordUser, setPasswordUser] = useState<PendingUser | null>(null);
 
-  // Fetch all delegates - API already filters by role=delegate
-  const { data: response, isLoading, error } = useRepresentatives();
+  const [serverCampFilter, setServerCampFilter] = useState("all");
+
+  // Fetch all delegates without server camp_name filter since API ignores it
+  const {
+    data: response,
+    isLoading: isUsersLoading,
+    error,
+  } = useRepresentatives({
+    role: "delegate",
+  });
+
+  // Fetch specific camp delegates array directly from the Camps API using exact specified string logic if active
+  const { data: filterCampRes, isLoading: isCampLoading } = useQuery({
+    queryKey: ["campDelegateFilter", serverCampFilter],
+    queryFn: () => campsApi.getPaginated(1, 10, serverCampFilter),
+    enabled: serverCampFilter !== "all" && !!serverCampFilter,
+  });
+
+  // Extract the raw string delegate names
+  const validDelegateNames =
+    serverCampFilter !== "all"
+      ? filterCampRes?.data?.[0]?.delegates || []
+      : null;
 
   const deleteMutation = useDeleteRepresentative();
   const approveMutation = useApproveRepresentative();
@@ -149,6 +172,8 @@ export default function AdminRepresentativesTable() {
     }
   };
 
+  const isLoading = isUsersLoading || isCampLoading;
+
   const {
     table,
     globalFilter,
@@ -158,6 +183,9 @@ export default function AdminRepresentativesTable() {
     campFilter,
     setCampFilter,
   } = useAdminRepresentativesTable({
+    campFilter: serverCampFilter,
+    setCampFilter: setServerCampFilter,
+    validDelegateNames: validDelegateNames as string[] | null,
     data,
     onApprove: handleApprove,
     onReject: handleReject,

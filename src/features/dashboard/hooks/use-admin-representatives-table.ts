@@ -20,6 +20,9 @@ interface UseAdminRepresentativesTableProps {
   onDelete: (user: PendingUser) => void;
   onChangePassword: (user: PendingUser) => void;
   t: any;
+  campFilter?: string;
+  setCampFilter?: (value: string) => void;
+  validDelegateNames?: string[] | null;
 }
 
 export const useAdminRepresentativesTable = ({
@@ -29,6 +32,9 @@ export const useAdminRepresentativesTable = ({
   onDelete,
   onChangePassword,
   t,
+  campFilter: providedCampFilter,
+  setCampFilter: providedSetCampFilter,
+  validDelegateNames,
 }: UseAdminRepresentativesTableProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: "createdAt", desc: true },
@@ -42,7 +48,12 @@ export const useAdminRepresentativesTable = ({
   // Filter state
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState("all");
-  const [campFilter, setCampFilter] = React.useState("all");
+
+  // Use passed state or local state for backward compatibility if needed
+  const [localCampFilter, setLocalCampFilter] = React.useState("all");
+  const campFilter =
+    providedCampFilter !== undefined ? providedCampFilter : localCampFilter;
+  const setCampFilter = providedSetCampFilter || setLocalCampFilter;
 
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
@@ -75,6 +86,7 @@ export const useAdminRepresentativesTable = ({
         onChangePassword,
       },
       t,
+      validDelegateNames,
     ),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -94,18 +106,34 @@ export const useAdminRepresentativesTable = ({
     },
     // Custom global filter function
     globalFilterFn: (row, columnId, filterValue) => {
-      const search = filterValue.toLowerCase();
+      let search = filterValue.toLowerCase().trim();
+
+      if (!search) return true;
+
+      // Remove common prefix if present for better matching
+      const prefixesToRemove = ["المخيم ", "مخيم "];
+      for (const prefix of prefixesToRemove) {
+        if (search.startsWith(prefix)) {
+          search = search.substring(prefix.length).trim();
+          break;
+        }
+      }
+
       const name = (row.getValue("name") as string)?.toLowerCase() || "";
       const email = (row.getValue("email") as string)?.toLowerCase() || "";
       const phone = (row.getValue("phone") as string)?.toLowerCase() || "";
       const idNumber =
         (row.getValue("idNumber") as string)?.toLowerCase() || "";
+      const campName =
+        (row.getValue("campName") as string)?.toLowerCase() || "";
 
       return (
         name.includes(search) ||
         email.includes(search) ||
         phone.includes(search) ||
-        idNumber.includes(search)
+        idNumber.includes(search) ||
+        campName.includes(search) ||
+        (search && campName && search.includes(campName))
       );
     },
   });

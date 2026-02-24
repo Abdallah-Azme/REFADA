@@ -9,7 +9,7 @@ const API_BASE_URL =
 
 async function apiRequest<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> {
   const headers: Record<string, string> = {
     Accept: "application/json",
@@ -46,14 +46,21 @@ export interface RepresentativesResponse {
   data: PendingUser[]; // Reusing PendingUser as it likely has the same shape + status
 }
 
-export async function getRepresentativesApi(): Promise<RepresentativesResponse> {
-  return apiRequest<RepresentativesResponse>(`/admin/users?role=delegate`, {
+export interface GetRepresentativesParams {
+  role?: "delegate" | "contributor" | "admin";
+}
+
+export async function getRepresentativesApi(
+  params?: GetRepresentativesParams,
+): Promise<RepresentativesResponse> {
+  const role = params?.role || "delegate";
+  return apiRequest<RepresentativesResponse>(`/admin/users?role=${role}`, {
     method: "GET",
   });
 }
 
 export async function createRepresentativeApi(
-  data: CreateRepresentativeFormValues
+  data: CreateRepresentativeFormValues,
 ): Promise<CreateRepresentativeResponse> {
   const formData = new FormData();
   formData.append("name", data.name);
@@ -82,7 +89,7 @@ export interface DeleteRepresentativeResponse {
 }
 
 export async function deleteRepresentativeApi(
-  id: number
+  id: number,
 ): Promise<DeleteRepresentativeResponse> {
   return apiRequest<DeleteRepresentativeResponse>(`/admin/users/${id}`, {
     method: "DELETE",
@@ -96,7 +103,7 @@ export interface ApproveRejectResponse {
 
 export async function approveRepresentativeApi(
   userId: number,
-  campId: number
+  campId: number,
 ): Promise<ApproveRejectResponse> {
   const formData = new FormData();
   formData.append("camp_id", campId.toString());
@@ -108,7 +115,7 @@ export async function approveRepresentativeApi(
 }
 
 export async function rejectRepresentativeApi(
-  userId: number
+  userId: number,
 ): Promise<ApproveRejectResponse> {
   return apiRequest<ApproveRejectResponse>(`/users/${userId}/reject`, {
     method: "POST",
@@ -123,7 +130,7 @@ export interface ChangePasswordResponse {
 export async function changeRepresentativePasswordApi(
   userId: number,
   password: string,
-  passwordConfirmation: string
+  passwordConfirmation: string,
 ): Promise<ChangePasswordResponse> {
   const formData = new FormData();
   formData.append("password", password);
@@ -134,6 +141,6 @@ export async function changeRepresentativePasswordApi(
     {
       method: "POST",
       body: formData,
-    }
+    },
   );
 }

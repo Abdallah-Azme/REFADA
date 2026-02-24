@@ -148,11 +148,9 @@ export function RepresentativesFilter({
                   return (
                     <CommandItem
                       key={camp.id}
-                      value={campName}
-                      onSelect={(currentValue) => {
-                        setCampValue(
-                          currentValue === campValue ? "" : currentValue,
-                        );
+                      value={`${campName} المخيم ${campName} مخيم ${campName}`}
+                      onSelect={() => {
+                        setCampValue(campName === campValue ? "" : campName);
                       }}
                     >
                       <Check
