@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ProjectsSection from "@/features/campaign/components/projects-section";
 import CampDetailsSection from "@/features/camps/components/camp-details-section";
 import CampStats from "@/features/camps/components/camp-stats";
+import Stats from "@/components/stats";
 import { useCampDetails } from "@/features/camps/hooks/use-camps";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -251,6 +252,16 @@ export default function Page() {
           </motion.div>
         </div>
       </motion.div>
+
+      <div className="my-2">
+        <Stats
+          projectsCount={camp?.statistics?.projectCount || projects.length || 0}
+          familiesCount={actualFamilyCount}
+          contributorsCount={0}
+          campsCount={1}
+          ageGroupsCount={camp?.ageGroupsCount}
+        />
+      </div>
 
       <div className="my-6 flex flex-col gap-4 sm:my-12">
         {/* Title */}

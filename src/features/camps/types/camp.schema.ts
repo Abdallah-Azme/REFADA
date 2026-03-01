@@ -1,3 +1,4 @@
+import { AgeGroupsCount } from "@/features/home-control/types/hero.schema";
 import { z } from "zod";
 
 export const createCampSchema = (t: any) =>
@@ -138,6 +139,7 @@ export interface Camp {
     memberCount: number;
     projectCount: number;
   };
+  ageGroupsCount?: AgeGroupsCount;
   createdAt?: string;
   updatedAt?: string;
   status?: "active" | "inactive";
