@@ -90,6 +90,8 @@ export async function deleteContributorApi(
 export interface FamilyMember {
   id: number;
   name: string;
+  nationalId?: string;
+  relationship?: string;
   gender: string;
   dob: string;
   ageGroup: string;
@@ -307,6 +309,8 @@ export interface ContributorFamily {
   notes: string;
   camp: string;
   quantity: number | null;
+  hasBenefit?: boolean;
+  members?: FamilyMember[];
   createdAt: string;
   updatedAt: string;
 }

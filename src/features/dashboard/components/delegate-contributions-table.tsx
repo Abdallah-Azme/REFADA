@@ -501,16 +501,52 @@ export default function DelegateContributionsTable() {
       toast.loading("جاري التصدير...", { id: "export-toast" });
       const response = await getDelegateFamiliesForContributionApi(item.id);
       if (response.success) {
-        const familiesToExport = response.data.families.filter(
+        const families = response.data.families.filter(
           (f) => f.addedByContributor,
         );
-        if (familiesToExport.length === 0) {
+        if (families.length === 0) {
           toast.dismiss("export-toast");
           toast.info("لا توجد عائلات مختارة من قبل المساهم");
           return;
         }
-        const formattedData = formatFamiliesForExport(familiesToExport);
-        exportToExcel(formattedData, `Contributor_Chosen_Families_${item.id}`);
+
+        const flattenedData: any[] = [];
+        families.forEach((f) => {
+          // Check members added by contributor
+          const members = (f.members || []).filter((m) => m.addedByContributor);
+
+          if (members.length === 0) {
+            flattenedData.push({
+              [t("family_name")]: f.familyName,
+              [t("national_id")]: f.nationalId,
+              [t("members")]: f.totalMembers,
+              الإيواء: f.camp || "-",
+              "اسم الفرد": "-",
+              "هوية الفرد": "-",
+              الكمية: f.quantity || 1,
+              "مختار من المساهم": "✔",
+            });
+          } else {
+            members.forEach((m) => {
+              flattenedData.push({
+                [t("family_name")]: f.familyName,
+                [t("national_id")]: f.nationalId,
+                [t("members")]: f.totalMembers,
+                الإيواء: f.camp || "-",
+                "اسم الفرد": m.name,
+                "هوية الفرد": m.nationalId,
+                الكمية: m.quantity || 1,
+                "مختار من المساهم": "✔",
+              });
+            });
+          }
+        });
+
+        exportToExcel(
+          flattenedData,
+          `Contributor_Choices_Detailed_${item.id}`,
+          "Chosen Beneficiaries",
+        );
         toast.dismiss("export-toast");
         toast.success("تم التصدير بنجاح");
       }
@@ -525,25 +561,51 @@ export default function DelegateContributionsTable() {
       toast.loading("جاري التصدير...", { id: "export-toast" });
       const response = await getDelegateFamiliesForContributionApi(item.id);
       if (response.success) {
-        const familiesToExport = response.data.families;
-        if (familiesToExport.length === 0) {
+        const families = response.data.families;
+        if (families.length === 0) {
           toast.dismiss("export-toast");
           toast.info("لا توجد عائلات");
           return;
         }
 
-        const formattedData = familiesToExport.map((f) => ({
-          [t("family_name")]: f.familyName,
-          [t("national_id")]: f.nationalId,
-          [t("members")]: f.totalMembers,
-          الإيواء: f.camp || "-",
-          [t("already_benefited")]: f.hasBenefit ? "✔" : "",
-        }));
+        const flattenedData: any[] = [];
+
+        families.forEach((f) => {
+          const members = f.members || [];
+          if (members.length === 0) {
+            flattenedData.push({
+              [t("family_name")]: f.familyName,
+              [t("national_id")]: f.nationalId,
+              [t("members")]: f.totalMembers,
+              الإيواء: f.camp || "-",
+              "اسم الفرد": "-",
+              "هوية الفرد": "-",
+              "تاريخ ميلاد الفرد": "-",
+              "الفئة العمرية": "-",
+              [t("already_benefited")]: f.hasBenefit ? "✔" : "",
+            });
+          } else {
+            members.forEach((m) => {
+              flattenedData.push({
+                [t("family_name")]: f.familyName,
+                [t("national_id")]: f.nationalId,
+                [t("members")]: f.totalMembers,
+                الإيواء: f.camp || "-",
+                "اسم الفرد": m.name,
+                "هوية الفرد": m.nationalId,
+                "تاريخ ميلاد الفرد": m.dob,
+                "الفئة العمرية": (m as any).ageGroup || "-",
+                [t("already_benefited")]:
+                  m.hasBenefit || f.hasBenefit ? "✔" : "",
+              });
+            });
+          }
+        });
 
         exportToExcel(
-          formattedData,
-          `Contribution_${item.id}_Families_${new Date().toISOString().split("T")[0]}`,
-          "Beneficiaries",
+          flattenedData,
+          `Contribution_${item.id}_Project_Beneficiaries_Detailed_${new Date().toISOString().split("T")[0]}`,
+          "Detailed Beneficiaries",
         );
         toast.dismiss("export-toast");
         toast.success("تم التصدير بنجاح");
@@ -638,44 +700,61 @@ export default function DelegateContributionsTable() {
       return;
     }
 
-    // Flatten all families from all visible contributions
-    const allFamiliesMap = new Map<number, any>();
+    const flattenedData: any[] = [];
+    const processedFamilies = new Set<number>();
 
     rows.forEach((row) => {
       const contribution = row.original;
+
+      // Attempt to link members if they are present in contributorMembers
+      // Note: In the main list, members are often a flat list.
+      // Linking them perfectly to families might require family_id which is missing in type.
+      // So we will just add families and then add members as separate rows if they aren't nested.
+
       const families = contribution.contributorFamilies || [];
       families.forEach((f) => {
-        if (!allFamiliesMap.has(f.id)) {
-          allFamiliesMap.set(f.id, {
-            ...f,
-            projectName:
-              contribution.project?.name || contribution.contributorName,
+        if (!processedFamilies.has(f.id)) {
+          processedFamilies.add(f.id);
+          flattenedData.push({
+            النوع: "عائلة",
+            [t("family_name")]: f.familyName,
+            [t("national_id")]: f.nationalId,
+            الاسم: f.familyName,
+            الهوية: f.nationalId,
+            المشروع: contribution.project?.name || contribution.contributorName,
+            الإيواء: f.camp || "-",
+            [t("already_benefited")]:
+              f.hasBenefit || contribution.status === "completed" ? "✔" : "",
           });
         }
       });
+
+      const members = (contribution as any).contributorMembers || [];
+      members.forEach((m: any) => {
+        flattenedData.push({
+          النوع: "فرد",
+          "اسم العائلة/الراعي":
+            contribution.project?.name || contribution.contributorName || "-",
+          [t("national_id")]: "-",
+          "اسم الفرد": m.name,
+          "هوية الفرد": m.nationalId || "-",
+          المشروع: contribution.project?.name || contribution.contributorName,
+          الإيواء: "-",
+          [t("already_benefited")]:
+            m.hasBenefit || contribution.status === "completed" ? "✔" : "",
+        });
+      });
     });
 
-    const familiesToExport = Array.from(allFamiliesMap.values());
-
-    if (familiesToExport.length === 0) {
-      toast.info("لا توجد عائلات لتصديرها");
+    if (flattenedData.length === 0) {
+      toast.info("لا توجد بيانات لتصديرها");
       return;
     }
 
-    const formattedData = familiesToExport.map((f) => ({
-      [t("family_name")]: f.familyName,
-      [t("national_id")]: f.nationalId,
-      [t("members")]: f.totalMembers,
-      الإيواء: f.camp || "-",
-      المشروع: f.projectName || "-",
-      [t("already_benefited")]:
-        (f as any).hasBenefit || (f as any).status === "completed" ? "✔" : "",
-    }));
-
     exportToExcel(
-      formattedData,
-      `beneficiaries_general_report_${new Date().toISOString().split("T")[0]}`,
-      "Beneficiaries",
+      flattenedData,
+      `Detailed_Report_${new Date().toISOString().split("T")[0]}`,
+      "All Beneficiaries",
     );
   };
 
