@@ -798,7 +798,10 @@
     "longitude": "خط الطول",
     "createdAt": "تم الإنشاء",
     "updatedAt": "آخر تحديث",
-    "delegates": "المندوبين"
+    "delegates": "المندوبين",
+    "contributionsLabel": "أبرز المساهمين",
+    "showAll": "عرض الكل",
+    "allContributions": "كافة المساهمات"
   },
   "adminCamps": {
     "pageTitle": "إدارة الإيواءات",
@@ -1754,6 +1757,12 @@
       "error_message": "فشل في إرسال المساهمة",
       "fetch_families_error": "فشل في جلب العائلات",
       "fetch_conditions_error": "فشل في جلب الحالات الطبية",
+      "year_from": "السنة من",
+      "year_to": "السنة إلى",
+      "date_from": "تاريخ البداية (من)",
+      "date_to": "تاريخ النهاية (إلى)",
+      "younger_than": "أصغر من",
+      "older_than": "أكبر من",
       "no_conditions": "لا توجد حالات طبية متاحة"
     },
     "age_groups": {

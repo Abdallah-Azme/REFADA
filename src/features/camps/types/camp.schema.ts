@@ -38,6 +38,11 @@ export const createCampSchema = (t: any) =>
 
 export type CampFormValues = z.infer<ReturnType<typeof createCampSchema>>;
 
+export interface Contributor {
+  contributorName: string;
+  quantity: number;
+}
+
 export interface Project {
   id: number;
   name: string;
@@ -51,6 +56,8 @@ export interface Project {
   projectImage: string;
   totalReceived: number;
   totalRemaining: number;
+  contributors?: Contributor[];
+  contributionsCount?: number;
   createdAt: string;
   updatedAt: string;
 }

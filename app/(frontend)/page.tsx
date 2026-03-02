@@ -75,6 +75,8 @@ async function getProjects(): Promise<Project[]> {
 
 export default async function Home() {
   const homePageData = await getHomePageData();
+
+  console.log({ homePageData });
   const slides = homePageData.slides || [];
   const camps = await getCamps();
 

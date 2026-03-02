@@ -779,7 +779,10 @@
     "longitude": "Longitude",
     "createdAt": "Created At",
     "updatedAt": "Last Updated",
-    "delegates": "Delegates"
+    "delegates": "Delegates",
+    "contributionsLabel": "Top Contributors",
+    "showAll": "Show All",
+    "allContributions": "All Contributions"
   },
   "adminCamps": {
     "pageTitle": "Shelters Management",
@@ -1695,6 +1698,12 @@
       "error_message": "Failed to submit contribution",
       "fetch_families_error": "Failed to fetch families",
       "fetch_conditions_error": "Failed to fetch medical conditions",
+      "year_from": "Year From",
+      "year_to": "Year To",
+      "date_from": "Date From",
+      "date_to": "Date To",
+      "younger_than": "Born After",
+      "older_than": "Born Before",
       "no_conditions": "No medical conditions available"
     },
     "age_groups": {

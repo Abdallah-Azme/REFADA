@@ -46,6 +46,7 @@ export default function ProjectsSection({
               donors={project.beneficiaryCount || 0}
               percentage={percentage}
               camp={campName}
+              contributors={project.contributors}
             />
           </div>
         );

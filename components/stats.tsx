@@ -52,6 +52,21 @@ const ageGroupLabels: Record<keyof AgeGroupsCount, string> = {
   seniors: "كبار السن",
 };
 
+const ageGroupRanges: Record<keyof AgeGroupsCount, string> = {
+  newborns: "0–28 يومًا",
+  infants: "29 يومًا – 11 شهرًا",
+  veryEarlyChildhood: "1–2 سنة",
+  toddlers: "2–3 سنوات",
+  earlyChildhood: "3–5 سنوات",
+  children: "5–10 سنوات",
+  adolescents: "10–18 سنة",
+  youth: "18–25 سنة",
+  youngAdults: "25–40 سنة",
+  middleAgeAdults: "40–50 سنة",
+  lateMiddleAge: "50–60 سنة",
+  seniors: "60 سنة فأكثر",
+};
+
 export default function Stats({
   projectsCount = 0,
   familiesCount = 0,
@@ -79,14 +94,18 @@ export default function Stats({
           number: value,
           suffix: "",
           label: ageGroupLabels[key],
-        })
+          range: ageGroupRanges[key],
+        }),
       )
     : [];
 
   // Combine all stats: main stats first, then age groups in groups of 4
-  const allPages: { number: number; suffix: string; label: string }[][] = [
-    mainStats,
-  ];
+  const allPages: {
+    number: number;
+    suffix: string;
+    label: string;
+    range?: string;
+  }[][] = [mainStats];
 
   // Split age groups into chunks of 4
   for (let i = 0; i < ageGroupEntries.length; i += 4) {
@@ -161,7 +180,7 @@ export default function Stats({
                 <div
                   style={{
                     width: "100%",
-                    height: "80px",
+                    height: "100px",
                     position: "relative",
                     transformStyle: "preserve-3d",
                     transition: `transform 0.6s ease ${i * 0.1}s`,
@@ -189,6 +208,11 @@ export default function Stats({
                     <p className="text-gray-800 font-semibold text-sm md:text-base text-center">
                       {frontStat.label}
                     </p>
+                    {frontStat.range && (
+                      <p className="text-gray-400 text-[10px] md:text-xs text-center mt-1">
+                        ({frontStat.range})
+                      </p>
+                    )}
                   </div>
 
                   {/* Back Face */}
@@ -213,6 +237,11 @@ export default function Stats({
                     <p className="text-gray-800 font-semibold text-sm md:text-base text-center">
                       {backStat.label}
                     </p>
+                    {backStat.range && (
+                      <p className="text-gray-400 text-[10px] md:text-xs text-center mt-1">
+                        ({backStat.range})
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

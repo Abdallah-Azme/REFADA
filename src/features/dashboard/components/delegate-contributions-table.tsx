@@ -858,6 +858,7 @@ export default function DelegateContributionsTable() {
     return filtered;
   }, [data, watchedStatus]);
 
+  console.log({ filteredData });
   const table = useReactTable<DelegateContribution>({
     data: filteredData,
     columns: createDelegateContributionColumns(

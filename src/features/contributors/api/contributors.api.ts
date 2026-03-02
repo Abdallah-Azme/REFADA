@@ -140,13 +140,49 @@ export interface CampFamiliesResponse {
   };
 }
 
+export interface CampFamiliesParams {
+  projectId?: number;
+  search?: string;
+  total_members?: number;
+  marital_status?: string;
+  has_children?: number;
+  year_from?: string | number;
+  year_to?: string | number;
+  has_medical_condition?: number;
+  member_count_min?: number;
+  member_count_max?: number;
+}
+
 export async function getCampFamiliesApi(
   campId: number,
-  projectId?: number,
+  params: CampFamiliesParams = {},
 ): Promise<CampFamiliesResponse> {
-  const queryParams = projectId ? `?project_id=${projectId}` : "";
+  const queryParts: string[] = [];
+
+  if (params.projectId) queryParts.push(`project_id=${params.projectId}`);
+  if (params.search)
+    queryParts.push(`search=${encodeURIComponent(params.search)}`);
+  if (params.total_members)
+    queryParts.push(`total_members=${params.total_members}`);
+  if (params.marital_status)
+    queryParts.push(
+      `marital_status=${encodeURIComponent(params.marital_status)}`,
+    );
+  if (params.has_children !== undefined)
+    queryParts.push(`has_children=${params.has_children}`);
+  if (params.year_from) queryParts.push(`year_from=${params.year_from}`);
+  if (params.year_to) queryParts.push(`year_to=${params.year_to}`);
+  if (params.has_medical_condition !== undefined)
+    queryParts.push(`has_medical_condition=${params.has_medical_condition}`);
+  if (params.member_count_min)
+    queryParts.push(`member_count_min=${params.member_count_min}`);
+  if (params.member_count_max)
+    queryParts.push(`member_count_max=${params.member_count_max}`);
+
+  const queryString = queryParts.length > 0 ? `?${queryParts.join("&")}` : "";
+
   return apiRequest<CampFamiliesResponse>(
-    `/contributor/camps/families/${campId}${queryParams}`,
+    `/contributor/camps/families/${campId}${queryString}`,
     {
       method: "GET",
     },

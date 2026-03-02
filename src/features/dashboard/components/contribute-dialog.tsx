@@ -15,15 +15,18 @@ import {
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { format, subYears, startOfYear, endOfYear } from "date-fns";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Search,
-  Send,
   ChevronDown,
+  X,
   Check,
   Loader2,
-  X,
+  Calendar as CalendarIcon,
   ChevronRight,
   User,
+  Send,
 } from "lucide-react";
 import { Project } from "../table-cols/project-contribution-cols";
 import { useState, useEffect, useMemo } from "react";
@@ -112,6 +115,14 @@ export default function ContributeDialog({
   const [selectedMedicalFilters, setSelectedMedicalFilters] = useState<
     string[]
   >([]);
+  const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined);
+  const [dateTo, setDateTo] = useState<Date | undefined>(undefined);
+  const [youngerThanLimit, setYoungerThanLimit] = useState<Date | undefined>(
+    undefined,
+  );
+  const [olderThanLimit, setOlderThanLimit] = useState<Date | undefined>(
+    undefined,
+  );
   const [openFamilySearch, setOpenFamilySearch] = useState(false);
   const [expandedFamilies, setExpandedFamilies] = useState<number[]>([]);
   const [families, setFamilies] = useState<CampFamily[]>([]);
@@ -138,12 +149,23 @@ export default function ContributeDialog({
   const effectiveCampId =
     campId || (params?.campId ? parseInt(params.campId as string) : null);
 
-  // Fetch families when dialog opens
+  // Fetch families when dialog opens or filters change
   useEffect(() => {
     if (isOpen && effectiveCampId && project) {
-      fetchFamilies();
+      const timer = setTimeout(() => {
+        fetchFamilies();
+      }, 500); // 500ms debounce
+      return () => clearTimeout(timer);
     }
-  }, [isOpen, effectiveCampId, project?.id]);
+  }, [
+    isOpen,
+    effectiveCampId,
+    project?.id,
+    youngerThanLimit,
+    olderThanLimit,
+    dateFrom,
+    dateTo,
+  ]);
 
   // Reset form when dialog closes
   useEffect(() => {
@@ -156,6 +178,10 @@ export default function ContributeDialog({
       });
       setSelectedAgeFilters([]);
       setSelectedMedicalFilters([]);
+      setDateFrom(undefined);
+      setDateTo(undefined);
+      setYoungerThanLimit(undefined);
+      setOlderThanLimit(undefined);
       setExpandedFamilies([]);
     }
   }, [isOpen, form]);
@@ -167,12 +193,46 @@ export default function ContributeDialog({
     }
   }, [isOpen]);
 
-  const fetchFamilies = async () => {
+  const fetchFamilies = async (extraParams: any = {}) => {
     if (!effectiveCampId || !project) return;
 
     setIsLoadingFamilies(true);
     try {
-      const response = await getCampFamiliesApi(effectiveCampId, project.id);
+      const today = new Date();
+      let from: string | undefined;
+      let to: string | undefined;
+
+      // Helper to format date for Laravel
+      const formatDate = (date: Date) => format(date, "yyyy-MM-dd");
+
+      // 1. Direct dates
+      if (dateFrom) from = formatDate(dateFrom);
+      if (dateTo) to = formatDate(dateTo);
+
+      // 2. Younger than (Born after selected date)
+      if (youngerThanLimit) {
+        const calculatedFrom = formatDate(youngerThanLimit);
+        if (from === undefined || calculatedFrom > from) from = calculatedFrom;
+        if (to === undefined) to = formatDate(today);
+      }
+
+      // 3. Older than (Born before selected date)
+      if (olderThanLimit) {
+        const calculatedTo = formatDate(olderThanLimit);
+        if (to === undefined || calculatedTo < to) to = calculatedTo;
+        if (from === undefined) from = "1900-01-01";
+      }
+
+      // 4. Fill defaults
+      if (from !== undefined && to === undefined) to = formatDate(today);
+      if (to !== undefined && from === undefined) from = "1900-01-01";
+
+      const response = await getCampFamiliesApi(effectiveCampId, {
+        projectId: project.id,
+        year_from: from,
+        year_to: to,
+        ...extraParams,
+      });
       if (response.success) {
         // @ts-ignore
         const familiesData = response.data?.families || [];
@@ -567,6 +627,128 @@ export default function ContributeDialog({
                           </Command>
                         </PopoverContent>
                       </Popover>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      {/* Year Filters */}
+                      <div className="flex items-center gap-2 flex-1">
+                        <div className="relative flex-1 group">
+                          <DatePicker
+                            value={dateFrom ? format(dateFrom, "d-M-yyyy") : ""}
+                            onChange={(val) => {
+                              if (!val) {
+                                setDateFrom(undefined);
+                                return;
+                              }
+                              const [d, m, y] = val.split("-").map(Number);
+                              setDateFrom(new Date(y, m - 1, d));
+                            }}
+                            placeholder={t("date_from") || "تاريخ البداية"}
+                            className="bg-white border-gray-200 h-10 rounded-xl"
+                          />
+                          {dateFrom && (
+                            <Button
+                              type="button"
+                              onClick={() => setDateFrom(undefined)}
+                              variant="ghost"
+                              size="icon"
+                              className="absolute left-8 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-red-500 rounded-full bg-transparent"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </div>
+                        <div className="relative flex-1 group">
+                          <DatePicker
+                            value={dateTo ? format(dateTo, "d-M-yyyy") : ""}
+                            onChange={(val) => {
+                              if (!val) {
+                                setDateTo(undefined);
+                                return;
+                              }
+                              const [d, m, y] = val.split("-").map(Number);
+                              setDateTo(new Date(y, m - 1, d));
+                            }}
+                            placeholder={t("date_to") || "تاريخ النهاية"}
+                            className="bg-white border-gray-200 h-10 rounded-xl"
+                          />
+                          {dateTo && (
+                            <Button
+                              type="button"
+                              onClick={() => setDateTo(undefined)}
+                              variant="ghost"
+                              size="icon"
+                              className="absolute left-8 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-red-500 rounded-full bg-transparent"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Age Filters */}
+                      <div className="flex items-center gap-2 flex-1">
+                        <div className="relative flex-1 group">
+                          <DatePicker
+                            value={
+                              youngerThanLimit
+                                ? format(youngerThanLimit, "d-M-yyyy")
+                                : ""
+                            }
+                            onChange={(val) => {
+                              if (!val) {
+                                setYoungerThanLimit(undefined);
+                                return;
+                              }
+                              const [d, m, y] = val.split("-").map(Number);
+                              setYoungerThanLimit(new Date(y, m - 1, d));
+                            }}
+                            placeholder={t("younger_than") || "أصغر من"}
+                            className="bg-white border-gray-200 h-10 rounded-xl"
+                          />
+                          {youngerThanLimit && (
+                            <Button
+                              type="button"
+                              onClick={() => setYoungerThanLimit(undefined)}
+                              variant="ghost"
+                              size="icon"
+                              className="absolute left-8 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-red-500 rounded-full bg-transparent"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </div>
+                        <div className="relative flex-1 group">
+                          <DatePicker
+                            value={
+                              olderThanLimit
+                                ? format(olderThanLimit, "d-M-yyyy")
+                                : ""
+                            }
+                            onChange={(val) => {
+                              if (!val) {
+                                setOlderThanLimit(undefined);
+                                return;
+                              }
+                              const [d, m, y] = val.split("-").map(Number);
+                              setOlderThanLimit(new Date(y, m - 1, d));
+                            }}
+                            placeholder={t("older_than") || "أكبر من"}
+                            className="bg-white border-gray-200 h-10 rounded-xl"
+                          />
+                          {olderThanLimit && (
+                            <Button
+                              type="button"
+                              onClick={() => setOlderThanLimit(undefined)}
+                              variant="ghost"
+                              size="icon"
+                              className="absolute left-8 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-red-500 rounded-full bg-transparent"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
                     </div>
 
                     <div className="flex flex-row gap-2">

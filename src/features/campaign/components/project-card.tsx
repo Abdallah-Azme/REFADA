@@ -6,6 +6,16 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
+import { Contributor } from "@/features/camps/types/camp.schema";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
 interface ProjectCardProps {
   index: number;
   image: string;
@@ -18,6 +28,7 @@ interface ProjectCardProps {
   donors: number;
   percentage: number;
   camp: string;
+  contributors?: Contributor[];
 }
 
 export function ProjectCard({
@@ -32,6 +43,7 @@ export function ProjectCard({
   donors,
   percentage,
   camp,
+  contributors = [],
 }: ProjectCardProps) {
   const t = useTranslations("campDetails");
 
@@ -122,6 +134,76 @@ export function ProjectCard({
             <span className="text-teal-600 font-bold">{current}</span>
           </div>
         </div>
+
+        {/* Contributors List */}
+        {contributors && contributors.length > 0 && (
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <p className="text-xs font-semibold text-gray-500 mb-2">
+              {t("contributionsLabel") || "المساهمات"}:
+            </p>
+            <div className="flex flex-col gap-1">
+              {[...contributors]
+                .sort((a, b) => b.quantity - a.quantity)
+                .slice(0, 3)
+                .map((contributor, i) => (
+                  <div
+                    key={i}
+                    className="flex justify-between items-center text-xs bg-gray-50 p-1.5 rounded"
+                  >
+                    <span className="text-gray-700 truncate max-w-[120px]">
+                      {contributor.contributorName}
+                    </span>
+                    <span className="font-bold text-teal-700">
+                      {contributor.quantity}
+                    </span>
+                  </div>
+                ))}
+              {contributors.length > 3 && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="text-[10px] text-teal-600 hover:text-teal-700 font-medium mt-1 self-start flex items-center gap-1">
+                      <span>... {t("showAll") || "عرض الكل"}</span>
+                      <span className="bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded-full text-[9px]">
+                        +{contributors.length - 3}
+                      </span>
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>
+                        {t("allContributions") || "كافة المساهمات"} - {title}
+                      </DialogTitle>
+                    </DialogHeader>
+                    <ScrollArea className="max-h-[60vh] pl-4">
+                      <div className="flex flex-col gap-2 mt-4">
+                        {[...contributors]
+                          .sort((a, b) => b.quantity - a.quantity)
+                          .map((contributor, i) => (
+                            <div
+                              key={i}
+                              className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100"
+                            >
+                              <span className="font-bold text-teal-600 bg-white px-3 py-1 rounded-full border border-teal-100 shadow-sm">
+                                {contributor.quantity}
+                              </span>
+                              <div className="flex items-center gap-3">
+                                <span className="font-medium text-gray-900">
+                                  {contributor.contributorName}
+                                </span>
+                                <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold text-xs">
+                                  {i + 1}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </ScrollArea>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );
