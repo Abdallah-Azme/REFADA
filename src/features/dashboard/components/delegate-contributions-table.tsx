@@ -344,144 +344,6 @@ const createDelegateContributionColumns = (
 ];
 
 // ========================================
-// DELEGATE CONTRIBUTION DETAILS DIALOG
-// ========================================
-function DelegateContributionDetailsDialog({
-  isOpen,
-  onClose,
-  contribution,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  contribution: DelegateContribution | null;
-}) {
-  const t = useTranslations("contributions");
-  if (!contribution) return null;
-
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="text-right">
-            {t("contribution_details")}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4 text-right">
-          {/* Contribution Details */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-1">
-                {t("contribution_number")}
-              </h4>
-              <p className="text-2xl font-bold text-primary">
-                #{contribution.id}
-              </p>
-            </div>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-1">
-                {t("status")}
-              </h4>
-              <p
-                className={`font-medium ${
-                  contribution.status === "pending"
-                    ? "text-yellow-600"
-                    : contribution.status === "approved"
-                      ? "text-green-600"
-                      : contribution.status === "rejected"
-                        ? "text-red-600"
-                        : "text-blue-600"
-                }`}
-              >
-                {contribution.status === "pending"
-                  ? t("status_pending")
-                  : contribution.status === "approved"
-                    ? t("status_approved")
-                    : contribution.status === "rejected"
-                      ? t("status_rejected")
-                      : contribution.status === "completed"
-                        ? t("status_completed")
-                        : contribution.status}
-              </p>
-            </div>
-
-            {/* Conditionally reveal contributor name and quantity */}
-            {(contribution.status === "approved" ||
-              ["completed", "finished", "delivered"].includes(
-                contribution.project?.status || "",
-              )) && (
-              <>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-gray-800 mb-1">
-                    اسم المساهم
-                  </h4>
-                  <p className="font-medium text-gray-900">
-                    {contribution.contributorName || "-"}
-                  </p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-gray-800 mb-1">
-                    الكمية الكلية
-                  </h4>
-                  <p className="text-xl font-bold text-primary">
-                    {contribution.totalQuantity || "-"}
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Families */}
-          {contribution.contributorFamilies.length > 0 && (
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-2">
-                {t("families_benefited")} (
-                {contribution.contributorFamilies.length})
-              </h4>
-              <div className="space-y-2 max-h-[200px] overflow-y-auto">
-                {contribution.contributorFamilies.map((family) => (
-                  <div
-                    key={family.id}
-                    className="flex justify-between items-center bg-white p-2 rounded border"
-                  >
-                    <div>
-                      <span className="font-medium">{family.familyName}</span>
-                      <span className="text-gray-400 text-xs mr-2">
-                        ({family.totalMembers} {t("individuals")})
-                      </span>
-                    </div>
-                    <span className="text-xs text-gray-500">{family.camp}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Notes */}
-          {contribution.notes && (
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-gray-800 mb-1">{t("notes")}</h4>
-              <p className="text-gray-600">{contribution.notes}</p>
-            </div>
-          )}
-
-          {/* Date */}
-          <div className="text-sm text-gray-500 text-center">
-            {t("contribution_date")}:{" "}
-            {new Date(contribution.createdAt).toLocaleDateString("ar-EG", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-// ========================================
 // MAIN TABLE COMPONENT
 // ========================================
 export default function DelegateContributionsTable() {
@@ -663,16 +525,26 @@ export default function DelegateContributionsTable() {
       toast.loading("جاري التصدير...", { id: "export-toast" });
       const response = await getDelegateFamiliesForContributionApi(item.id);
       if (response.success) {
-        const familiesToExport = response.data.families.filter(
-          (f) => f.hasBenefit,
-        );
+        const familiesToExport = response.data.families;
         if (familiesToExport.length === 0) {
           toast.dismiss("export-toast");
-          toast.info("لا توجد عائلات مستفيدة من المشروع");
+          toast.info("لا توجد عائلات");
           return;
         }
-        const formattedData = formatFamiliesForExport(familiesToExport);
-        exportToExcel(formattedData, `Benefited_Families_Project_${item.id}`);
+
+        const formattedData = familiesToExport.map((f) => ({
+          [t("family_name")]: f.familyName,
+          [t("national_id")]: f.nationalId,
+          [t("members")]: f.totalMembers,
+          الإيواء: f.camp || "-",
+          [t("already_benefited")]: f.hasBenefit ? "✔" : "",
+        }));
+
+        exportToExcel(
+          formattedData,
+          `Contribution_${item.id}_Families_${new Date().toISOString().split("T")[0]}`,
+          "Beneficiaries",
+        );
         toast.dismiss("export-toast");
         toast.success("تم التصدير بنجاح");
       }
@@ -757,6 +629,54 @@ export default function DelegateContributionsTable() {
     } finally {
       setIsAddingFamilies(false);
     }
+  };
+
+  const handleExportAllBeneficiaries = () => {
+    const rows = table.getFilteredRowModel().rows;
+    if (rows.length === 0) {
+      toast.info(t("no_results"));
+      return;
+    }
+
+    // Flatten all families from all visible contributions
+    const allFamiliesMap = new Map<number, any>();
+
+    rows.forEach((row) => {
+      const contribution = row.original;
+      const families = contribution.contributorFamilies || [];
+      families.forEach((f) => {
+        if (!allFamiliesMap.has(f.id)) {
+          allFamiliesMap.set(f.id, {
+            ...f,
+            projectName:
+              contribution.project?.name || contribution.contributorName,
+          });
+        }
+      });
+    });
+
+    const familiesToExport = Array.from(allFamiliesMap.values());
+
+    if (familiesToExport.length === 0) {
+      toast.info("لا توجد عائلات لتصديرها");
+      return;
+    }
+
+    const formattedData = familiesToExport.map((f) => ({
+      [t("family_name")]: f.familyName,
+      [t("national_id")]: f.nationalId,
+      [t("members")]: f.totalMembers,
+      الإيواء: f.camp || "-",
+      المشروع: f.projectName || "-",
+      [t("already_benefited")]:
+        (f as any).hasBenefit || (f as any).status === "completed" ? "✔" : "",
+    }));
+
+    exportToExcel(
+      formattedData,
+      `beneficiaries_general_report_${new Date().toISOString().split("T")[0]}`,
+      "Beneficiaries",
+    );
   };
 
   const handleConfirmClick = (contribution: DelegateContribution) => {
@@ -858,7 +778,6 @@ export default function DelegateContributionsTable() {
     return filtered;
   }, [data, watchedStatus]);
 
-  console.log({ filteredData });
   const table = useReactTable<DelegateContribution>({
     data: filteredData,
     columns: createDelegateContributionColumns(
@@ -915,16 +834,29 @@ export default function DelegateContributionsTable() {
 
       <div className="rounded-md border bg-white shadow-sm">
         <div className="p-4 border-b flex items-center gap-4">
-          <Input
-            placeholder={t("search_placeholder")}
-            value={
-              (table.getColumn("projectName")?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn("projectName")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
+          <div className="flex flex-1 items-center gap-4">
+            <Input
+              placeholder={t("search_placeholder")}
+              value={
+                (table.getColumn("projectName")?.getFilterValue() as string) ??
+                ""
+              }
+              onChange={(event) =>
+                table
+                  .getColumn("projectName")
+                  ?.setFilterValue(event.target.value)
+              }
+              className="max-w-sm"
+            />
+            <Button
+              variant="outline"
+              onClick={handleExportAllBeneficiaries}
+              className="h-10 px-4 rounded-xl border-2 border-green-500 text-green-600 hover:bg-green-50 hover:text-green-700 font-semibold"
+            >
+              <Download className="w-4 h-4 ml-2" />
+              تصدير جميع المستفيدين
+            </Button>
+          </div>
         </div>
         <Table>
           <TableHeader>

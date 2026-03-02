@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/select";
 
 import { FamilyMember } from "@/features/contributors/api/contributors.api";
+import { exportToExcel } from "../../../lib/export-utils";
 
 interface Family {
   id: number;
@@ -144,53 +145,29 @@ export default function FamilySelectionDialog({
     }
   }, [chosenFilter, benefitFilter, globalFilter, filteredFamilies]);
 
-  // Export to Excel function - only exports selected (checked) families
+  // Export to Excel function - exports all currently filtered families
   const handleExportExcel = () => {
-    // Get only selected families
-    const selectedFamilyIds = Array.from(selectedFamilies.keys());
-    const familiesToExport = families.filter((f) =>
-      selectedFamilyIds.includes(f.id),
-    );
-
-    if (familiesToExport.length === 0) {
+    const rows = table.getFilteredRowModel().rows;
+    if (rows.length === 0) {
       return; // Nothing to export
     }
 
-    // Create CSV content
-    const headers = [
-      t("family_name"),
-      t("national_id"),
-      t("members"),
-      t("quantity"),
-    ];
-    const rows = familiesToExport.map((f) => [
-      f.familyName,
-      f.nationalId,
-      f.totalMembers.toString(),
-      selectedFamilies.get(f.id) || "1",
-    ]);
-
-    const csvContent = [
-      headers.join(","),
-      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
-    ].join("\n");
-
-    // Add BOM for Arabic support
-    const BOM = "\uFEFF";
-    const blob = new Blob([BOM + csvContent], {
-      type: "text/csv;charset=utf-8;",
+    const dataToExport = rows.map((row) => {
+      const f = row.original;
+      return {
+        [t("family_name")]: f.familyName,
+        [t("national_id")]: f.nationalId,
+        [t("members")]: f.totalMembers,
+        الإيواء: (f as any).camp || "-",
+        [t("already_benefited")]: f.hasBenefit ? "✔" : "",
+      };
     });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `families_${new Date().toISOString().split("T")[0]}.csv`,
+
+    exportToExcel(
+      dataToExport,
+      `families_report_${new Date().toISOString().split("T")[0]}`,
+      "Families",
     );
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   // Auto-select suggested families and benefited families when dialog opens
@@ -440,7 +417,6 @@ export default function FamilySelectionDialog({
       },
     },
   ];
-
   const table = useReactTable({
     data: filteredFamilies,
     columns,
