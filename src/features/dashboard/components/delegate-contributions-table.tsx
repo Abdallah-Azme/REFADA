@@ -927,14 +927,14 @@ export default function DelegateContributionsTable() {
               }
               className="max-w-sm"
             />
-            <Button
+            {/* <Button
               variant="outline"
               onClick={handleExportAllBeneficiaries}
               className="h-10 px-4 rounded-xl border-2 border-green-500 text-green-600 hover:bg-green-50 hover:text-green-700 font-semibold"
             >
               <Download className="w-4 h-4 ml-2" />
               تصدير جميع المستفيدين
-            </Button>
+            </Button> */}
           </div>
         </div>
         <Table>
