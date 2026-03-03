@@ -402,68 +402,106 @@ export function downloadFailedFamilies(
   errors: Record<string, any>,
   lookups?: ImportLookups,
 ) {
+  if (!originalFamilies || !errors || Object.keys(errors).length === 0) {
+    console.warn("No failed families to export or data missing.");
+    return;
+  }
+
   const wb = XLSX.utils.book_new();
 
   const getNameById = (list: any[] | undefined, id: any) => {
-    if (!list || !id) return id;
-    const match = list.find((item) => Number(item.id) === Number(id));
+    if (!list || id === undefined || id === null) return id;
+    const match = list.find((item) => String(item.id) === String(id));
     return match ? match.name : id;
   };
 
   const formatError = (errorObj: any): string => {
     if (!errorObj) return "";
     let messages: string[] = [];
-    if (errorObj.family) {
-      Object.values(errorObj.family).forEach((msgs: any) => {
-        if (Array.isArray(msgs)) messages.push(...msgs);
-      });
-    }
-    if (errorObj.members) {
-      Object.values(errorObj.members).forEach((memberErr: any) => {
-        Object.values(memberErr).forEach((msgs: any) => {
-          if (Array.isArray(msgs)) messages.push(...msgs);
-        });
-      });
-    }
+
+    // Helper to extract messages from nested objects
+    const extract = (obj: any) => {
+      if (!obj) return;
+      if (Array.isArray(obj)) {
+        messages.push(...obj);
+      } else if (typeof obj === "object") {
+        Object.values(obj).forEach((v) => extract(v));
+      }
+    };
+
+    extract(errorObj);
     return messages.join(" | ");
   };
 
   const headers = [...FAMILY_IMPORT_HEADERS, "سبب الخطأ (Error Reason)"];
   const rows: any[] = [];
 
-  Object.keys(errors).forEach((indexStr) => {
-    const idx = parseInt(indexStr, 10);
-    const family = originalFamilies[idx];
-    if (!family) return;
+  // Iterate over the keys in the errors object
+  Object.entries(errors).forEach(([indexStr, errorDetail]) => {
+    // The key might be the index in the 'families' array we sent.
+    // We try 0-indexed first, then fall back to 1-indexed (idx - 1) if needed.
+    const rawIdx = parseInt(indexStr, 10);
+    if (isNaN(rawIdx)) return;
 
-    const errorMsg = formatError(errors[indexStr]);
+    // Try to find the family object.
+    // Backend index '2' might mean originalFamilies[2] (0-indexed)
+    // or originalFamilies[1] (1-indexed).
+    let family = originalFamilies[rawIdx];
 
+    // If not found at direct index, and index is > 0, try index - 1 (1-indexed fallback)
+    if (!family && rawIdx > 0) {
+      family = originalFamilies[rawIdx - 1];
+    }
+
+    if (!family) {
+      console.warn(
+        `[Excel Export] Skip index ${indexStr}: No matching family data found in the original list (list length: ${originalFamilies.length}).`,
+      );
+      return;
+    }
+
+    const errorSummary = formatError(errorDetail);
+
+    // Each family can have multiple members; we need to recreate the flat structure
     family.members.forEach((m: any, mIdx: number) => {
-      rows.push([
-        family.national_id,
-        getNameById(lookups?.relationships, m.relationship_id),
-        mIdx === 0 ? family.family_name : "",
-        m.name,
-        m.national_id,
-        m.dob,
-        m.gender,
-        mIdx === 0 ? family.phone : "",
-        mIdx === 0 ? family.backup_phone : "",
-        mIdx === 0 ? family.total_members : "",
-        getNameById(lookups?.maritalStatuses, family.marital_status_id),
-        mIdx === 0 ? family.tent_number : "",
-        mIdx === 0 ? family.location : "",
-        mIdx === 0 ? family.notes : "",
-        m.medical_condition ||
-          getNameById(lookups?.medicalConditions, m.medical_condition_id) ||
-          "",
-        errorMsg,
-      ]);
+      const row = [
+        family.national_id || "", // family_national_id
+        getNameById(lookups?.relationships, m.relationship_id) || "",
+        mIdx === 0 ? family.family_name || "" : "",
+        m.name || "",
+        m.national_id || "",
+        m.dob || "",
+        m.gender || "male",
+        mIdx === 0 ? family.phone || "" : "",
+        mIdx === 0 ? family.backup_phone || "" : "",
+        mIdx === 0 ? family.total_members || "" : "",
+        getNameById(lookups?.maritalStatuses, family.marital_status_id) || "",
+        mIdx === 0 ? family.tent_number || "" : "",
+        mIdx === 0 ? family.location || "" : "",
+        mIdx === 0 ? family.notes || "" : "",
+        mIdx === 0
+          ? m.medical_condition ||
+            getNameById(lookups?.medicalConditions, m.medical_condition_id) ||
+            ""
+          : m.medical_condition || "",
+        errorSummary, // The final column with the error
+      ];
+      rows.push(row);
     });
   });
 
+  if (rows.length === 0) {
+    console.error("No rows were constructed for the error file.");
+    return;
+  }
+
   const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-  ws["!cols"] = headers.map(() => ({ wch: 30 }));
-  XLSX.utils.book_append_sheet(wb, ws, "Families_To_Fix");
+
+  // Set column widths
+  ws["!cols"] = headers.map(() => ({ wch: 25 }));
+  // Make the error column wider
+  ws["!cols"][headers.length - 1] = { wch: 50 };
+
+  XLSX.utils.book_append_sheet(wb, ws, "Errors_To_Fix");
   XLSX.writeFile(wb, "failed_families_fix_this.xlsx");
 }

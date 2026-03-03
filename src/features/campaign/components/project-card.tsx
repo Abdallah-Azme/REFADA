@@ -50,6 +50,19 @@ export function ProjectCard({
   // ✅ Format to 2 decimal places safely
   const formattedPercentage = Number(percentage.toFixed(2));
 
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "";
+    try {
+      return new Intl.DateTimeFormat("ar-EG", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }).format(new Date(dateString));
+    } catch (e) {
+      return dateString;
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -150,10 +163,17 @@ export function ProjectCard({
                     key={i}
                     className="flex justify-between items-center text-xs bg-gray-50 p-1.5 rounded"
                   >
-                    <span className="text-gray-700 truncate max-w-[120px]">
-                      {contributor.contributorName}
-                    </span>
-                    <span className="font-bold text-teal-700">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-gray-700 truncate max-w-[120px] font-medium">
+                        {contributor.contributorName}
+                      </span>
+                      {contributor.createdAt && (
+                        <span className="text-[9px] text-gray-400">
+                          {formatDate(contributor.createdAt)}
+                        </span>
+                      )}
+                    </div>
+                    <span className="font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded">
                       {contributor.quantity}
                     </span>
                   </div>
@@ -187,9 +207,16 @@ export function ProjectCard({
                                 {contributor.quantity}
                               </span>
                               <div className="flex items-center gap-3">
-                                <span className="font-medium text-gray-900">
-                                  {contributor.contributorName}
-                                </span>
+                                <div className="flex flex-col items-end">
+                                  <span className="font-medium text-gray-900">
+                                    {contributor.contributorName}
+                                  </span>
+                                  {contributor.createdAt && (
+                                    <span className="text-[10px] text-gray-500">
+                                      {formatDate(contributor.createdAt)}
+                                    </span>
+                                  )}
+                                </div>
                                 <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold text-xs">
                                   {i + 1}
                                 </div>

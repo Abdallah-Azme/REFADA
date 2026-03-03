@@ -41,6 +41,7 @@ export type CampFormValues = z.infer<ReturnType<typeof createCampSchema>>;
 export interface Contributor {
   contributorName: string;
   quantity: number;
+  createdAt: string;
 }
 
 export interface Project {
