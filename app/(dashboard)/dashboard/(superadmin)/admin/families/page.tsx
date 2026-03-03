@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/src/shared/ui/button";
-import { Users, Loader2, Download } from "lucide-react";
+import { Users, Loader2, FileSpreadsheet } from "lucide-react";
 import MainHeader from "@/src/shared/components/main-header";
 import {
   FamilyTable,
@@ -10,7 +10,6 @@ import {
   Family,
   useFamilies,
   useDeleteFamily,
-  getFamilyMembersApi,
   FamiliesQueryParams,
   DEFAULT_FAMILIES_QUERY,
 } from "@/features/families";
@@ -19,12 +18,10 @@ import FamilyDetailsDialog from "@/features/families/components/family-details-d
 import { DeleteConfirmDialog } from "@/features/marital-status";
 import AddFamilyDialog from "@/src/features/dashboard/components/add-family-dialog";
 import {
-  exportToExcel,
-  formatFamiliesForExport,
-  formatFamiliesWithMembersForExport,
-} from "@/src/lib/export-utils";
-import { toast } from "sonner";
-
+  ExportTypeDialog,
+  ExportMode,
+} from "@/features/families/components/export-type-dialog";
+import { useFamilyExcelExport } from "@/features/families/hooks/use-family-excel-export";
 import { useTranslations } from "next-intl";
 
 export default function AdminFamiliesPage() {
@@ -48,11 +45,17 @@ export default function AdminFamiliesPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [editingFamily, setEditingFamily] = useState<Family | null>(null);
   const [viewingFamily, setViewingFamily] = useState<Family | null>(null);
   const [deletingFamily, setDeletingFamily] = useState<Family | null>(null);
   const [selectedFamilies, setSelectedFamilies] = useState<Family[]>([]);
-  const [isExporting, setIsExporting] = useState(false);
+
+  // Excel export hook
+  const { handleExport, isExporting } = useFamilyExcelExport({
+    queryParams,
+    selectedFamilies,
+  });
 
   // Extract families data and meta
   const families = response?.data || [];
@@ -89,51 +92,9 @@ export default function AdminFamiliesPage() {
     setQueryParams(newParams);
   };
 
-  const handleExportToExcel = async () => {
-    try {
-      setIsExporting(true);
-      // Export selected families if any are selected, otherwise export all
-      const familiesToExport =
-        selectedFamilies.length > 0 ? selectedFamilies : families;
-
-      // Fetch members for each family
-      const familiesWithMembers = await Promise.all(
-        familiesToExport.map(async (family) => {
-          try {
-            const membersResponse = await getFamilyMembersApi(family.id);
-            return {
-              family,
-              members: membersResponse.data || [],
-            };
-          } catch (error) {
-            console.error(
-              `Error fetching members for family ${family.id}:`,
-              error,
-            );
-            return {
-              family,
-              members: [],
-            };
-          }
-        }),
-      );
-
-      const formattedData =
-        formatFamiliesWithMembersForExport(familiesWithMembers);
-
-      const filename =
-        selectedFamilies.length > 0
-          ? `families_members_export_${selectedFamilies.length}_selected`
-          : "families_members_export_all";
-
-      exportToExcel(formattedData, filename, "Families With Members");
-      toast.success(t("toast.export_success") || "تم تصدير البيانات بنجاح");
-    } catch (error) {
-      console.error("Export error:", error);
-      toast.error(t("toast.export_error") || "حدث خطأ أثناء تصدير البيانات");
-    } finally {
-      setIsExporting(false);
-    }
+  const handleExportDialogConfirm = async (mode: ExportMode) => {
+    await handleExport(mode);
+    setExportDialogOpen(false);
   };
 
   const columns = createFamilyColumns(handleView, handleEdit, handleDelete, t);
@@ -149,9 +110,9 @@ export default function AdminFamiliesPage() {
         <div className="flex flex-col sm:flex-row gap-2">
           <Button
             variant="outline"
-            onClick={handleExportToExcel}
+            onClick={() => setExportDialogOpen(true)}
             disabled={families.length === 0 || isExporting}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 border-green-200"
           >
             {isExporting ? (
               <>
@@ -160,10 +121,10 @@ export default function AdminFamiliesPage() {
               </>
             ) : (
               <>
-                <Download className="h-4 w-4" />
+                <FileSpreadsheet className="h-4 w-4" />
                 {selectedFamilies.length > 0
-                  ? `${t("export_to_excel")} (${selectedFamilies.length})`
-                  : t("export_to_excel")}
+                  ? `تصدير إلى Excel (${selectedFamilies.length})`
+                  : "تصدير إلى Excel"}
               </>
             )}
           </Button>
@@ -216,6 +177,14 @@ export default function AdminFamiliesPage() {
           name: deletingFamily?.familyName || "",
         })}
         isPending={deleteMutation.isPending}
+      />
+
+      {/* Excel Export Type Dialog */}
+      <ExportTypeDialog
+        isOpen={exportDialogOpen}
+        onClose={() => setExportDialogOpen(false)}
+        onConfirm={handleExportDialogConfirm}
+        isExporting={isExporting}
       />
     </div>
   );

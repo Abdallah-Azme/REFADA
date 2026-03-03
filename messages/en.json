@@ -368,7 +368,13 @@
       "validation_error": "Please check the form for errors",
       "update_success": "Family data updated successfully",
       "update_error": "Error updating family data",
-      "member_delete_error": "Error deleting member"
+      "member_delete_error": "Error deleting member",
+      "loading_full_data": "Loading data...",
+      "loading_all_families": "Loading all families...",
+      "no_families_to_export": "No families to export",
+      "loading_family_data_count": "Loading data for {count} families...",
+      "export_success_count": "{count} families exported successfully",
+      "export_error": "Error during export, please try again"
     },
     "columns": {
       "familyName": "Family Name",
@@ -412,6 +418,7 @@
     "loading_data": "Loading data...",
     "error_loading": "Error loading data",
     "export_to_excel": "Export to Excel",
+    "exporting": "Exporting...",
     "members_count_label": "Members Count",
     "male": "Male",
     "female": "Female",
@@ -474,6 +481,16 @@
       "toddlers": "Toddlers",
       "newborns": "Newborns",
       "seniors": "Seniors"
+    },
+    "export_dialog": {
+      "title": "Export to Excel",
+      "description": "Choose the desired export type",
+      "without_members_title": "Without members",
+      "without_members_desc": "Export head of family and wife only (Certified Form for Camps version)",
+      "with_members_title": "With all members",
+      "with_members_desc": "Export all family members including children (Refada Children Form)",
+      "export_btn": "Export",
+      "cancel_btn": "Cancel"
     }
   },
   "projects": {

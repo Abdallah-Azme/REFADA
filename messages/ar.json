@@ -361,7 +361,13 @@
       "validation_error": "يرجى التحقق من المدخلات",
       "update_success": "تم تعديل بيانات العائلة بنجاح",
       "update_error": "حدث خطأ أثناء تعديل البيانات",
-      "member_delete_error": "حدث خطأ أثناء حذف الفرد"
+      "member_delete_error": "حدث خطأ أثناء حذف الفرد",
+      "loading_full_data": "جاري تحميل البيانات...",
+      "loading_all_families": "جاري تحميل جميع العائلات...",
+      "no_families_to_export": "لا توجد عائلات للتصدير",
+      "loading_family_data_count": "جاري تحميل بيانات {count} عائلة...",
+      "export_success_count": "تم تصدير {count} عائلة بنجاح",
+      "export_error": "حدث خطأ أثناء التصدير، يرجى المحاولة مجدداً"
     },
     "columns": {
       "id": "الرقم",
@@ -403,6 +409,7 @@
     "loading_data": "جاري تحميل البيانات...",
     "error_loading": "حدث خطأ أثناء تحميل البيانات",
     "export_to_excel": "تصدير إلى Excel",
+    "exporting": "جاري التصدير...",
     "members_count_label": "عدد الأفراد",
     "male": "ذكر",
     "female": "أنثى",
@@ -471,6 +478,16 @@
       "toddlers": "رضع",
       "newborns": "حديثي الولادة",
       "seniors": "كبار السن"
+    },
+    "export_dialog": {
+      "title": "تصدير إلى Excel",
+      "description": "اختر نوع التصدير المطلوب",
+      "without_members_title": "بدون أفراد",
+      "without_members_desc": "تصدير بيانات رب الأسرة والزوجة فقط (نسخة الفورمة المعتمدة للمخيمات)",
+      "with_members_title": "مع جميع الأفراد",
+      "with_members_desc": "تصدير بيانات جميع أفراد العائلة بما فيهم الأطفال (فورمة الأطفال رفاد)",
+      "export_btn": "تصدير",
+      "cancel_btn": "إلغاء"
     }
   },
   "projects": {

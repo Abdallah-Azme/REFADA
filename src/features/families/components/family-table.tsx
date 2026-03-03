@@ -51,6 +51,8 @@ import {
   formatFamiliesForExport,
 } from "@/src/lib/export-utils";
 import { useTableExport } from "@/src/shared/hooks/use-table-export";
+import { ExportTypeDialog } from "./export-type-dialog";
+import { useFamilyExcelExport } from "../hooks/use-family-excel-export";
 
 interface PaginationMeta {
   current_page: number;
@@ -300,6 +302,13 @@ export function FamilyTable({
   const [isExporting, setIsExporting] = React.useState(false);
   const [isExportingAll, setIsExportingAll] = React.useState(false);
 
+  // Export All dialog state (uses the same hook as the admin page)
+  const [exportDialogOpen, setExportDialogOpen] = React.useState(false);
+  const {
+    handleExport: handleExportWithDialog,
+    isExporting: isExportingDialog,
+  } = useFamilyExcelExport({ queryParams });
+
   // Export selected rows only (current page)
   const handleExportSelected = async () => {
     if (selectedFamilies.length === 0) {
@@ -346,104 +355,14 @@ export function FamilyTable({
     }
   };
 
-  // Export ALL data (all pages)
-  const handleExportAll = async () => {
-    try {
-      setIsExportingAll(true);
-      toast.info(t("export.loading_all") || "جاري تحميل جميع البيانات...");
-
-      let familiesToExport: Family[] = [];
-      const exportParams = new URLSearchParams();
-
-      // Start with first page to get total count
-      exportParams.append("per_page", "1000");
-      exportParams.append("page", "1");
-
-      if (queryParams.search) exportParams.append("search", queryParams.search);
-      if (queryParams.national_id)
-        exportParams.append("national_id", queryParams.national_id);
-      if (queryParams.camp_id)
-        exportParams.append("camp_id", String(queryParams.camp_id));
-      if (queryParams.medical_condition)
-        exportParams.append("medical_condition", queryParams.medical_condition);
-      if (queryParams.marital_status)
-        exportParams.append("marital_status", queryParams.marital_status);
-      if (queryParams.age_group)
-        exportParams.append("age_group", queryParams.age_group);
-
-      // Fetch first page
-      const firstResponse = await getFamiliesApi(exportParams.toString());
-      if (firstResponse && firstResponse.data) {
-        familiesToExport.push(...firstResponse.data);
-
-        // If there are more pages, fetch them
-        if (firstResponse.meta && firstResponse.meta.last_page > 1) {
-          const totalPages = firstResponse.meta.last_page;
-          toast.info(`جاري تحميل ${totalPages} صفحات...`);
-
-          // Fetch remaining pages
-          const pagePromises = [];
-          for (let page = 2; page <= totalPages; page++) {
-            const pageParams = new URLSearchParams(exportParams);
-            pageParams.set("page", page.toString());
-            pagePromises.push(getFamiliesApi(pageParams.toString()));
-          }
-
-          const responses = await Promise.all(pagePromises);
-          responses.forEach((response) => {
-            if (response && response.data) {
-              familiesToExport.push(...response.data);
-            }
-          });
-        }
-      }
-
-      if (familiesToExport.length === 0) {
-        toast.error(t("export.no_data") || "لا توجد بيانات للتصدير");
-        return;
-      }
-
-      // Fetch members for each family
-      const familiesWithMembers = await Promise.all(
-        familiesToExport.map(async (family) => {
-          if (family.members && family.members.length > 0) {
-            return { family, members: family.members };
-          }
-          try {
-            const membersResponse = await getFamilyMembersApi(family.id);
-            return { family, members: membersResponse.data || [] };
-          } catch (error) {
-            console.error(
-              `Error fetching members for family ${family.id}:`,
-              error,
-            );
-            return { family, members: [] };
-          }
-        }),
-      );
-
-      const formattedData =
-        formatFamiliesWithMembersForExport(familiesWithMembers);
-      const filename = `families_all_${familiesToExport.length}_${new Date().toISOString().split("T")[0]}`;
-
-      exportToExcel(formattedData, filename, "Families With Members");
-      toast.success(
-        `${t("export.success") || "تم تصدير"} ${familiesToExport.length} عائلة بنجاح`,
-      );
-    } catch (error) {
-      console.error("Export failed:", error);
-      toast.error(tCommon("error_occurred"));
-    } finally {
-      setIsExportingAll(false);
-    }
-  };
+  // Export ALL — opens the export-type dialog (with/without members choice)
 
   // Legacy handler - kept for backwards compatibility
   const handleExportExcel = async () => {
     if (selectedFamilies.length > 0) {
       await handleExportSelected();
     } else {
-      await handleExportAll();
+      setExportDialogOpen(true);
     }
   };
 
@@ -656,16 +575,16 @@ export function FamilyTable({
               </Button>
             </div>
 
-            {/* Export All Button */}
+            {/* Export All Button — opens the export-type dialog */}
             <div className="flex items-end">
               <Button
                 variant="outline"
                 size="default"
-                onClick={handleExportAll}
-                disabled={isExportingAll}
+                onClick={() => setExportDialogOpen(true)}
+                disabled={isExportingDialog}
                 className="h-11 gap-2 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 border-green-200"
               >
-                {isExportingAll ? (
+                {isExportingDialog ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <FileSpreadsheet className="h-4 w-4" />
@@ -800,6 +719,17 @@ export function FamilyTable({
         onClose={() => setIsBulkDeleteOpen(false)}
         selectedFamilyIds={selectedFamilyIds}
         onSuccess={handleBulkDeleteSuccess}
+      />
+
+      {/* Export Type Dialog — with/without members */}
+      <ExportTypeDialog
+        isOpen={exportDialogOpen}
+        onClose={() => setExportDialogOpen(false)}
+        onConfirm={async (mode) => {
+          await handleExportWithDialog(mode);
+          setExportDialogOpen(false);
+        }}
+        isExporting={isExportingDialog}
       />
     </div>
   );
