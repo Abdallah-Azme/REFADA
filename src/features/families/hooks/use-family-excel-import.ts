@@ -8,7 +8,11 @@ import {
 import {
   parseFamiliesExcel,
   downloadFamiliesTemplate,
+  ImportLookups,
 } from "../services/family-excel-export.service";
+import { useMaritalStatuses } from "./use-marital-statuses";
+import { useRelationships } from "./use-relationships";
+import { useMedicalConditions } from "./use-medical-conditions";
 
 // ---------------------------------------------------------------------------
 // useFamilyExcelImport
@@ -24,6 +28,11 @@ export function useFamilyExcelImport() {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const queryClient = useQueryClient();
+
+  // ── Lookups ──────────────────────────────────────────────────────────────
+  const { data: maritalStatuses } = useMaritalStatuses();
+  const { data: relationships } = useRelationships();
+  const { data: medicalConditions } = useMedicalConditions();
 
   // ── Mutation ──────────────────────────────────────────────────────────────
   const uploadMutation = useMutation({
@@ -79,7 +88,13 @@ export function useFamilyExcelImport() {
       try {
         toast.loading("جاري قراءة الملف...", { id: loadingToastId });
 
-        const families = await parseFamiliesExcel(file);
+        const lookups: ImportLookups = {
+          maritalStatuses: maritalStatuses?.data || [],
+          relationships: relationships?.data || [],
+          medicalConditions: medicalConditions?.data || [],
+        };
+
+        const families = await parseFamiliesExcel(file, lookups);
 
         if (families.length === 0) {
           toast.dismiss(loadingToastId);

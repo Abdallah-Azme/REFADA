@@ -148,7 +148,7 @@ export function downloadStyledExcel(
 /** Combined headers for the new single-sheet structure. */
 const FAMILY_IMPORT_HEADERS = [
   "family_national_id", // رقم هوية رب الأسرة (يربط الجميع معاً)
-  "relationship_id", // 1=رب أسرة، 2=زوجة، 3=ابن...
+  "relationship_id", // صلة القرابة (نص: أب، أم، ابن، زوجة...)
   "family_name", // اسم العائلة (مطلوب لرب الأسرة فقط)
   "name", // اسم الفرد
   "national_id", // رقم هوية الفرد
@@ -157,13 +157,18 @@ const FAMILY_IMPORT_HEADERS = [
   "phone", // الهاتف
   "backup_phone", // هاتف احتياطي
   "total_members", // عدد الأفراد
-  "marital_status_id", // الحالة الاجتماعية
+  "marital_status_id", // الحالة الاجتماعية (نص: أعزب، متزوج...)
   "tent_number", // رقم الخيمة
   "location", // الموقع
   "notes", // ملاحظات
-  "medical_condition", // الحالة الصحية
-  "medical_condition_id", // معرّف الحالة
+  "medical_condition", // الحالة الصحية (نص)
 ];
+
+export interface ImportLookups {
+  maritalStatuses: { id: number; name: string }[];
+  relationships: { id: number; name: string }[];
+  medicalConditions: { id: number; name: string }[];
+}
 
 /**
  * Downloads a single-sheet template where rows are grouped by family_national_id.
@@ -198,7 +203,7 @@ export function downloadFamiliesTemplate() {
     // Family 1 - Head
     [
       "123456789",
-      1,
+      "رب الأسرة", // relationship
       "عائلة آل السيد",
       "أحمد السيد",
       "123456789",
@@ -207,17 +212,16 @@ export function downloadFamiliesTemplate() {
       "+201234567890",
       "",
       3,
-      2,
+      "متزوج", // marital_status
       "T-12",
       "القطاع أ",
-      "",
       "",
       "",
     ],
     // Family 1 - Member 1 (link by ID)
     [
       "123456789",
-      2,
+      "زوجة",
       "",
       "سارة السيد",
       "876543219",
@@ -231,18 +235,16 @@ export function downloadFamiliesTemplate() {
       "",
       "",
       "ربو",
-      "",
     ],
     // Family 1 - Member 2
     [
       "123456789",
-      3,
+      "ابن",
       "",
       "خالد السيد",
       "111222333",
       "2010-06-20",
       "male",
-      "",
       "",
       "",
       "",
@@ -270,10 +272,12 @@ export function downloadFamiliesTemplate() {
 
 /**
  * Enhanced parser for the single-sheet flat structure.
+ * Maps text names for relationships, marital statuses, and medical conditions to IDs.
  */
 export async function parseFamiliesExcel(
   file: File,
-): Promise<ParsedFamilyUploadRow[]> {
+  lookups?: ImportLookups,
+): Promise<any[]> {
   const buffer = await file.arrayBuffer();
   const wb = XLSX.read(buffer, { type: "array" });
   const sheet = wb.Sheets[wb.SheetNames[0]];
@@ -287,6 +291,32 @@ export async function parseFamiliesExcel(
     String(v ?? "")
       .trim()
       .replace(/\.0+$/, "");
+
+  const findIdByName = (
+    list: { id: number; name: string }[] | undefined,
+    name: string,
+    defaultId: number = 1,
+  ): number => {
+    if (!list || !name) return defaultId;
+    const cleanName = name.trim().toLowerCase();
+    const match = list.find(
+      (item) => item.name.trim().toLowerCase() === cleanName,
+    );
+    return match ? match.id : defaultId;
+  };
+
+  const findMedicalCondition = (
+    list: { id: number; name: string }[] | undefined,
+    name: string,
+  ): { id: number | null; text: string | null } => {
+    if (!name) return { id: null, text: null };
+    const cleanName = name.trim().toLowerCase();
+    const match = list?.find(
+      (item) => item.name.trim().toLowerCase() === cleanName,
+    );
+    if (match) return { id: match.id, text: null };
+    return { id: null, text: name.trim() };
+  };
 
   const familyGroups = new Map<string, any>();
 
@@ -311,20 +341,34 @@ export async function parseFamiliesExcel(
     }
 
     const group = familyGroups.get(familyId);
-    const relId = Number(row["relationship_id"]) || 1;
+    const relText = String(row["relationship_id"] || "").trim();
+    // Try to find the relationship ID by name, default to 1 (Head) if not found or relText is 1
+    const relId = isNaN(Number(relText))
+      ? findIdByName(lookups?.relationships, relText, 1)
+      : Number(relText) || 1;
 
     // If this is the head (rel=1), populate the family metadata
     if (relId === 1) {
+      const maritalText = String(row["marital_status_id"] || "").trim();
+      const maritalId = isNaN(Number(maritalText))
+        ? findIdByName(lookups?.maritalStatuses, maritalText, 1)
+        : Number(maritalText) || 1;
+
       group.family_name = String(row["family_name"] || row["name"] || "");
       group.dob = String(row["dob"] ?? "");
       group.phone = String(row["phone"] ?? "");
       group.backup_phone = row["backup_phone"] || null;
       group.total_members = Number(row["total_members"]) || 1;
-      group.marital_status_id = Number(row["marital_status_id"]) || 1;
+      group.marital_status_id = maritalId;
       group.tent_number = String(row["tent_number"] ?? "");
       group.location = String(row["location"] ?? "");
       group.notes = String(row["notes"] ?? "");
     }
+
+    const medInfo = findMedicalCondition(
+      lookups?.medicalConditions,
+      String(row["medical_condition"] || ""),
+    );
 
     // Add this person as a member
     group.members.push({
@@ -334,10 +378,8 @@ export async function parseFamiliesExcel(
       dob: String(row["dob"] ?? ""),
       national_id: normaliseId(row["national_id"]),
       relationship_id: relId,
-      medical_condition: row["medical_condition"] || null,
-      medical_condition_id: row["medical_condition_id"]
-        ? Number(row["medical_condition_id"])
-        : null,
+      medical_condition: medInfo.text,
+      medical_condition_id: medInfo.id,
     });
   }
 
