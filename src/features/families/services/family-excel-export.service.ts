@@ -393,3 +393,77 @@ export async function parseFamiliesExcel(
       return f;
     });
 }
+/**
+ * Generates an Excel file containing only the families that failed validation,
+ * including an extra column specifying what went wrong in Arabic.
+ */
+export function downloadFailedFamilies(
+  originalFamilies: any[],
+  errors: Record<string, any>,
+  lookups?: ImportLookups,
+) {
+  const wb = XLSX.utils.book_new();
+
+  const getNameById = (list: any[] | undefined, id: any) => {
+    if (!list || !id) return id;
+    const match = list.find((item) => Number(item.id) === Number(id));
+    return match ? match.name : id;
+  };
+
+  const formatError = (errorObj: any): string => {
+    if (!errorObj) return "";
+    let messages: string[] = [];
+    if (errorObj.family) {
+      Object.values(errorObj.family).forEach((msgs: any) => {
+        if (Array.isArray(msgs)) messages.push(...msgs);
+      });
+    }
+    if (errorObj.members) {
+      Object.values(errorObj.members).forEach((memberErr: any) => {
+        Object.values(memberErr).forEach((msgs: any) => {
+          if (Array.isArray(msgs)) messages.push(...msgs);
+        });
+      });
+    }
+    return messages.join(" | ");
+  };
+
+  const headers = [...FAMILY_IMPORT_HEADERS, "سبب الخطأ (Error Reason)"];
+  const rows: any[] = [];
+
+  Object.keys(errors).forEach((indexStr) => {
+    const idx = parseInt(indexStr, 10);
+    const family = originalFamilies[idx];
+    if (!family) return;
+
+    const errorMsg = formatError(errors[indexStr]);
+
+    family.members.forEach((m: any, mIdx: number) => {
+      rows.push([
+        family.national_id,
+        getNameById(lookups?.relationships, m.relationship_id),
+        mIdx === 0 ? family.family_name : "",
+        m.name,
+        m.national_id,
+        m.dob,
+        m.gender,
+        mIdx === 0 ? family.phone : "",
+        mIdx === 0 ? family.backup_phone : "",
+        mIdx === 0 ? family.total_members : "",
+        getNameById(lookups?.maritalStatuses, family.marital_status_id),
+        mIdx === 0 ? family.tent_number : "",
+        mIdx === 0 ? family.location : "",
+        mIdx === 0 ? family.notes : "",
+        m.medical_condition ||
+          getNameById(lookups?.medicalConditions, m.medical_condition_id) ||
+          "",
+        errorMsg,
+      ]);
+    });
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+  ws["!cols"] = headers.map(() => ({ wch: 30 }));
+  XLSX.utils.book_append_sheet(wb, ws, "Families_To_Fix");
+  XLSX.writeFile(wb, "failed_families_fix_this.xlsx");
+}

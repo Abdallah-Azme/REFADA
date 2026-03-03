@@ -605,10 +605,17 @@ export interface UploadFamiliesPayload {
   families: FamilyUploadRow[];
 }
 
+export interface UploadFamiliesResponse {
+  success: boolean;
+  message: string;
+  data: any[];
+  errors?: Record<string, any>;
+}
+
 export async function uploadFamiliesExcelApi(
   payload: UploadFamiliesPayload,
-): Promise<{ success: boolean; message: string; data?: any }> {
-  return apiRequest("/families/upload", {
+): Promise<UploadFamiliesResponse> {
+  return apiRequest<UploadFamiliesResponse>("/families/upload", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),

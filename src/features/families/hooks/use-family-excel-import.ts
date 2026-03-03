@@ -8,6 +8,7 @@ import {
 import {
   parseFamiliesExcel,
   downloadFamiliesTemplate,
+  downloadFailedFamilies,
   ImportLookups,
 } from "../services/family-excel-export.service";
 import { useMaritalStatuses } from "./use-marital-statuses";
@@ -106,14 +107,35 @@ export function useFamilyExcelImport() {
           id: loadingToastId,
         });
 
-        await uploadMutation.mutateAsync({ camp_id: campId, families });
+        const response = await uploadMutation.mutateAsync({
+          camp_id: campId,
+          families,
+        });
+
+        // ── Handle partial errors ──
+        if (response.errors && Object.keys(response.errors).length > 0) {
+          const failCount = Object.keys(response.errors).length;
+          const successCount = response.data?.length || 0;
+
+          toast.warning(
+            `تم رفع ${successCount} عائلة، ولكن فشل ${failCount}. سيتم الآن تحميل ملف بالأخطاء لتعديله.`,
+            { duration: 6000, id: loadingToastId },
+          );
+
+          downloadFailedFamilies(families, response.errors, lookups);
+        } else {
+          toast.success("تم استيراد جميع العائلات بنجاح", {
+            id: loadingToastId,
+          });
+        }
       } catch (error: any) {
-        toast.error(error?.message || "حدث خطأ أثناء معالجة الملف");
+        toast.error(error?.message || "حدث خطأ أثناء معالجة الملف", {
+          id: loadingToastId,
+        });
       } finally {
-        toast.dismiss(loadingToastId);
         setIsUploading(false);
         // Reset the input so the same file can be re-selected if needed
-        input.value = "";
+        if (input) input.value = "";
       }
     };
 
