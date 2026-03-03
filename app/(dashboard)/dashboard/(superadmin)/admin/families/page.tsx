@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { Button } from "@/src/shared/ui/button";
-import { Users, Loader2, FileSpreadsheet } from "lucide-react";
+import {
+  Users,
+  Loader2,
+  FileSpreadsheet,
+  Download,
+  Upload,
+} from "lucide-react";
 import MainHeader from "@/src/shared/components/main-header";
 import {
   FamilyTable,
@@ -22,6 +28,8 @@ import {
   ExportMode,
 } from "@/features/families/components/export-type-dialog";
 import { useFamilyExcelExport } from "@/features/families/hooks/use-family-excel-export";
+import { useFamilyExcelImport } from "@/features/families/hooks/use-family-excel-import";
+import { ImportFamiliesDialog } from "@/features/families/components/import-families-dialog";
 import { useTranslations } from "next-intl";
 
 export default function AdminFamiliesPage() {
@@ -46,6 +54,7 @@ export default function AdminFamiliesPage() {
   const [viewOpen, setViewOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [editingFamily, setEditingFamily] = useState<Family | null>(null);
   const [viewingFamily, setViewingFamily] = useState<Family | null>(null);
   const [deletingFamily, setDeletingFamily] = useState<Family | null>(null);
@@ -56,6 +65,9 @@ export default function AdminFamiliesPage() {
     queryParams,
     selectedFamilies,
   });
+
+  // Excel import hook
+  const { handleDownloadTemplate } = useFamilyExcelImport();
 
   // Extract families data and meta
   const families = response?.data || [];
@@ -108,6 +120,27 @@ export default function AdminFamiliesPage() {
         </MainHeader>
 
         <div className="flex flex-col sm:flex-row gap-2">
+          {/* ── Download Template ─────────────────────────────────────── */}
+          <Button
+            variant="outline"
+            onClick={handleDownloadTemplate}
+            className="flex items-center gap-2 bg-purple-50 text-purple-700 hover:bg-purple-100 hover:text-purple-800 border-purple-200"
+          >
+            <Download className="h-4 w-4" />
+            تحميل النموذج
+          </Button>
+
+          {/* ── Upload Excel ──────────────────────────────────────────── */}
+          <Button
+            variant="outline"
+            onClick={() => setImportDialogOpen(true)}
+            className="flex items-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 border-blue-200"
+          >
+            <Upload className="h-4 w-4" />
+            استيراد Excel
+          </Button>
+
+          {/* ── Export ───────────────────────────────────────────────── */}
           <Button
             variant="outline"
             onClick={() => setExportDialogOpen(true)}
@@ -128,6 +161,7 @@ export default function AdminFamiliesPage() {
               </>
             )}
           </Button>
+
           <AddFamilyDialog />
         </div>
       </div>
@@ -185,6 +219,12 @@ export default function AdminFamiliesPage() {
         onClose={() => setExportDialogOpen(false)}
         onConfirm={handleExportDialogConfirm}
         isExporting={isExporting}
+      />
+
+      {/* Excel Import Dialog */}
+      <ImportFamiliesDialog
+        isOpen={importDialogOpen}
+        onClose={() => setImportDialogOpen(false)}
       />
     </div>
   );

@@ -571,3 +571,46 @@ export async function forceDeleteFamilyApi(familyId: number): Promise<void> {
     method: "DELETE",
   });
 }
+
+// ────────────────────────────────────────────────────────────
+// Excel Upload API
+// ────────────────────────────────────────────────────────────
+
+export interface FamilyUploadMember {
+  name: string;
+  gender: "male" | "female";
+  dob: string;
+  national_id: string;
+  relationship_id: number;
+  medical_condition: string | null;
+  medical_condition_id: number | null;
+}
+
+export interface FamilyUploadRow {
+  family_name: string;
+  national_id: string;
+  dob: string;
+  phone: string;
+  backup_phone: string | null;
+  total_members: number;
+  marital_status_id: number;
+  tent_number: string;
+  location: string;
+  notes: string;
+  members: FamilyUploadMember[];
+}
+
+export interface UploadFamiliesPayload {
+  camp_id: number;
+  families: FamilyUploadRow[];
+}
+
+export async function uploadFamiliesExcelApi(
+  payload: UploadFamiliesPayload,
+): Promise<{ success: boolean; message: string; data?: any }> {
+  return apiRequest("/families/upload", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
