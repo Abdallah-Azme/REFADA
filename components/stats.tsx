@@ -34,6 +34,7 @@ interface StatsProps {
   contributorsCount?: number;
   campsCount?: number;
   ageGroupsCount?: AgeGroupsCount;
+  hideMainStats?: boolean;
 }
 
 // Arabic labels for age groups
@@ -73,6 +74,7 @@ export default function Stats({
   contributorsCount = 0,
   campsCount = 0,
   ageGroupsCount,
+  hideMainStats = false,
 }: StatsProps) {
   const t = useTranslations();
   const [flipCount, setFlipCount] = useState(0);
@@ -105,7 +107,7 @@ export default function Stats({
     suffix: string;
     label: string;
     range?: string;
-  }[][] = [mainStats];
+  }[][] = hideMainStats ? [] : [mainStats];
 
   // Split age groups into chunks of 4
   for (let i = 0; i < ageGroupEntries.length; i += 4) {
@@ -113,6 +115,8 @@ export default function Stats({
   }
 
   const totalPages = allPages.length;
+
+  if (totalPages === 0) return null;
 
   // Calculate current and next page based on flip count
   const currentPageIndex = flipCount % totalPages;

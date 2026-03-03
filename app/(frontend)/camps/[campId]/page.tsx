@@ -261,6 +261,7 @@ export default function Page() {
           contributorsCount={0}
           campsCount={1}
           ageGroupsCount={camp?.ageGroupsCount}
+          hideMainStats={true}
         />
       </div>
 
