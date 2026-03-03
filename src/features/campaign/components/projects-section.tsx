@@ -12,7 +12,6 @@ export default function ProjectsSection({
   projects = [],
   campName = "",
 }: ProjectsSectionProps) {
-  console.log({ projects });
   const t = useTranslations("campDetails");
 
   if (!projects || projects.length === 0) {
