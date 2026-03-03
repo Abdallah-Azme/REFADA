@@ -1,17 +1,17 @@
 "use client";
 
-import * as React from "react";
-import {
-  ColumnDef,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { useTranslations } from "next-intl";
+import { useCampNames } from "@/features/camps";
+import { useMaritalStatuses } from "@/features/marital-status";
+import { useMedicalConditions } from "@/features/medical-condition/hooks/use-medical-condition";
+import { Button } from "@/src/shared/ui/button";
 import { Input } from "@/src/shared/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/src/shared/ui/select";
 import {
   Table,
   TableBody,
@@ -21,38 +21,29 @@ import {
   TableRow,
 } from "@/src/shared/ui/table";
 import {
-  Search,
-  Trash2,
-  Loader2,
+  ColumnDef,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import {
   ChevronLeft,
   ChevronRight,
   FileSpreadsheet,
+  Loader2,
+  Search,
+  Trash2,
 } from "lucide-react";
-import * as XLSX from "xlsx";
-import { toast } from "sonner";
-import { getFamiliesApi, getFamilyMembersApi } from "../api/families.api";
-import { Family } from "../types/family.schema";
-import { FamiliesQueryParams } from "../types/families-query.types";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/src/shared/ui/select";
-import { useMedicalConditions } from "@/features/medical-condition/hooks/use-medical-condition";
-import { useCampNames } from "@/features/camps";
-import { useMaritalStatuses } from "@/features/marital-status";
-import { Button } from "@/src/shared/ui/button";
-import { BulkDeleteDialog } from "./bulk-delete-dialog";
-import {
-  exportToExcel,
-  formatFamiliesWithMembersForExport,
-  formatFamiliesForExport,
-} from "@/src/lib/export-utils";
-import { useTableExport } from "@/src/shared/hooks/use-table-export";
-import { ExportTypeDialog } from "./export-type-dialog";
+import { useTranslations } from "next-intl";
+import * as React from "react";
 import { useFamilyExcelExport } from "../hooks/use-family-excel-export";
+import { FamiliesQueryParams } from "../types/families-query.types";
+import { Family } from "../types/family.schema";
+import { BulkDeleteDialog } from "./bulk-delete-dialog";
+import { ExportTypeDialog } from "./export-type-dialog";
 
 interface PaginationMeta {
   current_page: number;
@@ -299,60 +290,28 @@ export function FamilyTable({
   };
 
   // Export to Excel handlers
-  const [isExporting, setIsExporting] = React.useState(false);
-  const [isExportingAll, setIsExportingAll] = React.useState(false);
-
-  // Export All dialog state (uses the same hook as the admin page)
+  const [exportScope, setExportScope] = React.useState<"all" | "selected">(
+    "all",
+  );
   const [exportDialogOpen, setExportDialogOpen] = React.useState(false);
+
   const {
     handleExport: handleExportWithDialog,
     isExporting: isExportingDialog,
-  } = useFamilyExcelExport({ queryParams });
+  } = useFamilyExcelExport({
+    queryParams,
+    selectedFamilies: exportScope === "selected" ? selectedFamilies : [],
+  });
 
-  // Export selected rows only (current page)
-  const handleExportSelected = async () => {
-    if (selectedFamilies.length === 0) {
-      toast.error(
-        t("export.no_selection") || "الرجاء تحديد البيانات المراد تصديرها",
-      );
-      return;
-    }
+  // Export Handlers — these now just open the dialog
+  const triggerExportSelected = () => {
+    setExportScope("selected");
+    setExportDialogOpen(true);
+  };
 
-    try {
-      setIsExporting(true);
-      toast.info(t("export.loading"));
-
-      // Fetch members for each selected family
-      const familiesWithMembers = await Promise.all(
-        selectedFamilies.map(async (family: Family) => {
-          if (family.members && family.members.length > 0) {
-            return { family, members: family.members };
-          }
-          try {
-            const membersResponse = await getFamilyMembersApi(family.id);
-            return { family, members: membersResponse.data || [] };
-          } catch (error) {
-            console.error(
-              `Error fetching members for family ${family.id}:`,
-              error,
-            );
-            return { family, members: [] };
-          }
-        }),
-      );
-
-      const formattedData =
-        formatFamiliesWithMembersForExport(familiesWithMembers);
-      const filename = `families_selected_${selectedFamilies.length}_${new Date().toISOString().split("T")[0]}`;
-
-      exportToExcel(formattedData, filename, "Families With Members");
-      toast.success(t("export.success") || "تم تصدير البيانات بنجاح");
-    } catch (error) {
-      console.error("Export failed:", error);
-      toast.error(tCommon("error_occurred"));
-    } finally {
-      setIsExporting(false);
-    }
+  const triggerExportAll = () => {
+    setExportScope("all");
+    setExportDialogOpen(true);
   };
 
   // Export ALL — opens the export-type dialog (with/without members choice)
@@ -360,9 +319,9 @@ export function FamilyTable({
   // Legacy handler - kept for backwards compatibility
   const handleExportExcel = async () => {
     if (selectedFamilies.length > 0) {
-      await handleExportSelected();
+      triggerExportSelected();
     } else {
-      setExportDialogOpen(true);
+      triggerExportAll();
     }
   };
 
@@ -561,11 +520,11 @@ export function FamilyTable({
               <Button
                 variant="outline"
                 size="default"
-                onClick={handleExportSelected}
-                disabled={isExporting || selectedCount === 0}
+                onClick={triggerExportSelected}
+                disabled={isExportingDialog || selectedCount === 0}
                 className="h-11 gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 border-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isExporting ? (
+                {isExportingDialog && exportScope === "selected" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <FileSpreadsheet className="h-4 w-4" />
@@ -580,11 +539,11 @@ export function FamilyTable({
               <Button
                 variant="outline"
                 size="default"
-                onClick={() => setExportDialogOpen(true)}
+                onClick={triggerExportAll}
                 disabled={isExportingDialog}
                 className="h-11 gap-2 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 border-green-200"
               >
-                {isExportingDialog ? (
+                {isExportingDialog && exportScope === "all" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <FileSpreadsheet className="h-4 w-4" />
