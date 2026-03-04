@@ -1780,7 +1780,12 @@
       "date_to": "تاريخ النهاية (إلى)",
       "younger_than": "أصغر من",
       "older_than": "أكبر من",
-      "no_conditions": "لا توجد حالات طبية متاحة"
+      "no_conditions": "لا توجد حالات طبية متاحة",
+      "select_all_families": "إختيار جميع العائلات",
+      "select_all_families_members": "إختيار جميع العائلات والأفراد",
+      "deselect_all": "إلغاء التحديد الكل",
+      "member_count_min": "أقل عدد أفراد",
+      "member_count_max": "أكبر عدد أفراد"
     },
     "age_groups": {
       "newborns": "حديثو الولادة (0-1 شهر)",

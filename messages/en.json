@@ -1721,7 +1721,12 @@
       "date_to": "Date To",
       "younger_than": "Born After",
       "older_than": "Born Before",
-      "no_conditions": "No medical conditions available"
+      "no_conditions": "No medical conditions available",
+      "select_all_families": "Select all families",
+      "select_all_families_members": "Select all families & members",
+      "deselect_all": "Deselect all",
+      "member_count_min": "Min members",
+      "member_count_max": "Max members"
     },
     "age_groups": {
       "newborns": "Newborns (0-1 month)",

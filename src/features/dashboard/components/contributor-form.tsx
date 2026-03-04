@@ -53,6 +53,7 @@ export default function ContributorForm() {
       backupPhone: "",
     },
   });
+  console.log({ profileData });
 
   // Update form when profile data is loaded
   useEffect(() => {

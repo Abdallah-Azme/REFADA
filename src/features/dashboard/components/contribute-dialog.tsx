@@ -131,6 +131,12 @@ export default function ContributeDialog({
   >([]);
   const [isLoadingFamilies, setIsLoadingFamilies] = useState(false);
   const [isLoadingConditions, setIsLoadingConditions] = useState(false);
+  const [memberCountMin, setMemberCountMin] = useState<number | undefined>(
+    undefined,
+  );
+  const [memberCountMax, setMemberCountMax] = useState<number | undefined>(
+    undefined,
+  );
 
   // Form setup
   const form = useForm<ContributeFormValues>({
@@ -165,6 +171,8 @@ export default function ContributeDialog({
     olderThanLimit,
     dateFrom,
     dateTo,
+    memberCountMin,
+    memberCountMax,
   ]);
 
   // Reset form when dialog closes
@@ -182,6 +190,8 @@ export default function ContributeDialog({
       setDateTo(undefined);
       setYoungerThanLimit(undefined);
       setOlderThanLimit(undefined);
+      setMemberCountMin(undefined);
+      setMemberCountMax(undefined);
       setExpandedFamilies([]);
     }
   }, [isOpen, form]);
@@ -231,6 +241,8 @@ export default function ContributeDialog({
         projectId: project.id,
         year_from: from,
         year_to: to,
+        member_count_min: memberCountMin,
+        member_count_max: memberCountMax,
         ...extraParams,
       });
       if (response.success) {
@@ -372,6 +384,37 @@ export default function ContributeDialog({
     return matchesAge || matchesMedical;
   });
 
+  const handleSelectAllFamilies = () => {
+    if (filteredFamilies.length === 0) {
+      toast.info(t("no_results"));
+      return;
+    }
+    const familyIds = filteredFamilies.map((f) => f.id);
+    form.setValue("families", familyIds);
+    toast.success(t("selected_multiple", { count: familyIds.length }));
+  };
+
+  const handleSelectAllFamiliesAndMembers = () => {
+    if (filteredFamilies.length === 0) {
+      toast.info(t("no_results"));
+      return;
+    }
+    const familyIds = filteredFamilies.map((f) => f.id);
+    const memberIds = filteredFamilies.flatMap((f) =>
+      (f.members || []).map((m) => m.id),
+    );
+    form.setValue("families", familyIds);
+    form.setValue("members", memberIds);
+    toast.success(
+      t("selected_multiple", { count: familyIds.length + memberIds.length }),
+    );
+  };
+
+  const handleDeselectAll = () => {
+    form.setValue("families", []);
+    form.setValue("members", []);
+  };
+
   const selectedFamilies = form.watch("families") || [];
   const selectedMembers = form.watch("members") || [];
 
@@ -414,9 +457,44 @@ export default function ContributeDialog({
 
                 {/* Beneficiary Families Search */}
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-800 block text-right">
-                    {t("beneficiary_families")}
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex gap-2">
+                      {(selectedFamilies.length > 0 ||
+                        selectedMembers.length > 0) && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={handleDeselectAll}
+                          className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg shrink-0"
+                          title={t("deselect_all")}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleSelectAllFamilies}
+                        className="h-8 text-[11px] font-medium text-primary hover:text-primary hover:bg-primary/5 border border-primary/20 rounded-lg px-2"
+                      >
+                        {t("select_all_families")}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleSelectAllFamiliesAndMembers}
+                        className="h-8 text-[11px] font-medium text-primary hover:text-primary hover:bg-primary/5 border border-primary/20 rounded-lg px-2"
+                      >
+                        {t("select_all_families_members")}
+                      </Button>
+                    </div>
+                    <label className="text-sm font-bold text-gray-800 block text-right">
+                      {t("beneficiary_families")}
+                    </label>
+                  </div>
                   <div className="flex flex-col gap-3">
                     <div className="relative w-full">
                       <Popover
@@ -748,6 +826,64 @@ export default function ContributeDialog({
                             </Button>
                           )}
                         </div>
+                      </div>
+                    </div>
+
+                    {/* Member Count Filters */}
+                    <div className="flex items-center gap-2 flex-1">
+                      <div className="relative flex-1 group">
+                        <Input
+                          type="number"
+                          value={memberCountMin ?? ""}
+                          onChange={(e) =>
+                            setMemberCountMin(
+                              e.target.value
+                                ? parseInt(e.target.value)
+                                : undefined,
+                            )
+                          }
+                          placeholder={t("member_count_min") || "أقل عدد أفراد"}
+                          className="bg-white border-gray-200 h-10 rounded-xl text-right"
+                        />
+                        {memberCountMin !== undefined && (
+                          <Button
+                            type="button"
+                            onClick={() => setMemberCountMin(undefined)}
+                            variant="ghost"
+                            size="icon"
+                            className="absolute left-1 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-red-500 rounded-full bg-transparent"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
+                      <div className="relative flex-1 group">
+                        <Input
+                          type="number"
+                          value={memberCountMax ?? ""}
+                          onChange={(e) =>
+                            setMemberCountMax(
+                              e.target.value
+                                ? parseInt(e.target.value)
+                                : undefined,
+                            )
+                          }
+                          placeholder={
+                            t("member_count_max") || "أكبر عدد أفراد"
+                          }
+                          className="bg-white border-gray-200 h-10 rounded-xl text-right"
+                        />
+                        {memberCountMax !== undefined && (
+                          <Button
+                            type="button"
+                            onClick={() => setMemberCountMax(undefined)}
+                            variant="ghost"
+                            size="icon"
+                            className="absolute left-1 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400 hover:text-red-500 rounded-full bg-transparent"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        )}
                       </div>
                     </div>
 

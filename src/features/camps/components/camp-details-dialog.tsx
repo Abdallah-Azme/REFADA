@@ -137,7 +137,7 @@ export function CampDetailsDialog({
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              {/* <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                 <Baby className="h-5 w-5 text-pink-600" />
                 <div>
                   <p className="text-sm text-gray-600">{t("childrenCount")}</p>
@@ -155,7 +155,7 @@ export function CampDetailsDialog({
                     {camp.elderlyCount || 0}
                   </p>
                 </div>
-              </div>
+              </div> */}
 
               <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                 <Users className="h-5 w-5 text-green-600" />
