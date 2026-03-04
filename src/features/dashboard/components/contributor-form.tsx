@@ -53,7 +53,6 @@ export default function ContributorForm() {
       backupPhone: "",
     },
   });
-  console.log({ profileData });
 
   // Update form when profile data is loaded
   useEffect(() => {
@@ -71,6 +70,7 @@ export default function ContributorForm() {
     const updateData: UpdateProfileFormValues = {
       name: data.name,
       email: data.email,
+      idNumber: profileData?.data?.idNumber || "",
       phone: data.phone,
       backupPhone: data.backupPhone || undefined,
     };
