@@ -2,8 +2,9 @@ import * as XLSX from "xlsx";
 import ExcelJS from "exceljs";
 import { Family, FamilyMember } from "../types/family.schema";
 
-// Wife relationship string as returned by the backend
+// Spouse relationship strings as returned by the backend
 const WIFE_RELATIONSHIP = "زوجة";
+const HUSBAND_RELATIONSHIP = "زوج";
 
 /**
  * Format families WITHOUT children (head + wife only).
@@ -18,15 +19,17 @@ export function formatFamiliesWithoutChildren(
   families: Family[],
 ): Record<string, string | number>[] {
   return families.map((family) => {
-    const wife = (family.members ?? []).find(
-      (m) => m.relationship?.trim() === WIFE_RELATIONSHIP,
-    );
+    // Search for spouse: could be "زوجة" (when head is male) or "زوج" (when head is female)
+    const spouse = (family.members ?? []).find((m) => {
+      const rel = m.relationship?.trim() ?? "";
+      return rel === WIFE_RELATIONSHIP || rel === HUSBAND_RELATIONSHIP;
+    });
 
     return {
       "الاسم الرباعي": family.familyName || "",
       "رقم الهوية": family.nationalId || "",
-      "اسم الزوجة رباعي": wife?.name || "",
-      "رقم هوية الزوجة": wife?.nationalId || "",
+      "اسم الزوجة رباعي": spouse?.name || "",
+      "رقم هوية الزوجة": spouse?.nationalId || "",
       "رقم الجوال": family.phone || "",
       "رقم الجوال 2": family.backupPhone || "",
       "عدد الافراد": family.totalMembers || 0,
@@ -54,10 +57,13 @@ export function formatFamiliesWithAllMembers(
   families.forEach((family) => {
     const members = family.members ?? [];
 
-    // Non-head members (everyone whose nationalId != the family head's nationalId)
-    const otherMembers = members.filter(
-      (m) => m.nationalId !== family.nationalId,
-    );
+    // Children / dependents only: exclude the head AND the spouse (wife or husband)
+    const otherMembers = members.filter((m) => {
+      if (m.nationalId === family.nationalId) return false; // head
+      const rel = m.relationship?.trim() ?? "";
+      if (rel === WIFE_RELATIONSHIP || rel === HUSBAND_RELATIONSHIP) return false; // spouse
+      return true;
+    });
 
     if (otherMembers.length === 0) {
       // Family has no additional members — still add one row for the head
@@ -573,79 +579,125 @@ export async function parseFamiliesExcel(
     });
 }
 /**
- * Generates an Excel file containing only the families that failed validation,
- * including an extra column specifying what went wrong in Arabic.
+ * Generates an Excel file (with dropdowns) containing only the families that
+ * failed validation. Uses ExcelJS so that marital-status and medical-condition
+ * columns are real Excel drop-down lists — identical to `downloadFamiliesTemplate`.
+ * An extra "سبب الخطأ" column shows what went wrong for each family.
  */
-export function downloadFailedFamilies(
+export async function downloadFailedFamilies(
   originalFamilies: any[],
   errors: Record<string, any>,
   lookups?: ImportLookups,
-) {
+): Promise<void> {
   if (!originalFamilies || !errors || Object.keys(errors).length === 0) {
     console.warn("No failed families to export or data missing.");
     return;
   }
 
-  const wb = XLSX.utils.book_new();
-
-  const getNameById = (list: any[] | undefined, id: any) => {
-    if (!list || id === undefined || id === null) return id;
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  const getNameById = (list: any[] | undefined, id: any): string => {
+    if (!list || id === undefined || id === null) return String(id ?? "");
     const match = list.find((item) => String(item.id) === String(id));
-    return match ? match.name : id;
+    return match ? match.name : String(id ?? "");
   };
 
   const formatError = (errorObj: any): string => {
     if (!errorObj) return "";
-    let messages: string[] = [];
-
-    // Helper to extract messages from nested objects
+    const messages: string[] = [];
     const extract = (obj: any) => {
       if (!obj) return;
-      if (Array.isArray(obj)) {
-        messages.push(...obj);
-      } else if (typeof obj === "object") {
-        Object.values(obj).forEach((v) => extract(v));
-      }
+      if (Array.isArray(obj)) messages.push(...obj);
+      else if (typeof obj === "object") Object.values(obj).forEach(extract);
     };
-
     extract(errorObj);
     return messages.join(" | ");
   };
 
-  const headers = [...FAMILY_IMPORT_HEADERS, "سبب الخطأ (Error Reason)"];
-  const rows: any[] = [];
+  // ── Lookup name arrays for dropdowns ──────────────────────────────────────
+  const maritalNames =
+    lookups?.maritalStatuses?.map((s) => s.name) ?? [
+      "أعزب",
+      "متزوج",
+      "مطلق",
+      "أرمل",
+    ];
+  const medicalNames =
+    lookups?.medicalConditions?.map((c) => c.name) ?? [
+      "لا يوجد",
+      "ربو",
+      "سكري",
+      "ضغط",
+      "قلب",
+      "أمراض أخرى",
+    ];
 
-  // Iterate over the keys in the errors object
+  const maritalRange = `_options!$A$1:$A$${maritalNames.length}`;
+  const medicalRange = `_options!$B$1:$B$${medicalNames.length}`;
+
+  // ── Build workbook ─────────────────────────────────────────────────────────
+  const wb = new ExcelJS.Workbook();
+  wb.creator = "Reffad System";
+  wb.created = new Date();
+
+  // Arabic display headers (same as the template, plus the error column)
+  const displayHeaders = [...FAMILY_IMPORT_HEADERS_AR, "سبب الخطأ"];
+
+  // ── 1. Main data sheet ────────────────────────────────────────────────────
+  const ws = wb.addWorksheet("عائلات_بها_أخطاء", {
+    views: [{ rightToLeft: true }],
+  });
+
+  ws.columns = displayHeaders.map((header, idx) => ({
+    header,
+    key: FAMILY_IMPORT_HEADERS[idx] ?? `col_${idx}`,
+    width: idx === displayHeaders.length - 1 ? 50 : 24, // error column wider
+  }));
+
+  // Style the header row (olive green, same as template)
+  const headerRow = ws.getRow(1);
+  headerRow.eachCell((cell, colNum) => {
+    // Error column gets a red header to stand out
+    const isErrorCol = colNum === displayHeaders.length;
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: isErrorCol ? "FFC0392B" : `FF${HEADER_COLOR}` },
+    };
+    cell.font = { bold: true, color: { argb: "FFFFFFFF" }, size: 11 };
+    cell.alignment = {
+      horizontal: "center",
+      vertical: "middle",
+      readingOrder: "rtl",
+    };
+    cell.border = {
+      bottom: { style: "thin", color: { argb: "FFFFFFFF" } },
+      right: { style: "thin", color: { argb: "FFFFFFFF" } },
+    };
+  });
+  headerRow.height = 28;
+
+  // ── 2. Collect rows from failed families ──────────────────────────────────
+  const dataRows: any[][] = [];
+
   Object.entries(errors).forEach(([indexStr, errorDetail]) => {
-    // The key might be the index in the 'families' array we sent.
-    // We try 0-indexed first, then fall back to 1-indexed (idx - 1) if needed.
     const rawIdx = parseInt(indexStr, 10);
     if (isNaN(rawIdx)) return;
 
-    // Try to find the family object.
-    // Backend index '2' might mean originalFamilies[2] (0-indexed)
-    // or originalFamilies[1] (1-indexed).
     let family = originalFamilies[rawIdx];
-
-    // If not found at direct index, and index is > 0, try index - 1 (1-indexed fallback)
-    if (!family && rawIdx > 0) {
-      family = originalFamilies[rawIdx - 1];
-    }
-
+    if (!family && rawIdx > 0) family = originalFamilies[rawIdx - 1];
     if (!family) {
       console.warn(
-        `[Excel Export] Skip index ${indexStr}: No matching family data found in the original list (list length: ${originalFamilies.length}).`,
+        `[Excel Export] Skip index ${indexStr}: No matching family found (list length: ${originalFamilies.length}).`,
       );
       return;
     }
 
     const errorSummary = formatError(errorDetail);
 
-    // Each family can have multiple members; we need to recreate the flat structure
     family.members.forEach((m: any, mIdx: number) => {
-      const row = [
-        family.national_id || "", // family_national_id
-        getNameById(lookups?.relationships, m.relationship_id) || "",
+      dataRows.push([
+        family.national_id || "",
+        getNameById(lookups?.relationships, m.relationship_id),
         mIdx === 0 ? family.family_name || "" : "",
         m.name || "",
         m.national_id || "",
@@ -654,7 +706,9 @@ export function downloadFailedFamilies(
         mIdx === 0 ? family.phone || "" : "",
         mIdx === 0 ? family.backup_phone || "" : "",
         mIdx === 0 ? family.total_members || "" : "",
-        getNameById(lookups?.maritalStatuses, family.marital_status_id) || "",
+        mIdx === 0
+          ? getNameById(lookups?.maritalStatuses, family.marital_status_id)
+          : "",
         mIdx === 0 ? family.tent_number || "" : "",
         mIdx === 0 ? family.location || "" : "",
         mIdx === 0 ? family.notes || "" : "",
@@ -663,24 +717,95 @@ export function downloadFailedFamilies(
             getNameById(lookups?.medicalConditions, m.medical_condition_id) ||
             ""
           : m.medical_condition || "",
-        errorSummary, // The final column with the error
-      ];
-      rows.push(row);
+        mIdx === 0 ? errorSummary : "", // error only on first row of each family
+      ]);
     });
   });
 
-  if (rows.length === 0) {
+  if (dataRows.length === 0) {
     console.error("No rows were constructed for the error file.");
     return;
   }
 
-  const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+  // Add data rows, force ID cells to text
+  dataRows.forEach((rowData) => {
+    const row = ws.addRow(rowData);
+    row.getCell(1).numFmt = "@"; // family_national_id
+    row.getCell(5).numFmt = "@"; // national_id
+    // Highlight non-empty error cells
+    const errorCell = row.getCell(displayHeaders.length);
+    if (errorCell.value) {
+      errorCell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFFDECEA" },
+      };
+      errorCell.font = { color: { argb: "FFC0392B" } };
+    }
+    row.eachCell({ includeEmpty: true }, (cell) => {
+      cell.alignment = { readingOrder: "rtl", wrapText: true };
+    });
+  });
 
-  // Set column widths
-  ws["!cols"] = headers.map(() => ({ wch: 25 }));
-  // Make the error column wider
-  ws["!cols"][headers.length - 1] = { wch: 50 };
+  // ── 3. Dropdown data-validation ───────────────────────────────────────────
+  const firstDataRow = 2;
+  const lastDataRow = firstDataRow + dataRows.length + 10; // cover all rows + buffer
 
-  XLSX.utils.book_append_sheet(wb, ws, "Errors_To_Fix");
-  XLSX.writeFile(wb, "failed_families_fix_this.xlsx");
+  // Marital status dropdown (col MARITAL_STATUS_COL, 0-based → ExcelJS 1-based → +1)
+  const maritalColLetter = ws.getColumn(MARITAL_STATUS_COL + 1).letter;
+  for (let r = firstDataRow; r <= lastDataRow; r++) {
+    ws.getCell(`${maritalColLetter}${r}`).dataValidation = {
+      type: "list",
+      allowBlank: true,
+      formulae: [maritalRange],
+      showErrorMessage: true,
+      errorStyle: "warning",
+      errorTitle: "قيمة غير صحيحة",
+      error: "يرجى اختيار قيمة من القائمة",
+      prompt: "اختر الحالة الاجتماعية",
+      promptTitle: "الحالة الاجتماعية",
+    };
+  }
+
+  // Medical condition dropdown (col MEDICAL_CONDITION_COL, 0-based → ExcelJS +1)
+  const medicalColLetter = ws.getColumn(MEDICAL_CONDITION_COL + 1).letter;
+  for (let r = firstDataRow; r <= lastDataRow; r++) {
+    ws.getCell(`${medicalColLetter}${r}`).dataValidation = {
+      type: "list",
+      allowBlank: true,
+      formulae: [medicalRange],
+      showErrorMessage: true,
+      errorStyle: "warning",
+      errorTitle: "قيمة غير صحيحة",
+      error: "يرجى اختيار قيمة من القائمة",
+      prompt: "اختر الحالة الصحية",
+      promptTitle: "الحالة الصحية",
+    };
+  }
+
+  // Freeze header row
+  ws.views = [{ state: "frozen", ySplit: 1, rightToLeft: true }];
+
+  // ── 4. Hidden options sheet (same technique as template) ──────────────────
+  const optionsSheet = wb.addWorksheet("_options");
+  optionsSheet.state = "veryHidden";
+  const maxOptions = Math.max(maritalNames.length, medicalNames.length);
+  for (let i = 0; i < maxOptions; i++) {
+    optionsSheet.getCell(i + 1, 1).value = maritalNames[i] ?? "";
+    optionsSheet.getCell(i + 1, 2).value = medicalNames[i] ?? "";
+  }
+
+  // ── 5. Write & trigger browser download ───────────────────────────────────
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "failed_families_fix_this.xlsx";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }

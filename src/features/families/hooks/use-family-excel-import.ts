@@ -127,7 +127,7 @@ export function useFamilyExcelImport() {
             { duration: 6000, id: loadingToastId },
           );
 
-          downloadFailedFamilies(families, response.errors, lookups);
+          await downloadFailedFamilies(families, response.errors, lookups);
         } else {
           toast.success("تم استيراد جميع العائلات بنجاح", {
             id: loadingToastId,
