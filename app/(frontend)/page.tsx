@@ -1,23 +1,18 @@
-import dynamic from "next/dynamic";
 import Hero from "@/components/hero";
 import AboutSection from "@/components/pages/home/about-section";
 import CampsMapSection from "@/components/pages/home/camps-map-section";
-import ContactSection from "@/components/pages/home/contact-section";
-import PartnersSection from "@/components/pages/home/partners-section";
-import PolicySection from "@/components/pages/home/policy-section";
 import CampsSection from "@/components/pages/home/camps-section";
+import ContactSection from "@/components/pages/home/contact-section";
+import PolicySection from "@/components/pages/home/policy-section";
 import ShelterProjectsSection from "@/components/pages/home/shelter-projects-section";
 import TestimonialsSection from "@/components/pages/home/testimonials-section";
 import Stats from "@/components/stats";
-import { heroApi } from "@/features/home-control/api/hero.api";
 import { campsApi } from "@/features/camps/api/camp.api";
-import { partnerApi } from "@/features/partners/api/partner.api";
-import { testimonialApi } from "@/features/testimonials/api/testimonial.api";
+import { heroApi } from "@/features/home-control/api/hero.api";
 import { HomePageData } from "@/features/home-control/types/hero.schema";
-import AddFamilyDialog from "@/src/features/dashboard/components/add-family-dialog";
-import { FamilyFormDialog } from "@/src/features/families/components/family-form-dialog";
-import { listProjectsApi } from "@/features/projects/api/projects.api";
-import { Project } from "@/features/projects/api/projects.api";
+import { partnerApi } from "@/features/partners/api/partner.api";
+import { Project, listProjectsApi } from "@/features/projects/api/projects.api";
+import { testimonialApi } from "@/features/testimonials/api/testimonial.api";
 
 async function getHomePageData(): Promise<HomePageData> {
   try {
@@ -79,9 +74,10 @@ export default async function Home() {
   const slides = homePageData.slides || [];
   const camps = await getCamps();
 
-  const partners = await getPartners();
   const testimonials = await getTestimonials();
   const projects = await getProjects();
+
+  console.log({ projects });
 
   return (
     <main className="flex flex-col gap-6 mt-10">

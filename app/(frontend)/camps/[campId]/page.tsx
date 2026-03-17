@@ -277,9 +277,10 @@ export default function Page() {
             {tCamp("projectsTitle")}
           </h2>
         </motion.div>
-        <ProjectsSection
+         <ProjectsSection
           projects={projects}
           campName={getLocalizedValue(camp?.name)}
+          campSlug={campSlug}
         />
       </div>
     </section>

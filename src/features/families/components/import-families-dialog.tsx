@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,6 +8,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/src/shared/ui/button";
+import { Input } from "@/src/shared/ui/input";
 import {
   Select,
   SelectContent,
@@ -17,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { useCampNamesList } from "@/features/camps";
 import { useFamilyExcelImport } from "../hooks/use-family-excel-import";
-import { Upload, Loader2, FileSpreadsheet } from "lucide-react";
+import { Upload, Loader2, FileSpreadsheet, Search } from "lucide-react";
 
 interface ImportFamiliesDialogProps {
   isOpen: boolean;
@@ -29,11 +30,26 @@ export function ImportFamiliesDialog({
   onClose,
 }: ImportFamiliesDialogProps) {
   const [selectedCampId, setSelectedCampId] = useState<string>("");
+  const [campSearchInput, setCampSearchInput] = useState("");
 
   const { data: campsData } = useCampNamesList();
   const camps = (campsData?.data || []) as any[];
 
   const { handleFileUpload, isUploading } = useFamilyExcelImport();
+
+  // Filter camps based on search input
+  const filteredCamps = useMemo(() => {
+    if (!campSearchInput.trim()) return camps;
+
+    const searchLower = campSearchInput.toLowerCase();
+    return camps.filter((camp) => {
+      const displayName =
+        typeof camp.name === "string"
+          ? camp.name
+          : camp.name?.ar || camp.name?.en || "";
+      return displayName.toLowerCase().includes(searchLower);
+    });
+  }, [camps, campSearchInput]);
 
   const handleUploadClick = () => {
     if (!selectedCampId) return;
@@ -43,6 +59,7 @@ export function ImportFamiliesDialog({
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       setSelectedCampId("");
+      setCampSearchInput("");
       onClose();
     }
   };
@@ -68,22 +85,49 @@ export function ImportFamiliesDialog({
           <label className="text-sm font-medium text-gray-700">
             اختر المخيم <span className="text-red-500">*</span>
           </label>
-          <Select value={selectedCampId} onValueChange={setSelectedCampId}>
-            <SelectTrigger className="w-full">
+          <Select
+            value={selectedCampId}
+            onValueChange={setSelectedCampId}
+            onOpenChange={(open) => {
+              if (!open) setCampSearchInput("");
+            }}
+          >
+            <SelectTrigger className="w-full h-11">
               <SelectValue placeholder="اختر المخيم..." />
             </SelectTrigger>
             <SelectContent>
-              {camps.map((camp: any) => {
-                const displayName =
-                  typeof camp.name === "string"
-                    ? camp.name
-                    : camp.name?.ar || camp.name?.en || `مخيم ${camp.id}`;
-                return (
-                  <SelectItem key={camp.id} value={camp.id.toString()}>
-                    {displayName}
-                  </SelectItem>
-                );
-              })}
+              {/* Search Input */}
+              <div className="px-2 pb-2 border-b sticky top-0 bg-white z-10">
+                <div className="relative">
+                  <Search className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="ابحث عن مخيم..."
+                    value={campSearchInput}
+                    onChange={(e) => setCampSearchInput(e.target.value)}
+                    className="pr-10 h-9"
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
+                  />
+                </div>
+              </div>
+
+              {filteredCamps.length > 0 ? (
+                filteredCamps.map((camp: any) => {
+                  const displayName =
+                    typeof camp.name === "string"
+                      ? camp.name
+                      : camp.name?.ar || camp.name?.en || `مخيم ${camp.id}`;
+                  return (
+                    <SelectItem key={camp.id} value={camp.id.toString()}>
+                      {displayName}
+                    </SelectItem>
+                  );
+                })
+              ) : (
+                <div className="px-2 py-6 text-center text-sm text-muted-foreground">
+                  لا توجد نتائج
+                </div>
+              )}
             </SelectContent>
           </Select>
         </div>
@@ -102,7 +146,7 @@ export function ImportFamiliesDialog({
           <Button
             onClick={handleUploadClick}
             disabled={!selectedCampId || isUploading}
-            className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+            className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 h-11"
           >
             {isUploading ? (
               <>

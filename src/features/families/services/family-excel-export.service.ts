@@ -1,4 +1,5 @@
 import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import { Family, FamilyMember } from "../types/family.schema";
 
 // Wife relationship string as returned by the backend
@@ -145,24 +146,50 @@ export function downloadStyledExcel(
 // know exactly which columns / values to fill in.
 // ────────────────────────────────────────────────────────────────────────────
 
-/** Combined headers for the new single-sheet structure. */
-const FAMILY_IMPORT_HEADERS = [
-  "family_national_id", // رقم هوية رب الأسرة (يربط الجميع معاً)
-  "relationship_id", // صلة القرابة (نص: أب، أم، ابن، زوجة...)
-  "family_name", // اسم العائلة (مطلوب لرب الأسرة فقط)
-  "name", // اسم الفرد
-  "national_id", // رقم هوية الفرد
-  "dob", // تاريخ الميلاد YYYY-MM-DD
-  "gender", // male / female
-  "phone", // الهاتف
-  "backup_phone", // هاتف احتياطي
-  "total_members", // عدد الأفراد
-  "marital_status_id", // الحالة الاجتماعية (نص: أعزب، متزوج...)
-  "tent_number", // رقم الخيمة
-  "location", // الموقع
-  "notes", // ملاحظات
-  "medical_condition", // الحالة الصحية (نص)
+/**
+ * Arabic column headers for the import template.
+ * The ▼ symbol hints to users that those columns have dropdowns.
+ */
+const FAMILY_IMPORT_HEADERS_AR = [
+  "رقم هوية رب الأسرة", // family_national_id
+  "صلة القرابة", // relationship_id
+  "اسم العائلة", // family_name
+  "اسم الفرد", // name
+  "رقم هوية الفرد", // national_id
+  "تاريخ الميلاد", // dob  (YYYY-MM-DD)
+  "الجنس", // gender  (male / female)
+  "رقم الجوال", // phone
+  "رقم جوال احتياطي", // backup_phone
+  "عدد الأفراد", // total_members
+  "الحالة الاجتماعية ▼", // marital_status_id  – dropdown
+  "رقم الخيمة", // tent_number
+  "الموقع", // location
+  "ملاحظات", // notes
+  "الحالة الصحية ▼", // medical_condition  – dropdown
 ];
+
+/** English internal keys kept for parser compatibility */
+const FAMILY_IMPORT_HEADERS = [
+  "family_national_id",
+  "relationship_id",
+  "family_name",
+  "name",
+  "national_id",
+  "dob",
+  "gender",
+  "phone",
+  "backup_phone",
+  "total_members",
+  "marital_status_id",
+  "tent_number",
+  "location",
+  "notes",
+  "medical_condition",
+];
+
+// Column indices (0-based) that need dropdown validation
+const MARITAL_STATUS_COL = 10; // marital_status_id
+const MEDICAL_CONDITION_COL = 14; // medical_condition
 
 export interface ImportLookups {
   maritalStatuses: { id: number; name: string }[];
@@ -170,40 +197,87 @@ export interface ImportLookups {
   medicalConditions: { id: number; name: string }[];
 }
 
+/** Header fill colour (olive green) */
+const HEADER_COLOR = "4A5E2C";
+/** Max rows to apply data-validation to (beyond sample rows) */
+const VALIDATION_ROWS = 500;
+
 /**
- * Downloads a single-sheet template where rows are grouped by family_national_id.
+ * Downloads a single-sheet import template with:
+ *   - Arabic column headers
+ *   - Dropdown data-validation for marital status and medical condition
+ *   - RTL sheet view
+ *
+ * Uses ExcelJS so real Excel dropdowns work (SheetJS free edition doesn't
+ * support dataValidation).
  */
-export function downloadFamiliesTemplate() {
-  const wb = XLSX.utils.book_new();
+export async function downloadFamiliesTemplate(
+  lookups?: ImportLookups,
+): Promise<void> {
+  const wb = new ExcelJS.Workbook();
+  wb.creator = "Reffad System";
+  wb.created = new Date();
 
-  const forceText = (
-    ws: XLSX.WorkSheet,
-    row: number,
-    col: number,
-    val: string,
-  ) => {
-    const ref = XLSX.utils.encode_cell({ r: row, c: col });
-    ws[ref] = { t: "s", v: val, w: val };
-  };
+  const maritalNames =
+    lookups?.maritalStatuses?.map((s) => s.name) ?? [
+      "أعزب",
+      "متزوج",
+      "مطلق",
+      "أرمل",
+    ];
 
-  const styleHeaders = (ws: XLSX.WorkSheet, count: number) => {
-    for (let c = 0; c < count; c++) {
-      const ref = XLSX.utils.encode_cell({ r: 0, c });
-      if (!ws[ref]) continue;
-      ws[ref].s = {
-        fill: { patternType: "solid", fgColor: { rgb: "4A5E2C" } },
-        font: { bold: true, color: { rgb: "FFFFFF" }, sz: 11 },
-        alignment: { horizontal: "center", vertical: "center" },
-      };
-    }
-  };
+  const medicalNames =
+    lookups?.medicalConditions?.map((c) => c.name) ?? [
+      "لا يوجد",
+      "ربو",
+      "سكري",
+      "ضغط",
+      "قلب",
+      "أمراض أخرى",
+    ];
 
-  const data = [
-    FAMILY_IMPORT_HEADERS,
-    // Family 1 - Head
+  const maritalRange = `_options!$A$1:$A$${maritalNames.length}`;
+  const medicalRange = `_options!$B$1:$B$${medicalNames.length}`;
+
+  // ── 1. Main import sheet (MUST be first so SheetNames[0] points here) ────
+  const ws = wb.addWorksheet("نموذج_الاستيراد", {
+    views: [{ rightToLeft: true }],
+  });
+
+  // Column widths
+  ws.columns = FAMILY_IMPORT_HEADERS_AR.map((header, idx) => ({
+    header,
+    key: FAMILY_IMPORT_HEADERS[idx],
+    width: 24,
+  }));
+
+  // Style the header row
+  const headerRow = ws.getRow(1);
+  headerRow.eachCell((cell) => {
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: `FF${HEADER_COLOR}` },
+    };
+    cell.font = { bold: true, color: { argb: "FFFFFFFF" }, size: 11 };
+    cell.alignment = {
+      horizontal: "center",
+      vertical: "middle",
+      readingOrder: "rtl",
+    };
+    cell.border = {
+      bottom: { style: "thin", color: { argb: "FFFFFFFF" } },
+      right: { style: "thin", color: { argb: "FFFFFFFF" } },
+    };
+  });
+  headerRow.height = 28;
+
+  // ── 3. Sample rows ────────────────────────────────────────────────────────
+  const sampleRows = [
+    // Family head
     [
       "123456789",
-      "رب الأسرة", // relationship
+      "رب الأسرة",
       "عائلة آل السيد",
       "أحمد السيد",
       "123456789",
@@ -212,13 +286,13 @@ export function downloadFamiliesTemplate() {
       "+201234567890",
       "",
       3,
-      "متزوج", // marital_status
+      maritalNames[1] ?? "متزوج",
       "T-12",
       "القطاع أ",
       "",
       "",
     ],
-    // Family 1 - Member 1 (link by ID)
+    // Wife
     [
       "123456789",
       "زوجة",
@@ -234,9 +308,9 @@ export function downloadFamiliesTemplate() {
       "",
       "",
       "",
-      "ربو",
+      medicalNames[1] ?? "ربو",
     ],
-    // Family 1 - Member 2
+    // Son
     [
       "123456789",
       "ابن",
@@ -256,18 +330,81 @@ export function downloadFamiliesTemplate() {
     ],
   ];
 
-  const ws = XLSX.utils.aoa_to_sheet(data);
-  // Force ID columns to text
-  for (let i = 1; i < data.length; i++) {
-    forceText(ws, i, 0, String(data[i][0])); // family_id
-    forceText(ws, i, 4, String(data[i][4])); // individual_id
+  sampleRows.forEach((rowData) => {
+    const row = ws.addRow(rowData);
+    // Force ID cells to text to prevent scientific notation
+    const familyIdCell = row.getCell(1);
+    const memberIdCell = row.getCell(5);
+    familyIdCell.numFmt = "@";
+    memberIdCell.numFmt = "@";
+    // Style data rows lightly
+    row.eachCell({ includeEmpty: true }, (cell) => {
+      cell.alignment = { readingOrder: "rtl" };
+    });
+  });
+
+  // ── 4. Data validation (dropdowns) ───────────────────────────────────────
+  // Apply to all rows that users might fill in (row 2 = first data row)
+  const firstDataRow = 2;
+  const lastDataRow = firstDataRow + VALIDATION_ROWS;
+
+  // Marital status dropdown — column index MARITAL_STATUS_COL + 1 (ExcelJS is 1-based)
+  const maritalColLetter = ws.getColumn(MARITAL_STATUS_COL + 1).letter;
+  for (let r = firstDataRow; r <= lastDataRow; r++) {
+    ws.getCell(`${maritalColLetter}${r}`).dataValidation = {
+      type: "list",
+      allowBlank: true,
+      formulae: [maritalRange],
+      showErrorMessage: true,
+      errorStyle: "warning",
+      errorTitle: "قيمة غير صحيحة",
+      error: "يرجى اختيار قيمة من القائمة",
+      prompt: "اختر الحالة الاجتماعية",
+      promptTitle: "الحالة الاجتماعية",
+    };
   }
 
-  ws["!cols"] = FAMILY_IMPORT_HEADERS.map(() => ({ wch: 20 }));
-  styleHeaders(ws, FAMILY_IMPORT_HEADERS.length);
-  XLSX.utils.book_append_sheet(wb, ws, "Families_Import");
+  // Medical condition dropdown — column index MEDICAL_CONDITION_COL + 1
+  const medicalColLetter = ws.getColumn(MEDICAL_CONDITION_COL + 1).letter;
+  for (let r = firstDataRow; r <= lastDataRow; r++) {
+    ws.getCell(`${medicalColLetter}${r}`).dataValidation = {
+      type: "list",
+      allowBlank: true,
+      formulae: [medicalRange],
+      showErrorMessage: true,
+      errorStyle: "warning",
+      errorTitle: "قيمة غير صحيحة",
+      error: "يرجى اختيار قيمة من القائمة",
+      prompt: "اختر الحالة الصحية",
+      promptTitle: "الحالة الصحية",
+    };
+  }
 
-  XLSX.writeFile(wb, "families_import_template.xlsx");
+  // Freeze the header row
+  ws.views = [{ state: "frozen", ySplit: 1, rightToLeft: true }];
+
+  // ── 2. Hidden options sheet (added AFTER main sheet so SheetNames[0] is data) ─
+  const optionsSheet = wb.addWorksheet("_options");
+  optionsSheet.state = "veryHidden";
+  const maxOptions = Math.max(maritalNames.length, medicalNames.length);
+  for (let i = 0; i < maxOptions; i++) {
+    optionsSheet.getCell(i + 1, 1).value = maritalNames[i] ?? "";
+    optionsSheet.getCell(i + 1, 2).value = medicalNames[i] ?? "";
+  }
+
+  // ── 3. Write & download ───────────────────────────────────────────────────
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "families_import_template.xlsx";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 /**
@@ -280,12 +417,54 @@ export async function parseFamiliesExcel(
 ): Promise<any[]> {
   const buffer = await file.arrayBuffer();
   const wb = XLSX.read(buffer, { type: "array" });
-  const sheet = wb.Sheets[wb.SheetNames[0]];
+
+  // Find the first sheet that is NOT the hidden options helper sheet.
+  // The template adds "_options" as the second sheet, but guard against it
+  // ever being first (e.g. opened & re-saved by some spreadsheet apps).
+  const dataSheetName =
+    wb.SheetNames.find((n) => n !== "_options") ?? wb.SheetNames[0];
+  const sheet = wb.Sheets[dataSheetName];
 
   const rawRows: any[] = XLSX.utils.sheet_to_json(sheet, {
     defval: "",
     raw: false,
   });
+
+  // ── Arabic → English key mapping ─────────────────────────────────────────
+  // The downloaded template now uses Arabic headers as the visible column names.
+  // When users re-upload the file, sheet_to_json will produce Arabic-keyed rows.
+  // We normalise them to the English internal keys the parser expects.
+  // Old English-header files are left unchanged (keys already match).
+  const AR_TO_EN: Record<string, string> = {
+    "رقم هوية رب الأسرة": "family_national_id",
+    "صلة القرابة": "relationship_id",
+    "اسم العائلة": "family_name",
+    "اسم الفرد": "name",
+    "رقم هوية الفرد": "national_id",
+    "تاريخ الميلاد": "dob",
+    "الجنس": "gender",
+    "رقم الجوال": "phone",
+    "رقم جوال احتياطي": "backup_phone",
+    "عدد الأفراد": "total_members",
+    "الحالة الاجتماعية ▼": "marital_status_id",
+    "الحالة الاجتماعية": "marital_status_id",
+    "رقم الخيمة": "tent_number",
+    "الموقع": "location",
+    "ملاحظات": "notes",
+    "الحالة الصحية ▼": "medical_condition",
+    "الحالة الصحية": "medical_condition",
+  };
+
+  const normaliseRow = (row: any): any => {
+    const out: any = {};
+    for (const [k, v] of Object.entries(row)) {
+      const mapped = AR_TO_EN[k.trim()] ?? k;
+      out[mapped] = v;
+    }
+    return out;
+  };
+
+  const normalizedRows = rawRows.map(normaliseRow);
 
   const normaliseId = (v: any): string =>
     String(v ?? "")
@@ -320,7 +499,7 @@ export async function parseFamiliesExcel(
 
   const familyGroups = new Map<string, any>();
 
-  for (const row of rawRows) {
+  for (const row of normalizedRows) {
     const familyId = normaliseId(row["family_national_id"]);
     if (!familyId) continue;
 

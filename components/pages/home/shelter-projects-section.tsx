@@ -164,6 +164,7 @@ export default function ShelterProjectsSection({
                   donors={project.beneficiaryCount || 0}
                   percentage={percentage}
                   camp={project.campName || ""}
+                  campSlug={project.campSlug}
                 />
               </CarouselItem>
             );

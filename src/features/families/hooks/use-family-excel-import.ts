@@ -49,9 +49,14 @@ export function useFamilyExcelImport() {
   });
 
   // ── Template download ─────────────────────────────────────────────────────
-  const handleDownloadTemplate = () => {
+  const handleDownloadTemplate = async () => {
     try {
-      downloadFamiliesTemplate();
+      const lookups: ImportLookups = {
+        maritalStatuses: maritalStatuses?.data || [],
+        relationships: relationships?.data || [],
+        medicalConditions: medicalConditions?.data || [],
+      };
+      await downloadFamiliesTemplate(lookups);
       toast.success("تم تحميل النموذج بنجاح");
     } catch {
       toast.error("حدث خطأ أثناء تحميل النموذج");

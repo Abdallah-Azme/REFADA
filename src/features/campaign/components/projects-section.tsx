@@ -6,11 +6,13 @@ import { useTranslations } from "next-intl";
 interface ProjectsSectionProps {
   projects?: Project[];
   campName?: string;
+  campSlug?: string;
 }
 
 export default function ProjectsSection({
   projects = [],
   campName = "",
+  campSlug = "",
 }: ProjectsSectionProps) {
   const t = useTranslations("campDetails");
 
@@ -46,6 +48,7 @@ export default function ProjectsSection({
               donors={project.beneficiaryCount || 0}
               percentage={percentage}
               camp={campName}
+              campSlug={project.campSlug || campSlug}
               contributors={project.contributors}
             />
           </div>

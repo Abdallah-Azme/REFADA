@@ -48,7 +48,8 @@ export interface Project {
   id: number;
   name: string;
   type: string;
-  addedBy: string;
+  addedBy?: string;
+  DelegatePhone?: string;
   beneficiaryCount: number;
   college: string;
   status: string;
@@ -57,6 +58,8 @@ export interface Project {
   projectImage: string;
   totalReceived: number;
   totalRemaining: number;
+  camp?: string;
+  campSlug?: string;
   contributors?: Contributor[];
   contributionsCount?: number;
   createdAt: string;

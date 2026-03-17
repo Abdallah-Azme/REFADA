@@ -38,6 +38,7 @@ export interface Project {
   id: number;
   name: string;
   type: string;
+  addedBy?: string;
   DelegatePhone?: string;
   beneficiaryCount: number;
   college: string;
@@ -49,6 +50,8 @@ export interface Project {
   totalReceived: number;
   totalRemaining: number;
   camp: string;
+  campSlug?: string;
+  contributors?: any[]; // Simplified for api
   createdAt: string;
   updatedAt: string;
 }

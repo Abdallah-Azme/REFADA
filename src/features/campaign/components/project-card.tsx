@@ -28,6 +28,7 @@ interface ProjectCardProps {
   donors: number;
   percentage: number;
   camp: string;
+  campSlug?: string;
   contributors?: Contributor[];
 }
 
@@ -43,6 +44,7 @@ export function ProjectCard({
   donors,
   percentage,
   camp,
+  campSlug,
   contributors = [],
 }: ProjectCardProps) {
   const t = useTranslations("campDetails");
@@ -92,14 +94,18 @@ export function ProjectCard({
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-bold text-gray-900">{title}</h3>
 
-          <p
-            // href={`https://www.google.com/search?q=${encodeURIComponent(
-            //   title,
-            // )}`}
-            className="bg-[#D2EBFF] text-blue-500 rounded-md text-xs px-2 py-1"
-          >
-            {camp}
-          </p>
+          {campSlug ? (
+            <Link
+              href={`/camps/${campSlug}`}
+              className="bg-[#D2EBFF] text-blue-500 rounded-md text-xs px-2 py-1 hover:bg-blue-100 transition-colors"
+            >
+              {camp}
+            </Link>
+          ) : (
+            <p className="bg-[#D2EBFF] text-blue-500 rounded-md text-xs px-2 py-1">
+              {camp}
+            </p>
+          )}
         </div>
 
         <p className="text-sm text-gray-600 mb-3 line-clamp-2">{description}</p>
