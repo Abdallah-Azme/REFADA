@@ -77,8 +77,6 @@ export default async function Home() {
   const testimonials = await getTestimonials();
   const projects = await getProjects();
 
-  console.log({ projects });
-
   return (
     <main className="flex flex-col gap-6 mt-10">
       <Hero slides={slides} />

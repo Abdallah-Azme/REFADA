@@ -158,12 +158,12 @@ export function downloadStyledExcel(
  */
 const FAMILY_IMPORT_HEADERS_AR = [
   "رقم هوية رب الأسرة", // family_national_id
-  "صلة القرابة", // relationship_id
+  "صلة القرابة ▼", // relationship_id  – dropdown
   "اسم العائلة", // family_name
   "اسم الفرد", // name
   "رقم هوية الفرد", // national_id
   "تاريخ الميلاد", // dob  (YYYY-MM-DD)
-  "الجنس", // gender  (male / female)
+  "الجنس ▼", // gender  – dropdown
   "رقم الجوال", // phone
   "رقم جوال احتياطي", // backup_phone
   "عدد الأفراد", // total_members
@@ -194,8 +194,13 @@ const FAMILY_IMPORT_HEADERS = [
 ];
 
 // Column indices (0-based) that need dropdown validation
+const RELATIONSHIP_COL = 1; // relationship_id
+const GENDER_COL = 6; // gender
 const MARITAL_STATUS_COL = 10; // marital_status_id
 const MEDICAL_CONDITION_COL = 14; // medical_condition
+
+/** Static gender options shown in the dropdown */
+const GENDER_OPTIONS = ["ذكر", "أنثى"];
 
 export interface ImportLookups {
   maritalStatuses: { id: number; name: string }[];
@@ -224,6 +229,18 @@ export async function downloadFamiliesTemplate(
   wb.creator = "Reffad System";
   wb.created = new Date();
 
+  const relationshipNames =
+    lookups?.relationships?.map((r) => r.name) ?? [
+      "رب الأسرة",
+      "زوجة",
+      "ابن",
+      "بنت",
+      "أخ",
+      "أخت",
+    ];
+
+  const genderNames = GENDER_OPTIONS; // ["ذكر", "أنثى"]
+
   const maritalNames =
     lookups?.maritalStatuses?.map((s) => s.name) ?? [
       "أعزب",
@@ -242,8 +259,10 @@ export async function downloadFamiliesTemplate(
       "أمراض أخرى",
     ];
 
-  const maritalRange = `_options!$A$1:$A$${maritalNames.length}`;
-  const medicalRange = `_options!$B$1:$B$${medicalNames.length}`;
+  const relationshipRange = `_options!$A$1:$A$${relationshipNames.length}`;
+  const genderRange = `_options!$B$1:$B$${genderNames.length}`;
+  const maritalRange = `_options!$C$1:$C$${maritalNames.length}`;
+  const medicalRange = `_options!$D$1:$D$${medicalNames.length}`;
 
   // ── 1. Main import sheet (MUST be first so SheetNames[0] points here) ────
   const ws = wb.addWorksheet("نموذج_الاستيراد", {
@@ -279,16 +298,29 @@ export async function downloadFamiliesTemplate(
   headerRow.height = 28;
 
   // ── 3. Sample rows ────────────────────────────────────────────────────────
+  // Use Arabic display names for relationship and gender (to match dropdowns)
+  const headRelName = relationshipNames[0] ?? "رب الأسرة";
+  const wifeRelName =
+    relationshipNames.find((n) => n.includes("زوجة")) ??
+    relationshipNames[1] ??
+    "زوجة";
+  const sonRelName =
+    relationshipNames.find((n) => n.includes("ابن")) ??
+    relationshipNames[2] ??
+    "ابن";
+  const maleGender = genderNames[0] ?? "ذكر";
+  const femaleGender = genderNames[1] ?? "أنثى";
+
   const sampleRows = [
     // Family head
     [
       "123456789",
-      "رب الأسرة",
+      headRelName,
       "عائلة آل السيد",
       "أحمد السيد",
       "123456789",
       "1980-05-12",
-      "male",
+      maleGender,
       "+201234567890",
       "",
       3,
@@ -301,12 +333,12 @@ export async function downloadFamiliesTemplate(
     // Wife
     [
       "123456789",
-      "زوجة",
+      wifeRelName,
       "",
       "سارة السيد",
       "876543219",
       "1985-02-10",
-      "female",
+      femaleGender,
       "",
       "",
       "",
@@ -319,12 +351,12 @@ export async function downloadFamiliesTemplate(
     // Son
     [
       "123456789",
-      "ابن",
+      sonRelName,
       "",
       "خالد السيد",
       "111222333",
       "2010-06-20",
-      "male",
+      maleGender,
       "",
       "",
       "",
@@ -353,6 +385,38 @@ export async function downloadFamiliesTemplate(
   // Apply to all rows that users might fill in (row 2 = first data row)
   const firstDataRow = 2;
   const lastDataRow = firstDataRow + VALIDATION_ROWS;
+
+  // Relationship dropdown — column RELATIONSHIP_COL + 1 (ExcelJS is 1-based)
+  const relColLetter = ws.getColumn(RELATIONSHIP_COL + 1).letter;
+  for (let r = firstDataRow; r <= lastDataRow; r++) {
+    ws.getCell(`${relColLetter}${r}`).dataValidation = {
+      type: "list",
+      allowBlank: true,
+      formulae: [relationshipRange],
+      showErrorMessage: true,
+      errorStyle: "warning",
+      errorTitle: "قيمة غير صحيحة",
+      error: "يرجى اختيار قيمة من القائمة",
+      prompt: "اختر صلة القرابة",
+      promptTitle: "صلة القرابة",
+    };
+  }
+
+  // Gender dropdown — column GENDER_COL + 1
+  const genderColLetter = ws.getColumn(GENDER_COL + 1).letter;
+  for (let r = firstDataRow; r <= lastDataRow; r++) {
+    ws.getCell(`${genderColLetter}${r}`).dataValidation = {
+      type: "list",
+      allowBlank: true,
+      formulae: [genderRange],
+      showErrorMessage: true,
+      errorStyle: "warning",
+      errorTitle: "قيمة غير صحيحة",
+      error: "يرجى اختيار قيمة من القائمة",
+      prompt: "اختر الجنس",
+      promptTitle: "الجنس",
+    };
+  }
 
   // Marital status dropdown — column index MARITAL_STATUS_COL + 1 (ExcelJS is 1-based)
   const maritalColLetter = ws.getColumn(MARITAL_STATUS_COL + 1).letter;
@@ -392,10 +456,17 @@ export async function downloadFamiliesTemplate(
   // ── 2. Hidden options sheet (added AFTER main sheet so SheetNames[0] is data) ─
   const optionsSheet = wb.addWorksheet("_options");
   optionsSheet.state = "veryHidden";
-  const maxOptions = Math.max(maritalNames.length, medicalNames.length);
+  const maxOptions = Math.max(
+    relationshipNames.length,
+    genderNames.length,
+    maritalNames.length,
+    medicalNames.length,
+  );
   for (let i = 0; i < maxOptions; i++) {
-    optionsSheet.getCell(i + 1, 1).value = maritalNames[i] ?? "";
-    optionsSheet.getCell(i + 1, 2).value = medicalNames[i] ?? "";
+    optionsSheet.getCell(i + 1, 1).value = relationshipNames[i] ?? "";
+    optionsSheet.getCell(i + 1, 2).value = genderNames[i] ?? "";
+    optionsSheet.getCell(i + 1, 3).value = maritalNames[i] ?? "";
+    optionsSheet.getCell(i + 1, 4).value = medicalNames[i] ?? "";
   }
 
   // ── 3. Write & download ───────────────────────────────────────────────────
@@ -443,11 +514,13 @@ export async function parseFamiliesExcel(
   // Old English-header files are left unchanged (keys already match).
   const AR_TO_EN: Record<string, string> = {
     "رقم هوية رب الأسرة": "family_national_id",
+    "صلة القرابة ▼": "relationship_id",
     "صلة القرابة": "relationship_id",
     "اسم العائلة": "family_name",
     "اسم الفرد": "name",
     "رقم هوية الفرد": "national_id",
     "تاريخ الميلاد": "dob",
+    "الجنس ▼": "gender",
     "الجنس": "gender",
     "رقم الجوال": "phone",
     "رقم جوال احتياطي": "backup_phone",
@@ -532,8 +605,14 @@ export async function parseFamiliesExcel(
       ? findIdByName(lookups?.relationships, relText, 1)
       : Number(relText) || 1;
 
-    // If this is the head (rel=1), populate the family metadata
-    if (relId === 1) {
+    // Detect if this is the head-of-family row:
+    //  1. relId resolved to 1 (the standard head relationship), OR
+    //  2. This is the very first member added to this group (first row encountered)
+    //     — acts as a safe fallback when the API's head relationship ID is not 1.
+    const isFirstRowOfGroup = group.members.length === 0;
+    const isHead = relId === 1 || isFirstRowOfGroup;
+
+    if (isHead) {
       const maritalText = String(row["marital_status_id"] || "").trim();
       const maritalId = isNaN(Number(maritalText))
         ? findIdByName(lookups?.maritalStatuses, maritalText, 1)
@@ -555,11 +634,17 @@ export async function parseFamiliesExcel(
       String(row["medical_condition"] || ""),
     );
 
+    // Resolve gender – accept Arabic (ذكر/أنثى) as well as English (male/female)
+    const rawGender = String(row["gender"] ?? "").trim();
+    const resolvedGender: "male" | "female" =
+      rawGender === "أنثى" || rawGender.toLowerCase() === "female"
+        ? "female"
+        : "male";
+
     // Add this person as a member
     group.members.push({
       name: String(row["name"] ?? ""),
-      gender:
-        String(row["gender"]).toLowerCase() === "female" ? "female" : "male",
+      gender: resolvedGender,
       dob: String(row["dob"] ?? ""),
       national_id: normaliseId(row["national_id"]),
       relationship_id: relId,
@@ -614,6 +699,16 @@ export async function downloadFailedFamilies(
   };
 
   // ── Lookup name arrays for dropdowns ──────────────────────────────────────
+  const relationshipNames =
+    lookups?.relationships?.map((r) => r.name) ?? [
+      "رب الأسرة",
+      "زوجة",
+      "ابن",
+      "بنت",
+      "أخ",
+      "أخت",
+    ];
+  const genderNames = GENDER_OPTIONS; // ["ذكر", "أنثى"]
   const maritalNames =
     lookups?.maritalStatuses?.map((s) => s.name) ?? [
       "أعزب",
@@ -631,8 +726,10 @@ export async function downloadFailedFamilies(
       "أمراض أخرى",
     ];
 
-  const maritalRange = `_options!$A$1:$A$${maritalNames.length}`;
-  const medicalRange = `_options!$B$1:$B$${medicalNames.length}`;
+  const relationshipRange = `_options!$A$1:$A$${relationshipNames.length}`;
+  const genderRange = `_options!$B$1:$B$${genderNames.length}`;
+  const maritalRange = `_options!$C$1:$C$${maritalNames.length}`;
+  const medicalRange = `_options!$D$1:$D$${medicalNames.length}`;
 
   // ── Build workbook ─────────────────────────────────────────────────────────
   const wb = new ExcelJS.Workbook();
@@ -694,7 +791,11 @@ export async function downloadFailedFamilies(
 
     const errorSummary = formatError(errorDetail);
 
-    family.members.forEach((m: any, mIdx: number) => {
+  // Helper: convert internal gender to Arabic display name
+  const genderDisplay = (g: string): string =>
+    g === "female" ? "أنثى" : "ذكر";
+
+  family.members.forEach((m: any, mIdx: number) => {
       dataRows.push([
         family.national_id || "",
         getNameById(lookups?.relationships, m.relationship_id),
@@ -702,7 +803,7 @@ export async function downloadFailedFamilies(
         m.name || "",
         m.national_id || "",
         m.dob || "",
-        m.gender || "male",
+        genderDisplay(m.gender || "male"),
         mIdx === 0 ? family.phone || "" : "",
         mIdx === 0 ? family.backup_phone || "" : "",
         mIdx === 0 ? family.total_members || "" : "",
@@ -751,6 +852,38 @@ export async function downloadFailedFamilies(
   const firstDataRow = 2;
   const lastDataRow = firstDataRow + dataRows.length + 10; // cover all rows + buffer
 
+  // Relationship dropdown (col RELATIONSHIP_COL, 0-based → ExcelJS 1-based → +1)
+  const relColLetter = ws.getColumn(RELATIONSHIP_COL + 1).letter;
+  for (let r = firstDataRow; r <= lastDataRow; r++) {
+    ws.getCell(`${relColLetter}${r}`).dataValidation = {
+      type: "list",
+      allowBlank: true,
+      formulae: [relationshipRange],
+      showErrorMessage: true,
+      errorStyle: "warning",
+      errorTitle: "قيمة غير صحيحة",
+      error: "يرجى اختيار قيمة من القائمة",
+      prompt: "اختر صلة القرابة",
+      promptTitle: "صلة القرابة",
+    };
+  }
+
+  // Gender dropdown (col GENDER_COL, 0-based → ExcelJS +1)
+  const genderColLetter = ws.getColumn(GENDER_COL + 1).letter;
+  for (let r = firstDataRow; r <= lastDataRow; r++) {
+    ws.getCell(`${genderColLetter}${r}`).dataValidation = {
+      type: "list",
+      allowBlank: true,
+      formulae: [genderRange],
+      showErrorMessage: true,
+      errorStyle: "warning",
+      errorTitle: "قيمة غير صحيحة",
+      error: "يرجى اختيار قيمة من القائمة",
+      prompt: "اختر الجنس",
+      promptTitle: "الجنس",
+    };
+  }
+
   // Marital status dropdown (col MARITAL_STATUS_COL, 0-based → ExcelJS 1-based → +1)
   const maritalColLetter = ws.getColumn(MARITAL_STATUS_COL + 1).letter;
   for (let r = firstDataRow; r <= lastDataRow; r++) {
@@ -789,10 +922,17 @@ export async function downloadFailedFamilies(
   // ── 4. Hidden options sheet (same technique as template) ──────────────────
   const optionsSheet = wb.addWorksheet("_options");
   optionsSheet.state = "veryHidden";
-  const maxOptions = Math.max(maritalNames.length, medicalNames.length);
+  const maxOptions = Math.max(
+    relationshipNames.length,
+    genderNames.length,
+    maritalNames.length,
+    medicalNames.length,
+  );
   for (let i = 0; i < maxOptions; i++) {
-    optionsSheet.getCell(i + 1, 1).value = maritalNames[i] ?? "";
-    optionsSheet.getCell(i + 1, 2).value = medicalNames[i] ?? "";
+    optionsSheet.getCell(i + 1, 1).value = relationshipNames[i] ?? "";
+    optionsSheet.getCell(i + 1, 2).value = genderNames[i] ?? "";
+    optionsSheet.getCell(i + 1, 3).value = maritalNames[i] ?? "";
+    optionsSheet.getCell(i + 1, 4).value = medicalNames[i] ?? "";
   }
 
   // ── 5. Write & trigger browser download ───────────────────────────────────
