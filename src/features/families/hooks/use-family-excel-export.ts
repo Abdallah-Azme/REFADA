@@ -128,6 +128,10 @@ export function useFamilyExcelExport({
         );
       } else {
         const rows = formatFamiliesWithAllMembers(families);
+        if (rows.length === 0) {
+          toast.warning("لا يوجد أفراد لتصديرهم (العائلات تحتوي على زوج وزوجة فقط)");
+          return;
+        }
         downloadStyledExcel(rows, `families_with_members_${date}`, "الافراد");
       }
 

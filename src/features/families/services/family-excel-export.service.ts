@@ -66,38 +66,29 @@ export function formatFamiliesWithAllMembers(
     });
 
     if (otherMembers.length === 0) {
-      // Family has no additional members — still add one row for the head
+      // Family has no additional members (only head/spouse) — skip this family entirely
+      return;
+    }
+
+    otherMembers.forEach((member: FamilyMember) => {
+      const gender =
+        member.gender === "male"
+          ? "ذكر"
+          : member.gender === "female"
+            ? "أنثى"
+            : "";
+
       rows.push({
         الرقم: rowNumber++,
         "اسم ولي الأمر الرباعي": family.familyName || "",
         "رقم الهوية الأب": family.nationalId || "",
         "رقم الجوال": family.phone || "",
-        "اسم الفرد": "",
-        "رقم هوية الفرد": "",
-        الجنس: "",
-        "تاريخ ميلاد الفرد": "",
+        "اسم الفرد": member.name || "",
+        "رقم هوية الفرد": member.nationalId || "",
+        الجنس: gender,
+        "تاريخ ميلاد الفرد": member.dob || "",
       });
-    } else {
-      otherMembers.forEach((member: FamilyMember) => {
-        const gender =
-          member.gender === "male"
-            ? "ذكر"
-            : member.gender === "female"
-              ? "أنثى"
-              : "";
-
-        rows.push({
-          الرقم: rowNumber++,
-          "اسم ولي الأمر الرباعي": family.familyName || "",
-          "رقم الهوية الأب": family.nationalId || "",
-          "رقم الجوال": family.phone || "",
-          "اسم الفرد": member.name || "",
-          "رقم هوية الفرد": member.nationalId || "",
-          الجنس: gender,
-          "تاريخ ميلاد الفرد": member.dob || "",
-        });
-      });
-    }
+    });
   });
 
   return rows;
