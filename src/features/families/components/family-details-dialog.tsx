@@ -187,7 +187,7 @@ export default function FamilyDetailsDialog({
             {/* Family Members Section */}
             {family.members && family.members.length > 0 && (
               <div className="bg-white border rounded-xl overflow-hidden">
-                <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-3 border-b">
+                <div className="bg-linear-to-r from-primary/10 to-primary/5 px-4 py-3 border-b">
                   <h3 className="font-semibold text-gray-900 flex items-center gap-2">
                     <Users className="h-5 w-5 text-primary" />
                     {t("family_members") || "أفراد العائلة"} (
@@ -219,7 +219,18 @@ export default function FamilyDetailsDialog({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
-                      {family.members.map((member, index) => (
+                      {[...(family.members || [])]
+                        .sort((a, b) => {
+                          const dateA = new Date(a.dob || "").getTime();
+                          const dateB = new Date(b.dob || "").getTime();
+                          
+                          if (isNaN(dateA) && isNaN(dateB)) return 0;
+                          if (isNaN(dateA)) return 1;
+                          if (isNaN(dateB)) return -1;
+                          
+                          return dateA - dateB; // Oldest first
+                        })
+                        .map((member, index) => (
                         <tr
                           key={member.id || index}
                           className="hover:bg-gray-50 transition-colors"
