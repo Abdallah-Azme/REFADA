@@ -490,6 +490,8 @@
       "without_members_desc": "Export head of family and wife only (Certified Form for Camps version)",
       "with_members_title": "With all members",
       "with_members_desc": "Export all family members including children (Refada Children Form)",
+      "everything_title": "All Members",
+      "everything_desc": "Export all family members including the head of family and spouse",
       "export_btn": "Export",
       "cancel_btn": "Cancel"
     }

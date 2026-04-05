@@ -13,7 +13,7 @@ import {
 import { Button } from "@/src/shared/ui/button";
 import { FileSpreadsheet, Users, User, Loader2 } from "lucide-react";
 
-export type ExportMode = "without_members" | "with_members";
+export type ExportMode = "without_members" | "with_members" | "everything";
 
 interface ExportTypeDialogProps {
   isOpen: boolean;
@@ -174,6 +174,62 @@ export function ExportTypeDialog({
               </div>
             )}
           </button>
+
+          {/* Option 3: Everything (parents + all members) */}
+          <button
+            type="button"
+            onClick={() => setSelectedMode("everything")}
+            className={`flex items-start gap-4 p-4 rounded-xl border-2 text-right transition-all duration-200 ${
+              selectedMode === "everything"
+                ? "border-purple-500 bg-purple-50 shadow-sm"
+                : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            <div
+              className={`flex items-center justify-center w-12 h-12 rounded-full shrink-0 ${
+                selectedMode === "everything" ? "bg-purple-100" : "bg-gray-100"
+              }`}
+            >
+              <Users
+                className={`w-6 h-6 ${
+                  selectedMode === "everything"
+                    ? "text-purple-600"
+                    : "text-gray-500"
+                }`}
+              />
+            </div>
+            <div className="flex-1">
+              <h3
+                className={`font-semibold text-base ${
+                  selectedMode === "everything"
+                    ? "text-purple-700"
+                    : "text-gray-800"
+                }`}
+              >
+                {t("everything_title")}
+              </h3>
+              <p className="text-sm text-gray-500 mt-1">
+                {t("everything_desc")}
+              </p>
+            </div>
+            {selectedMode === "everything" && (
+              <div className="w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center shrink-0 mt-1">
+                <svg
+                  className="w-3 h-3 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+            )}
+          </button>
         </div>
 
         <DialogFooter className="flex flex-row-reverse gap-2 sm:flex-row-reverse">
@@ -183,7 +239,9 @@ export function ExportTypeDialog({
             className={`gap-2 min-w-[120px] ${
               selectedMode === "with_members"
                 ? "bg-blue-600 hover:bg-blue-700"
-                : "bg-green-600 hover:bg-green-700"
+                : selectedMode === "everything"
+                  ? "bg-purple-600 hover:bg-purple-700"
+                  : "bg-green-600 hover:bg-green-700"
             }`}
           >
             {isExporting ? (

@@ -7,6 +7,7 @@ import { FamiliesQueryParams } from "../types/families-query.types";
 import {
   formatFamiliesWithoutChildren,
   formatFamiliesWithAllMembers,
+  formatFamiliesWithEveryone,
   downloadStyledExcel,
 } from "../services/family-excel-export.service";
 import { ExportMode } from "../components/export-type-dialog";
@@ -126,10 +127,15 @@ export function useFamilyExcelExport({
           `families_without_members_${date}`,
           "العائلات",
         );
+      } else if (mode === "everything") {
+        const rows = formatFamiliesWithEveryone(families);
+        downloadStyledExcel(rows, `families_full_export_${date}`, "الكل");
       } else {
         const rows = formatFamiliesWithAllMembers(families);
         if (rows.length === 0) {
-          toast.warning("لا يوجد أفراد لتصديرهم (العائلات تحتوي على زوج وزوجة فقط)");
+          toast.warning(
+            "لا يوجد أفراد لتصديرهم (العائلات تحتوي على زوج وزوجة فقط)",
+          );
           return;
         }
         downloadStyledExcel(rows, `families_with_members_${date}`, "الافراد");

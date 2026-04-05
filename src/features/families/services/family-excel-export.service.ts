@@ -34,6 +34,9 @@ export function formatFamiliesWithoutChildren(
       "رقم الجوال 2": family.backupPhone || "",
       "عدد الافراد": family.totalMembers || 0,
       "الحالة الاجتماعية": family.maritalStatus || "",
+      المخيم: family.camp || "",
+      "رقم الخيمة": family.tentNumber || "",
+      الموقع: family.location || "",
       ملاحظات: family.notes || "",
     };
   });
@@ -59,10 +62,10 @@ export function formatFamiliesWithAllMembers(
 
     // Children / dependents only: exclude the head AND the spouse (wife or husband)
     const otherMembers = members.filter((m) => {
-      if (m.nationalId === family.nationalId) return false; // head
+      if (m.nationalId === family.nationalId) return false; // exclude head
       const rel = m.relationship?.trim() ?? "";
-      if (rel === WIFE_RELATIONSHIP || rel === HUSBAND_RELATIONSHIP) return false; // spouse
-      return true;
+      if (rel === WIFE_RELATIONSHIP || rel === HUSBAND_RELATIONSHIP) return false; // exclude spouse
+      return true; // only children/others
     });
 
     if (otherMembers.length === 0) {
@@ -78,15 +81,107 @@ export function formatFamiliesWithAllMembers(
             ? "أنثى"
             : "";
 
+      const medical =
+        member.medicalConditions?.join(" - ") ||
+        member.medicalCondition ||
+        "سليم";
+
       rows.push({
         الرقم: rowNumber++,
         "اسم ولي الأمر الرباعي": family.familyName || "",
         "رقم الهوية الأب": family.nationalId || "",
         "رقم الجوال": family.phone || "",
+        "رقم الجوال 2": family.backupPhone || "",
         "اسم الفرد": member.name || "",
         "رقم هوية الفرد": member.nationalId || "",
         الجنس: gender,
         "تاريخ ميلاد الفرد": member.dob || "",
+        "صلة القرابة": member.relationship || "",
+        "الحالة الصحية": medical,
+        "الحالة الاجتماعية": family.maritalStatus || "",
+        المخيم: family.camp || "",
+        "رقم الخيمة": family.tentNumber || "",
+        الموقع: family.location || "",
+        "عدد الأفراد": family.totalMembers || 0,
+        ملاحظات: family.notes || "",
+      });
+    });
+  });
+
+  return rows;
+}
+
+/**
+ * Format families WITH EVERYONE (head, spouse, and all members).
+ * One row per person.
+ *
+ * Columns: الرقم | اسم ولي الأمر الرباعي | رقم الهوية الأب | رقم الجوال
+ *          | اسم الفرد | رقم هوية الفرد | الجنس | تاريخ ميلاد الفرد
+ */
+export function formatFamiliesWithEveryone(
+  families: Family[],
+): Record<string, string | number>[] {
+  const rows: Record<string, string | number>[] = [];
+  let rowNumber = 1;
+
+  families.forEach((family) => {
+    const members = family.members ?? [];
+
+    if (members.length === 0) {
+      // Fallback if members list is empty
+      rows.push({
+        الرقم: rowNumber++,
+        "اسم ولي الأمر الرباعي": family.familyName || "",
+        "رقم الهوية الأب": family.nationalId || "",
+        "رقم الجوال": family.phone || "",
+        "رقم الجوال 2": family.backupPhone || "",
+        "اسم الفرد": family.familyName || "",
+        "رقم هوية الفرد": family.nationalId || "",
+        الجنس: "",
+        "تاريخ ميلاد الفرد": family.dob || "",
+        "صلة القرابة": "رب الأسرة",
+        "الحالة الصحية": (family.medicalConditions ?? []).join(" - "),
+        "الحالة الاجتماعية": family.maritalStatus || "",
+        المخيم: family.camp || "",
+        "رقم الخيمة": family.tentNumber || "",
+        الموقع: family.location || "",
+        "عدد الأفراد": family.totalMembers || 0,
+        ملاحظات: family.notes || "",
+      });
+      return;
+    }
+
+    members.forEach((member: FamilyMember) => {
+      const gender =
+        member.gender === "male"
+          ? "ذكر"
+          : member.gender === "female"
+            ? "أنثى"
+            : "";
+
+      const medical =
+        member.medicalConditions?.join(" - ") ||
+        member.medicalCondition ||
+        "سليم";
+
+      rows.push({
+        الرقم: rowNumber++,
+        "اسم ولي الأمر الرباعي": family.familyName || "",
+        "رقم الهوية الأب": family.nationalId || "",
+        "رقم الجوال": family.phone || "",
+        "رقم الجوال 2": family.backupPhone || "",
+        "اسم الفرد": member.name || "",
+        "رقم هوية الفرد": member.nationalId || "",
+        الجنس: gender,
+        "تاريخ ميلاد الفرد": member.dob || "",
+        "صلة القرابة": member.relationship || "",
+        "الحالة الصحية": medical,
+        "الحالة الاجتماعية": family.maritalStatus || "",
+        المخيم: family.camp || "",
+        "رقم الخيمة": family.tentNumber || "",
+        الموقع: family.location || "",
+        "عدد الأفراد": family.totalMembers || 0,
+        ملاحظات: family.notes || "",
       });
     });
   });
