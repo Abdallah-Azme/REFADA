@@ -1517,6 +1517,12 @@
       "confirm": "Delete Permanently",
       "button": "Delete Permanently"
     },
+    "force_delete_all": {
+      "title": "Delete All Families Permanently",
+      "description": "Are you sure you want to permanently delete all deleted families? This action cannot be undone.",
+      "confirm": "Yes, Delete All",
+      "button": "Delete All"
+    },
     "restore": {
       "button": "Restore",
       "success": "Family restored successfully",

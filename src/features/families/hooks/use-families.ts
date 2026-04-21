@@ -167,3 +167,21 @@ export function useRestoreFamily() {
     },
   });
 }
+
+export function useForceDeleteAllFamilies() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const { forceDeleteAllFamiliesApi } = await import("../api/families.api");
+      return forceDeleteAllFamiliesApi();
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["deletedFamilies"] });
+      toast.success(response?.message || "تم حذف جميع العائلات نهائياً بنجاح");
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || "حدث خطأ أثناء حذف جميع العائلات");
+    },
+  });
+}

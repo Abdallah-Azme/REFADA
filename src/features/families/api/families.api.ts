@@ -572,6 +572,18 @@ export async function forceDeleteFamilyApi(familyId: number): Promise<void> {
   });
 }
 
+export async function forceDeleteAllFamiliesApi(): Promise<{
+  success: boolean;
+  message: string;
+}> {
+  return apiRequest<{ success: boolean; message: string }>(
+    "/families/force-delete-all",
+    {
+      method: "DELETE",
+    },
+  );
+}
+
 // ────────────────────────────────────────────────────────────
 // Excel Upload API
 // ────────────────────────────────────────────────────────────
